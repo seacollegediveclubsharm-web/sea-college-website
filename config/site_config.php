@@ -90,7 +90,7 @@ define('WHATSAPP_NUMBER', sc_env('WHATSAPP_NUMBER', '201000344544')); // digits 
 /* ---------------------------------------------------------------
  * Google ecosystem
  * ------------------------------------------------------------- */
-define('GTM_ID', sc_env('GTM_ID', ''));                       // e.g. GTM-XXXXXXX
+define('GTM_ID', sc_env('GTM_ID', 'GTM-PBVQ56XC'));           // Google Tag / GTM container ID
 define('GA4_ID', sc_env('GA4_ID', ''));                       // e.g. G-XXXXXXXXXX (loaded directly only if GTM_ID empty)
 define('GOOGLE_ADS_ID', sc_env('GOOGLE_ADS_ID', ''));         // e.g. AW-XXXXXXXXX
 define('GOOGLE_ADS_LEAD_LABEL', sc_env('GOOGLE_ADS_LEAD_LABEL', '')); // conversion label for Lead

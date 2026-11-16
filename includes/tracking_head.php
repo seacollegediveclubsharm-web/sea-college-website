@@ -53,6 +53,7 @@ gtag('consent', 'default', {
   wait_for_update: 500
 });
 gtag('set', 'ads_data_redaction', true);
+gtag('js', new Date());
 dataLayer.push({event: 'sc_init', page_type: SC.page, site_language: SC.lang, consent_state: SC.consent});
 </script>
 <?php if (GTM_ID !== ''): ?>
