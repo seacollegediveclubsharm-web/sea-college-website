@@ -1,78 +1,59 @@
-# Connecting Google Ads + GA4 via Google Tag Manager (Sea College Dive Club)
+# Google Ads + GTM Setup on Temporary Staging Domain (Ready for Final Domain Switch)
 
-The website is already wired for **Google Tag Manager (GTM)**, **Consent Mode v2**, **Enhanced Conversions (SHA-256 hashed email & E.164 phone)**, and **`gclid` / `gbraid` / `wbraid` click-ID attribution**.
+This setup connects your **Google Ads** and **Google Tag Manager (GTM)** to the **temporary staging site** (`https://papayawhip-pheasant-312330.hostingersite.com`) right now — **without touching your current live website** — and switches cleanly to your final domain on launch day without recreating any tags or IDs.
 
-Use the pre-built container file [`gtm_container_sea_college.json`](gtm_container_sea_college.json) so you do not have to create tags, triggers, or variables by hand.
+Pre-built GTM import file: [`docs/gtm_container_sea_college.json`](gtm_container_sea_college.json)
 
 ---
 
-## Step 1 — Create (or open) your Google Tag Manager Web Container
-1. Go to https://tagmanager.google.com and sign in with the Google account that manages **Sea College Dive Club**.
-2. Click **Create Account** (or open your existing account):
+## Phase A — Setup Now on the Temporary Link
+
+### Step 1 — Create a New GTM Web Container
+1. Open https://tagmanager.google.com → **Create Account** (or **Create Container** inside your existing account):
    - **Account Name:** `Sea College Dive Club`
    - **Country:** `Egypt`
-   - **Container Name:** `seacollegediveclub.com`
+   - **Container Name:** `Sea College - New Website`
    - **Target Platform:** **Web**
-3. Copy your Container ID from the top bar — it looks like **`GTM-XXXXXXX`**.
+2. Copy the Container ID at the top (**`GTM-XXXXXXX`**).  
+   *(GTM containers work on any domain, so this exact `GTM-XXXXXXX` stays the same on your temporary link and on your final domain.)*
 
----
-
-## Step 2 — Create Conversion Actions in Google Ads
-1. Go to https://ads.google.com → **Goals** → **Conversions** → **Summary**.
-2. Click **+ New conversion action** → **Website** → enter your website URL → **Scan**.
+### Step 2 — Create the Conversion Action in Google Ads (Safe for Existing Campaigns)
+1. Open https://ads.google.com → **Goals** → **Conversions** → **Summary** → **+ New conversion action** → **Website**.
+2. Paste your temporary URL: `https://papayawhip-pheasant-312330.hostingersite.com` → click **Scan**.
 3. Scroll down and click **+ Add a conversion action manually**:
    - **Goal / Category:** `Submit lead form`
-   - **Conversion name:** `Website Booking / Enquiry`
-   - **Value:** `Use different values for each conversion` (default `50` EUR) — the website sends the exact EUR basket value automatically.
-   - **Count:** `One` (recommended for leads)
-   - **Enhanced conversions:** Turn **ON** (select **Google Tag Manager** or **Google tag**; in **Goals → Conversions → Settings → Enhanced conversions for web**, accept customer data terms).
+   - **Action optimization:** Select **Secondary action (observe only)** while on staging *(important if you already run live Google Ads on your current website — this stops staging test bookings from affecting live bidding; you will flip it to **Primary** at launch)*.
+   - **Conversion name:** `New Website - Booking / Enquiry`
+   - **Value:** `Use different values for each conversion` (default `50` EUR — the website sends the real EUR basket total automatically).
+   - **Count:** `One`
+   - **Enhanced conversions:** Turn **ON** (choose **Google Tag Manager**).
    - Click **Done** → **Save and continue**.
-4. Click the **Use Google Tag Manager** tab on the setup screen and copy:
+4. Open the **Use Google Tag Manager** tab and copy:
    - **Conversion ID** (digits only, e.g. `1234567890` — **without** `AW-`)
    - **Conversion Label** (e.g. `AbCdEfGhIjKlMnOpQr`)
-5. *(Optional)* Repeat once if you also want **WhatsApp Click** as a secondary conversion action (`Contact` category, Value = `1` EUR, Count = `One`), and copy its **Conversion Label**.
 
----
-
-## Step 3 — Import the Pre-Built Container into GTM
-1. Download [`docs/gtm_container_sea_college.json`](gtm_container_sea_college.json) from your GitHub repository (`sea-college-website/docs/gtm_container_sea_college.json`).
-2. In Google Tag Manager, go to **Admin** → **Import Container**:
-   - **Choose container file:** select `gtm_container_sea_college.json`
+### Step 3 — Import `gtm_container_sea_college.json` into GTM
+1. Download [`gtm_container_sea_college.json`](gtm_container_sea_college.json) (on GitHub: open `docs/gtm_container_sea_college.json` and click **Download raw file**).
+2. In Google Tag Manager → **Admin** → **Import Container**:
+   - **Choose container file:** `gtm_container_sea_college.json`
    - **Choose workspace:** **Existing** → `Default Workspace`
-   - **Choose an import option:** **Merge** → *Overwrite conflicting tags, triggers and variables*
+   - **Import option:** **Merge** → *Overwrite conflicting tags, triggers and variables*
    - Click **Add to workspace**.
-3. In the left menu, open **Variables** → scroll to **User-Defined Variables** and update the Constants:
-   - **`Const - GA4 Measurement ID`** → your GA4 Web Stream ID (`G-XXXXXXXXXX` from Google Analytics → Admin → Data Streams).
-   - **`Const - Google Ads Conversion ID`** → digits only from Step 2 (e.g. `1234567890`, **no `AW-` prefix**).
-   - **`Const - Google Ads Lead Label`** → the Lead Conversion Label from Step 2.
-   - *(Optional)* **`Const - Google Ads WhatsApp Label`** → if you created a WhatsApp conversion action, paste its label here and unpause the tag **`Google Ads - Conversion - WhatsApp Click (Optional)`** under **Tags**.
+3. Go to **Variables** (left menu) → **User-Defined Variables** and fill in:
+   - **`Const - Google Ads Conversion ID`** → digits only from Step 2 (no `AW-`).
+   - **`Const - Google Ads Lead Label`** → Conversion Label from Step 2.
+   - **`Const - GA4 Measurement ID`** → your GA4 Web Stream ID (`G-XXXXXXXXXX`), or leave as placeholder until GA4 is ready *(in GA4, set the Web Stream URL to `https://papayawhip-pheasant-312330.hostingersite.com` for now)*.
+   - *(Optional)* **`Const - Google Ads WhatsApp Label`** → if you also create a `Contact` conversion action for WhatsApp clicks, paste its label here and unpause **`Google Ads - Conversion - WhatsApp Click (Optional)`** under **Tags**.
+4. Click **Submit** → **Publish** in GTM.
+
+### Step 4 — Activate `GTM-XXXXXXX` on Staging
+- **Reply here with your `GTM-XXXXXXX` ID** — I will add it to [`config/site_config.php`](../config/site_config.php) and push it live to `https://papayawhip-pheasant-312330.hostingersite.com` automatically.
+- Then in GTM click **Preview**, open `https://papayawhip-pheasant-312330.hostingersite.com`, click **Accept all** on the cookie banner, and submit one test booking to see **`Google Ads - Conversion - Booking / Lead Form`** fire on `/thank-you.php` (status in Google Ads will change from *Unverified* to *No recent conversions* / *Recording conversions*).
 
 ---
 
-## Step 4 — Connect `GTM-XXXXXXX` to the Website
-Pick either option:
-- **Fastest:** Send me your **`GTM-XXXXXXX`** ID here in chat — I will add it to [`config/site_config.php`](../config/site_config.php) and push it to Hostinger staging automatically.
-- **Or on Hostinger yourself:** In hPanel → **Files → File Manager** → `public_html/config/`, copy `secrets.example.php` to `secrets.php` and set:
-  ```php
-  'GTM_ID' => 'GTM-XXXXXXX',
-  ```
-
----
-
-## Step 5 — Test with Tag Assistant & Publish
-1. In Google Tag Manager, click **Preview** (top right) and enter `https://papayawhip-pheasant-312330.hostingersite.com`.
-2. On the staging site, click **Accept all** on the cookie banner → verify `Conversion Linker - All Pages` and `Google Tag - GA4 Base` fire.
-3. Submit a test booking on `/prices.php` or `/contact.php` → on `/thank-you.php`, verify **`Google Ads - Conversion - Booking / Lead Form`** and **`GA4 Event - generate_lead`** fire with the EUR value and `event_id`.
-4. Back in Google Tag Manager, click **Submit** → **Publish**.
-
----
-
-## Included in `gtm_container_sea_college.json`
-| Type | Name | Trigger / Purpose |
-|---|---|---|
-| Tag (`gclidw`) | `Conversion Linker - All Pages` | Stores `gclid`/`gbraid`/`wbraid` first-party cookies + URL passthrough for Consent Mode v2 |
-| Tag (`googtag`) | `Google Tag - GA4 Base` | Loads GA4 (`{{Const - GA4 Measurement ID}}`) on all pages |
-| Tag (`awct`) | `Google Ads - Conversion - Booking / Lead Form` | Fires on `generate_lead` (`/thank-you.php`) with dynamic EUR `value`, `currency`, and deduplicated `orderId` (`event_id`) |
-| Tag (`awct`) | `Google Ads - Conversion - WhatsApp Click (Optional)` | Paused by default; fires on `whatsapp_click` once unpaused |
-| Tag (`sp`) | `Google Ads - Remarketing - All Pages` | Builds Google Ads remarketing audiences (respects Consent Mode v2) |
-| Tags (`gaawe` ×6) | `generate_lead`, `add_to_cart`, `whatsapp_click`, `contact`, `cta_click`, `sign_up` | Sends full booking funnel & ecommerce item data to GA4 |
+## Phase B — When You Connect the Final Domain Later (3-Minute Switch)
+You do **not** need to recreate GTM or Google Ads tags:
+1. **Website (`config/secrets.php` or `config/site_config.php`):** change `SITE_ENV` to `'production'` and `SITE_URL` to `'https://www.seacollegediveclub.com'`.
+2. **Google Ads:** under **Goals → Conversions → Summary**, edit `New Website - Booking / Enquiry` and switch **Action optimization** from *Secondary* to **Primary**; update Ad Final URLs to the new pages.
+3. **GA4:** under **Admin → Data Streams**, edit the Web Stream URL from the temporary Hostinger URL to `https://www.seacollegediveclub.com`.
