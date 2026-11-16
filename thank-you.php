@@ -32,7 +32,9 @@ if ($conv !== null):
 <script>
 window.SC_CONVERSION = <?= $json ?>;
 (function (c) {
-  // GTM / GA4: generate_lead + Enhanced Conversions user data (hashed) in the dataLayer.
+  // Enhanced Conversions: push pre-hashed SHA-256 email/phone to dataLayer for both GTM & gtag.
+  if (Object.keys(c.user_data).length) { gtag('set', 'user_data', c.user_data); }
+  // GTM / GA4: generate_lead + ecommerce items + user_data in the dataLayer.
   dataLayer.push({ ecommerce: null });
   dataLayer.push({
     event: 'generate_lead', form_id: c.form, event_id: c.event_id,
@@ -41,7 +43,6 @@ window.SC_CONVERSION = <?= $json ?>;
   });
 <?php if (GTM_ID === ''): ?>
   // No GTM container: send directly with gtag (Consent Mode decides what is stored).
-  if (Object.keys(c.user_data).length) { gtag('set', 'user_data', c.user_data); }
   gtag('event', 'generate_lead', { value: c.value, currency: c.currency, form_id: c.form });
 <?php if (GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== ''): ?>
   gtag('event', 'conversion', { send_to: <?= json_encode(GOOGLE_ADS_ID . '/' . GOOGLE_ADS_LEAD_LABEL, JSON_HEX_TAG) ?>, value: c.value, currency: c.currency, transaction_id: c.event_id });
