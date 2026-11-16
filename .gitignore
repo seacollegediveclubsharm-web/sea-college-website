@@ -1,0 +1,7 @@
+storage/*
+!storage/.htaccess
+!storage/.gitkeep
+.env
+*.log
+.DS_Store
+config/secrets.php

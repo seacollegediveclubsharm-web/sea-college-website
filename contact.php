@@ -1,0 +1,51 @@
+<?php
+/** Contact & booking request. */
+declare(strict_types=1);
+
+require __DIR__ . '/includes/bootstrap.php';
+require ROOT_DIR . '/includes/components.php';
+
+$page['id'] = 'contact';
+$page['title'] = t('meta_contact_title');
+$page['description'] = t('meta_contact_desc');
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_contact'), '/contact.php']];
+$page['schema'][] = ['@type' => 'ContactPage', 'name' => t('contact_title'), 'about' => ['@id' => SITE_URL . '/#organization']];
+$sc_map_src = 'https://www.google.com/maps?q=' . rawurlencode(MAPS_EMBED_QUERY) . '&output=embed';
+
+require ROOT_DIR . '/includes/header.php';
+?>
+<section class="page-hero">
+  <div class="container">
+    <h1><?= te('contact_title') ?></h1>
+    <p><?= te('contact_sub') ?></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-layout">
+    <div>
+      <?php $form_id = 'contact'; $form_interest_default = (string) ($_GET['interest'] ?? ''); include ROOT_DIR . '/includes/lead_form.php'; ?>
+    </div>
+    <aside class="card contact-card">
+      <h2><?= te('contact_details_title') ?></h2>
+      <p><a class="btn btn--wa btn--block" href="<?= e(whatsapp_link('', 'contact')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="contact"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a></p>
+      <dl class="nap">
+        <dt><?= te('phone') ?></dt>
+        <dd><a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></dd>
+        <dt><?= te('email') ?></dt>
+        <dd><a href="mailto:<?= e(BUSINESS['email']) ?>" data-track="email_click"><?= e(BUSINESS['email']) ?></a></dd>
+        <dt><?= te('address') ?></dt>
+        <dd><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></dd>
+        <dt><?= te('hours') ?></dt>
+        <dd><bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></dd>
+      </dl>
+      <h3><?= te('map_title') ?></h3>
+      <div class="map" data-map-src="<?= e($sc_map_src) ?>" data-map-title="<?= e(SITE_NAME) ?> map">
+        <p><?= te('map_consent') ?></p>
+        <button type="button" class="btn btn--ghost btn--sm" data-map-load><?= te('map_load') ?></button>
+      </div>
+      <p><a href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener"><?= te('open_maps') ?> ↗</a></p>
+    </aside>
+  </div>
+</section>
+<?php require ROOT_DIR . '/includes/footer.php';
