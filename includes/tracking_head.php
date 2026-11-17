@@ -12,7 +12,7 @@ $sc_consent = consent_state();
 $sc_granted = $sc_consent === 'all';
 
 $sc_ads_direct = (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '');
-$sc_ga4_direct = (GTM_ID === '' && GA4_ID !== '');
+$sc_ga4_direct = (!GA4_VIA_GTM && GA4_ID !== '');
 
 $sc_client = [
     'lang'        => LANG,
@@ -21,6 +21,7 @@ $sc_client = [
     'consentCookie' => CONSENT_COOKIE,
     'consentDays' => CONSENT_COOKIE_DAYS,
     'ga4'         => GA4_ID,
+    'ga4Direct'   => $sc_ga4_direct,
     'adsId'       => GOOGLE_ADS_ID,
     'adsDirect'   => $sc_ads_direct,
     'adsLeadLabel'=> GOOGLE_ADS_LEAD_LABEL,

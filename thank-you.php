@@ -41,9 +41,9 @@ window.SC_CONVERSION = <?= $json ?>;
     value: c.value, currency: c.currency, user_data: c.user_data,
     ecommerce: { currency: c.currency, value: c.value, items: c.items }
   });
-<?php if (GTM_ID === ''): ?>
-  // No GTM container: send GA4 event directly with gtag.
-  gtag('event', 'generate_lead', { value: c.value, currency: c.currency, form_id: c.form });
+<?php if (!GA4_VIA_GTM && GA4_ID !== ''): ?>
+  // Direct GA4 generate_lead event (set GA4_VIA_GTM=1 if firing via GTM tag instead).
+  gtag('event', 'generate_lead', { value: c.value, currency: c.currency, form_id: c.form, transaction_id: c.event_id, items: c.items });
 <?php endif; ?>
 <?php if (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== ''): ?>
   // Direct Google Ads conversion (set GOOGLE_ADS_VIA_GTM=1 if firing via GTM tag instead).

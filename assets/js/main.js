@@ -14,7 +14,15 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
   };
   function track(event, params) {
-    var p = params || {};
+    var p = Object.assign({}, params || {});
+    if (SC.ga4Direct && SC.ga4 && typeof window.gtag === 'function') {
+      var gp = Object.assign({ send_to: SC.ga4 }, p);
+      if (gp.ecommerce && typeof gp.ecommerce === 'object') {
+        Object.assign(gp, gp.ecommerce);
+        delete gp.ecommerce;
+      }
+      window.gtag('event', event, gp);
+    }
     p.event = event;
     dl.push(p);
   }
