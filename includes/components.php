@@ -2,6 +2,8 @@
 /** Small render helpers shared by pages (cards, price rows, FAQ, reviews). */
 declare(strict_types=1);
 
+require_once __DIR__ . '/google_reviews.php';
+
 function price_html(?float $eur, string $unit = ''): string
 {
     if ($eur === null) {

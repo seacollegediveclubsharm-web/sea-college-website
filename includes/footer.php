@@ -13,9 +13,10 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
         <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
       </a>
       <p><?= te('footer_about') ?></p>
+      <?php require_once ROOT_DIR . '/includes/google_reviews.php'; $sc_footer_gbp = gbp_reviews_data(); ?>
       <p class="badge-row">
         <a class="chip chip--light" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🏅 <?= te('padi_badge') ?></a>
-        <a class="chip chip--light" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">⭐ <?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format(BUSINESS['review_count'])]) ?></a>
+        <a class="chip chip--light" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">⭐ <?= te('rating_badge', ['rating' => $sc_footer_gbp['rating'], 'count' => number_format((int) $sc_footer_gbp['review_count'])]) ?></a>
       </p>
     </div>
     <div class="footer-col">

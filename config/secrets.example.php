@@ -18,6 +18,8 @@ return [
     'META_CAPI_TEST_CODE' => '',
     'TIKTOK_PIXEL_ID' => '',
     'LINKEDIN_PARTNER_ID' => '',
+    'GOOGLE_PLACES_API_KEY' => '',
+    'GOOGLE_PLACE_ID' => 'ChIJ75cBQp5LUxQRMapTYQ593g0',
     'CRM_WEBHOOK_URL' => '',
     'LEAD_NOTIFY_EMAIL' => '',
     'SMTP_USER' => '',

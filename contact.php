@@ -40,11 +40,11 @@ require ROOT_DIR . '/includes/header.php';
         <dd><bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></dd>
       </dl>
       <h3><?= te('map_title') ?></h3>
-      <div class="map" data-map-src="<?= e($sc_map_src) ?>" data-map-title="<?= e(SITE_NAME) ?> map">
-        <p><?= te('map_consent') ?></p>
-        <button type="button" class="btn btn--ghost btn--sm" data-map-load><?= te('map_load') ?></button>
-      </div>
-      <p><a href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener"><?= te('open_maps') ?> ↗</a></p>
+      <?= gbp_map_embed() ?>
+      <p class="badge-row" style="margin-top:.75rem">
+        <a class="btn btn--ghost btn--sm" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
+        <a class="btn btn--ghost btn--sm" href="<?= e(GOOGLE_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">★ <?= te('write_review') ?> ↗</a>
+      </p>
     </aside>
   </div>
 </section>

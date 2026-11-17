@@ -51,8 +51,8 @@ define('BUSINESS', [
     'city'         => 'Sharm El Sheikh',
     'region'       => 'South Sinai',
     'country'      => 'EG',
-    'lat'          => null, // TODO owner: exact GBP pin latitude
-    'lng'          => null, // TODO owner: exact GBP pin longitude
+    'lat'          => 27.9805263, // Verified GBP pin latitude
+    'lng'          => 34.4239091, // Verified GBP pin longitude
     'phone'        => '+201000344544',
     'phone_display'=> '+20 100 034 4544',
     'phone_alt'    => ['+201114567886', '+201006145500'],
@@ -68,7 +68,11 @@ define('BUSINESS', [
 
 define('MAPS_URL', 'https://maps.app.goo.gl/JweBzniP2hS1VpgK7');
 define('MAPS_EMBED_QUERY', 'Sea College Dive Club, Sharm El Sheikh');
-define('GOOGLE_REVIEWS_URL', 'https://www.google.com/search?q=sea+college+dive+club');
+define('GOOGLE_PLACE_ID', sc_env('GOOGLE_PLACE_ID', 'ChIJ75cBQp5LUxQRMapTYQ593g0')); // GBP Place ID (0x14534b9e420197ef:0xdde7d0c61cd3a32)
+define('GOOGLE_PLACES_API_KEY', sc_env('GOOGLE_PLACES_API_KEY', '')); // secret: set in config/secrets.php for live auto-sync
+define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache
+define('GOOGLE_REVIEWS_URL', 'https://search.google.com/local/reviews?placeid=' . GOOGLE_PLACE_ID);
+define('GOOGLE_WRITE_REVIEW_URL', 'https://search.google.com/local/writereview?placeid=' . GOOGLE_PLACE_ID);
 define('PADI_PROFILE_URL', 'https://www.padi.com/dive-center/egypt/sea-college-dive-club/');
 
 /* ---------------------------------------------------------------

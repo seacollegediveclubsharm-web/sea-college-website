@@ -41,10 +41,11 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
+<?php $gbp = gbp_reviews_data(); ?>
 <section class="kpis" aria-label="Key facts">
   <div class="container kpis__grid">
-    <div class="kpi"><strong><bdi dir="ltr"><?= e((string) BUSINESS['rating']) ?>★</bdi></strong><span><?= te('kpi_rating') ?></span></div>
-    <div class="kpi"><strong><bdi dir="ltr"><?= e(number_format((int) BUSINESS['review_count'])) ?></bdi></strong><span><?= te('kpi_reviews') ?></span></div>
+    <div class="kpi"><strong><bdi dir="ltr"><?= e((string) $gbp['rating']) ?>★</bdi></strong><span><?= te('kpi_rating') ?></span></div>
+    <div class="kpi"><strong><bdi dir="ltr"><?= e(number_format((int) $gbp['review_count'])) ?></bdi></strong><span><?= te('kpi_reviews') ?></span></div>
     <div class="kpi"><strong><?= te('kpi_padi') ?></strong><span><?= te('kpi_padi_sub') ?></span></div>
     <div class="kpi"><strong><?= price_html(30) ?></strong><span><?= te('kpi_from') ?></span></div>
   </div>
@@ -86,19 +87,27 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<section class="section section--dark">
+<section class="section section--dark" id="google-reviews">
   <div class="container">
-    <?= section_head('reviews_title', 'reviews_sub') ?>
+    <header class="section__head">
+      <h2><?= te('reviews_title', ['rating' => (string) $gbp['rating'], 'count' => number_format((int) $gbp['review_count'])]) ?></h2>
+      <p><?= te('reviews_sub') ?></p>
+    </header>
     <div class="reviews">
-      <?php for ($i = 1; $i <= 4; $i++): ?>
+      <?php foreach (array_slice($gbp['reviews'], 0, 4) as $rev):
+          $stars = max(1, min(5, (int) ($rev['rating'] ?? 5)));
+      ?>
         <figure class="review card">
-          <div class="review__stars" aria-label="5/5">★★★★★</div>
-          <blockquote><p><?= te("rev_{$i}_text") ?></p></blockquote>
-          <figcaption><?= te("rev_{$i}_name") ?> · Google</figcaption>
+          <div class="review__stars" aria-label="<?= e($stars . '/5') ?>"><?= str_repeat('★', $stars) ?></div>
+          <blockquote><p dir="auto"><?= e((string) $rev['text']) ?></p></blockquote>
+          <figcaption><bdi dir="auto"><?= e((string) $rev['author']) ?></bdi> · <?= e((string) ($rev['time'] ?? 'Google')) ?></figcaption>
         </figure>
-      <?php endfor; ?>
+      <?php endforeach; ?>
     </div>
-    <p class="center"><a class="btn btn--ghost" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener"><?= te('see_all_reviews') ?></a></p>
+    <p class="center hero__ctas hero__ctas--center">
+      <a class="btn btn--ghost" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= te('see_all_reviews') ?> ↗</a>
+      <a class="btn btn--primary" href="<?= e(GOOGLE_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">★ <?= te('write_review') ?> ↗</a>
+    </p>
   </div>
 </section>
 
@@ -106,6 +115,23 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container container--narrow">
     <?= section_head('faq_title') ?>
     <?= faq_list([1, 2, 3, 4, 5, 6]) ?>
+  </div>
+</section>
+
+<section class="section section--tint" id="location-map">
+  <div class="container split">
+    <div>
+      <h2><?= te('map_title') ?> — <?= e(BUSINESS['city']) ?></h2>
+      <p><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></p>
+      <p><strong><?= te('hours') ?>:</strong> <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></p>
+      <p class="hero__ctas">
+        <a class="btn btn--primary" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
+        <a class="btn btn--wa" href="<?= e(whatsapp_link('', 'home_map')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="home_map"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
+      </p>
+    </div>
+    <div>
+      <?= gbp_map_embed() ?>
+    </div>
   </div>
 </section>
 

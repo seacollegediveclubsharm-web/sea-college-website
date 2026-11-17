@@ -38,6 +38,23 @@ $sc_business = [
 if (BUSINESS['lat'] !== null && BUSINESS['lng'] !== null) {
     $sc_business['geo'] = ['@type' => 'GeoCoordinates', 'latitude' => BUSINESS['lat'], 'longitude' => BUSINESS['lng']];
 }
+require_once __DIR__ . '/google_reviews.php';
+$sc_gbp = gbp_reviews_data();
+$sc_business['aggregateRating'] = [
+    '@type'       => 'AggregateRating',
+    'ratingValue' => (string) $sc_gbp['rating'],
+    'bestRating'  => '5',
+    'worstRating' => '1',
+    'reviewCount' => (string) $sc_gbp['review_count'],
+];
+if (!empty($sc_gbp['reviews'])) {
+    $sc_business['review'] = array_map(static fn(array $r): array => [
+        '@type'        => 'Review',
+        'author'       => ['@type' => 'Person', 'name' => (string) $r['author']],
+        'reviewRating' => ['@type' => 'Rating', 'ratingValue' => (string) ($r['rating'] ?? 5), 'bestRating' => '5'],
+        'reviewBody'   => (string) $r['text'],
+    ], array_slice($sc_gbp['reviews'], 0, 5));
+}
 
 $sc_graph = [
     $sc_business,
