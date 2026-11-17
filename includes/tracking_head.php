@@ -74,3 +74,20 @@ dataLayer.push({event: 'sc_init', page_type: SC.page, site_language: SC.lang, co
 <?php if ($sc_ads_direct): ?>gtag('config', '<?= e(GOOGLE_ADS_ID) ?>', {allow_enhanced_conversions: true});<?php endif; ?>
 </script>
 <?php endif; ?>
+<?php if (ENABLE_META_PIXEL && META_PIXEL_ID !== ''): ?>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('consent', '<?= $sc_granted ? 'grant' : 'revoke' ?>');
+fbq('init', '<?= e(META_PIXEL_ID) ?>');
+fbq('track', 'PageView');
+</script>
+<!-- End Meta Pixel Code -->
+<?php endif; ?>
