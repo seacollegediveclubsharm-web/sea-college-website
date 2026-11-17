@@ -1,12 +1,18 @@
 # Google Ads + GTM Setup on Temporary Staging Domain (Ready for Final Domain Switch)
 
-This setup connects your **Google Ads** and **Google Tag Manager (GTM)** to the **temporary staging site** (`https://papayawhip-pheasant-312330.hostingersite.com`) right now — **without touching your current live website** — and switches cleanly to your final domain on launch day without recreating any tags or IDs.
+This setup connects your **Google Ads** (`365-126-5545`) and **Google Tag Manager (`GTM-PBVQ56XC`)** to the **temporary staging site** (`https://papayawhip-pheasant-312330.hostingersite.com`) right now — **without touching your current live website** — and switches cleanly to your final domain (`seacollegediveclub.com`) on launch day without recreating any tags or IDs.
 
-Pre-built GTM import file: [`docs/gtm_container_sea_college.json`](gtm_container_sea_college.json)
+## Current Active Connection (Live in `config/site_config.php`)
+- **GTM Container ID:** `GTM-PBVQ56XC`
+- **Google Ads Tag ID (`GOOGLE_ADS_ID`):** `AW-16728866067` (loaded directly with Consent Mode v2 + Enhanced Conversions)
+- **Booking / Lead Conversion (`GOOGLE_ADS_LEAD_LABEL`):** `LCPWCKD0vOIcEJP6-Kg-` (*Reservation Form Submitted*, fires once on `/thank-you.php` with EUR basket value + SHA-256 email/phone)
+- **WhatsApp Lead Conversion (`GOOGLE_ADS_WHATSAPP_LABEL`):** `rh4WCOXW4d8cEJP6-Kg-` (*WhatsApp Lead*, fires via beacon on every `wa.me` / booking-form WhatsApp click)
+- **Click-to-Call Conversion (`GOOGLE_ADS_CALL_LABEL`):** `8hA2CLrgqd4cEJP6-Kg-` (*Click to call*, fires via beacon on every `tel:` phone click)
+- **Duplicate Prevention (`GOOGLE_ADS_VIA_GTM`):** Currently `false` so Google Ads works immediately without importing GTM tags. If you later publish Google Ads conversion tags inside `GTM-PBVQ56XC` using [`docs/gtm_container_sea_college.json`](gtm_container_sea_college.json), set `GOOGLE_ADS_VIA_GTM = '1'` in `config/secrets.php` so conversions never fire twice.
 
 ---
 
-## Phase A — Setup Now on the Temporary Link
+## Reference: Optional GTM Container Import Workflow
 
 ### Step 1 — Create a New GTM Web Container
 1. Open https://tagmanager.google.com → **Create Account** (or **Create Container** inside your existing account):

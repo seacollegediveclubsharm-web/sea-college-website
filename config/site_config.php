@@ -92,8 +92,11 @@ define('WHATSAPP_NUMBER', sc_env('WHATSAPP_NUMBER', '201000344544')); // digits 
  * ------------------------------------------------------------- */
 define('GTM_ID', sc_env('GTM_ID', 'GTM-PBVQ56XC'));           // Google Tag / GTM container ID
 define('GA4_ID', sc_env('GA4_ID', ''));                       // e.g. G-XXXXXXXXXX (loaded directly only if GTM_ID empty)
-define('GOOGLE_ADS_ID', sc_env('GOOGLE_ADS_ID', ''));         // e.g. AW-XXXXXXXXX
-define('GOOGLE_ADS_LEAD_LABEL', sc_env('GOOGLE_ADS_LEAD_LABEL', '')); // conversion label for Lead
+define('GOOGLE_ADS_ID', sc_env('GOOGLE_ADS_ID', 'AW-16728866067')); // Google Ads account 365-126-5545
+define('GOOGLE_ADS_LEAD_LABEL', sc_env('GOOGLE_ADS_LEAD_LABEL', 'LCPWCKD0vOIcEJP6-Kg-')); // Reservation Form Submitted
+define('GOOGLE_ADS_WHATSAPP_LABEL', sc_env('GOOGLE_ADS_WHATSAPP_LABEL', 'rh4WCOXW4d8cEJP6-Kg-')); // WhatsApp Lead
+define('GOOGLE_ADS_CALL_LABEL', sc_env('GOOGLE_ADS_CALL_LABEL', '8hA2CLrgqd4cEJP6-Kg-')); // Click to call
+define('GOOGLE_ADS_VIA_GTM', sc_env('GOOGLE_ADS_VIA_GTM', '') === '1'); // set '1' only if firing Ads conversions inside GTM
 define('GSC_VERIFICATION', sc_env('GSC_VERIFICATION', ''));   // Search Console meta token
 
 /* ---------------------------------------------------------------

@@ -266,6 +266,13 @@
     if (kind === 'cta_click' || kind === 'outbound_link') { return; }
     // whatsapp / phone / email = contact intent
     track('contact', { method: kind.replace('_click', ''), placement: params.placement });
+    if (SC.adsDirect && SC.adsId && typeof window.gtag === 'function') {
+      if (kind === 'whatsapp_click' && SC.adsWhatsappLabel) {
+        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+      } else if (kind === 'phone_click' && SC.adsCallLabel) {
+        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsCallLabel, transport_type: 'beacon' });
+      }
+    }
     if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: kind }); }
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: kind }); }
   });

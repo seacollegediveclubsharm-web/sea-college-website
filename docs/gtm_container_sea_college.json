@@ -83,12 +83,12 @@
         "variableId": "2",
         "name": "Const - Google Ads Conversion ID",
         "type": "c",
-        "notes": "Digits ONLY from your AW-XXXXXXXXXX ID (do NOT include AW-). Example: 1234567890",
+        "notes": "Digits ONLY from AW-16728866067 (account 365-126-5545).",
         "parameter": [
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "0000000000"
+            "value": "16728866067"
           }
         ]
       },
@@ -98,12 +98,12 @@
         "variableId": "3",
         "name": "Const - Google Ads Lead Label",
         "type": "c",
-        "notes": "Conversion label from your Google Ads Booking/Lead conversion action.",
+        "notes": "Reservation Form Submitted (Primary SUBMIT_LEAD_FORM).",
         "parameter": [
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "REPLACE_WITH_LEAD_LABEL"
+            "value": "LCPWCKD0vOIcEJP6-Kg-"
           }
         ]
       },
@@ -113,12 +113,12 @@
         "variableId": "4",
         "name": "Const - Google Ads WhatsApp Label",
         "type": "c",
-        "notes": "Optional conversion label for WhatsApp click conversion action in Google Ads.",
+        "notes": "WhatsApp Lead (Primary CONTACT).",
         "parameter": [
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "REPLACE_WITH_WHATSAPP_LABEL"
+            "value": "rh4WCOXW4d8cEJP6-Kg-"
           }
         ]
       },

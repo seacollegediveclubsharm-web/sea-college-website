@@ -45,8 +45,8 @@ window.SC_CONVERSION = <?= $json ?>;
   // No GTM container: send GA4 event directly with gtag.
   gtag('event', 'generate_lead', { value: c.value, currency: c.currency, form_id: c.form });
 <?php endif; ?>
-<?php if (GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== ''): ?>
-  // Direct Google Ads conversion (leave GOOGLE_ADS_LEAD_LABEL empty if firing via GTM tag instead).
+<?php if (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== ''): ?>
+  // Direct Google Ads conversion (set GOOGLE_ADS_VIA_GTM=1 if firing via GTM tag instead).
   gtag('event', 'conversion', { send_to: <?= json_encode(GOOGLE_ADS_ID . '/' . GOOGLE_ADS_LEAD_LABEL, JSON_HEX_TAG) ?>, value: c.value, currency: c.currency, transaction_id: c.event_id });
 <?php endif; ?>
   // Meta "Lead" / TikTok "SubmitForm" are fired by consent.js after the pixels load (consent required).

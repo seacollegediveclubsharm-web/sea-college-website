@@ -416,11 +416,12 @@ function executeQueuedAction(type, campName, agName, targetVal, matchType) {
     const formatted = matchType === 'EXACT' ? '[' + targetVal + ']' : matchType === 'BROAD' ? targetVal : '"' + targetVal + '"';
     camp.createNegativeKeyword(formatted);
   } else if (type === 'PAUSE_KEYWORD') {
-    const kwIt = camp.keywords()
+    let sel = camp.keywords()
       .withCondition('ad_group.name = "' + agName.replace(/"/g, '\\"') + '"')
-      .withCondition('ad_group_criterion.keyword.text = "' + targetVal.replace(/"/g, '\\"') + '"')
-      .get();
-    if (!kwIt.hasNext()) throw new Error('Keyword not found: ' + targetVal);
+      .withCondition('ad_group_criterion.keyword.text = "' + targetVal.replace(/"/g, '\\"') + '"');
+    if (matchType) sel = sel.withCondition('ad_group_criterion.keyword.match_type = "' + matchType + '"');
+    const kwIt = sel.get();
+    if (!kwIt.hasNext()) throw new Error('Keyword not found: ' + targetVal + ' (' + matchType + ')');
     kwIt.next().pause();
   } else {
     throw new Error('Unsupported Action_Type: ' + type);

@@ -11,6 +11,9 @@ declare(strict_types=1);
 $sc_consent = consent_state();
 $sc_granted = $sc_consent === 'all';
 
+$sc_ads_direct = (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '');
+$sc_ga4_direct = (GTM_ID === '' && GA4_ID !== '');
+
 $sc_client = [
     'lang'        => LANG,
     'page'        => $page['id'] ?? '',
@@ -19,7 +22,10 @@ $sc_client = [
     'consentDays' => CONSENT_COOKIE_DAYS,
     'ga4'         => GA4_ID,
     'adsId'       => GOOGLE_ADS_ID,
+    'adsDirect'   => $sc_ads_direct,
     'adsLeadLabel'=> GOOGLE_ADS_LEAD_LABEL,
+    'adsWhatsappLabel' => GOOGLE_ADS_WHATSAPP_LABEL,
+    'adsCallLabel'=> GOOGLE_ADS_CALL_LABEL,
     'metaPixel'   => (ENABLE_META_PIXEL ? META_PIXEL_ID : ''),
     'tiktokPixel' => (ENABLE_TIKTOK_PIXEL ? TIKTOK_PIXEL_ID : ''),
     'linkedin'    => (ENABLE_LINKEDIN_TAG ? LINKEDIN_PARTNER_ID : ''),
@@ -59,12 +65,12 @@ dataLayer.push({event: 'sc_init', page_type: SC.page, site_language: SC.lang, co
 <?php if (GTM_ID !== ''): ?>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<?= e(GTM_ID) ?>');</script>
-<?php elseif (GA4_ID !== '' || GOOGLE_ADS_ID !== ''): ?>
-<!-- Google tag (gtag.js) — used only when no GTM container is configured -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e(GA4_ID !== '' ? GA4_ID : GOOGLE_ADS_ID) ?>"></script>
+<?php endif; ?>
+<?php if ($sc_ads_direct || $sc_ga4_direct): ?>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($sc_ads_direct ? GOOGLE_ADS_ID : GA4_ID) ?>"></script>
 <script>
-gtag('js', new Date());
-<?php if (GA4_ID !== ''): ?>gtag('config', '<?= e(GA4_ID) ?>', {language: SC.lang});<?php endif; ?>
-<?php if (GOOGLE_ADS_ID !== ''): ?>gtag('config', '<?= e(GOOGLE_ADS_ID) ?>', {allow_enhanced_conversions: true});<?php endif; ?>
+<?php if ($sc_ga4_direct): ?>gtag('config', '<?= e(GA4_ID) ?>', {language: SC.lang});<?php endif; ?>
+<?php if ($sc_ads_direct): ?>gtag('config', '<?= e(GOOGLE_ADS_ID) ?>', {allow_enhanced_conversions: true});<?php endif; ?>
 </script>
 <?php endif; ?>
