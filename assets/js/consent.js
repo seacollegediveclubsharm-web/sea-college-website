@@ -23,7 +23,11 @@
     /* eslint-disable */
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
     /* eslint-enable */
-    window.fbq('init', id);
+    var ud = (window.SC_CONVERSION && window.SC_CONVERSION.user_data) || {};
+    var am = {};
+    if (ud.sha256_email_address) { am.em = ud.sha256_email_address; }
+    if (ud.sha256_phone_number) { am.ph = ud.sha256_phone_number; }
+    if (am.em || am.ph) { window.fbq('init', id, am); } else { window.fbq('init', id); }
     window.fbq('track', 'PageView');
   }
 

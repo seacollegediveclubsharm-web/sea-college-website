@@ -122,9 +122,11 @@
         cart.push({ id: id, name: add.getAttribute('data-name'), price: isNaN(p) ? null : p, qty: 1 });
       }
       saveCart();
-      track('add_to_cart', { ecommerce: { currency: 'EUR', items: [{ item_id: id, item_name: add.getAttribute('data-name'), price: parseFloat(add.getAttribute('data-price')) || 0, quantity: 1 }] } });
-      if (granted() && window.fbq) { window.fbq('track', 'AddToCart', { content_ids: [id], currency: 'EUR' }); }
-      if (granted() && window.ttq) { window.ttq.track('AddToCart', { content_id: id, currency: 'EUR' }); }
+      var itemPrice = parseFloat(add.getAttribute('data-price')) || 0;
+      var itemName = add.getAttribute('data-name') || '';
+      track('add_to_cart', { ecommerce: { currency: 'EUR', items: [{ item_id: id, item_name: itemName, price: itemPrice, quantity: 1 }] } });
+      if (granted() && window.fbq) { window.fbq('track', 'AddToCart', { content_ids: [id], content_name: itemName, content_type: 'product', value: itemPrice, currency: 'EUR' }); }
+      if (granted() && window.ttq) { window.ttq.track('AddToCart', { content_id: id, value: itemPrice, currency: 'EUR' }); }
       return;
     }
     var ctrl = e.target.closest('.cart__item-ctrl');
