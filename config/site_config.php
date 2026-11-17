@@ -98,7 +98,7 @@ define('GOOGLE_ADS_LEAD_LABEL', sc_env('GOOGLE_ADS_LEAD_LABEL', 'LCPWCKD0vOIcEJP
 define('GOOGLE_ADS_WHATSAPP_LABEL', sc_env('GOOGLE_ADS_WHATSAPP_LABEL', 'rh4WCOXW4d8cEJP6-Kg-')); // WhatsApp Lead
 define('GOOGLE_ADS_CALL_LABEL', sc_env('GOOGLE_ADS_CALL_LABEL', '8hA2CLrgqd4cEJP6-Kg-')); // Click to call
 define('GOOGLE_ADS_VIA_GTM', sc_env('GOOGLE_ADS_VIA_GTM', '') === '1'); // set '1' only if firing Ads conversions inside GTM
-define('GSC_VERIFICATION', sc_env('GSC_VERIFICATION', ''));   // Search Console meta token
+define('GSC_VERIFICATION', sc_env('GSC_VERIFICATION', 'MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k')); // Search Console meta token
 
 /* ---------------------------------------------------------------
  * Paid social pixels

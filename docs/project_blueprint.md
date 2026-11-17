@@ -109,7 +109,7 @@ All of these live **only** in `/config/site_config.php` (or environment variable
 | 1 | Google Tag Manager container | `GTM_ID` | ✅ Live (`GTM-PBVQ56XC`) |
 | 2 | GA4 measurement ID | `GA4_ID` | ✅ Live (`G-99528RZN9Z`) |
 | 3 | Google Ads conversion ID + labels | `GOOGLE_ADS_ID`, `GOOGLE_ADS_LEAD_LABEL`, `GOOGLE_ADS_WHATSAPP_LABEL`, `GOOGLE_ADS_CALL_LABEL` | ✅ Live (`AW-16728866067` + Lead/WA/Call labels) |
-| 4 | Search Console verification token | `GSC_VERIFICATION` | ❌ Missing |
+| 4 | Search Console verification token | `GSC_VERIFICATION` | ✅ Live (`MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k`) |
 | 5 | Meta Pixel ID | `META_PIXEL_ID` | ✅ Live (`2622478794929488`, consent-gated) |
 | 6 | Meta CAPI access token (+ test code) | `META_CAPI_TOKEN`, `META_CAPI_TEST_CODE` | ❌ Missing — set as env var, never commit |
 | 7 | TikTok Pixel ID | `TIKTOK_PIXEL_ID` | ❌ Missing |
