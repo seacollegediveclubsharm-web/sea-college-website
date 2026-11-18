@@ -12,7 +12,14 @@ declare(strict_types=1);
 
 /* Optional, git-ignored: config/secrets.php returning ['META_CAPI_TOKEN' => '...', ...].
  * Upload it with hPanel File Manager; see config/secrets.example.php. */
-$GLOBALS['SC_SECRETS'] = is_file(__DIR__ . '/secrets.php') ? (array) (require __DIR__ . '/secrets.php') : [];
+$GLOBALS['SC_SECRETS'] = [];
+if (is_file(__DIR__ . '/secrets.php')) {
+    try {
+        $GLOBALS['SC_SECRETS'] = (array) (require __DIR__ . '/secrets.php');
+    } catch (\Throwable $e) {
+        error_log('Sea College secrets.php error: ' . $e->getMessage());
+    }
+}
 
 if (!function_exists('sc_env')) {
     function sc_env(string $key, string $default = ''): string
