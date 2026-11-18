@@ -114,7 +114,7 @@ define('GSC_VERIFICATION', sc_env('GSC_VERIFICATION', 'MUaOhb7KY5wwxWBDLVgRYIGRx
 /* ---------------------------------------------------------------
  * Paid social pixels
  * ------------------------------------------------------------- */
-define('META_PIXEL_ID', sc_env('META_PIXEL_ID', '2622478794929488'));
+define('META_PIXEL_ID', sc_env('META_PIXEL_ID', '2980406819004765'));
 define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env only
 define('META_CAPI_TEST_CODE', sc_env('META_CAPI_TEST_CODE', ''));
 define('META_GRAPH_VERSION', 'v19.0');
