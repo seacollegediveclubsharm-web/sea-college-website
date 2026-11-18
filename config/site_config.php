@@ -134,7 +134,7 @@ define('SMTP_HOST', sc_env('SMTP_HOST', 'smtp.hostinger.com'));
 define('SMTP_PORT', (int) sc_env('SMTP_PORT', '465'));
 define('SMTP_USER', sc_env('SMTP_USER', ''));
 define('SMTP_PASS', sc_env('SMTP_PASS', ''));                // secret: env only
-define('CRM_WEBHOOK_URL', sc_env('CRM_WEBHOOK_URL', ''));     // Zapier / Make / Sheets / CRM endpoint
+define('CRM_WEBHOOK_URL', sc_env('CRM_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec')); // Leads & OCT CRM Sheet webhook
 define('LEADS_STORAGE_DIR', dirname(__DIR__) . '/storage');
 define('RATE_LIMIT_SECONDS', 20);                             // min seconds between submissions per session
 

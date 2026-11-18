@@ -184,6 +184,8 @@ function post_json(string $endpoint, array $payload, int $timeout = 5): bool
             CURLOPT_POSTFIELDS => $json,
             CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 3,
             CURLOPT_TIMEOUT => $timeout,
         ]);
         $res = curl_exec($ch);

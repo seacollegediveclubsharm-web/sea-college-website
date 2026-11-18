@@ -115,7 +115,7 @@ All of these live **only** in `/config/site_config.php` (or environment variable
 | 7 | TikTok Pixel ID | `TIKTOK_PIXEL_ID` | ❌ Missing |
 | 8 | LinkedIn Insight partner ID | `LINKEDIN_PARTNER_ID` | ❌ Missing (optional — low B2C fit) |
 | 9 | Lead notification email + SMTP | `LEAD_NOTIFY_EMAIL`, `SMTP_*` | ⚠️ Defaults to info@…; Hostinger mailbox to confirm |
-| 10 | CRM / Sheets / Zapier webhook | `CRM_WEBHOOK_URL` | ❌ Missing |
+| 10 | CRM / Sheets / Zapier webhook | `CRM_WEBHOOK_URL` | ✅ Live (Google Sheets CRM & OCT Hub) |
 | 11 | Confirmed WhatsApp Business number | `WHATSAPP_NUMBER` | ⚠️ Using +201000344544 (PADI/GBP) — confirm |
 | 12 | Branch addresses (Jaz Dreams / Fayrouz) | `LOCATIONS` | ⚠️ Not published until confirmed |
 | 13 | Season price validity (sheet says 01-01-2026 → 30-06-2026) | `PRICE_VALIDITY_NOTE` | ⚠️ Expired — owner must confirm current prices |
