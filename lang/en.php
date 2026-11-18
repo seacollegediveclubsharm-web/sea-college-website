@@ -235,6 +235,16 @@ return [
     'thanks_title' => 'Thank you — request received!',
     'thanks_text' => 'Our team will confirm availability and your final price shortly. For an instant answer, message us on WhatsApp.',
     'thanks_back' => 'Back to home',
+    'checkin_title' => 'Optional: Fast-track your dive center check-in',
+    'checkin_sub' => 'Save 15 minutes on arrival by sharing your certification & rental gear sizes now.',
+    'checkin_agency' => 'Certification agency',
+    'checkin_cert' => 'Diver / PADI card number',
+    'checkin_wetsuit' => 'Wetsuit size',
+    'checkin_fin' => 'Fin size (EU)',
+    'checkin_bcd' => 'BCD size',
+    'checkin_waiver' => 'I confirm I am medically fit to dive (PADI Diver Medical guidelines) and will sign the standard liability release at check-in.',
+    'checkin_submit' => 'Save check-in details',
+    'checkin_ok' => 'Check-in details saved! Your gear will be ready when you arrive.',
 
     // ---------- 404 ----------
     '404_title' => 'This reef is empty',
