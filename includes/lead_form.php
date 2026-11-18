@@ -43,10 +43,15 @@ $today = date('Y-m-d');
       <select id="<?= e($form_id) ?>-interest" name="interest" data-interest-select>
         <option value=""><?= te('select_placeholder') ?></option>
         <option value="<?= te('opt_general') ?>"><?= te('opt_general') ?></option>
+        <?php $sc_sel_interest = (string) ($old['interest'] ?? ($form_interest_default ?? '')); ?>
         <?php foreach ($catalog as $cat): ?>
           <optgroup label="<?= e(loc($cat['label'])) ?>">
-            <?php foreach ($cat['groups'] as $g): foreach ($g['items'] as $it): if (str_starts_with($it['id'], 'eq-') || str_starts_with($it['id'], 'fee-')) { continue; } ?>
-              <option value="<?= e($it['name']) ?>"<?= (($old['interest'] ?? ($form_interest_default ?? '')) === $it['name']) ? ' selected' : '' ?>><?= e($it['name'] . ' — ' . money($it['price'])) ?></option>
+            <?php foreach ($cat['groups'] as $g): foreach ($g['items'] as $it):
+                $isCompact = str_starts_with($it['id'], 'eq-') || str_starts_with($it['id'], 'fee-');
+                if ($isCompact && $sc_sel_interest !== $it['name']) { continue; }
+                $optLabel = (function_exists('item_name') ? item_name($it) : $it['name']) . ' — ' . money($it['price']);
+            ?>
+              <option value="<?= e($it['name']) ?>"<?= ($sc_sel_interest === $it['name']) ? ' selected' : '' ?>><?= e($optLabel) ?></option>
             <?php endforeach; endforeach; ?>
           </optgroup>
         <?php endforeach; ?>

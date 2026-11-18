@@ -47,7 +47,10 @@ $sc_og_locale = ['en' => 'en_GB', 'ar' => 'ar_EG'];
 
 <link rel="icon" href="<?= e(asset('images/favicon.png')) ?>" type="image/png">
 <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">
-<link rel="preload" as="image" href="<?= e(asset('images/hero.jpg')) ?>" fetchpriority="high">
+<?php $sc_preload_img = $page['preload_image'] ?? (($page['id'] ?? '') === 'home' ? asset('images/hero.jpg') : ''); ?>
+<?php if ($sc_preload_img !== ''): ?>
+<link rel="preload" as="image" href="<?= e($sc_preload_img) ?>" fetchpriority="high">
+<?php endif; ?>
 <link rel="stylesheet" href="<?= e(asset('css/main.css')) ?>">
 
 <?php require ROOT_DIR . '/includes/tracking_head.php'; ?>

@@ -12,14 +12,14 @@ $page['description'] = t('meta_home_desc');
 $page['schema'] = [schema_faq([1, 2, 3, 4, 5, 6])];
 
 $explore = [
-    ['intro', page_link('/services.php', 'dive-packages'), seo_img('discover-scuba-diving-intro-dive-red-sea')],
-    ['courses', page_link('/services.php', 'padi-courses'), seo_img('padi-diving-course-students-underwater')],
-    ['dives', page_link('/services.php', 'dive-packages'), seo_img('group-boat-dive-red-sea-divers')],
-    ['bundles', page_link('/services.php', 'offers'), 'images/courses/05_padi_open_water_diver.jpg'],
-    ['snorkel', page_link('/services.php', 'snorkeling'), seo_img('snorkeling-trip-family-red-sea')],
-    ['private', page_link('/services.php', 'snorkeling'), seo_img('private-yacht-boat-trip')],
-    ['wreck', page_link('/services.php', 'dive-packages'), seo_img('ss-thistlegorm-wreck-dive')],
-    ['kids', page_link('/services.php', 'padi-courses'), 'images/courses/01_padi_bubblemaker.jpg'],
+    ['intro', page_link('/tours/discover-scuba-diving-2-dives-boat-sharm'), seo_img('discover-scuba-diving-intro-dive-red-sea')],
+    ['courses', page_link('/diving-courses-sharm-el-sheikh'), seo_img('padi-diving-course-students-underwater')],
+    ['dives', page_link('/diving-trips-sharm-el-sheikh'), seo_img('group-boat-dive-red-sea-divers')],
+    ['bundles', page_link('/padi-course-bundles-sharm-el-sheikh'), 'images/courses/05_padi_open_water_diver.jpg'],
+    ['snorkel', page_link('/tours/white-island-ras-mohammed-boat-snorkeling'), seo_img('snorkeling-trip-family-red-sea')],
+    ['private', page_link('/snorkeling-and-boats-sharm-el-sheikh', 'private-boat-charter'), seo_img('private-yacht-boat-trip')],
+    ['wreck', page_link('/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh'), seo_img('ss-thistlegorm-wreck-dive')],
+    ['kids', page_link('/courses/padi-bubblemaker-sharm-el-sheikh'), 'images/courses/01_padi_bubblemaker.jpg'],
 ];
 $popular = catalog_pick($catalog, ['dsd-quick-reef', 'dsd-2-boat', 'dive-2', 'owd', 'aowd', 'bubblemaker', 'snork-ras-adult', 'speed-2h', 'private-6-10', 'bundle-mega', 'sup-thistlegorm']);
 $popular = array_slice($popular, 0, 8);

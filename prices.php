@@ -19,6 +19,7 @@ require ROOT_DIR . '/includes/header.php';
 ?>
 <section class="page-hero">
   <div class="container">
+    <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
     <h1><?= te('prices_title') ?></h1>
     <p><?= te('prices_sub') ?></p>
     <ol class="stepper" aria-label="Booking steps">
@@ -53,8 +54,8 @@ require ROOT_DIR . '/includes/header.php';
                   <?php foreach ($g['items'] as $it): ?>
                     <tr>
                       <th scope="row">
-                        <span class="ptable__name" dir="auto"><?= e($it['name']) ?><?php if (!empty($it['popular'])): ?> <span class="badge"><?= te('popular') ?></span><?php endif; ?></span>
-                        <?php if (!empty($it['desc'])): ?><small class="ptable__desc" dir="auto"><?= e($it['desc']) ?></small><?php endif; ?>
+                        <span class="ptable__name" dir="auto"><a class="ptable__link" href="<?= e(item_url($it)) ?>"><?= e(item_name($it)) ?></a><?php if (!empty($it['popular'])): ?> <span class="badge"><?= te('popular') ?></span><?php endif; ?></span>
+                        <?php $itDesc = item_desc($it); if ($itDesc !== ''): ?><small class="ptable__desc" dir="auto"><?= e($itDesc) ?></small><?php endif; ?>
                       </th>
                       <td class="ptable__dur"><?= !empty($it['duration']) ? '⏱ ' . e($it['duration']) : '' ?></td>
                       <td class="ptable__price">
@@ -62,7 +63,7 @@ require ROOT_DIR . '/includes/header.php';
                         <?php if (isset($it['child_price'])): ?><small><?= te('child') ?> <bdi dir="ltr"><?= e(money($it['child_price'])) ?></bdi></small><?php endif; ?>
                         <?php if (!empty($it['save'])): ?><small class="save"><?= te('save') ?> <bdi dir="ltr"><?= e(money($it['save'])) ?></bdi></small><?php endif; ?>
                       </td>
-                      <td class="ptable__act no-print"><?= add_button($it) ?></td>
+                      <td class="ptable__act no-print"><a class="btn btn--detail btn--sm" href="<?= e(item_url($it)) ?>"><?= te('cta_details') ?></a> <?= add_button($it) ?></td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>

@@ -22,7 +22,10 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_explore') ?></h2>
       <ul class="footer-links">
-        <li><a href="/services.php<?= e($sc_lq) ?>"><?= te('nav_services') ?></a></li>
+        <li><a href="/diving-trips-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'رحلات وباقات الغوص' : 'Diving Trips & Packages') ?></a></li>
+        <li><a href="/diving-courses-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'دورات PADI للغوص' : 'PADI Diving Courses') ?></a></li>
+        <li><a href="/padi-course-bundles-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'باقات وعروض الدورات' : 'PADI Course Bundles') ?></a></li>
+        <li><a href="/snorkeling-and-boats-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'السنوركل والقوارب الخاصة' : 'Snorkeling & Private Boats') ?></a></li>
         <li><a href="/prices.php<?= e($sc_lq) ?>"><?= te('nav_prices') ?></a></li>
         <li><a href="/about.php<?= e($sc_lq) ?>"><?= te('nav_about') ?></a></li>
         <li><a href="/contact.php<?= e($sc_lq) ?>"><?= te('nav_contact') ?></a></li>
@@ -56,6 +59,17 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     </span>
   </div>
 </footer>
+
+<?php if (($page['id'] ?? '') !== 'prices'): ?>
+<div class="minicart no-print" data-minicart hidden>
+  <div class="minicart__info">
+    <strong data-minicart-count>0</strong>
+    <span class="minicart__sep">·</span>
+    <span class="minicart__sum" data-minicart-total>€0</span>
+  </div>
+  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : '/prices.php' . $sc_lq . '#booking') ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
+</div>
+<?php endif; ?>
 
 <a class="wa-float" href="<?= e(whatsapp_link('', 'floating_button')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="floating" aria-label="<?= te('cta_whatsapp') ?>">
   <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?>

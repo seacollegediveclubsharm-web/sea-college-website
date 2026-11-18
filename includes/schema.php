@@ -69,12 +69,37 @@ $sc_graph = [
 ];
 
 if (!empty($page['breadcrumbs'])) {
+    $crumbs = $page['breadcrumbs'];
+    if (($crumbs[0][1] ?? '') !== '/') {
+        array_unshift($crumbs, [t('nav_home'), '/']);
+    }
     $items = [];
     $pos = 1;
-    foreach ([[t('nav_home'), '/'], ...$page['breadcrumbs']] as [$label, $path]) {
-        $items[] = ['@type' => 'ListItem', 'position' => $pos++, 'name' => $label, 'item' => url($path)];
+    foreach ($crumbs as [$label, $path]) {
+        $items[] = [
+            '@type'    => 'ListItem',
+            'position' => $pos++,
+            'name'     => $label,
+            'item'     => SITE_URL . ($path === '/' ? '/' : '/' . ltrim($path, '/')) . (LANG !== DEFAULT_LANG ? '?lang=' . LANG : ''),
+        ];
     }
     $sc_graph[] = ['@type' => 'BreadcrumbList', 'itemListElement' => $items];
+}
+
+if (!empty($page['speakable'])) {
+    $sc_graph[] = [
+        '@type'      => 'WebPage',
+        '@id'        => canonical_url() . '#webpage',
+        'url'        => canonical_url(),
+        'name'       => $page['title'] ?? SITE_NAME,
+        'inLanguage' => LANG,
+        'isPartOf'   => ['@id' => SITE_URL . '/#website'],
+        'about'      => ['@id' => $sc_org_id],
+        'speakable'  => [
+            '@type'       => 'SpeakableSpecification',
+            'cssSelector' => (array) $page['speakable'],
+        ],
+    ];
 }
 
 foreach ($page['schema'] ?? [] as $node) {

@@ -107,18 +107,25 @@ function loc(array|string|null $v): string
     return (string) $v;
 }
 
-/** Current page URL in another language (keeps path, swaps ?lang). */
+/** Current page URL in another language (keeps clean rewritten path, swaps ?lang). */
 function lang_url(string $lang): string
 {
-    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $path = $GLOBALS['page']['canonical_path'] ?? (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
+    $path = $path === '/index.php' ? '/' : $path;
     $params = $_GET;
-    $params['lang'] = $lang;
-    return $path . '?' . http_build_query($params);
+    unset($params['section'], $params['slug'], $params['hub'], $params['legacy']);
+    if ($lang === DEFAULT_LANG) {
+        // Explicit ?lang=en is still needed when switching back from an sc_lang=ar cookie!
+        $params['lang'] = $lang;
+    } else {
+        $params['lang'] = $lang;
+    }
+    return $path . ($params ? '?' . http_build_query($params) : '');
 }
 
 function canonical_url(?string $lang = null): string
 {
-    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $path = $GLOBALS['page']['canonical_path'] ?? (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
     $path = $path === '/index.php' ? '/' : $path;
     $lang = $lang ?? LANG;
     return SITE_URL . $path . ($lang !== DEFAULT_LANG ? '?lang=' . $lang : '');

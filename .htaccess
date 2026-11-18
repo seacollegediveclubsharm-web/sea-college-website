@@ -19,6 +19,15 @@ AddDefaultCharset UTF-8
   # Never serve internal folders or dotfiles (backup to per-folder .htaccess)
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+  # Category Hub SEO URLs
+  RewriteRule ^(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?hub=$1 [L,QSA]
+
+  # Individual Tour & PADI Course SEO/AEO pages
+  RewriteRule ^(tours|courses)/([a-z0-9-]+)/?$ item.php?section=$1&slug=$2 [L,QSA]
+
+  # Legacy WordPress/WooCommerce /product/<slug>/ 301 redirects
+  RewriteRule ^product/([a-z0-9-]+)/?$ item.php?legacy=$1 [L,QSA]
 </IfModule>
 
 # Block source/data files

@@ -55,8 +55,8 @@ if (!$consent) {
 $cart = [];
 $total = 0.0;
 $rawCart = json_decode((string) ($_POST['cart'] ?? '[]'), true);
+$idx = catalog_index();
 if (is_array($rawCart)) {
-    $idx = catalog_index();
     foreach (array_slice($rawCart, 0, 40) as $line) {
         $id = is_array($line) ? (string) ($line['id'] ?? '') : '';
         $qty = is_array($line) ? max(1, min(60, (int) ($line['qty'] ?? 1))) : 1;
@@ -72,6 +72,14 @@ if (is_array($rawCart)) {
 }
 if ($interest === '' && $cart) {
     $interest = implode(', ', array_column($cart, 'name'));
+} elseif ($total <= 0 && $interest !== '') {
+    foreach ($idx as $catItem) {
+        if ($catItem['name'] === $interest && $catItem['price'] !== null) {
+            $mult = (($catItem['unit'] ?? '') === 'boat') ? 1 : max(1, $people);
+            $total = (float) $catItem['price'] * $mult;
+            break;
+        }
+    }
 }
 
 if ($errors) {

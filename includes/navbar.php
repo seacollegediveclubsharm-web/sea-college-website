@@ -33,8 +33,9 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
 
     <nav class="site-nav" id="site-nav" aria-label="Main">
       <ul class="site-nav__list">
+        <?php $sc_active_nav = $page['nav_active'] ?? ($page['id'] ?? ''); ?>
         <?php foreach ($sc_nav as [$id, $href, $key]): ?>
-          <li><a href="<?= e($href . $sc_lq) ?>"<?= ($page['id'] === $id) ? ' aria-current="page"' : '' ?>><?= te($key) ?></a></li>
+          <li><a href="<?= e($href . $sc_lq) ?>"<?= ($sc_active_nav === $id) ? ' aria-current="page"' : '' ?>><?= te($key) ?></a></li>
         <?php endforeach; ?>
       </ul>
       <div class="site-nav__tools">

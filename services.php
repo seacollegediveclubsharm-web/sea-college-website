@@ -1,5 +1,5 @@
 <?php
-/** Services: all categories as product cards, anchored for deep links. */
+/** Services directory: all 4 categories with live search, compact add-on rows & Category Hub links. */
 declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
@@ -16,7 +16,7 @@ $intro = ['dive-packages' => 'svc_dive_d', 'padi-courses' => 'svc_courses_d', 'o
 $fallback = [
     'dive-packages' => seo_img('group-boat-dive-red-sea-divers'),
     'padi-courses' => seo_img('padi-diving-course-students-underwater'),
-    'offers' => seo_img('discover-scuba-diving-happy-divers'),
+    'offers' => 'images/courses/05_padi_open_water_diver.jpg',
     'snorkeling' => seo_img('snorkeling-trip-family-red-sea'),
 ];
 $page['schema'][] = [
@@ -29,6 +29,7 @@ require ROOT_DIR . '/includes/header.php';
 ?>
 <section class="page-hero">
   <div class="container">
+    <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
     <h1><?= te('services_title') ?></h1>
     <p><?= te('services_sub') ?></p>
     <nav class="chips" aria-label="<?= te('services_jump') ?>">
@@ -36,20 +37,37 @@ require ROOT_DIR . '/includes/header.php';
         <a class="chip" href="#<?= e($slug) ?>"><?= e($cat['icon'] . ' ' . loc($cat['label'])) ?></a>
       <?php endforeach; ?>
     </nav>
+    <div class="filter-bar filter-bar--hero" data-service-filter>
+      <input type="search" class="filter-bar__input" data-filter-input placeholder="<?= te('filter_placeholder') ?>" aria-label="<?= te('filter_placeholder') ?>">
+      <button type="button" class="btn btn--ghost btn--sm" data-filter-reset hidden><?= te('filter_clear') ?></button>
+    </div>
   </div>
 </section>
 
+<div class="container"><p class="alert" data-filter-empty hidden style="margin-top:1.5rem"><?= te('filter_empty') ?></p></div>
+
 <?php foreach ($catalog as $slug => $cat): ?>
-<section class="section<?= in_array($slug, ['padi-courses', 'snorkeling'], true) ? ' section--tint' : '' ?>" id="<?= e($slug) ?>">
+<section class="section<?= in_array($slug, ['padi-courses', 'snorkeling'], true) ? ' section--tint' : '' ?>" id="<?= e($slug) ?>" data-filter-section>
   <div class="container">
-    <header class="section__head">
-      <h2><?= e($cat['icon'] . ' ' . loc($cat['label'])) ?></h2>
-      <p><?= te($intro[$slug] ?? '') ?></p>
+    <header class="section__head section__head--row">
+      <div>
+        <h2><a class="head-link" href="<?= e(hub_url($cat)) ?>"><?= e($cat['icon'] . ' ' . loc($cat['label'])) ?></a></h2>
+        <p><?= te($intro[$slug] ?? '') ?></p>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="<?= e(hub_url($cat)) ?>"><?= te('all_category_items') ?> →</a>
     </header>
     <?php foreach ($cat['groups'] as $g): ?>
-      <h3 class="group-title"><?= e(loc($g['title'])) ?></h3>
-      <div class="cards">
-        <?php foreach ($g['items'] as $it): ?><?= product_card($it, $fallback[$slug]) ?><?php endforeach; ?>
+      <div class="catalog-group" id="<?= e($g['id']) ?>" data-filter-group>
+        <h3 class="group-title"><?= e(loc($g['title'])) ?></h3>
+        <?php if (!empty($g['compact'])): ?>
+          <div class="crows">
+            <?php foreach ($g['items'] as $it): ?><?= compact_item_row($it) ?><?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="cards">
+            <?php foreach ($g['items'] as $it): ?><?= product_card($it, $fallback[$slug]) ?><?php endforeach; ?>
+          </div>
+        <?php endif; ?>
       </div>
     <?php endforeach; ?>
     <?php $notes = $cat['notes'][LANG] ?? $cat['notes']['en'] ?? []; if ($notes): ?>

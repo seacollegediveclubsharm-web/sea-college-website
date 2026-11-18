@@ -33,12 +33,14 @@ $sc_client = [
     'whatsapp'    => preg_replace('/\D/', '', WHATSAPP_NUMBER),
     'currencyRates'   => CURRENCY_RATES,
     'currencySymbols' => CURRENCY_SYMBOLS,
+    'item' => $page['item_track'] ?? null,
     'i18n' => [
         'added' => t('added'), 'add' => t('add_to_booking'), 'empty' => t('cart_empty'),
         'remove' => t('remove'), 'onRequest' => t('price_on_request'),
         'waGreeting' => t('wa_greeting'), 'interest' => t('form_interest'),
         'people' => t('form_people'), 'date' => t('form_date'), 'hotel' => t('form_hotel'),
         'name' => t('form_name'), 'level' => t('form_level'),
+        'minicartItems' => t('minicart_items'),
     ],
 ];
 $sc_json = json_encode($sc_client, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
