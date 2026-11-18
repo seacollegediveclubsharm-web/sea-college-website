@@ -68,10 +68,10 @@ define('BUSINESS', [
 
 define('MAPS_URL', 'https://maps.app.goo.gl/JweBzniP2hS1VpgK7');
 define('MAPS_EMBED_QUERY', 'Sea College Dive Club, Sharm El Sheikh');
-define('GOOGLE_PLACE_ID', sc_env('GOOGLE_PLACE_ID', 'ChIJ75cBQp5LUxQRMapTYQ593g0')); // GBP Place ID (0x14534b9e420197ef:0xdde7d0c61cd3a32)
+define('GOOGLE_PLACE_ID', sc_env('GOOGLE_PLACE_ID', 'ChIJ75cBQp5LUxQRMjrNYQx93g0')); // GBP Place ID (0x14534b9e420197ef:0x0dde7d0c61cd3a32)
 define('GOOGLE_PLACES_API_KEY', sc_env('GOOGLE_PLACES_API_KEY', '')); // secret: set in config/secrets.php for live auto-sync
 define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache
-define('GOOGLE_REVIEWS_URL', 'https://search.google.com/local/reviews?placeid=' . GOOGLE_PLACE_ID);
+define('GOOGLE_REVIEWS_URL', 'https://www.google.com/maps/place/sea+college+dive+club/@27.9805263,34.4239091,17z/data=!4m8!3m7!1s0x14534b9e420197ef:0xdde7d0c61cd3a32!8m2!3d27.9805263!4d34.4239091!9m1!1b1!16s%2Fg%2F11kjd4n05q');
 define('GOOGLE_WRITE_REVIEW_URL', 'https://search.google.com/local/writereview?placeid=' . GOOGLE_PLACE_ID);
 define('PADI_PROFILE_URL', 'https://www.padi.com/dive-center/egypt/sea-college-dive-club/');
 
