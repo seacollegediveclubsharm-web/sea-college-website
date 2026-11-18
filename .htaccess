@@ -20,6 +20,10 @@ AddDefaultCharset UTF-8
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
 
+  # Dive Sites Guide & Underwater Gallery SEO URLs
+  RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]
+  RewriteRule ^gallery/?$ gallery.php [L,QSA]
+
   # Category Hub SEO URLs
   RewriteRule ^(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?hub=$1 [L,QSA]
 
@@ -52,6 +56,7 @@ AddDefaultCharset UTF-8
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType video/mp4 "access plus 1 year"
 </IfModule>
 
 <IfModule mod_headers.c>

@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
-require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
 
 $catalog = require ROOT_DIR . '/data/catalog.php';
 $seoAll  = require ROOT_DIR . '/data/items_seo.php';
@@ -93,6 +93,12 @@ require ROOT_DIR . '/includes/header.php';
         <?php foreach ($hiList as $h): ?><li dir="auto"><?= e($h) ?></li><?php endforeach; ?>
       </ul>
     </div>
+    <?php endif; ?>
+
+    <?php if ($catKey === 'dive-packages'): ?>
+      <?= render_budget_calculator($catalog, '#booking') ?>
+    <?php elseif ($catKey === 'padi-courses' || $catKey === 'offers'): ?>
+      <?= render_dive_quiz($catalog) ?>
     <?php endif; ?>
 
     <div class="filter-bar" data-service-filter>

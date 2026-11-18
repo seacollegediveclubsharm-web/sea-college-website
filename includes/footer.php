@@ -22,11 +22,13 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_explore') ?></h2>
       <ul class="footer-links">
-        <li><a href="/diving-trips-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'رحلات وباقات الغوص' : 'Diving Trips & Packages') ?></a></li>
-        <li><a href="/diving-courses-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'دورات PADI للغوص' : 'PADI Diving Courses') ?></a></li>
-        <li><a href="/padi-course-bundles-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'باقات وعروض الدورات' : 'PADI Course Bundles') ?></a></li>
-        <li><a href="/snorkeling-and-boats-sharm-el-sheikh<?= e($sc_lq) ?>"><?= e(LANG === 'ar' ? 'السنوركل والقوارب الخاصة' : 'Snorkeling & Private Boats') ?></a></li>
-        <li><a href="/prices.php<?= e($sc_lq) ?>"><?= te('nav_prices') ?></a></li>
+        <li><a href="/diving-trips-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_dives') ?></a></li>
+        <li><a href="/diving-courses-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_courses') ?></a></li>
+        <li><a href="/padi-course-bundles-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_bundles') ?></a></li>
+        <li><a href="/snorkeling-and-boats-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_boats') ?></a></li>
+        <li><a href="/dive-sites-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('nav_dive_sites') ?></a></li>
+        <li><a href="/gallery<?= e($sc_lq) ?>"><?= te('nav_gallery') ?></a></li>
+        <li><a href="/prices.php<?= e($sc_lq) ?>#dive-calculator"><?= te('calc_jump_chip') ?></a></li>
         <li><a href="/about.php<?= e($sc_lq) ?>"><?= te('nav_about') ?></a></li>
         <li><a href="/contact.php<?= e($sc_lq) ?>"><?= te('nav_contact') ?></a></li>
       </ul>

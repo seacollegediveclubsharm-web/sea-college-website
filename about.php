@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
-require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
+$galData = require ROOT_DIR . '/data/gallery_team.php';
 
 $page['id'] = 'about';
 $page['title'] = t('meta_about_title');
@@ -16,6 +17,7 @@ require ROOT_DIR . '/includes/header.php';
 ?>
 <section class="page-hero">
   <div class="container">
+    <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
     <h1><?= te('about_title') ?></h1>
     <p><?= te('about_lead') ?></p>
   </div>
@@ -30,7 +32,11 @@ require ROOT_DIR . '/includes/header.php';
         <li class="chip">🏅 <?= te('padi_badge') ?></li>
         <li class="chip">⭐ <?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></li>
       </ul>
-      <p><a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI profile ↗</a></p>
+      <p class="hero__ctas">
+        <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery')) ?>">🎬 <?= te('nav_gallery') ?></a>
+        <a class="btn btn--detail btn--sm" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>">🗺️ <?= te('nav_dive_sites') ?></a>
+        <a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI profile ↗</a>
+      </p>
     </div>
     <div class="split__media">
       <img src="<?= e(asset(seo_img('dive-boat-briefing-instructor'))) ?>" alt="<?= e(SITE_NAME) ?> — dive briefing on the boat, Sharm El Sheikh" width="800" height="600" loading="lazy">
@@ -50,11 +56,22 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="instructors">
+  <div class="container">
+    <header class="section__head section__head--row">
+      <div>
+        <h2><?= te('about_team_title') ?></h2>
+        <p><?= te('about_team_text') ?></p>
+      </div>
+      <a class="btn btn--primary btn--sm" href="<?= e(page_link('/gallery')) ?>">📸 <?= te('gallery_see_videos_btn') ?></a>
+    </header>
+    <?= render_team_showcase($galData['team']) ?>
+  </div>
+</section>
+
+<section class="section section--tint">
   <div class="container split split--rev">
     <div class="split__text">
-      <h2><?= te('about_team_title') ?></h2>
-      <p><?= te('about_team_text') ?></p>
       <h2><?= te('about_values_title') ?></h2>
       <ul class="ticks">
         <?php for ($i = 1; $i <= 4; $i++): ?><li><strong><?= te("why_{$i}_t") ?></strong> — <?= te("why_{$i}_d") ?></li><?php endfor; ?>

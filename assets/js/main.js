@@ -363,6 +363,556 @@
     document.addEventListener('sc:consent', function (ev) { if (ev.detail === 'all') { firePixelView(); } });
   }
 
+  /* ---------------- Feature 1: Interactive Dive Budget & Fee Calculator ---------------- */
+  var calcHooks = [];
+  $$('[data-dive-calc]').forEach(function (root) {
+    var cfg = {};
+    try { cfg = JSON.parse(root.getAttribute('data-dive-calc') || '{}'); } catch (e) { return; }
+    var items = cfg.items || {};
+    var L = cfg.labels || {};
+    var mode = 'dives';
+
+    var elDivers = $('[data-calc-divers]', root);
+    var elDiversVal = $('[data-calc-divers-val]', root);
+    var elDives = $('[data-calc-dives]', root);
+    var elDivesVal = $('[data-calc-dives-val]', root);
+    var elCourse = $('[data-calc-course]', root);
+    var elBoat = $('[data-calc-boat-days]', root);
+    var elBoatVal = $('[data-calc-boat-val]', root);
+    var elFeeBoat = $('[data-calc-fee-boat]', root);
+    var elFeePark = $('[data-calc-fee-park]', root);
+    var elRefresh = $('[data-calc-refresh]', root);
+    var elGas = $('[data-calc-gas]', root);
+    var elPadiFee = $('[data-calc-padi-fee]', root);
+    var elPrivGuide = $('[data-calc-private-guide]', root);
+    var elLines = $('[data-calc-lines]', root);
+    var elPp = $('[data-calc-pp]', root);
+    var elGrand = $('[data-calc-grand]', root);
+    var elToast = $('[data-calc-toast]', root);
+
+    function courseBoatDefault(cid) {
+      if (cid === 'dsd-quick-reef') { return 0; }
+      if (cid === 'dsd-quick-boat' || cid === 'dsd-2-boat') { return 1; }
+      if (cid === 'bundle-mega' || cid === 'bundle-heros') { return 4; }
+      return 2;
+    }
+    function padiCourseCount(cid) {
+      if (cid.indexOf('dsd') === 0) { return 0; }
+      if (cid === 'bundle-heros') { return 3; }
+      if (cid.indexOf('bundle-') === 0) { return 2; }
+      return 1;
+    }
+
+    function computeLines() {
+      var divers = Math.max(1, parseInt(elDivers.value, 10) || 1);
+      var boatDays = Math.max(0, parseInt(elBoat.value, 10) || 0);
+      var lines = [];
+      var addLine = function (id, qty, customLabel, unitEur, cartable) {
+        if (qty <= 0) { return; }
+        var it = items[id];
+        if (!it && !customLabel) { return; }
+        var p = it ? parseFloat(it.price) : unitEur;
+        lines.push({
+          id: id,
+          name: customLabel || it.name,
+          rawName: it ? (it.raw_name || it.name) : customLabel,
+          price: p,
+          qty: qty,
+          cartable: cartable !== false && !!it
+        });
+      };
+
+      var diveDays = Math.max(1, boatDays);
+      if (mode === 'dives') {
+        var n = Math.max(1, parseInt(elDives.value, 10) || 1);
+        diveDays = Math.max(1, boatDays || Math.ceil(n / 2));
+        if (n <= 10) {
+          addLine('dive-' + n, divers);
+        } else {
+          addLine('dive-10', divers);
+          addLine('dive-extra', (n - 10) * divers);
+        }
+        if (elRefresh && elRefresh.value !== 'none') {
+          addLine(elRefresh.value, divers);
+        }
+        if (elGas && elGas.value !== 'air12') {
+          addLine(elGas.value, diveDays * divers);
+        }
+        $$('[data-calc-gear]:checked', root).forEach(function (chk) {
+          addLine(chk.getAttribute('data-calc-gear'), diveDays * divers);
+        });
+      } else {
+        var cid = elCourse ? elCourse.value : 'owd';
+        addLine(cid, divers);
+        var pCount = padiCourseCount(cid);
+        if (elPadiFee && elPadiFee.checked && pCount > 0) {
+          addLine('padi-cert-fee', pCount * divers, L.padiFeeName || 'PADI Manual & Cert Fee', 85, false);
+        }
+      }
+
+      if (boatDays > 0) {
+        if (elFeeBoat && elFeeBoat.checked) { addLine('fee-boat', boatDays * divers); }
+        if (elFeePark && elFeePark.checked) { addLine('fee-park', boatDays * divers); }
+      }
+      $$('[data-calc-sup]:checked', root).forEach(function (chk) {
+        addLine(chk.getAttribute('data-calc-sup'), divers);
+      });
+      if (elPrivGuide && elPrivGuide.checked) {
+        addLine('private-guide', diveDays);
+      }
+      return { divers: divers, lines: lines };
+    }
+
+    function renderCalc() {
+      var st = computeLines();
+      elDiversVal.textContent = String(st.divers);
+      if (elDivesVal && elDives) { elDivesVal.textContent = String(elDives.value); }
+      if (elBoatVal && elBoat) { elBoatVal.textContent = String(elBoat.value); }
+
+      elLines.innerHTML = '';
+      var grand = 0;
+      st.lines.forEach(function (ln) {
+        var sub = ln.price * ln.qty;
+        grand += sub;
+        var li = document.createElement('li');
+        var left = document.createElement('span');
+        left.textContent = ln.name + ' × ' + ln.qty;
+        var right = document.createElement('span');
+        right.textContent = fmt(sub);
+        li.appendChild(left);
+        li.appendChild(right);
+        elLines.appendChild(li);
+      });
+      var pp = st.divers > 0 ? (grand / st.divers) : grand;
+      if (elPp) { elPp.textContent = fmt(pp); }
+      if (elGrand) { elGrand.textContent = fmt(grand); }
+    }
+
+    $$('[data-calc-mode]', root).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        mode = btn.getAttribute('data-calc-mode');
+        $$('[data-calc-mode]', root).forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        $$('[data-calc-only]', root).forEach(function (sec) {
+          sec.hidden = sec.getAttribute('data-calc-only') !== mode;
+        });
+        if (mode === 'course' && elCourse) {
+          elBoat.value = String(courseBoatDefault(elCourse.value));
+        } else if (mode === 'dives' && elDives) {
+          var n = parseInt(elDives.value, 10) || 6;
+          elBoat.value = String(n === 1 ? 0 : Math.min(8, Math.ceil(n / 2)));
+        }
+        renderCalc();
+      });
+    });
+
+    if (elDives) {
+      elDives.addEventListener('input', function () {
+        var n = parseInt(elDives.value, 10) || 1;
+        elBoat.value = String(n === 1 ? 0 : Math.min(8, Math.ceil(n / 2)));
+        renderCalc();
+      });
+    }
+    if (elCourse) {
+      elCourse.addEventListener('change', function () {
+        elBoat.value = String(courseBoatDefault(elCourse.value));
+        renderCalc();
+      });
+    }
+    root.addEventListener('input', function (ev) {
+      if (ev.target !== elDives && ev.target !== elCourse) { renderCalc(); }
+    });
+    root.addEventListener('change', function (ev) {
+      if (ev.target !== elCourse) { renderCalc(); }
+    });
+
+    var pushBtn = $('[data-calc-push-cart]', root);
+    if (pushBtn) {
+      pushBtn.addEventListener('click', function () {
+        var st = computeLines();
+        cart = [];
+        var ecomItems = [];
+        var totalEur = 0;
+        st.lines.forEach(function (ln) {
+          if (!ln.cartable) { return; }
+          cart.push({ id: ln.id, name: ln.rawName, price: ln.price, qty: ln.qty });
+          totalEur += ln.price * ln.qty;
+          ecomItems.push({ item_id: ln.id, item_name: ln.rawName, price: ln.price, quantity: ln.qty });
+        });
+        saveCart();
+        track('add_to_cart', { ecommerce: { currency: 'EUR', value: totalEur, items: ecomItems } });
+        if (granted() && window.fbq) {
+          window.fbq('track', 'AddToCart', { content_ids: ecomItems.map(function (x) { return x.item_id; }), content_type: 'product', value: totalEur, currency: 'EUR' });
+        }
+        if (elToast) { elToast.textContent = L.pushedToast || 'Added!'; elToast.hidden = false; }
+        var peopleInput = document.querySelector('#booking input[name="people"]');
+        if (peopleInput) { peopleInput.value = String(st.divers); }
+        var target = document.querySelector(cfg.bookingHref || '#booking');
+        if (target) { target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    }
+
+    var waBtn = $('[data-calc-wa]', root);
+    if (waBtn) {
+      waBtn.addEventListener('click', function () {
+        var st = computeLines();
+        var grand = 0;
+        var out = [T.waGreeting || 'Hello!', L.waHeader || 'Dive estimate:'];
+        st.lines.forEach(function (ln) {
+          var sub = ln.price * ln.qty;
+          grand += sub;
+          out.push('• ' + ln.name + ' × ' + ln.qty + ' = ' + fmt(sub));
+        });
+        out.push('', (L.totalLabel || 'Total') + ' (' + st.divers + ' ' + (L.divers || 'divers') + '): ' + fmt(grand));
+        out.push('[ref: website / dive_calculator / ' + (SC.lang || 'en') + ']');
+        track('whatsapp_click', { placement: 'dive_calculator' });
+        track('contact', { method: 'whatsapp', placement: 'dive_calculator' });
+        if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
+          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+        }
+        if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'dive_calculator_wa' }); }
+        window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
+      });
+    }
+
+    calcHooks.push(renderCalc);
+    renderCalc();
+  });
+
+  /* ---------------- Feature 2: 30-Second Dive / Course Recommender Quiz ---------------- */
+  var quizHooks = [];
+  $$('[data-dive-quiz]').forEach(function (root) {
+    var cfg = {};
+    try { cfg = JSON.parse(root.getAttribute('data-dive-quiz') || '{}'); } catch (e) { return; }
+    var items = cfg.items || {};
+    var Q = cfg.i18n || {};
+    var R = Q.reasons || {};
+    var ans = {};
+    var curStep = 1;
+
+    function showStep(n) {
+      curStep = n;
+      $$('[data-quiz-step]', root).forEach(function (el) {
+        el.hidden = parseInt(el.getAttribute('data-quiz-step'), 10) !== n;
+      });
+      $$('[data-quiz-dot]', root).forEach(function (d) {
+        var s = parseInt(d.getAttribute('data-quiz-dot'), 10);
+        d.classList.toggle('is-active', s === n);
+        d.classList.toggle('is-done', s < n);
+      });
+      var resBox = $('[data-quiz-results]', root);
+      if (resBox) { resBox.hidden = n <= 4; }
+    }
+
+    function recommend() {
+      var g = ans[1] || 'solo';
+      var exp = ans[2] || 'never';
+      var dur = ans[3] || 'day1';
+      var goal = ans[4] || 'easy';
+      var picks = [];
+      var push = function (id, reasonKey) {
+        if (items[id] && !picks.some(function (p) { return p.id === id; })) {
+          picks.push({ id: id, reason: R[reasonKey] || '' });
+        }
+      };
+
+      if (g === 'kids8') {
+        push('bubblemaker', 'kids');
+        push('seal-team', 'kids');
+        push('snork-ras-adult', 'snorkel');
+      } else if (exp === 'surface') {
+        if (g === 'vipgroup' || goal === 'private') {
+          push(dur === 'half' ? 'speed-2h' : 'private-6-10', 'private');
+          push('snork-ras-adult', 'snorkel');
+          push('speed-2h', 'private');
+        } else {
+          push(dur === 'half' ? 'snork-beach-day' : 'snork-ras-adult', 'snorkel');
+          push('speed-2h', 'private');
+          push('dsd-quick-reef', 'intro');
+        }
+      } else if (g === 'vipgroup' || goal === 'private') {
+        push(dur === 'half' ? 'speed-2h' : 'private-6-10', 'private');
+        push('private-1-5', 'private');
+        push(exp === 'never' ? 'dsd-2-boat' : 'dive-2', exp === 'never' ? 'intro' : 'dives');
+      } else if (exp === 'never') {
+        if (goal === 'cert' && (dur === 'days3' || dur === 'week')) {
+          if (dur === 'week') {
+            push('bundle-mega', 'bundle');
+            push('bundle-stars', 'bundle');
+            push('owd', 'course');
+          } else {
+            push('owd', 'course');
+            push('scuba-diver', 'course');
+            push('dsd-2-boat', 'intro');
+          }
+        } else if (dur === 'days3' && goal === 'cert') {
+          push('scuba-diver', 'course');
+          push('owd', 'course');
+          push('dsd-2-boat', 'intro');
+        } else if (dur === 'half') {
+          push('dsd-quick-reef', 'intro');
+          push('dsd-2-reef', 'intro');
+          push('dsd-quick-boat', 'intro');
+        } else {
+          push('dsd-2-boat', 'intro');
+          push('dsd', 'intro');
+          push('owd', 'course');
+        }
+      } else if (exp === 'rusty') {
+        push('scuba-review', 'refresh');
+        push('check-dive', 'refresh');
+        push(dur === 'week' ? 'dive-6' : 'dive-2', 'dives');
+      } else if (exp === 'adv') {
+        if (goal === 'cert') {
+          push('rescue', 'course');
+          push('nitrox', 'course');
+          push('sup-thistlegorm', 'wreck');
+        } else if (dur === 'week') {
+          push('dive-10', 'dives');
+          push('sup-thistlegorm', 'wreck');
+          push('dive-6', 'dives');
+        } else {
+          push('sup-thistlegorm', 'wreck');
+          push('dive-6', 'dives');
+          push('sup-dunraven', 'wreck');
+        }
+      } else {
+        // Certified Open Water
+        if (goal === 'cert') {
+          push(dur === 'week' ? 'bundle-super' : 'aowd', dur === 'week' ? 'bundle' : 'course');
+          push('aowd', 'course');
+          push('nitrox', 'course');
+        } else if (dur === 'half') {
+          push('dive-1', 'dives');
+          push('dive-2', 'dives');
+          push('check-dive', 'refresh');
+        } else if (dur === 'week') {
+          push('dive-10', 'dives');
+          push('dive-6', 'dives');
+          push('bundle-super', 'bundle');
+        } else if (dur === 'days3') {
+          push('dive-6', 'dives');
+          push('aowd', 'course');
+          push('dive-2', 'dives');
+        } else {
+          push('dive-2', 'dives');
+          push('dive-6', 'dives');
+          push('aowd', 'course');
+        }
+      }
+      return picks.slice(0, 3);
+    }
+
+    function renderQuizResults() {
+      var resBox = $('[data-quiz-results]', root);
+      var cardsEl = $('[data-quiz-cards]', root);
+      if (!resBox || resBox.hidden || !cardsEl) { return; }
+      var recs = recommend();
+      cardsEl.innerHTML = '';
+      recs.forEach(function (rec, idx) {
+        var it = items[rec.id];
+        if (!it) { return; }
+        var inCart = cart.some(function (l) { return l.id === it.id; });
+        var art = document.createElement('article');
+        art.className = 'qres' + (idx === 0 ? ' qres--best' : '');
+        var tag = '<span class="qres__tag">' + (idx === 0 ? (Q.bestMatch || '#1 Best Match') : (Q.altMatch || 'Alternative')) + '</span>';
+        var title = '<h4 class="qres__title" dir="auto"><a class="pcard__link" href="' + it.url + '">' + it.name + '</a></h4>';
+        var why = '<p class="qres__why" dir="auto">✓ ' + rec.reason + '</p>';
+        var desc = '<p class="qres__desc" dir="auto">' + (it.duration ? '⏱ ' + it.duration + ' · ' : '') + it.desc + '</p>';
+        var pr = it.price !== null ? '<span class="price" data-eur="' + it.price + '"><bdi dir="ltr">' + fmt(it.price) + '</bdi></span>' : '';
+        var foot = '<div class="qres__foot">' + pr +
+          '<span class="pcard__actions">' +
+          '<a class="btn btn--detail btn--sm" href="' + it.url + '">' + (Q.details || 'Details') + '</a>' +
+          '<button type="button" class="btn btn--add' + (inCart ? ' is-added' : '') + '" data-add-to-cart data-id="' + it.id + '" data-name="' + it.raw_name.replace(/"/g, '&quot;') + '" data-price="' + (it.price || '') + '">' +
+          (inCart ? '✓ ' + (T.added || 'Added') : '+ ' + (T.add || 'Add')) + '</button></span></div>';
+        art.innerHTML = '<div>' + tag + title + why + desc + '</div>' + foot;
+        cardsEl.appendChild(art);
+      });
+    }
+
+    root.addEventListener('click', function (ev) {
+      var pick = ev.target.closest('[data-quiz-pick]');
+      if (pick) {
+        var s = parseInt(pick.getAttribute('data-step'), 10);
+        ans[s] = pick.getAttribute('data-quiz-pick');
+        if (s < 4) {
+          showStep(s + 1);
+        } else {
+          showStep(5);
+          renderQuizResults();
+          track('quiz_complete', { group: ans[1], experience: ans[2], duration: ans[3], goal: ans[4] });
+        }
+        return;
+      }
+      if (ev.target.closest('[data-quiz-back]')) {
+        showStep(Math.max(1, curStep - 1));
+        return;
+      }
+      if (ev.target.closest('[data-quiz-reset]')) {
+        ans = {};
+        showStep(1);
+      }
+    });
+
+    quizHooks.push(renderQuizResults);
+  });
+
+  /* ---------------- Feature 3: Interactive Dive Sites SVG Map & Zone Filter ---------------- */
+  var mapBox = $('[data-dive-map]');
+  if (mapBox) {
+    var pins = $$('[data-map-pin]', mapBox);
+    var details = $$('[data-map-detail]', mapBox);
+    var siteCards = $$('[data-site-card]');
+
+    var selectSite = function (siteId, highlightCard) {
+      pins.forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-map-pin') === siteId); });
+      details.forEach(function (d) { d.hidden = d.getAttribute('data-map-detail') !== siteId; });
+      siteCards.forEach(function (c) { c.classList.toggle('is-highlighted', highlightCard && c.getAttribute('data-site-card') === siteId); });
+      track('dive_site_select', { site_id: siteId });
+    };
+
+    pins.forEach(function (pin) {
+      pin.addEventListener('click', function () { selectSite(pin.getAttribute('data-map-pin'), true); });
+      pin.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectSite(pin.getAttribute('data-map-pin'), true); }
+      });
+    });
+
+    $$('[data-zone-filter]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var z = btn.getAttribute('data-zone-filter');
+        $$('[data-zone-filter]').forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        var firstMatch = null;
+        pins.forEach(function (p) {
+          var ok = z === 'all' || p.getAttribute('data-zone') === z;
+          p.classList.toggle('is-dim', !ok);
+          if (ok && !firstMatch) { firstMatch = p.getAttribute('data-map-pin'); }
+        });
+        siteCards.forEach(function (c) {
+          c.hidden = !(z === 'all' || c.getAttribute('data-zone') === z);
+        });
+        if (firstMatch) { selectSite(firstMatch, false); }
+      });
+    });
+  }
+
+  /* ---------------- Feature 4: Photo & Video Gallery Filter + Lightbox ---------------- */
+  $$('[data-gallery]').forEach(function (gal) {
+    var items = $$('[data-gal-item]', gal);
+    var dlg = $('[data-lightbox]', gal);
+    var lbMedia = $('[data-lb-media]', gal);
+    var lbTitle = $('[data-lb-title]', gal);
+    var lbCap = $('[data-lb-cap]', gal);
+    var lbLink = $('[data-lb-link]', gal);
+    var activeIdx = 0;
+
+    function visibleIndices() {
+      var out = [];
+      items.forEach(function (el, i) { if (!el.hidden) { out.push(i); } });
+      return out;
+    }
+
+    function stopVideo() {
+      if (!lbMedia) { return; }
+      var v = $('video', lbMedia);
+      if (v) { v.pause(); v.removeAttribute('src'); v.load(); }
+      lbMedia.innerHTML = '';
+    }
+
+    function openAt(idx) {
+      var el = items[idx];
+      if (!el || !dlg) { return; }
+      activeIdx = idx;
+      stopVideo();
+      var type = el.getAttribute('data-gal-type');
+      var src = el.getAttribute('data-gal-src');
+      if (type === 'video') {
+        var vid = document.createElement('video');
+        vid.src = src;
+        vid.poster = el.getAttribute('data-gal-poster') || '';
+        vid.controls = true;
+        vid.playsInline = true;
+        vid.autoplay = true;
+        lbMedia.appendChild(vid);
+      } else {
+        var img = document.createElement('img');
+        img.src = src;
+        img.alt = el.getAttribute('data-gal-title') || '';
+        lbMedia.appendChild(img);
+      }
+      if (lbTitle) { lbTitle.textContent = el.getAttribute('data-gal-title') || ''; }
+      if (lbCap) { lbCap.textContent = el.getAttribute('data-gal-caption') || ''; }
+      if (lbLink) {
+        lbLink.href = el.getAttribute('data-gal-link') || '/prices.php';
+        lbLink.textContent = el.getAttribute('data-gal-link-text') || '';
+      }
+      if (!dlg.open && typeof dlg.showModal === 'function') { dlg.showModal(); }
+      else { dlg.setAttribute('open', ''); }
+      track('gallery_open', { media_type: type, media_title: el.getAttribute('data-gal-title') || '' });
+    }
+
+    function step(delta) {
+      var vis = visibleIndices();
+      if (!vis.length) { return; }
+      var pos = vis.indexOf(activeIdx);
+      var next = vis[(pos + delta + vis.length) % vis.length];
+      openAt(next);
+    }
+
+    function closeLb() {
+      stopVideo();
+      if (dlg && dlg.open && typeof dlg.close === 'function') { dlg.close(); }
+      else if (dlg) { dlg.removeAttribute('open'); }
+    }
+
+    $$('[data-gal-filter]', gal).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-gal-filter');
+        $$('[data-gal-filter]', gal).forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        items.forEach(function (el) {
+          el.hidden = !(f === 'all' || el.getAttribute('data-gal-cat') === f);
+        });
+      });
+    });
+
+    gal.addEventListener('click', function (ev) {
+      var op = ev.target.closest('[data-gal-open]');
+      if (op) { openAt(parseInt(op.getAttribute('data-gal-open'), 10)); return; }
+      if (ev.target.closest('[data-lb-close]') || ev.target === dlg) { closeLb(); return; }
+      if (ev.target.closest('[data-lb-prev]')) { step(-1); return; }
+      if (ev.target.closest('[data-lb-next]')) { step(1); }
+    });
+
+    if (dlg) {
+      dlg.addEventListener('close', stopVideo);
+      dlg.addEventListener('keydown', function (ev) {
+        var rtl = document.documentElement.dir === 'rtl' ? -1 : 1;
+        if (ev.key === 'ArrowRight') { step(rtl); }
+        else if (ev.key === 'ArrowLeft') { step(-rtl); }
+      });
+    }
+  });
+
+  /* Re-sync calculator & quiz numbers whenever currency changes */
+  $$('[data-currency-switch]').forEach(function (sel) {
+    sel.addEventListener('change', function () {
+      calcHooks.forEach(function (fn) { fn(); });
+      quizHooks.forEach(function (fn) { fn(); });
+    });
+  });
+
   applyCurrency();
 })();
+
 

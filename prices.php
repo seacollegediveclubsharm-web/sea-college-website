@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
-require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'prices';
@@ -22,6 +22,11 @@ require ROOT_DIR . '/includes/header.php';
     <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
     <h1><?= te('prices_title') ?></h1>
     <p><?= te('prices_sub') ?></p>
+    <nav class="chips no-print" aria-label="<?= te('services_jump') ?>">
+      <a class="chip" href="#dive-calculator">🧮 <?= te('calc_jump_chip') ?></a>
+      <a class="chip" href="#price-tables">📋 <?= te('prices_jump_tables') ?></a>
+      <a class="chip" href="<?= e(page_link('/#dive-finder-quiz')) ?>">🧭 <?= te('quiz_jump_chip') ?></a>
+    </nav>
     <ol class="stepper" aria-label="Booking steps">
       <?php for ($i = 1; $i <= 4; $i++): ?>
         <li class="stepper__step<?= $i === 1 ? ' is-active' : '' ?>" data-step="<?= $i ?>"><span class="stepper__num"><?= $i ?></span><span><?= te("step_$i") ?></span></li>
@@ -30,7 +35,13 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<section class="section section--prices">
+<section class="section section--tint no-print">
+  <div class="container">
+    <?= render_budget_calculator($catalog, '#booking') ?>
+  </div>
+</section>
+
+<section class="section section--prices" id="price-tables">
   <div class="container prices-layout">
     <div class="prices-main">
       <div class="tabs" role="tablist" aria-label="<?= te('nav_prices') ?>">

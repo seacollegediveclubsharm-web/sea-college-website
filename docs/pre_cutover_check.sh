@@ -40,7 +40,11 @@ for p in \
   "/tours/full-scuba-equipment-rental-sharm" \
   "/courses/padi-open-water-diver-sharm-el-sheikh" \
   "/courses/padi-open-water-diver-sharm-el-sheikh?lang=ar" \
-  "/courses/mega-bundle-open-water-advanced-sharm"; do
+  "/courses/mega-bundle-open-water-advanced-sharm" \
+  "/dive-sites-sharm-el-sheikh" \
+  "/dive-sites-sharm-el-sheikh?lang=ar" \
+  "/gallery" \
+  "/gallery?lang=ar"; do
   check_code "$p" "200"
 done
 
@@ -52,9 +56,9 @@ for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architect
   check_code "$p" "403"
 done
 
-echo "=== 2. Unified Tracking, GBP & Home SEO Checks ==="
+echo "=== 2. Unified Tracking, GBP, Quiz & Home SEO Checks ==="
 html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates"; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz"; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))
@@ -64,7 +68,7 @@ for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" 
   fi
 done
 
-echo "=== 3. Item Page SEO + AEO Structured Data & Sitemap Coverage ==="
+echo "=== 3. Item Page, Calculator, Dive Map & Gallery Schema Checks ==="
 course_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/courses/padi-open-water-diver-sharm-el-sheikh")
 for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer'; do
   if grep -q "$needle" <<<"$course_html"; then
@@ -76,12 +80,43 @@ for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"FAQPage"' 'Speaka
   fi
 done
 
+prices_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/prices.php")
+if grep -q "data-dive-calc" <<<"$prices_html"; then
+  echo "PASS [prices calculator] data-dive-calc"
+  pass=$((pass + 1))
+else
+  echo "FAIL [prices calculator] data-dive-calc missing"
+  fail=$((fail + 1))
+fi
+
+sites_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/dive-sites-sharm-el-sheikh")
+for needle in "data-dive-map" "TouristAttraction" "conditions-chart"; do
+  if grep -q "$needle" <<<"$sites_html"; then
+    echo "PASS [dive-sites] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [dive-sites] $needle missing"
+    fail=$((fail + 1))
+  fi
+done
+
+gal_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/gallery")
+for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card"; do
+  if grep -q "$needle" <<<"$gal_html"; then
+    echo "PASS [gallery & team] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [gallery & team] $needle missing"
+    fail=$((fail + 1))
+  fi
+done
+
 smap_count=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/sitemap.xml" | grep -c "<loc>" || true)
-if [[ "$smap_count" -ge 180 ]]; then
+if [[ "$smap_count" -ge 186 ]]; then
   echo "PASS [sitemap] $smap_count <loc> URLs"
   pass=$((pass + 1))
 else
-  echo "FAIL [sitemap] expected >= 180 <loc> URLs, got $smap_count"
+  echo "FAIL [sitemap] expected >= 186 <loc> URLs, got $smap_count"
   fail=$((fail + 1))
 fi
 

@@ -5,7 +5,9 @@ declare(strict_types=1);
 $sc_nav = [
     ['home', '/', 'nav_home'],
     ['services', '/services.php', 'nav_services'],
+    ['dive-sites', '/dive-sites-sharm-el-sheikh', 'nav_dive_sites'],
     ['prices', '/prices.php', 'nav_prices'],
+    ['gallery', '/gallery', 'nav_gallery'],
     ['about', '/about.php', 'nav_about'],
     ['contact', '/contact.php', 'nav_contact'],
 ];

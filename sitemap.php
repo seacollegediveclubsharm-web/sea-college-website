@@ -8,7 +8,9 @@ $catalog = require __DIR__ . '/data/catalog.php';
 $pages = [
     ['/', '1.0', 'weekly', '/index.php'],
     ['/services.php', '0.9', 'weekly', '/services.php'],
+    ['/dive-sites-sharm-el-sheikh', '0.9', 'weekly', '/dive-sites.php'],
     ['/prices.php', '0.9', 'weekly', '/prices.php'],
+    ['/gallery', '0.8', 'weekly', '/gallery.php'],
     ['/about.php', '0.6', 'monthly', '/about.php'],
     ['/contact.php', '0.7', 'monthly', '/contact.php'],
     ['/privacy-policy.php', '0.2', 'yearly', '/privacy-policy.php'],

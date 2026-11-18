@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
-require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
+$galData = require ROOT_DIR . '/data/gallery_team.php';
 
 $page['id'] = 'home';
 $page['title'] = t('meta_home_title');
@@ -33,7 +34,8 @@ require ROOT_DIR . '/includes/header.php';
     <p class="hero__sub"><?= te('hero_sub') ?></p>
     <div class="hero__ctas">
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('', 'hero')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="hero"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('hero_cta_primary') ?></span></a>
-      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="hero_prices"><?= te('hero_cta_secondary') ?></a>
+      <a class="btn btn--ghost btn--lg" href="#dive-finder-quiz" data-track="cta_click" data-placement="hero_quiz">🧭 <?= te('quiz_jump_chip') ?></a>
+      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="hero_prices">🧮 <?= te('calc_jump_chip') ?></a>
     </div>
     <ul class="trust">
       <?php for ($i = 1; $i <= 4; $i++): ?><li>✓ <?= te("trust_$i") ?></li><?php endfor; ?>
@@ -67,15 +69,56 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section section--tint">
   <div class="container">
-    <?= section_head('popular_title', 'popular_sub') ?>
-    <div class="cards">
-      <?php foreach ($popular as $it): ?><?= product_card($it, seo_img('group-boat-dive-red-sea-divers')) ?><?php endforeach; ?>
-    </div>
-    <p class="center"><a class="btn btn--primary" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="popular_all"><?= te('cta_view_prices') ?></a></p>
+    <?= render_dive_quiz($catalog) ?>
   </div>
 </section>
 
 <section class="section">
+  <div class="container">
+    <?= section_head('popular_title', 'popular_sub') ?>
+    <div class="cards cards--4">
+      <?php foreach ($popular as $it): ?><?= product_card($it, seo_img('group-boat-dive-red-sea-divers')) ?><?php endforeach; ?>
+    </div>
+    <p class="center hero__ctas hero__ctas--center">
+      <a class="btn btn--primary" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="popular_calc">🧮 <?= te('calc_jump_chip') ?></a>
+      <a class="btn btn--ghost" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="popular_all"><?= te('cta_view_prices') ?></a>
+    </p>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="feature-duo">
+      <article class="feature-banner card">
+        <span class="eyebrow">🗺️ <?= te('sites_eyebrow') ?></span>
+        <h2><?= te('home_sites_title') ?></h2>
+        <p><?= te('home_sites_sub') ?></p>
+        <p><a class="btn btn--primary" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>" data-track="cta_click" data-placement="home_sites"><?= te('home_sites_btn') ?> →</a></p>
+      </article>
+      <article class="feature-banner card">
+        <span class="eyebrow">🎬 <?= te('gallery_eyebrow') ?></span>
+        <h2><?= te('home_gallery_title') ?></h2>
+        <p><?= te('home_gallery_sub') ?></p>
+        <p><a class="btn btn--primary" href="<?= e(page_link('/gallery')) ?>" data-track="cta_click" data-placement="home_gallery"><?= te('home_gallery_btn') ?> →</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <header class="section__head section__head--row">
+      <div>
+        <h2><?= te('team_showcase_title') ?></h2>
+        <p><?= te('team_showcase_sub') ?></p>
+      </div>
+      <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery', 'instructors')) ?>"><?= te('team_see_all_btn') ?> →</a>
+    </header>
+    <?= render_team_showcase($galData['team'], 3) ?>
+  </div>
+</section>
+
+<section class="section section--tint">
   <div class="container">
     <?= section_head('why_title') ?>
     <div class="why">
