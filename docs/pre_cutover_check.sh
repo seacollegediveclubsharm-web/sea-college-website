@@ -36,11 +36,11 @@ for p in \
   "/tours/discover-scuba-diving-2-dives-boat-sharm" \
   "/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh" \
   "/tours/6-dives-package-sharm-el-sheikh" \
-  "/tours/white-island-ras-mohammed-boat-snorkeling" \
+  "/tours/white-island-ras-mohammed-boat-trip" \
   "/tours/full-scuba-equipment-rental-sharm" \
   "/courses/padi-open-water-diver-sharm-el-sheikh" \
   "/courses/padi-open-water-diver-sharm-el-sheikh?lang=ar" \
-  "/courses/mega-dive-bundle-owd-aowd-nitrox-sharm"; do
+  "/courses/mega-bundle-open-water-advanced-sharm"; do
   check_code "$p" "200"
 done
 

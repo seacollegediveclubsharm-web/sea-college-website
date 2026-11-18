@@ -2,8 +2,8 @@
 /** 404 page (wired via .htaccess ErrorDocument). */
 declare(strict_types=1);
 
-require __DIR__ . '/includes/bootstrap.php';
-require ROOT_DIR . '/includes/components.php';
+require_once __DIR__ . '/includes/bootstrap.php';
+require_once ROOT_DIR . '/includes/components.php';
 
 http_response_code(404);
 $page['id'] = '404';

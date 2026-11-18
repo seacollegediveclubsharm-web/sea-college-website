@@ -16,8 +16,8 @@ $explore = [
     ['courses', page_link('/diving-courses-sharm-el-sheikh'), seo_img('padi-diving-course-students-underwater')],
     ['dives', page_link('/diving-trips-sharm-el-sheikh'), seo_img('group-boat-dive-red-sea-divers')],
     ['bundles', page_link('/padi-course-bundles-sharm-el-sheikh'), 'images/courses/05_padi_open_water_diver.jpg'],
-    ['snorkel', page_link('/tours/white-island-ras-mohammed-boat-snorkeling'), seo_img('snorkeling-trip-family-red-sea')],
-    ['private', page_link('/snorkeling-and-boats-sharm-el-sheikh', 'private-boat-charter'), seo_img('private-yacht-boat-trip')],
+    ['snorkel', page_link('/tours/white-island-ras-mohammed-boat-trip'), seo_img('snorkeling-trip-family-red-sea')],
+    ['private', page_link('/snorkeling-and-boats-sharm-el-sheikh', 'private-charters'), seo_img('private-yacht-boat-trip')],
     ['wreck', page_link('/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh'), seo_img('ss-thistlegorm-wreck-dive')],
     ['kids', page_link('/courses/padi-bubblemaker-sharm-el-sheikh'), 'images/courses/01_padi_bubblemaker.jpg'],
 ];
