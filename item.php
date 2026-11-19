@@ -75,6 +75,7 @@ $page['description']    = $metaDesc;
 $page['type']           = 'product';
 $page['image']          = url('assets/' . $imgRel);
 $page['preload_image']  = asset($imgRel);
+$page['preload_rel']    = $imgRel;
 $page['breadcrumbs']    = [
     [t('breadcrumb_home'), '/'],
     [$catLabel, $hubPath],
@@ -115,6 +116,13 @@ $topBannerTheme = match ($sideBannerTheme) {
     default   => 'bundles',
 };
 
+$sc_webp_url = static function (string $rel): string {
+    $clean = ltrim($rel, '/');
+    $dot = strrpos($clean, '.');
+    $webp = ($dot !== false ? substr($clean, 0, $dot) : $clean) . '.webp';
+    return is_file(ROOT_DIR . '/assets/' . $webp) ? asset($webp) : asset($clean);
+};
+
 require ROOT_DIR . '/includes/header.php';
 ?>
 <section class="item-hero">
@@ -135,7 +143,7 @@ require ROOT_DIR . '/includes/header.php';
       </div>
       <div class="item-media-wrap" data-item-gallery>
         <figure class="item-hero__media">
-          <img src="<?= e(asset($imgRel)) ?>" alt="<?= e($h1) ?>" width="960" height="720" fetchpriority="high" data-item-stage-img>
+          <?= sc_picture($imgRel, $h1, 960, 720, ['loading' => 'eager', 'fetchpriority' => 'high', 'sizes' => '(max-width: 959px) 92vw, 46vw', 'extra_attrs' => 'data-item-stage-img']) ?>
           <?php if (!empty($itGal['video']['src'])): ?>
           <video class="item-hero__video" data-item-stage-vid controls playsinline preload="metadata" poster="<?= e(asset((string) ($itGal['video']['poster'] ?? $imgRel))) ?>" hidden></video>
           <?php endif; ?>
@@ -143,20 +151,20 @@ require ROOT_DIR . '/includes/header.php';
         </figure>
         <?php if (!empty($itGal['photos']) || !empty($itGal['video']['src'])): ?>
         <div class="item-media-thumbs no-print" role="group" aria-label="<?= te('item_gallery_title') ?>">
-          <button type="button" class="item-thumb is-active" data-item-thumb="photo" data-src="<?= e(asset($imgRel)) ?>" data-alt="<?= e($h1) ?>" aria-pressed="true">
-            <img src="<?= e(asset($imgRel)) ?>" alt="<?= e($h1) ?>" width="120" height="90" loading="lazy">
+          <button type="button" class="item-thumb is-active" data-item-thumb="photo" data-src="<?= e(asset($imgRel)) ?>" data-webp="<?= e($sc_webp_url($imgRel)) ?>" data-alt="<?= e($h1) ?>" aria-pressed="true">
+            <?= sc_picture($imgRel, $h1, 120, 90, ['sizes' => '120px']) ?>
           </button>
           <?php foreach (($itGal['photos'] ?? []) as $pIdx => $gPhoto):
               $pNum = $pIdx + 2;
               $pAlt = $h1 . ' — ' . SITE_NAME . ' (' . $pNum . ')';
           ?>
-          <button type="button" class="item-thumb" data-item-thumb="photo" data-src="<?= e(asset((string) $gPhoto)) ?>" data-alt="<?= e($pAlt) ?>" aria-pressed="false">
-            <img src="<?= e(asset((string) $gPhoto)) ?>" alt="<?= e($pAlt) ?>" width="120" height="90" loading="lazy">
+          <button type="button" class="item-thumb" data-item-thumb="photo" data-src="<?= e(asset((string) $gPhoto)) ?>" data-webp="<?= e($sc_webp_url((string) $gPhoto)) ?>" data-alt="<?= e($pAlt) ?>" aria-pressed="false">
+            <?= sc_picture((string) $gPhoto, $pAlt, 120, 90, ['sizes' => '120px']) ?>
           </button>
           <?php endforeach; ?>
           <?php if (!empty($itGal['video']['src'])): $v = $itGal['video']; ?>
           <button type="button" class="item-thumb item-thumb--video" data-item-thumb="video" data-src="<?= e(asset((string) $v['src'])) ?>" data-poster="<?= e(asset((string) ($v['poster'] ?? $imgRel))) ?>" aria-pressed="false" aria-label="<?= te('item_gallery_video_badge') ?>">
-            <img src="<?= e(asset((string) ($v['poster'] ?? $imgRel))) ?>" alt="<?= te('item_gallery_video_badge') ?> — <?= e($h1) ?>" width="120" height="90" loading="lazy">
+            <?= sc_picture((string) ($v['poster'] ?? $imgRel), t('item_gallery_video_badge') . ' — ' . $h1, 120, 90, ['sizes' => '120px']) ?>
             <span class="item-thumb__play">▶ <?= e((string) ($v['dur'] ?? 'HD')) ?></span>
           </button>
           <?php endif; ?>

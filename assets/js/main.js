@@ -283,6 +283,7 @@
     track('begin_checkout', { value: convVal, currency: 'EUR' });
     track('whatsapp_click', { placement: placement, value: convVal, currency: 'EUR' });
     track('contact', { method: 'whatsapp', placement: placement });
+    if (window.scLoadTags) { window.scLoadTags(); }
     if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
       window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
     }
@@ -308,6 +309,7 @@
     track(kind, params);
     if (kind === 'cta_click' || kind === 'outbound_link') { return; }
     // whatsapp / phone / email = contact intent
+    if (window.scLoadTags) { window.scLoadTags(); }
     track('contact', { method: kind.replace('_click', ''), placement: params.placement });
     if (SC.adsDirect && SC.adsId && typeof window.gtag === 'function') {
       if (kind === 'whatsapp_click' && SC.adsWhatsappLabel) {
@@ -320,20 +322,50 @@
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: kind }); }
   });
 
-  /* ---------------- Click-to-load Google Map ---------------- */
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-map-load]');
-    if (!b) { return; }
-    var box = b.closest('[data-map-src]');
+  /* ---------------- Click-to-load & scroll-triggered Google Map + Tripadvisor ---------------- */
+  function mountMap(box) {
+    if (!box || box.classList.contains('is-loaded')) { return; }
     var f = document.createElement('iframe');
     f.src = box.getAttribute('data-map-src');
     f.title = box.getAttribute('data-map-title') || 'Map';
     f.loading = 'lazy';
     f.referrerPolicy = 'no-referrer-when-downgrade';
     box.innerHTML = '';
+    box.removeAttribute('style');
     box.appendChild(f);
     box.classList.add('is-loaded');
+  }
+  function mountTaWidget(box) {
+    if (!box || box.getAttribute('data-ta-mounted')) { return; }
+    box.setAttribute('data-ta-mounted', '1');
+    var src = box.getAttribute('data-ta-widget-src');
+    if (!src) { return; }
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = src;
+    box.appendChild(s);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-map-load]');
+    if (b) { mountMap(b.closest('[data-map-src]')); }
   });
+  function initDeferredEmbeds() {
+    if (!('IntersectionObserver' in window)) {
+      $$('[data-ta-widget-src]').forEach(mountTaWidget);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) { return; }
+        io.unobserve(en.target);
+        if (en.target.hasAttribute('data-map-src')) { mountMap(en.target); }
+        if (en.target.hasAttribute('data-ta-widget-src')) { mountTaWidget(en.target); }
+      });
+    }, { rootMargin: '280px 0px' });
+    $$('[data-map-src], [data-ta-widget-src]').forEach(function (el) { io.observe(el); });
+  }
+  if (window._scUserInteracted) { initDeferredEmbeds(); }
+  else { window.addEventListener('sc:interact', initDeferredEmbeds, { once: true }); }
 
   /* ---------------- Live service & hub search filter ---------------- */
   $$('[data-service-filter]').forEach(function (bar) {
@@ -594,6 +626,7 @@
         out.push('[ref: website / dive_calculator / ' + (SC.lang || 'en') + ']');
         track('whatsapp_click', { placement: 'dive_calculator' });
         track('contact', { method: 'whatsapp', placement: 'dive_calculator' });
+        if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
           window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
         }
@@ -972,6 +1005,11 @@
           track('item_gallery_select', { media_type: 'video', item_id: (SC.item && SC.item.id) || '' });
         } else if (stageImg) {
           resetVid();
+          var webp = btn.getAttribute('data-webp') || src;
+          var pic = stageImg.closest('picture');
+          if (pic) {
+            $$('source', pic).forEach(function (s) { s.srcset = webp; s.removeAttribute('sizes'); });
+          }
           stageImg.src = src;
           var alt = btn.getAttribute('data-alt');
           if (alt) { stageImg.alt = alt; }
@@ -985,8 +1023,8 @@
   /* Re-sync calculator & quiz numbers whenever currency changes */
   $$('[data-currency-switch]').forEach(function (sel) {
     sel.addEventListener('change', function () {
-      calcHooks.forEach(function (fn) { fn(); });
-      quizHooks.forEach(function (fn) { fn(); });
+      if (typeof calcHooks !== 'undefined') { calcHooks.forEach(function (fn) { fn(); }); }
+      if (typeof quizHooks !== 'undefined') { quizHooks.forEach(function (fn) { fn(); }); }
     });
   });
 

@@ -8,19 +8,28 @@ declare(strict_types=1);
 define('ROOT_DIR', dirname(__DIR__));
 require_once ROOT_DIR . '/config/site_config.php';
 
-/* ---------------- Session (hardened cookie) ---------------- */
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
-    session_name('sc_sid');
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path'     => '/',
-        'secure'   => $secure,
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ]);
-    session_start();
+/* ---------------- Session (lazy: only on POST or existing session cookie) ---------------- */
+function sc_ensure_session(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        return;
+    }
+    if (!headers_sent()) {
+        $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+        session_name('sc_sid');
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path'     => '/',
+            'secure'   => $secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+        session_start();
+    }
+}
+if ((($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') || !empty($_COOKIE['sc_sid'])) {
+    sc_ensure_session();
 }
 
 /* ---------------- Security headers ---------------- */
@@ -205,13 +214,81 @@ function money(float|int|null $eur): string
     return '€' . number_format((float) $eur, 0, '.', ',');
 }
 
-/* ---------------- CSRF ---------------- */
+/* ---------------- Responsive WebP <picture> helper ---------------- */
+function sc_picture(string $relPath, string $alt, int $w, int $h, array $opts = []): string
+{
+    $clean = ltrim($relPath, '/');
+    $absOrig = ROOT_DIR . '/assets/' . $clean;
+    $dotPos = strrpos($clean, '.');
+    $stem = $dotPos !== false ? substr($clean, 0, $dotPos) : $clean;
+    $webpRel = $stem . '.webp';
+    $webp480Rel = $stem . '-480w.webp';
+    $hasWebp = is_file(ROOT_DIR . '/assets/' . $webpRel);
+    $has480 = is_file(ROOT_DIR . '/assets/' . $webp480Rel);
+
+    $loading = $opts['loading'] ?? 'lazy';
+    $decoding = $opts['decoding'] ?? 'async';
+    $fetchpriority = $opts['fetchpriority'] ?? '';
+    $sizes = $opts['sizes'] ?? '(max-width: 600px) 92vw, (max-width: 1200px) 46vw, 320px';
+    $class = $opts['class'] ?? '';
+    $extra = $opts['extra_attrs'] ?? '';
+
+    $imgAttrs = 'src="' . e(asset($clean)) . '" alt="' . e($alt) . '" width="' . $w . '" height="' . $h . '"';
+    if ($class !== '') {
+        $imgAttrs .= ' class="' . e($class) . '"';
+    }
+    if ($loading !== '') {
+        $imgAttrs .= ' loading="' . e($loading) . '"';
+    }
+    if ($decoding !== '') {
+        $imgAttrs .= ' decoding="' . e($decoding) . '"';
+    }
+    if ($fetchpriority !== '') {
+        $imgAttrs .= ' fetchpriority="' . e($fetchpriority) . '"';
+    }
+    if ($extra !== '') {
+        $imgAttrs .= ' ' . $extra;
+    }
+
+    if (!$hasWebp && !$has480) {
+        return '<img ' . $imgAttrs . '>';
+    }
+    if ($has480 && $hasWebp) {
+        $fullW = max(520, min(1200, $w >= 520 ? $w : 960));
+        $srcset = e(asset($webp480Rel)) . ' 480w, ' . e(asset($webpRel)) . ' ' . $fullW . 'w';
+        return '<picture><source type="image/webp" srcset="' . $srcset . '" sizes="' . e($sizes) . '"><img ' . $imgAttrs . '></picture>';
+    }
+    $singleWebp = $hasWebp ? $webpRel : $webp480Rel;
+    return '<picture><source type="image/webp" srcset="' . e(asset($singleWebp)) . '"><img ' . $imgAttrs . '></picture>';
+}
+
+/* ---------------- CSRF (stateless HMAC-SHA256 + session fallback) ---------------- */
+function sc_app_secret(): string
+{
+    static $key = null;
+    if ($key !== null) {
+        return $key;
+    }
+    $secretFile = LEADS_STORAGE_DIR . '/.csrf_secret';
+    if (is_file($secretFile)) {
+        $raw = trim((string) @file_get_contents($secretFile));
+        if (strlen($raw) >= 32) {
+            return $key = $raw;
+        }
+    }
+    if (is_dir(LEADS_STORAGE_DIR) || @mkdir(LEADS_STORAGE_DIR, 0750, true)) {
+        $gen = bin2hex(random_bytes(32));
+        if (@file_put_contents($secretFile, $gen, LOCK_EX) !== false) {
+            return $key = $gen;
+        }
+    }
+    return $key = hash('sha256', __DIR__ . '|' . SITE_URL . '|sc_hmac_v1');
+}
+
 function csrf_token(): string
 {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
+    $ts = (string) time();
+    return $ts . '.' . hash_hmac('sha256', 'sc_csrf|' . $ts, sc_app_secret());
 }
 
 function csrf_field(): string
@@ -221,10 +298,28 @@ function csrf_field(): string
 
 function csrf_verify(?string $token): bool
 {
-    return is_string($token) && !empty($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    if (!is_string($token) || $token === '') {
+        return false;
+    }
+    if (str_contains($token, '.')) {
+        [$tsStr, $sig] = explode('.', $token, 2);
+        if (ctype_digit($tsStr) && strlen($sig) === 64) {
+            $ts = (int) $tsStr;
+            if (abs(time() - $ts) <= 86400) {
+                $expected = hash_hmac('sha256', 'sc_csrf|' . $tsStr, sc_app_secret());
+                if (hash_equals($expected, $sig)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return !empty($_SESSION['csrf_token']) && hash_equals((string) $_SESSION['csrf_token'], $token);
 }
 
 /* ---------------- UTM / click-ID attribution ---------------- */
+$GLOBALS['SC_ATTR'] = [];
+$GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = false;
+
 function sc_capture_attribution(): void
 {
     $found = [];
@@ -234,40 +329,45 @@ function sc_capture_attribution(): void
         }
     }
     if ($found) {
+        $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
         $found['landing_page'] = substr((string) ($_SERVER['REQUEST_URI'] ?? '/'), 0, 300);
         $found['captured_at'] = gmdate('c');
-        $_SESSION['attribution'] = $found; // last non-direct click wins
-        setcookie('sc_attr', base64_encode((string) json_encode($found)), [
-            'expires' => time() + UTM_COOKIE_DAYS * 86400, 'path' => '/', 'samesite' => 'Lax', 'httponly' => true,
-        ]);
-    }
-    if (empty($_SESSION['attribution']) && !empty($_COOKIE['sc_attr'])) {
+        $GLOBALS['SC_ATTR'] = $found; // last non-direct click wins
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['attribution'] = $found;
+        }
+        if (!headers_sent()) {
+            setcookie('sc_attr', base64_encode((string) json_encode($found)), [
+                'expires' => time() + UTM_COOKIE_DAYS * 86400, 'path' => '/', 'samesite' => 'Lax', 'httponly' => true,
+            ]);
+        }
+    } elseif (!empty($_COOKIE['sc_attr'])) {
         $d = json_decode((string) base64_decode((string) $_COOKIE['sc_attr'], true), true);
         if (is_array($d)) {
-            $_SESSION['attribution'] = array_intersect_key($d, array_flip([...UTM_KEYS, 'landing_page', 'captured_at']));
+            $GLOBALS['SC_ATTR'] = array_intersect_key($d, array_flip([...UTM_KEYS, 'landing_page', 'captured_at']));
         }
-    }
-    if (empty($_SESSION['first_referrer']) && !empty($_SERVER['HTTP_REFERER'])) {
-        $_SESSION['first_referrer'] = substr((string) $_SERVER['HTTP_REFERER'], 0, 300);
+    } elseif (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['attribution']) && is_array($_SESSION['attribution'])) {
+        $GLOBALS['SC_ATTR'] = $_SESSION['attribution'];
     }
 }
 sc_capture_attribution();
 
 function attribution(): array
 {
-    return is_array($_SESSION['attribution'] ?? null) ? $_SESSION['attribution'] : [];
+    return is_array($GLOBALS['SC_ATTR'] ?? null) ? $GLOBALS['SC_ATTR'] : [];
 }
 
 /** Hidden inputs carrying attribution into every lead form. */
 function attribution_fields(): string
 {
     $a = attribution();
+    $ref = $_SESSION['first_referrer'] ?? substr((string) ($_SERVER['HTTP_REFERER'] ?? ''), 0, 300);
     $html = '';
     foreach (UTM_KEYS as $k) {
         $html .= '<input type="hidden" name="' . e($k) . '" value="' . e($a[$k] ?? '') . '">';
     }
     $html .= '<input type="hidden" name="landing_page" value="' . e($a['landing_page'] ?? '') . '">';
-    $html .= '<input type="hidden" name="referrer" value="' . e($_SESSION['first_referrer'] ?? '') . '">';
+    $html .= '<input type="hidden" name="referrer" value="' . e((string) $ref) . '">';
     return $html;
 }
 

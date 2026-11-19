@@ -17,6 +17,43 @@ $sc_og_locale = [
     'ar' => 'ar_EG',
     'zh' => 'zh_CN',
 ];
+$sc_pid = (string) ($page['id'] ?? 'home');
+if (!headers_sent() && in_array(($_SERVER['REQUEST_METHOD'] ?? 'GET'), ['GET', 'HEAD'], true)) {
+    header_remove('Pragma');
+    header_remove('Expires');
+    $sc_can_edge_cache = !SITE_NOINDEX
+        && empty($page['noindex'])
+        && $sc_pid !== '404'
+        && $sc_pid !== 'thanks'
+        && empty($GLOBALS['SC_HAS_CAMPAIGN_QUERY'])
+        && empty($_COOKIE['sc_sid'])
+        && empty($_COOKIE['sc_attr']);
+    if ($sc_can_edge_cache) {
+        header('Cache-Control: public, max-age=120, s-maxage=3600, stale-while-revalidate=86400');
+    } elseif (empty($_COOKIE['sc_sid'])) {
+        header('Cache-Control: private, no-cache');
+    }
+}
+
+$sc_css_key = match (true) {
+    $sc_pid === 'home' => 'home',
+    str_starts_with($sc_pid, 'hub-') => 'hub',
+    $sc_pid === 'prices' => 'prices',
+    $sc_pid === 'item' => 'item',
+    $sc_pid === 'dive-sites' => 'sites',
+    $sc_pid === 'gallery' => 'gallery',
+    $sc_pid === 'about' => 'about',
+    default => 'base',
+};
+$sc_js_key = match (true) {
+    $sc_pid === 'home' || str_starts_with($sc_pid, 'hub-') => 'home',
+    $sc_pid === 'prices' => 'prices',
+    $sc_pid === 'item' => 'item',
+    $sc_pid === 'dive-sites' => 'sites',
+    $sc_pid === 'gallery' || $sc_pid === 'about' => 'gallery',
+    default => 'base',
+};
+$sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 ?><!DOCTYPE html>
 <html lang="<?= e(LANG) ?>" dir="<?= e(DIR) ?>">
 <head>
@@ -56,16 +93,28 @@ $sc_og_locale = [
 
 <link rel="icon" href="<?= e(asset('images/favicon.png')) ?>" type="image/png">
 <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">
-<?php $sc_preload_img = $page['preload_image'] ?? (($page['id'] ?? '') === 'home' ? asset('images/hero.jpg') : ''); ?>
-<?php if ($sc_preload_img !== ''): ?>
-<link rel="preload" as="image" href="<?= e($sc_preload_img) ?>" fetchpriority="high">
+<?php if ($sc_pid === 'home'): ?>
+<link rel="preload" as="image" type="image/webp" imagesrcset="<?= e(asset('images/hero-640.webp')) ?> 640w, <?= e(asset('images/hero-1024.webp')) ?> 1024w, <?= e(asset('images/hero-1600.webp')) ?> 1600w" imagesizes="100vw" fetchpriority="high">
+<?php elseif (!empty($page['preload_rel'])):
+    $sc_pr_clean = ltrim((string) $page['preload_rel'], '/');
+    $sc_pr_dot = strrpos($sc_pr_clean, '.');
+    $sc_pr_stem = $sc_pr_dot !== false ? substr($sc_pr_clean, 0, $sc_pr_dot) : $sc_pr_clean;
+    if (is_file(ROOT_DIR . '/assets/' . $sc_pr_stem . '-480w.webp') && is_file(ROOT_DIR . '/assets/' . $sc_pr_stem . '.webp')): ?>
+<link rel="preload" as="image" type="image/webp" imagesrcset="<?= e(asset($sc_pr_stem . '-480w.webp')) ?> 480w, <?= e(asset($sc_pr_stem . '.webp')) ?> 960w" imagesizes="(max-width: 959px) 92vw, 46vw" fetchpriority="high">
+<?php elseif (is_file(ROOT_DIR . '/assets/' . $sc_pr_stem . '.webp')): ?>
+<link rel="preload" as="image" type="image/webp" href="<?= e(asset($sc_pr_stem . '.webp')) ?>" fetchpriority="high">
+<?php endif; elseif (!empty($page['preload_image'])): ?>
+<link rel="preload" as="image" href="<?= e((string) $page['preload_image']) ?>" fetchpriority="high">
 <?php endif; ?>
-<link rel="stylesheet" href="<?= e(asset('css/main.css')) ?>">
+<?php if (is_file($sc_css_file)): ?>
+<style><?= file_get_contents($sc_css_file) ?></style>
+<?php else: ?>
+<link rel="stylesheet" href="<?= e(asset('css/main.min.css')) ?>">
+<?php endif; ?>
 
 <?php require ROOT_DIR . '/includes/tracking_head.php'; ?>
 <?php require ROOT_DIR . '/includes/schema.php'; ?>
-<script src="<?= e(asset('js/consent.js')) ?>" defer></script>
-<script src="<?= e(asset('js/main.js')) ?>" defer></script>
+<script src="<?= e(asset('js/dist/' . $sc_js_key . '.min.js')) ?>" defer></script>
 </head>
 <body class="page-<?= e($page['id']) ?>">
 <?php require ROOT_DIR . '/includes/tracking_body.php'; ?>

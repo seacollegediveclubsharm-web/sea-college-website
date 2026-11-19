@@ -76,9 +76,9 @@ function render_top_promo_banner(string $theme = 'bundles', string $placement = 
     ob_start(); ?>
     <aside class="promo-banner promo-banner--top promo-banner--<?= e($cfg['theme']) ?> no-print" aria-label="<?= e($cfg['badge']) ?>">
       <div class="promo-banner__media">
-        <img src="<?= e(asset($cfg['img'])) ?>" alt="<?= e($cfg['title']) ?>" width="240" height="180" loading="lazy">
+        <?= sc_picture($cfg['img'], $cfg['title'], 240, 180, ['sizes' => '(max-width: 719px) 92vw, 195px']) ?>
         <span class="promo-banner__logo-chip">
-          <img src="<?= e(asset('images/logo.jpg')) ?>" alt="" width="26" height="26" loading="lazy">
+          <?= sc_picture('images/logo.jpg', '', 26, 26, ['sizes' => '26px']) ?>
           <span>PADI 5★</span>
         </span>
       </div>
@@ -109,14 +109,14 @@ function render_side_promo_banner(string $theme = 'bundles', string $placement =
     ob_start(); ?>
     <aside class="promo-banner promo-banner--side promo-banner--<?= e($cfg['theme']) ?> card no-print" aria-label="<?= e($cfg['badge']) ?>">
       <div class="promo-side__brand">
-        <img src="<?= e(asset('images/logo.jpg')) ?>" alt="<?= e(SITE_NAME) ?>" width="34" height="34" loading="lazy">
+        <?= sc_picture('images/logo.jpg', SITE_NAME, 34, 34, ['sizes' => '36px']) ?>
         <div>
           <strong><?= e(SITE_NAME) ?></strong>
           <small><?= te('padi_badge') ?></small>
         </div>
       </div>
       <div class="promo-side__thumb">
-        <img src="<?= e(asset($cfg['img'])) ?>" alt="<?= e($cfg['title']) ?>" width="360" height="220" loading="lazy">
+        <?= sc_picture($cfg['img'], $cfg['title'], 360, 220, ['sizes' => '340px']) ?>
         <span class="promo-banner__badge"><?= e($cfg['badge']) ?></span>
       </div>
       <h3 class="promo-side__title" dir="auto"><?= e($cfg['title']) ?></h3>

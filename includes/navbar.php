@@ -25,7 +25,7 @@ $sc_nav = [
 <header class="site-header" id="top">
   <div class="container site-header__inner">
     <a class="brand" href="<?= e(page_link('/')) ?>" aria-label="<?= e(SITE_NAME) ?>">
-      <img src="<?= e(asset('images/logo.jpg')) ?>" alt="<?= e(SITE_NAME) ?> logo" width="48" height="48">
+      <?= sc_picture('images/logo.jpg', SITE_NAME . ' logo', 48, 48, ['loading' => 'eager', 'sizes' => '48px']) ?>
       <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
     </a>
 

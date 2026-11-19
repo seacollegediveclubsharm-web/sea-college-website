@@ -371,7 +371,7 @@ function render_real_guests_showcase(bool $dark = false): string
         <?php foreach ($cards as $c): ?>
           <article class="pcard real-guest-card">
             <a class="pcard__media" href="<?= e($c['href']) ?>">
-              <img src="<?= e(asset($c['img'])) ?>" alt="<?= e($c['t']) ?> — <?= e(SITE_NAME) ?>" loading="lazy" width="480" height="360">
+              <?= sc_picture($c['img'], $c['t'] . ' — ' . SITE_NAME, 480, 360, ['sizes' => '(max-width: 599px) 92vw, (max-width: 1199px) 46vw, 290px']) ?>
               <span class="pcard__badge"><bdi dir="ltr"><?= e($c['tag']) ?></bdi></span>
             </a>
             <div class="pcard__body">

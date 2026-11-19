@@ -169,7 +169,7 @@ require ROOT_DIR . '/includes/header.php';
       ?>
         <article class="site-card card" id="site-<?= e($s['id']) ?>" data-site-card="<?= e($s['id']) ?>" data-zone="<?= e($s['zone']) ?>">
           <div class="site-card__media">
-            <img src="<?= e(asset('images/' . $s['img'])) ?>" alt="<?= e(loc($s['name'])) ?> — <?= te('location_sharm') ?>" loading="lazy" width="480" height="320">
+            <?= sc_picture('images/' . $s['img'], loc($s['name']) . ' — ' . t('location_sharm'), 480, 320, ['sizes' => '(max-width: 699px) 92vw, 46vw']) ?>
             <span class="site-card__num">#<?= $idx + 1 ?></span>
             <span class="site-card__depth"><bdi dir="ltr"><?= e($s['depth']) ?></bdi></span>
           </div>

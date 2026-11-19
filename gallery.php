@@ -73,7 +73,7 @@ $renderGalFigure = static function (array $m) use (&$galIdx, $flat): string {
             data-gal-link="<?= e($itemHref) ?>"
             data-gal-link-text="<?= e($itemLabel) ?>">
       <button type="button" class="gal-item__btn" data-gal-open="<?= $idx ?>" aria-label="<?= e($title) ?>">
-        <img src="<?= e(asset($thumb)) ?>" alt="<?= e($title) ?> — <?= e(SITE_NAME) ?>" loading="<?= $idx < 4 ? 'eager' : 'lazy' ?>" width="480" height="360">
+        <?= sc_picture($thumb, $title . ' — ' . SITE_NAME, 480, 360, ['loading' => $idx < 3 ? 'eager' : 'lazy', 'fetchpriority' => $idx === 0 ? 'high' : '', 'sizes' => '(max-width: 699px) 92vw, (max-width: 959px) 46vw, 32vw']) ?>
         <?php if ($isVid): ?>
           <span class="gal-item__play" aria-hidden="true">▶ <small><?= e($m['dur'] ?? 'HD') ?></small></span>
         <?php endif; ?>

@@ -8,7 +8,7 @@ declare(strict_types=1);
   <div class="container footer-grid">
     <div class="footer-col footer-col--brand">
       <a class="brand brand--light" href="<?= e(page_link('/')) ?>">
-        <img src="<?= e(asset('images/logo.jpg')) ?>" alt="" width="48" height="48" loading="lazy">
+        <?= sc_picture('images/logo.jpg', '', 48, 48, ['loading' => 'lazy', 'sizes' => '48px']) ?>
         <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
       </a>
       <p><?= te('footer_about') ?></p>

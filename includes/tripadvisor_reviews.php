@@ -307,7 +307,7 @@ function ta_official_widget_html(string $placement = 'home'): string
         ];
     }
 
-    $scriptSrc = 'https://www.jscache.com/wejs?wtype=cdswritereviewlgvi&uniq=' . rawurlencode($w['uniq'])
+    $scriptSrc = 'https://www.tripadvisor.com/wejs?wtype=cdswritereviewlgvi&uniq=' . rawurlencode($w['uniq'])
         . '&locationId=' . rawurlencode($locId)
         . '&lang=' . rawurlencode($locale)
         . '&display_version=2';
@@ -329,17 +329,16 @@ function ta_official_widget_html(string $placement = 'home'): string
         </div>
       </div>
       <?php if (!$mounted): $mounted = true; ?>
-      <div class="ta-widget-box__embed">
+      <div class="ta-widget-box__embed" data-ta-widget-src="<?= e($scriptSrc) ?>">
         <div id="TA_cdswritereviewlgvi<?= e($w['uniq']) ?>" class="TA_cdswritereviewlgvi">
           <ul id="<?= e($w['ul_id']) ?>" class="<?= e($w['ul_class']) ?>">
             <li id="<?= e($w['li_id']) ?>" class="<?= e($w['li_class']) ?>">
-              <a target="_blank" rel="noopener" href="<?= e($w['home']) ?>">
-                <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="TripAdvisor" width="180" height="38" loading="lazy">
+              <a target="_blank" rel="noopener" href="<?= e($w['home']) ?>" aria-label="Tripadvisor">
+                <?= brand_icon('tripadvisor', 24) ?> <strong>Tripadvisor</strong>
               </a>
             </li>
           </ul>
         </div>
-        <script async src="<?= e($scriptSrc) ?>" data-loadtrk onload="this.loadtrk=true"></script>
       </div>
       <?php endif; ?>
     </div>

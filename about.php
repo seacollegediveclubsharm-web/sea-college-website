@@ -59,7 +59,7 @@ require ROOT_DIR . '/includes/header.php';
         </p>
       </div>
       <div class="split__media">
-        <img src="<?= e(asset('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg')) ?>" alt="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>" width="960" height="720" loading="eager">
+        <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['loading' => 'eager', 'fetchpriority' => 'high', 'sizes' => '(max-width: 899px) 92vw, 45vw']) ?>
       </div>
     </div>
   </div>
@@ -109,7 +109,7 @@ require ROOT_DIR . '/includes/header.php';
                 data-gal-link="<?= e($itemHref) ?>"
                 data-gal-link-text="<?= e($itemLabel) ?>">
           <button type="button" class="gal-item__btn" data-gal-open="<?= $idx ?>" aria-label="<?= e($pTitle) ?>">
-            <img src="<?= e(asset($ph['src'])) ?>" alt="<?= e($pTitle) ?> — <?= e(SITE_NAME) ?>" loading="lazy" width="480" height="360">
+            <?= sc_picture($ph['src'], $pTitle . ' — ' . SITE_NAME, 480, 360, ['sizes' => '(max-width: 639px) 92vw, (max-width: 1099px) 46vw, 24vw']) ?>
             <span class="gal-item__overlay">
               <strong dir="auto"><?= e($pTitle) ?></strong>
               <small dir="auto"><?= e($pCap) ?></small>
@@ -183,7 +183,7 @@ require ROOT_DIR . '/includes/header.php';
       <p><a class="btn btn--wa" href="<?= e(whatsapp_link('', 'about')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="about"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('about_cta') ?></span></a></p>
     </div>
     <div class="split__media">
-      <img src="<?= e(asset(seo_img('pool-training-scuba-instructor'))) ?>" alt="<?= e(SITE_NAME) ?> — scuba instructor with a student in the training pool" width="800" height="600" loading="lazy">
+      <?= sc_picture(seo_img('pool-training-scuba-instructor'), SITE_NAME . ' — scuba instructor with a student in the training pool', 800, 600, ['sizes' => '(max-width: 899px) 92vw, 45vw']) ?>
     </div>
   </div>
 </section>

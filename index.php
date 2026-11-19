@@ -28,7 +28,11 @@ $popular = array_slice($popular, 0, 8);
 
 require ROOT_DIR . '/includes/header.php';
 ?>
-<section class="hero" style="--hero:url('<?= e(asset('images/hero.jpg')) ?>')">
+<section class="hero hero--media">
+  <picture class="hero__pic">
+    <source type="image/webp" srcset="<?= e(asset('images/hero-640.webp')) ?> 640w, <?= e(asset('images/hero-1024.webp')) ?> 1024w, <?= e(asset('images/hero-1600.webp')) ?> 1600w" sizes="100vw">
+    <img class="hero__bg" src="<?= e(asset('images/hero.jpg')) ?>" alt="" width="1600" height="960" fetchpriority="high" loading="eager" decoding="async">
+  </picture>
   <div class="container hero__inner">
     <p class="eyebrow"><?= te('hero_eyebrow') ?></p>
     <h1><?= te('hero_title') ?></h1>
@@ -66,7 +70,7 @@ require ROOT_DIR . '/includes/header.php';
     <div class="explore">
       <?php foreach ($explore as [$key, $href, $img]): ?>
         <a class="explore__card" href="<?= e($href) ?>" data-track="cta_click" data-placement="explore_<?= e($key) ?>">
-          <img src="<?= e(asset($img)) ?>" alt="<?= te("exp_{$key}_t") ?> — <?= te('location_sharm') ?>" loading="lazy" width="400" height="300">
+          <?= sc_picture($img, t("exp_{$key}_t") . ' — ' . t('location_sharm'), 400, 300, ['sizes' => '(max-width: 899px) 46vw, 25vw']) ?>
           <span class="explore__text"><strong><?= te("exp_{$key}_t") ?></strong><small><?= te("exp_{$key}_d") ?></small></span>
         </a>
       <?php endforeach; ?>
@@ -199,7 +203,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container split">
     <div>
       <a class="center-preview-img" href="<?= e(page_link('/about.php', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
-        <img src="<?= e(asset('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg')) ?>" alt="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>" width="960" height="720" loading="lazy">
+        <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 45vw']) ?>
       </a>
       <h2><?= te('map_title') ?> — <?= e(BUSINESS['city']) ?></h2>
       <p><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></p>

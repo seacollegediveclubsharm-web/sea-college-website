@@ -32,7 +32,7 @@ require ROOT_DIR . '/includes/header.php';
       <div class="contact-side">
         <aside class="card contact-card">
           <a class="center-preview-img" href="<?= e(page_link('/about.php', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
-            <img src="<?= e(asset('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg')) ?>" alt="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>" width="960" height="720" loading="lazy">
+            <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 380px']) ?>
           </a>
           <h2><?= te('contact_details_title') ?></h2>
           <p><a class="btn btn--wa btn--block" href="<?= e(whatsapp_link('', 'contact')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="contact"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a></p>

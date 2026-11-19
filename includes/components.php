@@ -43,7 +43,7 @@ function product_card(array $it, string $image = 'images/hero.jpg'): string
 
     $html = '<article class="pcard" data-filter-item="' . e($searchText) . '">';
     $html .= '<a class="pcard__media" href="' . e($href) . '" tabindex="-1" aria-hidden="true">';
-    $html .= '<img src="' . e(asset($img)) . '" alt="' . e($title) . ' — ' . te('location_sharm') . '" loading="lazy" width="400" height="300">';
+    $html .= sc_picture($img, $title . ' — ' . t('location_sharm'), 400, 300, ['sizes' => '(max-width: 599px) 92vw, (max-width: 899px) 46vw, 300px']);
     if (!empty($it['popular'])) {
         $html .= '<span class="pcard__badge">' . te('popular') . '</span>';
     }

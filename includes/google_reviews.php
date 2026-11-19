@@ -186,7 +186,7 @@ function gbp_reviews_data(): array
     return $memo = $seed;
 }
 
-/** Render interactive Google Map card (used on Home and Contact pages). */
+/** Render interactive Google Map card (auto-mounted when scrolled near viewport, or on click). */
 function gbp_map_embed(): string
 {
     $lat = BUSINESS['lat'];
@@ -194,11 +194,11 @@ function gbp_map_embed(): string
     $q = ($lat !== null && $lng !== null)
         ? MAPS_EMBED_QUERY . ' @' . $lat . ',' . $lng
         : MAPS_EMBED_QUERY;
-    $src = 'https://maps.google.com/maps?q=' . rawurlencode($q)
+    $src = 'https://www.google.com/maps?q=' . rawurlencode($q)
         . '&hl=' . rawurlencode(LANG)
         . '&z=16&output=embed';
-    return '<div class="map is-loaded">'
-        . '<iframe src="' . e($src) . '" title="' . e(SITE_NAME . ' — ' . BUSINESS['city']) . '"'
-        . ' loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>'
+    $title = SITE_NAME . ' — ' . BUSINESS['city'];
+    return '<div class="map" data-map-src="' . e($src) . '" data-map-title="' . e($title) . '" style="min-height:300px;display:grid;place-items:center">'
+        . '<button type="button" class="btn btn--detail" data-map-load>📍 ' . te('open_maps') . '</button>'
         . '</div>';
 }
