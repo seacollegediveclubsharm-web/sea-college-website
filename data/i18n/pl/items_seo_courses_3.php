@@ -123,7 +123,7 @@ return [
             'Osoby ceniące wyższe bezpieczeństwo fizjologiczne i dłuższe czasy bezdekompresyjne od pierwszego dnia',
         ],
         'faqs' => [
-            ['q' => 'Dlaczego minimalny wiek w pakiecie Stars to 12 lat, skoro sam OWD jest od 10 lat?', 'a' => 'Ponieważ specjalizacja PADI Enriched Air Nitrox wymaga ukończonych 12 lat zgodnie ze standardami PADI. Dzieci 10–11 lat mogą zapisać się na sam kurs Junior OWD (380 €).'],
+            ['q' => 'Dlaczego minimalny wiek w pakiecie Stars to 12 lat, skoro sam OWD jest od 10 lat?', 'a' => 'Ponieważ specjalizacja PADI Enriched Air Nitrox wymaga ukończonych 12 lat zgodnie ze standardami PADI. Dzieci 10–11 lat mogą zapisać się na sam kurs Junior OWD (400 €).'],
             ['q' => 'Ile dokładnie oszczędzam w pakiecie Stars?', 'a' => 'Oszczędzasz 50 € w porównaniu z zakupem obu kursów oraz osobnego ubezpieczenia nurkowego na okres szkolenia.'],
             ['q' => 'Co jeśli mam 6 dni wolnych i chcę również uprawnienia do 30 metrów?', 'a' => 'Sprawdź nasz Pakiet Mega (OWD + AOWD za 600 €, oszczędność 90 €) lub potrójny Pakiet Heros (OWD + AOWD + Nitrox za 750 €, oszczędność 120 €)!'],
         ],
@@ -246,7 +246,7 @@ return [
             'Osoby planujące w kolejnych latach safari nurkowe (np. Brothers, Daedalus, Elphinstone lub Malediwy)',
         ],
         'faqs' => [
-            ['q' => 'Skąd wynika oszczędność 120 € w Pakiecie Heros?', 'a' => 'Suma pojedynczych kursów OWD (380 €), AOWD (280 €), Nitrox (145 €) oraz tygodniowego ubezpieczenia nurkowego i podatku przekracza 870 € — w pakiecie Heros płacisz równe 750 €!'],
+            ['q' => 'Skąd wynika oszczędność 120 € w Pakiecie Heros?', 'a' => 'Suma pojedynczych kursów OWD (400 €), AOWD (350 €), Nitrox (145 €) oraz tygodniowego ubezpieczenia nurkowego i podatku przekracza 920 € — w pakiecie Heros płacisz równe 750 €!'],
             ['q' => 'Czy mogę rozłożyć te 6–7 dni z dniem przerwy pośrodku przy pobycie 10–14-dniowym?', 'a' => 'Oczywiście! Przy dłuższych wakacjach możemy wstawić dzień odpoczynku lub wycieczkę do Kairu/Luksoru pomiędzy OWD a AOWD.'],
             ['q' => 'Czy wszystkie 3 certyfikaty PADI są bezterminowe?', 'a' => 'Tak — licencje OWD, AOWD oraz Enriched Air Nitrox wydawane przez PADI są ważne dożywotnio na całym świecie.'],
         ],

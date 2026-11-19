@@ -40,7 +40,7 @@ return [
             'Fotografowie podwodni i pasjonaci historii II wojny światowej',
         ],
         'faqs' => [
-            ['q' => 'Mam certyfikat OWD (18 m) — czy mogę popłynąć na SS Thistlegorm?', 'a' => 'Ze względów bezpieczeństwa (głębokość 16–30 m, prądy i sufit nad głową w ładowniach) wymagamy pełnego AOWD i min. 20 nurkowań. Możesz jednak w 2,5–3 dni zrobić u nas kurs AOWD (280 €) na początku urlopu lub wybrać płytszy 175-metrowy wrak Million Hope (+30 €)!'],
+            ['q' => 'Mam certyfikat OWD (18 m) — czy mogę popłynąć na SS Thistlegorm?', 'a' => 'Ze względów bezpieczeństwa (głębokość 16–30 m, prądy i sufit nad głową w ładowniach) wymagamy pełnego AOWD i min. 20 nurkowań. Możesz jednak w 2,5–3 dni zrobić u nas kurs AOWD (350 €) na początku urlopu lub wybrać płytszy 175-metrowy wrak Million Hope (+30 €)!'],
             ['q' => 'Dlaczego trzeba rezerwować SS Thistlegorm minimum 72 godziny wcześniej?', 'a' => 'Wymaga tego procedura zatwierdzenia imiennej listy pasażerów (z danymi paszportowymi) dla dalekomorskiego rejonu Sha\'ab Ali.'],
             ['q' => 'Dlaczego wszyscy polecają Nitrox na SS Thistlegorm?', 'a' => 'Dwa długie nurkowania w przedziale 18–28 m na powietrzu szybko wyczerpują limit bezdekompresyjny (NDL) w ładowniach — Nitrox 32% daje ogromny zapas czasu i bezpieczeństwa!'],
         ],

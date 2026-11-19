@@ -254,8 +254,8 @@ return [
             'ar' => ['رحلة اليخت والغداء (اختر باقة الغطستين بالقارب بـ100€ ليوم كامل في البحر)', 'التصوير تحت الماء (اختياري)'],
         ],
         'ideal_for' => [
-            'en' => ['Beginners wanting proper underwater time without spending a full 8-hour day on a boat', 'People prone to seasickness who prefer calm shore entries', 'Guests testing scuba before starting the 3-day PADI Open Water course (€380)'],
-            'ar' => ['المبتدئون الراغبون في وقت أطول تحت الماء خلال نصف يوم فقط', 'من يفضلون الغوص من الشاطئ لتجنب دوار البحر', 'الراغبون في تجربة حقيقية قبل التسجيل في دورة Open Water الكاملة (380€)'],
+            'en' => ['Beginners wanting proper underwater time without spending a full 8-hour day on a boat', 'People prone to seasickness who prefer calm shore entries', 'Guests testing scuba before starting the 3-day PADI Open Water course (€400)'],
+            'ar' => ['المبتدئون الراغبون في وقت أطول تحت الماء خلال نصف يوم فقط', 'من يفضلون الغوص من الشاطئ لتجنب دوار البحر', 'الراغبون في تجربة حقيقية قبل التسجيل في دورة Open Water الكاملة (400€)'],
         ],
         'schema_type' => 'TouristTrip',
         'compare_mode' => 'intro',
@@ -376,8 +376,8 @@ return [
             'ar' => ['انتقالات الفندق ذهابًا وإيابًا في شرم الشيخ', 'تذكرة رسوم المحمية البحرية', 'طقم معدات الغوص الكامل للغطستين', 'غطستان موجهتان (15 دقيقة لكل غطسة) برفقة مدرب PADI', 'غداء بوفيه ساخن ومشروبات غازية ومياه وشاي وقهوة'],
         ],
         'excluded' => [
-            'en' => ['Official PADI eCard credit (if you decide to get certified afterwards, enroll in PADI Scuba Diver €250 or Open Water Diver €380)', 'Optional underwater photos/videos & personal towels'],
-            'ar' => ['شهادة PADI الدولية (في حال رغبتك بالاعتماد الدولي يمكنك الالتحاق بدورة Open Water بـ380€)', 'التصوير تحت الماء والمناشف الشخصية'],
+            'en' => ['Official PADI eCard credit (if you decide to get certified afterwards, enroll in PADI Scuba Diver €250 or Open Water Diver €400)', 'Optional underwater photos/videos & personal towels'],
+            'ar' => ['شهادة PADI الدولية (في حال رغبتك بالاعتماد الدولي يمكنك الالتحاق بدورة Open Water بـ400€)', 'التصوير تحت الماء والمناشف الشخصية'],
         ],
         'ideal_for' => [
             'en' => ['First-time divers wanting the complete Red Sea boat day and maximum underwater time', 'Couples, honeymooners & groups celebrating a special day in Sharm El Sheikh', 'Mixed groups where non-divers book the €55 Ras Mohammed/Boat Snorkeling ticket to share the yacht'],
@@ -894,7 +894,7 @@ return [
         'review_idx' => 2,
         'related' => ['wreck', 'aowd', 'eq-12nx', 'sup-dunraven'],
         'faqs' => [
-            ['Can I dive SS Thistlegorm with an Open Water certification?', 'No — due to the 16–30 m depth, overhead cargo structures and strong Sha\'ab Ali currents, divers must hold Advanced Open Water (or complete our 2-day PADI Advanced course €280 first) and have at least 20 logged dives.', 'هل يمكنني الغوص في ثيستلجورم بشهادة Open Water فقط؟', 'لا، نظرًا لعمق 16–30 مترًا والتيارات القوية يُشترط شهادة Advanced Open Water على الأقل مع 20 غطسة مسجلة (ويمكنك إتمام دورة Advanced لدينا أولًا في يومين بـ280€).'],
+            ['Can I dive SS Thistlegorm with an Open Water certification?', 'No — due to the 16–30 m depth, overhead cargo structures and strong Sha\'ab Ali currents, divers must hold Advanced Open Water (or complete our 2-day PADI Advanced course €350 first) and have at least 20 logged dives.', 'هل يمكنني الغوص في ثيستلجورم بشهادة Open Water فقط؟', 'لا، نظرًا لعمق 16–30 مترًا والتيارات القوية يُشترط شهادة Advanced Open Water على الأقل مع 20 غطسة مسجلة (ويمكنك إتمام دورة Advanced لدينا أولًا في يومين بـ350€).'],
             ['Why is Nitrox so popular on the SS Thistlegorm?', 'Because Cargo Holds 1 & 2 sit between 18 m and 25 m on back-to-back dives, Enriched Air Nitrox 32% (€8/tank) extends your no-decompression limit significantly so air consumption—not computer NDL—governs your dive.', 'لماذا يُنصح بالنيتروكس بشدة في رحلة ثيستلجورم؟', 'لأن عنابر الشحن تقع على عمق 18–25 مترًا في غطستين متتاليتين، يمنحك نيتروكس 32% (8€ للأسطوانة) وقتًا أطول بدون تخفيف ضغط وأمانًا أعلى.'],
             ['Why must I book 72 hours in advance?', 'Egyptian Coast Guard permits for Sha\'ab Ali crossings require passport details and minimum boat numbers submitted in advance; message us on WhatsApp with your travel week so we slot you onto our next scheduled departure.', 'لماذا يلزم الحجز قبل 72 ساعة؟', 'تتطلب تصاريح الإبحار لمنطقة شعب علي تسجيل بيانات جوازات السفر مسبقًا لدى الجهات المختصة؛ راسلنا عبر واتساب بتواريخ إقامتك لتأكيد يوم انطلاق الرحلة.'],
         ],

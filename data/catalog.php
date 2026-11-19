@@ -562,7 +562,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة غواص المياه المفتوحة PADI Open Water',
                         'desc' => 'Age 10+. The world\'s most popular scuba certification: 5 pool + 4 open water dives, up to 18 m.',
                         'desc_ar' => 'من سن 10 سنوات. أشهر شهادة غوص دولية: 5 جلسات مسبح + 4 غطسات بحر مفتوح حتى عمق 18 مترًا.',
-                        'price' => 380, 'img' => 'items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '3–3.5 days', 'popular' => true,
+                        'price' => 400, 'img' => 'items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '3–3.5 days', 'popular' => true,
                     ],
                 ],
             ],
@@ -576,7 +576,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة الغوص المتقدم PADI Advanced Open Water',
                         'desc' => 'Age 12+. 5 Adventure Dives incl. Deep & Underwater Navigation, certifying you down to 30 m.',
                         'desc_ar' => 'من سن 12 سنة. 5 غطسات مغامرة تشمل العميق والملاحة وتؤهلك للغوص حتى عمق 30 مترًا.',
-                        'price' => 280, 'img' => 'items/sea-college-sharm-padi-advanced-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '2.5–3 days', 'popular' => true,
+                        'price' => 350, 'img' => 'items/sea-college-sharm-padi-advanced-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '2.5–3 days', 'popular' => true,
                     ],
                     [
                         'id' => 'aowd-green', 'section' => 'courses', 'slug' => 'advanced-open-water-nitrox-green-sharm',

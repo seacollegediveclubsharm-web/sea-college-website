@@ -80,7 +80,7 @@ return [
         ],
         'faqs' => [
             ['q' => 'Na jaką głębokość schodzą dzieci podczas PADI Seal Team?', 'a' => 'AquaMission 1 odbywa się do maks. 2 m, a kolejne misje 2–5 w bezpiecznych, płytkich granicach basenu szkoleniowego (<4 m) pod bezpośrednią asekuracją instruktora.'],
-            ['q' => 'Kiedy dziecko może zanurkować na prawdziwej rafie w Morzu Czerwonym?', 'a' => 'Już w dniu 10. urodzin! Od 10 lat zapraszamy na PADI Discover Scuba Diving (85 €) lub kurs Junior Open Water Diver (380 €).'],
+            ['q' => 'Kiedy dziecko może zanurkować na prawdziwej rafie w Morzu Czerwonym?', 'a' => 'Już w dniu 10. urodzin! Od 10 lat zapraszamy na PADI Discover Scuba Diving (85 €) lub kurs Junior Open Water Diver (400 €).'],
             ['q' => 'Czy w cenie 170 € zawarty jest cały sprzęt?', 'a' => 'Tak, wszystkie elementy dziecięcego zestawu nurkowego są w 100% wliczone w cenę 170 €.'],
         ],
     ],
@@ -114,14 +114,14 @@ return [
         ],
         'excluded' => [
             'Rejs jachtem (wolisz całodniowy rejs łodzią? Wybierz Discover Scuba 2 nurkowania z łodzi za 100 €)',
-            'Samodzielna dożywotnia licencja nurkowa do 18 m (zobacz kurs PADI Open Water Diver za 380 €)',
+            'Samodzielna dożywotnia licencja nurkowa do 18 m (zobacz kurs PADI Open Water Diver za 400 €)',
         ],
         'ideal_for' => [
             'Osoby debiutujące pod wodą (10+), które chcą spokojnego przygotowania w basenie przed wejściem do morza',
             'Turyści wahający się, czy od razu zapisać się na 3-dniowy kurs PADI Open Water Diver',
         ],
         'faqs' => [
-            ['q' => 'Czy PADI Discover Scuba Diving daje dożywotnią licencję nurkową?', 'a' => 'DSD to oficjalny certyfikat ukończenia programu zapoznawczego PADI, a nie samodzielna licencja. Aby zdobyć dożywotnie uprawnienia do 18 m na całym świecie, wybierz kurs PADI Open Water Diver (380 €).'],
+            ['q' => 'Czy PADI Discover Scuba Diving daje dożywotnią licencję nurkową?', 'a' => 'DSD to oficjalny certyfikat ukończenia programu zapoznawczego PADI, a nie samodzielna licencja. Aby zdobyć dożywotnie uprawnienia do 18 m na całym świecie, wybierz kurs PADI Open Water Diver (400 €).'],
             ['q' => 'Czy do ceny 85 € doliczana jest opłata certyfikacyjna 85 €?', 'a' => 'Nie! Zgodnie z naszym cennikiem Discover Scuba Diving jest wyjątkiem — książeczka i rejestracja PADI są JUŻ wliczone w 85 €.'],
             ['q' => 'Czym ten program (85 €) różni się od Szybkiego Intro (30 €)?', 'a' => 'Szybkie Intro za 30 € obejmuje odprawę i 10-minutowe zejście z brzegu. Program PADI DSD za 85 € daje pełny trening w basenie, dłuższe nurkowanie na rafie i oficjalną rejestrację w PADI.'],
         ],
@@ -156,14 +156,14 @@ return [
         'excluded' => [
             'Oficjalny podręcznik PADI eLearning i opłata certyfikacyjna (85 €)',
             'Dopłata łodziowa (10 €/dzień) i parkowa (5 €/dzień), jeśli nurkowania realizowane są z łodzi',
-            'Uwaga: Późniejsze pakiety ze stopniem Scuba Diver wymagają prywatnego przewodnika (75 €/dzień) — kurs OWD (380 €) znosi ten wymóg!',
+            'Uwaga: Późniejsze pakiety ze stopniem Scuba Diver wymagają prywatnego przewodnika (75 €/dzień) — kurs OWD (400 €) znosi ten wymóg!',
         ],
         'ideal_for' => [
             'Urlopowicze mający tylko 2 wolne dni, którym zależy na międzynarodowej licencji PADI',
             'Młodsi nurkowie (10–11 lat) oraz ostrożni początkujący preferujący limit 12 m',
         ],
         'faqs' => [
-            ['q' => 'Lepiej wybrać Scuba Diver (250 €) czy pełny Open Water Diver (380 €)?', 'a' => 'Jeśli masz 3–3,5 dnia, zdecydowanie bardziej opłaca się Open Water Diver (380 €), bo daje samodzielne uprawnienia do 18 m z partnerem bez wymogu prywatnego przewodnika. Scuba Diver wybierz wtedy, gdy masz maksymalnie 2 dni.'],
+            ['q' => 'Lepiej wybrać Scuba Diver (250 €) czy pełny Open Water Diver (400 €)?', 'a' => 'Jeśli masz 3–3,5 dnia, zdecydowanie bardziej opłaca się Open Water Diver (400 €), bo daje samodzielne uprawnienia do 18 m z partnerem bez wymogu prywatnego przewodnika. Scuba Diver wybierz wtedy, gdy masz maksymalnie 2 dni.'],
             ['q' => 'Czy certyfikat PADI Scuba Diver traci ważność?', 'a' => 'Nie — jest ważny bezterminowo i w każdej chwili możesz dopłacić 100 € za 1–2-dniowy Upgrade do Open Water.'],
             ['q' => 'Czy ubezpieczenie nurkowe jest wliczone w 250 €?', 'a' => 'Tak, zarówno pełny sprzęt, jak i ubezpieczenie nurkowe są wliczone w cenę kursu.'],
         ],
@@ -188,7 +188,7 @@ return [
             ['Weryfikacja certyfikatu i teoria 4–5', 'Sprawdzenie numeru PADI Scuba Diver oraz ukończenie dwóch ostatnich działów teorii i testu.'],
             ['Sesje basenowe 4–5 oraz test pływacki', 'Wykonanie brakujących ćwiczeń basenowych oraz przepłynięcie 200 m wpław lub 300 m w masce, fajce i płetwach.'],
             ['Nurkowania w morzu nr 3 i 4 (do 18 m)', 'Nawigacja z kompasem, zawis w toni i planowanie nurkowania podczas dwóch malowniczych zejść na rafę.'],
-            ['Certyfikat PADI Open Water Diver!', 'Zdobywasz pełne uprawnienia OWD — możesz od razu ruszać na pakiety lub kurs Advanced (280 €)!'],
+            ['Certyfikat PADI Open Water Diver!', 'Zdobywasz pełne uprawnienia OWD — możesz od razu ruszać na pakiety lub kurs Advanced (350 €)!'],
         ],
         'included' => [
             '2 sesje w basenie szkoleniowym + 2 nurkowania na wodach otwartych',
@@ -201,7 +201,7 @@ return [
         ],
         'ideal_for' => [
             'Posiadacze karty PADI Scuba Diver wydanej w dowolnym centrum PADI na świecie (niezależnie od daty!)',
-            'Nurkowie chcący od razu kontynuować naukę na kursie PADI Advanced Open Water (280 €)',
+            'Nurkowie chcący od razu kontynuować naukę na kursie PADI Advanced Open Water (350 €)',
         ],
         'faqs' => [
             ['q' => 'Czy mogę zrobić upgrade, jeśli robiłem Scuba Diver kilka lat temu w innym kraju?', 'a' => 'Tak! Każdy certyfikat PADI widnieje w globalnej bazie PADI; przy dłuższej przerwie po prostu odświeżymy Twoje nawyki w basenie.'],
@@ -212,15 +212,15 @@ return [
 
     'owd' => [
         'h1' => 'Kurs PADI Open Water Diver (OWD) w Sharm El Sheikh — Pełna Licencja do 18 m',
-        'meta_title' => 'Kurs PADI Open Water Sharm El Sheikh | 380 € | Baza PADI 5 Gwiazdek',
-        'meta_desc' => 'Zdobądź dożywotnią licencję PADI Open Water Diver w Sharm El Sheikh (380 €, 3–3,5 dnia, od 10 lat). 5 sesji w basenie + 4 nurkowania w Morzu Czerwonym, sprzęt i ubezpieczenie w cenie.',
-        'aeo_answer' => 'Kurs PADI Open Water Diver (OWD) w Sea College Dive Club (autoryzowanym ośrodku PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh / Szarm el-Szejk) kosztuje 380 € za osobę, trwa od 3 do 3,5 dnia i jest dostępny od 10. roku życia bez żadnego wcześniejszego doświadczenia. W cenę wliczone jest 5 modułów teorii, 5 sesji w basenie szkoleniowym, 4 nurkowania w Morzu Czerwonym (dające dożywotnie uprawnienia do 18 m na całym świecie), kompletny sprzęt nurkowy oraz ubezpieczenie nurkowe; oficjalny podręcznik eLearning i certyfikat PADI to koszt 85 €.',
+        'meta_title' => 'Kurs PADI Open Water Sharm El Sheikh | 400 € | Baza PADI 5 Gwiazdek',
+        'meta_desc' => 'Zdobądź dożywotnią licencję PADI Open Water Diver w Sharm El Sheikh (400 €, 3–3,5 dnia, od 10 lat). 5 sesji w basenie + 4 nurkowania w Morzu Czerwonym, sprzęt i ubezpieczenie w cenie.',
+        'aeo_answer' => 'Kurs PADI Open Water Diver (OWD) w Sea College Dive Club (autoryzowanym ośrodku PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh / Szarm el-Szejk) kosztuje 400 € za osobę, trwa od 3 do 3,5 dnia i jest dostępny od 10. roku życia bez żadnego wcześniejszego doświadczenia. W cenę wliczone jest 5 modułów teorii, 5 sesji w basenie szkoleniowym, 4 nurkowania w Morzu Czerwonym (dające dożywotnie uprawnienia do 18 m na całym świecie), kompletny sprzęt nurkowy oraz ubezpieczenie nurkowe; oficjalny podręcznik eLearning i certyfikat PADI to koszt 85 €.',
         'overview' => [
             'Trudno o lepsze miejsce na świecie na pierwszy kurs nurkowy niż Sharm El Sheikh: ciepła woda przez 12 miesięcy w roku, widoczność rzędu 25–35 metrów oraz własny basen szkoleniowy oddalony o kilka kroków od tętniącej życiem rafy domowej.',
             'W Sea College Dive Club przechodzisz bez pośpiechu od wody po pas w basenie, przez spokojną zatokę, aż po rejsy łodzią — pod okiem cierpliwych instruktorów (w tym polskojęzycznych), których goście ocenili na 4.9★ w ponad 3 082 opiniach Google.',
         ],
         'specs' => [
-            ['Cena kursu', '380 € za osobę (pełny sprzęt i ubezpieczenie nurkowe w cenie)'],
+            ['Cena kursu', '400 € za osobę (pełny sprzęt i ubezpieczenie nurkowe w cenie)'],
             ['Opłata PADI', '+85 € oficjalny podręcznik PADI eLearning i wydanie eCard'],
             ['Czas trwania', '3–3,5 dnia (możliwość zrobienia teorii online przed przylotem)'],
             ['Minimalny wiek', '10 lat (10–14 lat: Junior Open Water Diver; 15+: Open Water Diver)'],
@@ -256,15 +256,15 @@ return [
 
     'aowd' => [
         'h1' => 'Kurs PADI Advanced Open Water Diver (AOWD) w Sharm El Sheikh — Do 30 m',
-        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 280 € · 30 m | Sea College',
-        'meta_desc' => 'Rozszerz uprawnienia do 30 m na kursie PADI Advanced Open Water w Sharm El Sheikh (280 €, 2,5–3 dni, 5 nurkowań w morzu, sprzęt w cenie, zero egzaminu pisemnego!).',
-        'aeo_answer' => 'Kurs PADI Advanced Open Water Diver (AOWD) w Sea College Dive Club w Sharm El Sheikh kosztuje 280 € za osobę (minimalny wiek: 12 lat, czas trwania: 2,5–3 dni) i obejmuje pełne wypożyczenie sprzętu nurkowego na 5 nurkowań przygodowych w Morzu Czerwonym — bez pisemnego egzaminu końcowego! Wykonujesz obowiązkowe nurkowanie głębokie (dające uprawnienia do 30 m; 21 m dla 12–14 lat) i nawigację podwodną oraz 3 wybrane nurkowania, np. wrakowe, w prądzie (drift), doskonałą pływalność lub nocne (+85 € opłata PADI).',
+        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m | Sea College',
+        'meta_desc' => 'Rozszerz uprawnienia do 30 m na kursie PADI Advanced Open Water w Sharm El Sheikh (350 €, 2,5–3 dni, 5 nurkowań w morzu, sprzęt w cenie, zero egzaminu pisemnego!).',
+        'aeo_answer' => 'Kurs PADI Advanced Open Water Diver (AOWD) w Sea College Dive Club w Sharm El Sheikh kosztuje 350 € za osobę (minimalny wiek: 12 lat, czas trwania: 2,5–3 dni) i obejmuje pełne wypożyczenie sprzętu nurkowego na 5 nurkowań przygodowych w Morzu Czerwonym — bez pisemnego egzaminu końcowego! Wykonujesz obowiązkowe nurkowanie głębokie (dające uprawnienia do 30 m; 21 m dla 12–14 lat) i nawigację podwodną oraz 3 wybrane nurkowania, np. wrakowe, w prądzie (drift), doskonałą pływalność lub nocne (+85 € opłata PADI).',
         'overview' => [
             'W Sharm El Sheikh stopień Advanced Open Water Diver otwiera drzwi do absolutnych pereł Morza Czerwonego — głębokich ścian koralowych Shark & Yolanda Reef, prądowych raf Cieśniny Tiran oraz legendarnego wraku SS Thistlegorm (16–30 m).',
             'Kurs AOWD to czysta praktyka w morzu: brak tu długich wykładów i testów pisemnych. Każde z pięciu nurkowań z instruktorem rozwija konkretny warsztat podwodny — od precyzyjnego trymu po orientację kompasową i świadomość narkozy azotowej.',
         ],
         'specs' => [
-            ['Cena kursu', '280 € za osobę (pełny sprzęt nurkowy w cenie)'],
+            ['Cena kursu', '350 € za osobę (pełny sprzęt nurkowy w cenie)'],
             ['Opłata PADI', '+85 € podręcznik PADI eLearning i wydanie certyfikatu AOWD'],
             ['Czas trwania', '2,5–3 dni (5 nurkowań Adventure Dives w morzu)'],
             ['Wymagania wstępne', 'Certyfikat PADI Open Water Diver (lub równoważny CMAS P1 / SSI OWD) · Wiek 12+'],

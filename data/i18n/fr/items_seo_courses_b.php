@@ -287,7 +287,7 @@ return [
             'Couples, amis ou plongeurs solos appréciant les petites palanquées sécurisées',
         ],
         'faqs' => [
-            ['q' => 'Combien j’économise exactement avec le Pack Stars ?', 'a' => 'Vous économisez 50 € par rapport à l’achat séparé de l’Open Water (380 €), du Nitrox (145 €) et de l’assurance complémentaire.'],
+            ['q' => 'Combien j’économise exactement avec le Pack Stars ?', 'a' => 'Vous économisez plus de 50 € par rapport à l’achat séparé de l’Open Water (400 €), du Nitrox (145 €) et de l’assurance complémentaire.'],
             ['q' => 'Pourquoi l’âge minimum est-il de 12 ans ?', 'a' => 'L’Open Water démarre à 10 ans, mais la spécialité PADI Nitrox requiert 12 ans minimum.'],
             ['q' => 'Et si j’ai 6 jours disponibles ?', 'a' => 'Regardez nos packs Mega (600 € : OWD + Advanced, -90 €) ou Heros (750 € : OWD + Advanced + Nitrox, -120 €) pour atteindre directement 30 mètres !'],
         ],

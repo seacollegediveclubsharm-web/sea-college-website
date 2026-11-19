@@ -161,7 +161,7 @@ return [
             'Frisch zubereitetes Mittagsbuffet, Softdrinks, Wasser, Kaffee & Tee an Bord',
         ],
         'excluded' => [
-            'Dauerhafter Tauchschein (hat Sie das Tauchfieber gepackt? Starten Sie am nächsten Tag den PADI Open Water Kurs für 380 €!)',
+            'Dauerhafter Tauchschein (hat Sie das Tauchfieber gepackt? Starten Sie am nächsten Tag den PADI Open Water Kurs für 400 €!)',
             'Optionales Unterwasser-Fotoshooting & persönliche Handtücher',
         ],
         'ideal_for' => [

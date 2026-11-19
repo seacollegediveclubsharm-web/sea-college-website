@@ -9,7 +9,7 @@ return [
     'meta_services_title' => 'Nurkowanie, Kursy PADI i Rejsy w Sharm El Sheikh (Szarm el-Szejk) | Sea College',
     'meta_services_desc' => 'Pakiety nurkowe dla certyfikowanych, kursy PADI od Bubblemaker po Divemaster, pakiety kursów, snorkeling na Białą Wyspę oraz prywatne motorówki i jachty w Sharm El Sheikh.',
     'meta_prices_title' => 'Cennik Nurkowania Sharm El Sheikh 2026 | Pakiety, Kursy PADI i Promocje',
-    'meta_prices_desc' => 'Pełny cennik w EUR: pakiety nurkowe od 45 €, kurs PADI Open Water 380 €, intro nurkowanie od 30 €, snorkeling od 35 €, prywatne łodzie. Skomponuj rezerwację online.',
+    'meta_prices_desc' => 'Pełny cennik w EUR: pakiety nurkowe od 45 €, kurs PADI Open Water 400 €, intro nurkowanie od 30 €, snorkeling od 35 €, prywatne łodzie. Skomponuj rezerwację online.',
     'meta_about_title' => 'O Sea College Dive Club | Centrum PADI 5 Gwiazdek Sharm El Sheikh',
     'meta_about_desc' => 'Poznaj Sea College Dive Club: bazę nurkową PADI 5 Gwiazdek z basenem szkoleniowym, własną rafą domową (House Reef) i łodzią nurkową w Cyrene Sharm, Al Montazah.',
     'meta_contact_title' => 'Kontakt i Rezerwacja | Sea College Dive Club Sharm El Sheikh',

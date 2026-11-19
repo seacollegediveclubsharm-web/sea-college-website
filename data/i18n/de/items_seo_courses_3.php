@@ -123,7 +123,7 @@ return [
             'Zukünftige Rotes-Meer-Taucher, die von Tag 1 an für Nitrox zertifiziert sein möchten',
         ],
         'faqs' => [
-            ['q' => 'Warum liegt das Mindestalter bei „Stars“ bei 12 statt 10 Jahren?', 'a' => 'Weil der PADI Enriched Air Nitrox Spezialkurs ein Mindestalter von 12 Jahren voraussetzt. 10- bis 11-Jährige buchen einfach den regulären Open Water Diver (380 €).'],
+            ['q' => 'Warum liegt das Mindestalter bei „Stars“ bei 12 statt 10 Jahren?', 'a' => 'Weil der PADI Enriched Air Nitrox Spezialkurs ein Mindestalter von 12 Jahren voraussetzt. 10- bis 11-Jährige buchen einfach den regulären Open Water Diver (400 €).'],
             ['q' => 'Ist die Tauchversicherung im Paketpreis von 500 € enthalten?', 'a' => 'Ja, die Tauchversicherung für Ihre Ausbildungstage und die gesamte Leihausrüstung sind inklusive.'],
             ['q' => 'Was, wenn ich auch bis 30 m Tiefe zertifiziert werden möchte?', 'a' => 'Dann wählen Sie unser 6–7-tägiges Dreifach-Paket „Heros“ (OWD + Advanced + Nitrox für 750 €, 120 € Ersparnis)!'],
         ],
@@ -166,7 +166,7 @@ return [
         ],
         'faqs' => [
             ['q' => 'Gibt es beim Sparpaket „Super“ eine schwere Theorieprüfung?', 'a' => 'Beim Advanced Open Water gibt es gar keine Prüfung, und beim Nitrox-Kurs nur einen kurzen, praxisnahen Check zur Sauerstoffanalyse!'],
-            ['q' => 'Warum ist „Super“ (400 €) besser als AOWD + Nitrox einzeln zu buchen?', 'a' => 'Einzeln kosten AOWD (280 €) + Nitrox (145 €) + Tauchversicherung bereits rund 475 € — Sie sparen mit „Super“ also 75 € inklusive Versicherung!'],
+            ['q' => 'Warum ist „Super“ (400 €) besser als AOWD + Nitrox einzeln zu buchen?', 'a' => 'Einzeln kosten AOWD (350 €) + Nitrox (145 €) + Tauchversicherung bereits über 520 € — Sie sparen mit „Super“ (400 €) also über 95 € inklusive Versicherung!'],
             ['q' => 'Kann ich einen Nachttauchgang oder Wracktauchgang als Wahltauchgang nehmen?', 'a' => 'Ja, sprechen Sie Ihren Wunsch einfach beim Check-in mit Ihrem Tauchlehrer ab (eventuelle Spezial-Ausfahrtszuschläge separat).'],
         ],
     ],

@@ -184,7 +184,7 @@ return [
             'Chi prevede di completare l’upgrade a Open Water Diver nella prossima vacanza',
         ],
         'faqs' => [
-            ['q' => 'Conviene fare Scuba Diver (€250) o direttamente Open Water Diver (€380)?', 'a' => 'Se hai 3–3,5 giorni disponibili, l’Open Water Diver (€380) è molto più vantaggioso: ti abilita fino a 18 metri in autonomia con un compagno ed evita l’obbligo della guida dedicata (€75/giorno) nelle uscite future.'],
+            ['q' => 'Conviene fare Scuba Diver (€250) o direttamente Open Water Diver (€400)?', 'a' => 'Se hai 3–3,5 giorni disponibili, l’Open Water Diver (€400) è molto più vantaggioso: ti abilita fino a 18 metri in autonomia con un compagno ed evita l’obbligo della guida dedicata (€75/giorno) nelle uscite future.'],
             ['q' => 'Posso convertire il mio Scuba Diver in Open Water Diver più avanti?', 'a' => 'Sì! Con il nostro corso Upgrade to Open Water (€100 + €85 PADI) completi gli ultimi 2 moduli teorici, 2 sessioni piscina e 2 immersioni fino a 18 m in soli 1–2 giorni.'],
             ['q' => 'La tassa PADI di €85 è obbligatoria?', 'a' => 'Sì, copre il materiale didattico ufficiale PADI e l’emissione del brevetto digitale internazionale a tuo nome.'],
         ],
@@ -238,15 +238,15 @@ return [
 
     'owd' => [
         'h1' => 'Corso PADI Open Water Diver a Sharm El Sheikh — Brevetto Internazionale 18m',
-        'meta_title' => 'Corso PADI Open Water Sharm El Sheikh €380 | Centro PADI 5 Stelle',
-        'meta_desc' => 'Prendi il brevetto PADI Open Water Diver a Sharm El Sheikh a €380 (+€85 PADI) in 3–3,5 giorni. 5 piscine + 4 immersioni Mar Rosso fino a 18m, attrezzatura e assicurazione incluse!',
-        'aeo_answer' => 'Il corso PADI Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €380 (+€85 manuale e certificazione PADI), dura 3–3,5 giorni (età minima 10 anni) e comprende 5 moduli teorici, 5 sessioni in acqua confinata, 4 immersioni nel Mar Rosso fino a 18 metri, attrezzatura subacquea completa e assicurazione subacquea incluse.',
+        'meta_title' => 'Corso PADI Open Water Sharm El Sheikh €400 | Centro PADI 5 Stelle',
+        'meta_desc' => 'Prendi il brevetto PADI Open Water Diver a Sharm El Sheikh a €400 (+€85 PADI) in 3–3,5 giorni. 5 piscine + 4 immersioni Mar Rosso fino a 18m, attrezzatura e assicurazione incluse!',
+        'aeo_answer' => 'Il corso PADI Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €400 (+€85 manuale e certificazione PADI), dura 3–3,5 giorni (età minima 10 anni) e comprende 5 moduli teorici, 5 sessioni in acqua confinata, 4 immersioni nel Mar Rosso fino a 18 metri, attrezzatura subacquea completa e assicurazione subacquea incluse.',
         'overview' => [
             'Il PADI Open Water Diver è il brevetto subacqueo più famoso e riconosciuto al mondo — e non esiste aula migliore delle acque calde, calme e cristalline di Sharm El Sheikh per conseguirlo! In 3–3,5 giorni i nostri istruttori PADI (premiati con 4,9★ su oltre 3.082 recensioni Google) ti accompagnano passo dopo passo dal tuo primissimo respiro sott’acqua fino a pianificare ed effettuare immersioni autonome in coppia fino a 18 metri.',
-            'Nella tariffa trasparente di €380 presso il nostro Centro PADI 5 Stelle ad Al Montazah sono già inclusi il noleggio completo dell’attrezzatura subacquea per tutti i giorni del corso, l’assicurazione subacquea allievo e i trasferimenti gratuiti dal tuo resort a Sharm El Sheikh. Puoi anche completare la teoria tramite PADI eLearning dall’Italia prima di partire per dedicare la vacanza solo al mare!',
+            'Nella tariffa trasparente di €400 presso il nostro Centro PADI 5 Stelle ad Al Montazah sono già inclusi il noleggio completo dell’attrezzatura subacquea per tutti i giorni del corso, l’assicurazione subacquea allievo e i trasferimenti gratuiti dal tuo resort a Sharm El Sheikh. Puoi anche completare la teoria tramite PADI eLearning dall’Italia prima di partire per dedicare la vacanza solo al mare!',
         ],
         'specs' => [
-            ['Prezzo Corso', '€380 (+€85 manuale & brevetto PADI)'],
+            ['Prezzo Corso', '€400 (+€85 manuale & brevetto PADI)'],
             ['Durata', '3–3,5 giorni'],
             ['Età Minima', '10 anni (Junior OWD 10–14 anni; max 12 m per 10–11 anni)'],
             ['Struttura Corso', '5 moduli teoria + 5 piscine + 4 immersioni nel Mar Rosso'],
@@ -284,15 +284,15 @@ return [
 
     'aowd' => [
         'h1' => 'Corso PADI Advanced Open Water Diver a Sharm El Sheikh (30 Metri)',
-        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh €280 | 5 Immersioni fino a 30m',
-        'meta_desc' => 'Corso PADI Advanced Open Water Diver a Sharm El Sheikh a €280 (+€85 PADI) in 2,5–3 giorni. 5 Immersioni di Avventura fino a 30 m per Thistlegorm, Tiran e Ras Mohammed!',
-        'aeo_answer' => 'Il corso PADI Advanced Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €280 (+€85 manuale e certificazione PADI), dura 2,5–3 giorni senza esame scritto finale e comprende 5 Immersioni di Avventura (tra cui Immersione Profonda fino a 30 m e Navigazione Subacquea) con attrezzatura subacquea completa inclusa.',
+        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh €350 | 5 Immersioni fino a 30m',
+        'meta_desc' => 'Corso PADI Advanced Open Water Diver a Sharm El Sheikh a €350 (+€85 PADI) in 2,5–3 giorni. 5 Immersioni di Avventura fino a 30 m per Thistlegorm, Tiran e Ras Mohammed!',
+        'aeo_answer' => 'Il corso PADI Advanced Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €350 (+€85 manuale e certificazione PADI), dura 2,5–3 giorni senza esame scritto finale e comprende 5 Immersioni di Avventura (tra cui Immersione Profonda fino a 30 m e Navigazione Subacquea) con attrezzatura subacquea completa inclusa.',
         'overview' => [
             'Vuoi sbloccare le immersioni più leggendarie del Mar Rosso — dal relitto della SS Thistlegorm ai muri verticali di Shark & Yolanda Reef e dello Stretto di Tiran? Il corso PADI Advanced Open Water Diver è 100% pratico, divertente e privo di esame teorico finale: effettui 5 Immersioni di Avventura in 2,5–3 giorni, alzando il tuo limite operativo da 18 a 30 metri!',
-            'Oltre alle due immersioni obbligatorie (Deep Adventure fino a 30 m e Underwater Navigation con bussola), scegli 3 avventure su misura per Sharm El Sheikh insieme al tuo istruttore PADI: Peak Performance Buoyancy (assetto perfetto), Drift Dive in corrente, Relitti, Notturna o Identificazione Pesci. Tutta l’attrezzatura è inclusa nei €280!',
+            'Oltre alle due immersioni obbligatorie (Deep Adventure fino a 30 m e Underwater Navigation con bussola), scegli 3 avventure su misura per Sharm El Sheikh insieme al tuo istruttore PADI: Peak Performance Buoyancy (assetto perfetto), Drift Dive in corrente, Relitti, Notturna o Identificazione Pesci. Tutta l’attrezzatura è inclusa nei €350!',
         ],
         'specs' => [
-            ['Prezzo Corso', '€280 (+€85 manuale & brevetto PADI)'],
+            ['Prezzo Corso', '€350 (+€85 manuale & brevetto PADI)'],
             ['Prerequisito', 'PADI Open Water Diver (o brevetto equivalente SSI/CMAS/FIPSAS)'],
             ['Età Minima', '12 anni (21 m max per 12–14 anni; 30 m dai 15 anni)'],
             ['Durata', '2,5–3 giorni (5 Immersioni di Avventura)'],

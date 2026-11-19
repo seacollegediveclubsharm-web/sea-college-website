@@ -84,16 +84,16 @@ return [
             'ar' => 'دورات PADI في شرم الشيخ | من المبتدئين حتى Divemaster | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Learn to dive at a PADI 5 Star Dive Resort in Sharm El Sheikh. Kids Bubblemaker €70, Discover Scuba €85, Open Water €380, Advanced €280, Specialties & Divemaster.',
-            'ar' => 'تعلم الغوص في منتجع PADI خمس نجوم بشرم الشيخ: Bubblemaker للأطفال 70€، غطسة المبتدئين 85€، Open Water بـ380€، Advanced بـ280€ ودورات التخصص والاحتراف.',
+            'en' => 'Learn to dive at a PADI 5 Star Dive Resort in Sharm El Sheikh. Kids Bubblemaker €70, Discover Scuba €85, Open Water €400, Advanced €350, Specialties & Divemaster.',
+            'ar' => 'تعلم الغوص في منتجع PADI خمس نجوم بشرم الشيخ: Bubblemaker للأطفال 70€، غطسة المبتدئين 85€، Open Water بـ400€، Advanced بـ350€ ودورات التخصص والاحتراف.',
         ],
         'sub' => [
             'en' => 'Train in warm, crystal-clear Red Sea water with an on-site training pool, air-conditioned classroom, house reef and multilingual PADI Instructors speaking English, Arabic, Russian, German, Italian and French.',
             'ar' => 'تدرّب في مياه البحر الأحمر الدافئة والصافية مع حمام سباحة مخصص للتدريب وقاعة دراسة مكيفة وشعاب منزلية ومدربي PADI بست لغات.',
         ],
         'aeo_answer' => [
-            'en' => 'Sea College Dive Club is an official PADI 5 Star Dive Resort at Cyrene Sharm in Al Montazah, Sharm El Sheikh, teaching the full PADI pathway: kids pool courses from age 8 (Bubblemaker €70, Seal Team €170), beginner courses from age 10 (Discover Scuba Diving €85 all-inclusive, Scuba Diver €250, Open Water Diver €380 in 3–3.5 days), Advanced Open Water (€280), Rescue Diver (€394), 8 PADI Specialties (€120–€350) and the 4–6 week Divemaster internship (€850). Scuba equipment is included in every course; PADI eLearning/manual & certification fee is €85 per course (already included in Discover Scuba Diving).',
-            'ar' => 'سي كوليدج دايف كلوب هو منتجع غوص رسمي معتمد PADI خمس نجوم في سيرين شرم بالمنتزه، يقدم مسار PADI الكامل: دورات الأطفال من سن 8 سنوات (Bubblemaker بـ70€ وSeal Team بـ170€)، دورات المبتدئين من سن 10 سنوات (Discover Scuba Diving بـ85€ شاملة الشهادة، وOpen Water بـ380€ في 3–3.5 أيام)، ودورة Advanced بـ280€، والإنقاذ بـ394€، ودورات التخصص، وبرنامج Divemaster الاحترافي بـ850€. تشمل جميع الدورات المعدات الكاملة، وتبلغ رسوم كتاب وشهادة PADI نحو 85€ للدورة (مشمولة مجانًا في Discover Scuba Diving).',
+            'en' => 'Sea College Dive Club is an official PADI 5 Star Dive Resort at Cyrene Sharm in Al Montazah, Sharm El Sheikh, teaching the full PADI pathway: kids pool courses from age 8 (Bubblemaker €70, Seal Team €170), beginner courses from age 10 (Discover Scuba Diving €85 all-inclusive, Scuba Diver €250, Open Water Diver €400 in 3–3.5 days), Advanced Open Water (€350), Rescue Diver (€394), 8 PADI Specialties (€120–€350) and the 4–6 week Divemaster internship (€850). Scuba equipment is included in every course; PADI eLearning/manual & certification fee is €85 per course (already included in Discover Scuba Diving).',
+            'ar' => 'سي كوليدج دايف كلوب هو منتجع غوص رسمي معتمد PADI خمس نجوم في سيرين شرم بالمنتزه، يقدم مسار PADI الكامل: دورات الأطفال من سن 8 سنوات (Bubblemaker بـ70€ وSeal Team بـ170€)، دورات المبتدئين من سن 10 سنوات (Discover Scuba Diving بـ85€ شاملة الشهادة، وOpen Water بـ400€ في 3–3.5 أيام)، ودورة Advanced بـ350€، والإنقاذ بـ394€، ودورات التخصص، وبرنامج Divemaster الاحترافي بـ850€. تشمل جميع الدورات المعدات الكاملة، وتبلغ رسوم كتاب وشهادة PADI نحو 85€ للدورة (مشمولة مجانًا في Discover Scuba Diving).',
         ],
         'highlights' => [
             'en' => [

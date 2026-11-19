@@ -108,7 +108,7 @@ return [
         'faqs' => [
             ['Does AquaMission 1 count if my child already did Bubblemaker?', 'Bubblemaker gives great confidence, and in Seal Team your child completes all 5 structured AquaMissions to master buoyancy, mask and regulator skills.', 'هل يستفيد طفلي من Seal Team بعد تجربة Bubblemaker؟', 'بالتأكيد! يمنح Bubblemaker الثقة المبدئية، ثم يبني Seal Team خمس مهارات متكاملة في التحكم بالطفو والقناع والمنظم.'],
             ['What depth does Seal Team reach?', 'AquaMission 1 stays under 2 metres, and AquaMissions 2–5 stay within safe shallow training-pool depths (<4 m) under direct PADI supervision.', 'ما العمق الذي يصل إليه الطفل في Seal Team؟', 'تقام جميع المهمات داخل حمام السباحة التدريبي الآمن (أقل من مترين في المهمة الأولى وحتى عمق المسبح التدريبي تحت إشراف مباشر).'],
-            ['When can my child dive on the coral reef in the Red Sea?', 'On their 10th birthday! At age 10 they can take PADI Discover Scuba Diving (€85) or Junior Open Water Diver (€380).', 'متى يمكن لطفلي الغوص فوق الشعاب المرجانية في البحر؟', 'فور بلوغه 10 سنوات! حيث يمكنه الالتحاق ببرنامج Discover Scuba Diving (85€) أو شهادة Junior Open Water (380€).'],
+            ['When can my child dive on the coral reef in the Red Sea?', 'On their 10th birthday! At age 10 they can take PADI Discover Scuba Diving (€85) or Junior Open Water Diver (€400).', 'متى يمكن لطفلي الغوص فوق الشعاب المرجانية في البحر؟', 'فور بلوغه 10 سنوات! حيث يمكنه الالتحاق ببرنامج Discover Scuba Diving (85€) أو شهادة Junior Open Water (400€).'],
         ],
     ],
 
@@ -148,8 +148,8 @@ return [
             'ar' => ['طقم معدات الغوص الكامل', 'كتيب وشهادة PADI Discover Scuba Diving الرسمية (بدون رسوم 85€ إضافية!)', 'جلسة تدريب المسبح + غطسة موجهة في البحر المفتوح'],
         ],
         'excluded' => [
-            'en' => ['Boat upgrade (prefer diving from a yacht? See Discover Scuba Diving — 2 Boat Dives for €100)', 'Full lifelong autonomous diver license (see PADI Open Water Diver €380)'],
-            'ar' => ['النزول من اليخت (إن كنت تفضل رحلة القارب شاهد عرض غطستين بالقارب بـ100€)', 'رخصة الغوص المستقلة مدى الحياة (تمنحها دورة Open Water بـ380€)'],
+            'en' => ['Boat upgrade (prefer diving from a yacht? See Discover Scuba Diving — 2 Boat Dives for €100)', 'Full lifelong autonomous diver license (see PADI Open Water Diver €400)'],
+            'ar' => ['النزول من اليخت (إن كنت تفضل رحلة القارب شاهد عرض غطستين بالقارب بـ100€)', 'رخصة الغوص المستقلة مدى الحياة (تمنحها دورة Open Water بـ400€)'],
         ],
         'ideal_for' => [
             'en' => ['First-time divers aged 10+ who want calm pool preparation before entering the sea', 'Holidaymakers deciding whether to commit to the 3-day PADI Open Water Diver course'],
@@ -160,7 +160,7 @@ return [
         'review_idx' => 1,
         'related' => ['dsd-quick-reef', 'dsd-2-boat', 'scuba-diver', 'owd'],
         'faqs' => [
-            ['Is PADI Discover Scuba Diving a full diving license?', 'Discover Scuba Diving is an official PADI introductory experience certificate rather than an autonomous certification card — to get a lifelong license to dive to 18 m worldwide, take PADI Open Water Diver (€380).', 'هل يمنح هذا البرنامج رخصة غوص دولية مستقلة؟', 'يمنحك البرنامج شهادة إتمام تجربة رسمية من PADI وليس رخصة غوص مستقلة؛ وللحصول على الرخصة الدولية الدائمة لعمق 18م اختر دورة PADI Open Water (380€).'],
+            ['Is PADI Discover Scuba Diving a full diving license?', 'Discover Scuba Diving is an official PADI introductory experience certificate rather than an autonomous certification card — to get a lifelong license to dive to 18 m worldwide, take PADI Open Water Diver (€400).', 'هل يمنح هذا البرنامج رخصة غوص دولية مستقلة؟', 'يمنحك البرنامج شهادة إتمام تجربة رسمية من PADI وليس رخصة غوص مستقلة؛ وللحصول على الرخصة الدولية الدائمة لعمق 18م اختر دورة PADI Open Water (400€).'],
             ['How does this €85 PADI DSD differ from the €30 Quick Intro Dive?', 'The €30 Quick Intro is a short 10-minute shore try-dive after a briefing. This €85 PADI DSD includes a full confined-water pool training session, longer open-water reef exploration, and official PADI registration & certificate.', 'ما الفرق بين هذا البرنامج (85€) والغطسة السريعة (30€)؟', 'الغطسة السريعة (30€) مدتها 10 دقائق من الشاطئ بعد شرح سريع، بينما يشمل برنامج PADI DSD (85€) تدريبًا كاملًا في حمام السباحة وغطسة بحرية وتسجيلًا رسميًا وشهادة PADI.'],
             ['Do I pay the €85 PADI manual fee on top of this?', 'No! As stated in our official course rules, Discover Scuba Diving is the exception — the manual and certificate fee are ALREADY included in €85.', 'هل أحتاج لدفع رسوم كتاب وشهادة 85€ إضافية؟', 'لا! برنامج Discover Scuba Diving مستثنى من الرسوم الإضافية؛ فالكتيب والشهادة مشمولان بالفعل ضمن سعر الـ 85€.'],
         ],
@@ -201,8 +201,8 @@ return [
             'ar' => ['3 تدريبات في حمام السباحة + غطستان في البحر المفتوح', 'تأجير معدات الغوص الكاملة طوال الدورة', 'تأمين الغوص خلال فترة التدريب'],
         ],
         'excluded' => [
-            'en' => ['PADI manual / eLearning & certification fee (€85)', 'Boat (€10/day) & Marine Park (€5/day) supplements if dives are taken from the boat', 'Note: Future certified dives as a Scuba Diver require a Private Guide (€75/day) per center rules — upgrading to Open Water (€380) removes this requirement!'],
-            'ar' => ['رسوم كتاب وشهادة PADI الرسمية (85€)', 'رسوم القارب (10€) والمحمية (5€) في حال تنفيذ الغطسات من القارب', 'ملاحظة: الغوص لاحقًا بشهادة Scuba Diver يتطلب مرشدًا خاصًا — بينما تلغي دورة Open Water (380€) هذا الشرط!'],
+            'en' => ['PADI manual / eLearning & certification fee (€85)', 'Boat (€10/day) & Marine Park (€5/day) supplements if dives are taken from the boat', 'Note: Future certified dives as a Scuba Diver require a Private Guide (€75/day) per center rules — upgrading to Open Water (€400) removes this requirement!'],
+            'ar' => ['رسوم كتاب وشهادة PADI الرسمية (85€)', 'رسوم القارب (10€) والمحمية (5€) في حال تنفيذ الغطسات من القارب', 'ملاحظة: الغوص لاحقًا بشهادة Scuba Diver يتطلب مرشدًا خاصًا — بينما تلغي دورة Open Water (400€) هذا الشرط!'],
         ],
         'ideal_for' => [
             'en' => ['Vacationers with only 2 spare days who still want a recognized lifelong PADI card', 'Junior divers aged 10–11 or cautious beginners preferring a 12 m depth cap'],
@@ -213,7 +213,7 @@ return [
         'review_idx' => 1,
         'related' => ['upgrade-owd', 'owd', 'dsd', 'bundle-stars'],
         'faqs' => [
-            ['Should I book Scuba Diver (€250) or Open Water Diver (€380)?', 'If you have 3–3.5 days, Open Water Diver (€380) is better value because it certifies you to 18 m with a buddy without needing a mandatory private PADI guide on future trips. Choose Scuba Diver (€250) if you strictly only have 2 days.', 'أيهما أفضل: Scuba Diver (250€) أم Open Water (380€)؟', 'إن توفر لديك 3–3.5 أيام فدورة Open Water (380€) أفضل قيمة لأنها تؤهلك لعمق 18م دون اشتراط مرشد خاص في رحلاتك المستقبلية. اختر Scuba Diver (250€) فقط إذا كان وقتك يومين.'],
+            ['Should I book Scuba Diver (€250) or Open Water Diver (€400)?', 'If you have 3–3.5 days, Open Water Diver (€400) is better value because it certifies you to 18 m with a buddy without needing a mandatory private PADI guide on future trips. Choose Scuba Diver (€250) if you strictly only have 2 days.', 'أيهما أفضل: Scuba Diver (250€) أم Open Water (400€)؟', 'إن توفر لديك 3–3.5 أيام فدورة Open Water (400€) أفضل قيمة لأنها تؤهلك لعمق 18م دون اشتراط مرشد خاص في رحلاتك المستقبلية. اختر Scuba Diver (250€) فقط إذا كان وقتك يومين.'],
             ['Does PADI Scuba Diver expire?', 'No — it is a lifelong PADI certification, and you can upgrade to full Open Water Diver in 1–2 days (€100 at Sea College) whenever you wish.', 'هل تنتهي صلاحية شهادة PADI Scuba Diver؟', 'لا، هي شهادة دائمة مدى الحياة، ويمكنك ترقيتها إلى Open Water خلال يوم أو يومين (100€ في مركزنا) متى شئت.'],
             ['Is diving insurance included?', 'Yes, diving insurance and full scuba equipment are both included in the €250 course price.', 'هل تأمين الغوص مشمول في السعر؟', 'نعم، يشمل سعر الـ 250€ تأمين الغوص ومعدات الغوص الكاملة طوال الدورة.'],
         ],
@@ -258,8 +258,8 @@ return [
             'ar' => ['رسوم إصدار شهادة وكتاب PADI الرسمية (85€)', 'رسوم القارب (10€) والمحمية (5€) في أيام القارب'],
         ],
         'ideal_for' => [
-            'en' => ['Holders of PADI Scuba Diver (from any PADI center worldwide, regardless of how long ago you qualified!)', 'Divers planning to continue immediately onto PADI Advanced Open Water (€280)'],
-            'ar' => ['حاملو شهادة PADI Scuba Diver من أي مركز PADI حول العالم وفي أي سنة سابقة', 'الغواصون الراغبون في المتابعة مباشرة إلى دورة Advanced Open Water (280€)'],
+            'en' => ['Holders of PADI Scuba Diver (from any PADI center worldwide, regardless of how long ago you qualified!)', 'Divers planning to continue immediately onto PADI Advanced Open Water (€350)'],
+            'ar' => ['حاملو شهادة PADI Scuba Diver من أي مركز PADI حول العالم وفي أي سنة سابقة', 'الغواصون الراغبون في المتابعة مباشرة إلى دورة Advanced Open Water (350€)'],
         ],
         'schema_type' => 'Course',
         'compare_mode' => 'none',
@@ -274,11 +274,11 @@ return [
 
     'owd' => [
         'h1' => ['en' => 'PADI Open Water Diver Course in Sharm El Sheikh (Full Certification)', 'ar' => 'دورة غواص المياه المفتوحة PADI Open Water في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Open Water Course Sharm El Sheikh | €380 | PADI 5 Star Resort', 'ar' => 'دورة PADI Open Water في شرم الشيخ | 380€ | منتجع PADI خمس نجوم'],
-        'meta_desc' => ['en' => 'Earn your lifelong PADI Open Water Diver license in Sharm El Sheikh (€380, 3–3.5 days, age 10+). 5 pool + 4 Red Sea dives to 18 m — full equipment & dive insurance included.', 'ar' => 'احصل على رخصة الغوص الدولية مدى الحياة PADI Open Water في شرم الشيخ (380€، 3–3.5 أيام، سن 10+). 5 جلسات مسبح + 4 غطسات بحر أحمر شاملة المعدات والتأمين.'],
+        'meta_title' => ['en' => 'PADI Open Water Course Sharm El Sheikh | €400 | PADI 5 Star Resort', 'ar' => 'دورة PADI Open Water في شرم الشيخ | 400€ | منتجع PADI خمس نجوم'],
+        'meta_desc' => ['en' => 'Earn your lifelong PADI Open Water Diver license in Sharm El Sheikh (€400, 3–3.5 days, age 10+). 5 pool + 4 Red Sea dives to 18 m — full equipment & dive insurance included.', 'ar' => 'احصل على رخصة الغوص الدولية مدى الحياة PADI Open Water في شرم الشيخ (400€، 3–3.5 أيام، سن 10+). 5 جلسات مسبح + 4 غطسات بحر أحمر شاملة المعدات والتأمين.'],
         'aeo_answer' => [
-            'en' => 'The PADI Open Water Diver course at Sea College Dive Club (a PADI 5 Star Dive Resort at Cyrene Sharm, Al Montazah, Sharm El Sheikh) costs €380 per person, lasts 3 to 3.5 days, and welcomes beginners from age 10 with zero prior diving experience. The price includes 5 knowledge modules, 5 confined-water pool sessions, 4 open water Red Sea dives (qualifying you to 18 m worldwide for life), full scuba equipment rental and diving insurance; the official PADI manual/eLearning & certification card fee is €85.',
-            'ar' => 'تبلغ تكلفة دورة PADI Open Water Diver في سي كوليدج دايف كلوب (منتجع PADI خمس نجوم في سيرين شرم بالمنتزه، شرم الشيخ) 380€ للفرد، وتستغرق من 3 إلى 3.5 أيام للمبتدئين من سن 10 سنوات دون أي خبرة سابقة. يشمل السعر 5 وحدات نظرية و5 تدريبات في حمام السباحة و4 غطسات في البحر الأحمر (تؤهلك لعمق 18 مترًا مدى الحياة حول العالم) وتأجير المعدات الكاملة وتأمين الغوص، وتُضاف رسوم كتاب وشهادة PADI الرسمية بقيمة 85€.',
+            'en' => 'The PADI Open Water Diver course at Sea College Dive Club (a PADI 5 Star Dive Resort at Cyrene Sharm, Al Montazah, Sharm El Sheikh) costs €400 per person, lasts 3 to 3.5 days, and welcomes beginners from age 10 with zero prior diving experience. The price includes 5 knowledge modules, 5 confined-water pool sessions, 4 open water Red Sea dives (qualifying you to 18 m worldwide for life), full scuba equipment rental and diving insurance; the official PADI manual/eLearning & certification card fee is €85.',
+            'ar' => 'تبلغ تكلفة دورة PADI Open Water Diver في سي كوليدج دايف كلوب (منتجع PADI خمس نجوم في سيرين شرم بالمنتزه، شرم الشيخ) 400€ للفرد، وتستغرق من 3 إلى 3.5 أيام للمبتدئين من سن 10 سنوات دون أي خبرة سابقة. يشمل السعر 5 وحدات نظرية و5 تدريبات في حمام السباحة و4 غطسات في البحر الأحمر (تؤهلك لعمق 18 مترًا مدى الحياة حول العالم) وتأجير المعدات الكاملة وتأمين الغوص، وتُضاف رسوم كتاب وشهادة PADI الرسمية بقيمة 85€.',
         ],
         'overview' => [
             'en' => [
@@ -291,7 +291,7 @@ return [
             ],
         ],
         'specs' => [
-            ['Course Price', 'سعر الدورة', '€380 per person (gear & dive insurance included)', '380€ للفرد (شامل المعدات وتأمين الغوص)'],
+            ['Course Price', 'سعر الدورة', '€400 per person (gear & dive insurance included)', '400€ للفرد (شامل المعدات وتأمين الغوص)'],
             ['PADI Fee', 'رسوم PADI الرسمية', '+€85 PADI eLearning / manual & certification card', '+85€ رسوم كتاب/تعلم إلكتروني وبطاقة PADI'],
             ['Duration', 'المدة', '3 – 3.5 days (approx. 08:00–16:30)', '3 إلى 3.5 أيام'],
             ['Minimum Age', 'العمر الأدنى', '10 years old (Junior OWD 10–14; OWD 15+)', '10 سنوات فأكثر'],
@@ -313,8 +313,8 @@ return [
             'ar' => ['رسوم كتاب وشهادة PADI الرسمية (85€)', 'رسوم القارب (10€ يوميًا) والمحمية (5€ يوميًا) في أيام القارب', 'تنبيه مهم: اترك 18 ساعة على الأقل بين آخر غطسة وموعد رحلة الطيران!'],
         ],
         'ideal_for' => [
-            'en' => ['Complete beginners aged 10+ wanting a permanent global scuba license in 3–3.5 days', 'Tip: Planning to dive deeper wrecks like SS Thistlegorm later? Check the Mega Bundle (OWD + Advanced for €600, save €90)!'],
-            'ar' => ['المبتدئون تمامًا من سن 10 سنوات الراغبون في شهادة دولية دائمة خلال 3–3.5 أيام', 'نصيحة: وفّر 90€ باختيار باقة Mega (Open Water + Advanced بـ600€) للوصول لعمق 30 مترًا في إجازة واحدة!'],
+            'en' => ['Complete beginners aged 10+ wanting a permanent global scuba license in 3–3.5 days', 'Tip: Planning to dive deeper wrecks like SS Thistlegorm later? Check the Mega Bundle (OWD + Advanced for €600, save €90+)!'],
+            'ar' => ['المبتدئون تمامًا من سن 10 سنوات الراغبون في شهادة دولية دائمة خلال 3–3.5 أيام', 'نصيحة: وفّر أكثر باختيار باقة Mega (Open Water + Advanced بـ600€) للوصول لعمق 30 مترًا في إجازة واحدة!'],
         ],
         'schema_type' => 'Course',
         'compare_mode' => 'bundles',
@@ -323,18 +323,18 @@ return [
         'faqs' => [
             ['Can I complete the theory online before flying to Sharm El Sheikh?', 'Yes! Ask us about PADI eLearning so you finish the reading and quizzes at home and spend your holiday days in the water instead of the classroom.', 'هل يمكنني إنهاء الدراسة النظرية أونلاين قبل السفر إلى شرم الشيخ؟', 'نعم! يمكنك دراسة الجزء النظري عبر PADI eLearning في المنزل قبل السفر لتستغل أيام إجازتك في الغوص والاستمتاع بالبحر.'],
             ['What swimming skills are required for PADI Open Water Diver?', 'PADI requires a non-timed 200-metre continuous swim (any stroke — or 300 m with mask, snorkel and fins) plus a 10-minute surface float/tread in calm water.', 'ما هي مهارات السباحة المطلوبة لدورة Open Water؟', 'تشترط PADI سباحة مسافة 200 متر بدون وقت محدد (أو 300 متر بالقناع والسنوركل والزعانف) والطفو على السطح لمدة 10 دقائق.'],
-            ['Is €380 inclusive of gear and insurance?', 'Yes — both full scuba equipment rental and training dive insurance are included in €380; only the €85 PADI manual/cert fee and any boat/park day fees (€10 + €5) are extra.', 'هل سعر الـ 380€ يشمل المعدات وتأمين الغوص؟', 'نعم، يشمل السعر كافة معدات الغوص وتأمين الغوص طوال الدورة، وتُضاف فقط رسوم كتاب وشهادة PADI (85€) ورسوم القارب/المحمية في أيام القارب.'],
-            ['How can I save money if I also want Nitrox or Advanced Open Water?', 'Book our Stars Bundle (OWD + Nitrox = €500, save €50), Mega Bundle (OWD + AOWD = €600, save €90) or Heros Bundle (OWD + AOWD + Nitrox = €750, save €120)!', 'كيف أوفر إذا رغبت في إضافة دورة النيتروكس أو المتقدم؟', 'احجز إحدى باقات التوفير: Stars بـ500€ (توفير 50€)، أو Mega بـ600€ (توفير 90€)، أو Heros الثلاثية بـ750€ (توفير 120€)!'],
+            ['Is €400 inclusive of gear and insurance?', 'Yes — both full scuba equipment rental and training dive insurance are included in €400; only the €85 PADI manual/cert fee and any boat/park day fees (€10 + €5) are extra.', 'هل سعر الـ 400€ يشمل المعدات وتأمين الغوص؟', 'نعم، يشمل السعر كافة معدات الغوص وتأمين الغوص طوال الدورة، وتُضاف فقط رسوم كتاب وشهادة PADI (85€) ورسوم القارب/المحمية في أيام القارب.'],
+            ['How can I save money if I also want Nitrox or Advanced Open Water?', 'Book our Stars Bundle (OWD + Nitrox = €500, save €50+), Mega Bundle (OWD + AOWD = €600, save €90+) or Heros Bundle (OWD + AOWD + Nitrox = €750, save €120+)!', 'كيف أوفر إذا رغبت في إضافة دورة النيتروكس أو المتقدم؟', 'احجز إحدى باقات التوفير: Stars بـ500€، أو Mega بـ600€، أو Heros الثلاثية بـ750€!'],
         ],
     ],
 
     'aowd' => [
         'h1' => ['en' => 'PADI Advanced Open Water Diver Course in Sharm El Sheikh (30 m License)', 'ar' => 'دورة الغوص المتقدم PADI Advanced Open Water في شرم الشيخ (30 مترًا)'],
-        'meta_title' => ['en' => 'PADI Advanced Open Water Sharm El Sheikh | €280 | 5 Adventure Dives', 'ar' => 'دورة PADI Advanced Open Water بشرم الشيخ | 280€ | 5 غطسات'],
-        'meta_desc' => ['en' => 'Unlock 30 m Red Sea walls & wrecks! PADI Advanced Open Water Diver in Sharm El Sheikh (€280, 2.5–3 days, age 12+): 5 Adventure Dives incl. Deep & Navigation, gear included.', 'ar' => 'تأهل للغوص حتى 30 مترًا في شرم الشيخ! دورة PADI Advanced Open Water (280€، 2.5–3 أيام، سن 12+): 5 غطسات مغامرة شاملة العميق والملاحة والمعدات.'],
+        'meta_title' => ['en' => 'PADI Advanced Open Water Sharm El Sheikh | €350 | 5 Adventure Dives', 'ar' => 'دورة PADI Advanced Open Water بشرم الشيخ | 350€ | 5 غطسات'],
+        'meta_desc' => ['en' => 'Unlock 30 m Red Sea walls & wrecks! PADI Advanced Open Water Diver in Sharm El Sheikh (€350, 2.5–3 days, age 12+): 5 Adventure Dives incl. Deep & Navigation, gear included.', 'ar' => 'تأهل للغوص حتى 30 مترًا في شرم الشيخ! دورة PADI Advanced Open Water (350€، 2.5–3 أيام، سن 12+): 5 غطسات مغامرة شاملة العميق والملاحة والمعدات.'],
         'aeo_answer' => [
-            'en' => 'The PADI Advanced Open Water Diver course at Sea College Dive Club in Sharm El Sheikh costs €280 per person (minimum age 12, duration 2.5 to 3 days) and includes all scuba equipment across 5 open water Adventure Dives — no written final exam required! You complete Deep Adventure Dive (certifying you to 30 m / 21 m for ages 12–14) and Underwater Navigation plus 3 electives such as Wreck, Drift, Peak Performance Buoyancy or Night (+€85 PADI manual/cert fee).',
-            'ar' => 'تبلغ تكلفة دورة PADI Advanced Open Water في سي كوليدج دايف كلوب بشرم الشيخ 280€ للفرد (من سن 12 سنة، لمدة 2.5–3 أيام) وتشمل معدات الغوص الكاملة خلال 5 غطسات مغامرة في البحر المفتوح دون اختبار تحريري نهائي! تشمل غطستين أساسيتين (العميق حتى 30م والملاحة بالبوصلة) مع 3 غطسات اختيارية مثل الطفو المثالي أو التيارات أو الحطام (+85€ رسوم كتاب وشهادة PADI).',
+            'en' => 'The PADI Advanced Open Water Diver course at Sea College Dive Club in Sharm El Sheikh costs €350 per person (minimum age 12, duration 2.5 to 3 days) and includes all scuba equipment across 5 open water Adventure Dives — no written final exam required! You complete Deep Adventure Dive (certifying you to 30 m / 21 m for ages 12–14) and Underwater Navigation plus 3 electives such as Wreck, Drift, Peak Performance Buoyancy or Night (+€85 PADI manual/cert fee).',
+            'ar' => 'تبلغ تكلفة دورة PADI Advanced Open Water في سي كوليدج دايف كلوب بشرم الشيخ 350€ للفرد (من سن 12 سنة، لمدة 2.5–3 أيام) وتشمل معدات الغوص الكاملة خلال 5 غطسات مغامرة في البحر المفتوح دون اختبار تحريري نهائي! تشمل غطستين أساسيتين (العميق حتى 30م والملاحة بالبوصلة) مع 3 غطسات اختيارية مثل الطفو المثالي أو التيارات أو الحطام (+85€ رسوم كتاب وشهادة PADI).',
         ],
         'overview' => [
             'en' => [
@@ -347,7 +347,7 @@ return [
             ],
         ],
         'specs' => [
-            ['Course Price', 'سعر الدورة', '€280 per person (full scuba equipment included)', '280€ للفرد (شامل طقم المعدات الكامل)'],
+            ['Course Price', 'سعر الدورة', '€350 per person (full scuba equipment included)', '350€ للفرد (شامل طقم المعدات الكامل)'],
             ['PADI Fee', 'رسوم PADI', '+€85 PADI manual / eLearning & certification fee', '+85€ رسوم الكتاب وإصدار شهادة PADI'],
             ['Duration', 'المدة', '2.5 – 3 days · 5 Open Water Adventure Dives', '2.5 إلى 3 أيام · 5 غطسات في البحر المفتوح'],
             ['Min Age & Prereq', 'العمر والشرط', 'Age 12+ · PADI Open Water Diver (or equivalent)', 'سن 12+ · شهادة Open Water أو ما يعادلها'],
@@ -1077,9 +1077,9 @@ return [
         'review_idx' => 1,
         'related' => ['bundle-mega', 'bundle-heros', 'owd', 'nitrox'],
         'faqs' => [
-            ['How much do I save with the Stars Bundle?', 'You save €50 compared to booking Open Water (€380) + Nitrox (€145) + separate Nitrox dive insurance individually.', 'كم أوفر عند حجز باقة Stars؟', 'توفر 50€ مباشرة مقارنة بحجز دورة Open Water (380€) والنيتروكس (145€) وتأمين الغوص بشكل منفصل.'],
+            ['How much do I save with the Stars Bundle?', 'You save over €50 compared to booking Open Water (€400) + Nitrox (€145) + separate Nitrox dive insurance individually.', 'كم أوفر عند حجز باقة Stars؟', 'توفر أكثر من 50€ مقارنة بحجز دورة Open Water (400€) والنيتروكس (145€) وتأمين الغوص بشكل منفصل.'],
             ['Why is the minimum age 12 instead of 10?', 'While Open Water starts at age 10, PADI Enriched Air Nitrox has a minimum age of 12 — so Stars starts at 12.', 'لماذا الحد الأدنى للعمر 12 سنة؟', 'تبدأ دورة Open Water من 10 سنوات، لكن تخصص النيتروكس يشترط 12 سنة كحد أدنى.'],
-            ['What if I have 6 days free?', 'Look at Mega (€600: OWD + Advanced, save €90) or Heros (€750: OWD + Advanced + Nitrox, save €120) to qualify all the way to 30 metres!', 'ماذا لو كان لدي 6 أيام متاحة في الإجازة؟', 'شاهد باقة Mega (600€ بتوفير 90€) أو Heros الثلاثية (750€ بتوفير 120€) للتأهل حتى عمق 30 مترًا!'],
+            ['What if I have 6 days free?', 'Look at Mega (€600: OWD + Advanced, save €90+) or Heros (€750: OWD + Advanced + Nitrox, save €120+) to qualify all the way to 30 metres!', 'ماذا لو كان لدي 6 أيام متاحة في الإجازة؟', 'شاهد باقة Mega (600€) أو Heros الثلاثية (750€) للتأهل حتى عمق 30 مترًا!'],
         ],
     ],
 
@@ -1088,21 +1088,21 @@ return [
         'meta_title' => ['en' => 'Super Bundle: PADI Advanced + Nitrox Sharm | €400 (Save €75)', 'ar' => 'باقة Super: الغوص المتقدم + النيتروكس بشرم الشيخ | 400€ (وفّر 75€)'],
         'meta_desc' => ['en' => 'Already Open Water certified? Upgrade to 30 m + Nitrox in 3 days in Sharm El Sheikh! Super Bundle (€400, save €75) includes AOWD, Nitrox, full gear, dive insurance & tax.', 'ar' => 'تحمل شهادة Open Water؟ ارتقِ لعمق 30م + النيتروكس خلال 3 أيام في شرم الشيخ! باقة Super (400€، وفّر 75€) شاملة الدورتين والمعدات وتأمين الغوص والضريبة.'],
         'aeo_answer' => [
-            'en' => 'The Super PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €400 per person — saving €75 — and finishes in 3 days for certified Open Water divers aged 12+. It includes PADI Advanced Open Water Diver (5 Red Sea Adventure Dives up to 30 m) plus PADI Enriched Air (Nitrox) Diver, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
-            'ar' => 'تبلغ تكلفة باقة Super في سي كوليدج دايف كلوب بشرم الشيخ 400€ للفرد — بتوفير 75€ — وتُنجز خلال 3 أيام لحاملي شهادة Open Water من سن 12 سنة. تشمل دورة الغوص المتقدم PADI Advanced (5 غطسات حتى 30م) ودورة النيتروكس، مع تأجير المعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
+            'en' => 'The Super PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €400 per person — saving €75+ — and finishes in 3 days for certified Open Water divers aged 12+. It includes PADI Advanced Open Water Diver (5 Red Sea Adventure Dives up to 30 m) plus PADI Enriched Air (Nitrox) Diver, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
+            'ar' => 'تبلغ تكلفة باقة Super في سي كوليدج دايف كلوب بشرم الشيخ 400€ للفرد — بتوفير يتجاوز 75€ — وتُنجز خلال 3 أيام لحاملي شهادة Open Water من سن 12 سنة. تشمل دورة الغوص المتقدم PADI Advanced (5 غطسات حتى 30م) ودورة النيتروكس، مع تأجير المعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
         ],
         'overview' => [
             'en' => [
                 'If you already hold an Open Water card (PADI, SSI, CMAS or BSAC), `Super` is the single highest-ROI 3-day upgrade in the Red Sea: it unlocks 30-metre wrecks like the SS Thistlegorm AND certifies you on Enriched Air Nitrox so you can actually stay down long enough to enjoy them!',
-                'Unlike standalone Advanced Open Water (€280) and Nitrox (€145) where dive insurance is separate, `Super` (€400) bundles both courses, full scuba equipment rental, dive insurance and sales tax into one transparent price.',
+                'Unlike standalone Advanced Open Water (€350) and Nitrox (€145) where dive insurance is separate, `Super` (€400) bundles both courses, full scuba equipment rental, dive insurance and sales tax into one transparent price.',
             ],
             'ar' => [
                 'إذا كنت تحمل شهادة Open Water بالفعل (سواء من PADI أو SSI أو CMAS)، فإن باقة Super هي الترقية الأعلى قيمة خلال 3 أيام في البحر الأحمر؛ فهي تفتح لك عمق 30 مترًا لغوص حطام ثيستلجورم وتمنحك شهادة النيتروكس لإطالة وقت بقائك في القاع!',
-                'وعلى عكس حجز الدورتين منفردتين، تشمل باقة Super (400€) الدورتين معًا ومعدات الغوص الكاملة وتأمين الغوص والضريبة بتوفير قدره 75€.',
+                'وعلى عكس حجز الدورتين منفردتين، تشمل باقة Super (400€) الدورتين معًا ومعدات الغوص الكاملة وتأمين الغوص والضريبة بتوفير كبير.',
             ],
         ],
         'specs' => [
-            ['Bundle Price', 'سعر الباقة', '€400 per person (Save €75 · Insurance included!)', '400€ للفرد (وفّر 75€ · شامل تأمين الغوص!)'],
+            ['Bundle Price', 'سعر الباقة', '€400 per person (Save €75+ · Insurance included!)', '400€ للفرد (وفّر 75€+ · شامل تأمين الغوص!)'],
             ['Courses Included', 'الدورات المشمولة', 'PADI Advanced Open Water (5 dives) + PADI Enriched Air Nitrox', 'دورة Advanced (5 غطسات) + تخصص النيتروكس'],
             ['Prerequisite', 'الشرط المسبق', 'Open Water Diver (any recognized agency) · Age 12+', 'شهادة Open Water من أي منظمة معتمدة · سن 12+'],
             ['Duration', 'المدة', '3 days', '3 أيام'],
@@ -1131,7 +1131,7 @@ return [
         'faqs' => [
             ['Can SSI or CMAS 1-Star divers book the Super Bundle?', 'Yes! PADI recognizes Open Water equivalent certifications from SSI, CMAS, BSAC, NAUI and RAID for direct entry into PADI Advanced Open Water + Nitrox.', 'هل تقبلون شهادة SSI أو CMAS لدخول باقة Super؟', 'نعم! تقبل PADI جميع الشهادات المكافئة لـ Open Water من منظمات SSI وCMAS وBSAC وNAUI للالتحاق المباشر.'],
             ['What if I haven\'t dived in over 6 months before starting?', 'Let us know — a quick €25 Check Dive (>6 months) or €50 Scuba Review (>1 year) on our calm house reef gets your buoyancy dialed in before your 30 m dive.', 'ماذا لو كنت منقطعًا عن الغوص لأكثر من 6 أشهر؟', 'أخبرنا عند الحجز لنبدأ بغطسة تنشيطية سريعة Check Dive (25€) على الشعاب المنزلية الهادئة لاستعادة لياقتك المائية.'],
-            ['Why pick Super (€400) instead of AOWD alone (€280)?', 'For €120 extra you get the €145 Nitrox course PLUS diving insurance included across all 3 days — saving €75 total.', 'لماذا أختار باقة Super (400€) بدلًا من Advanced منفردة (280€)؟', 'بفارق 120€ فقط تحصل على دورة النيتروكس (قيمتها 145€) بالإضافة إلى تأمين الغوص مجانًا طوال الأيام الثلاثة (بتوفير إجمالي 75€).'],
+            ['Why pick Super (€400) instead of AOWD alone (€350)?', 'For just €50 extra you get the €145 Nitrox course PLUS diving insurance included across all 3 days — saving over €95 total.', 'لماذا أختار باقة Super (400€) بدلًا من Advanced منفردة (350€)؟', 'بفارق 50€ فقط تحصل على دورة النيتروكس (قيمتها 145€) بالإضافة إلى تأمين الغوص مجانًا طوال الأيام الثلاثة (بتوفير كبير).'],
         ],
     ],
 
@@ -1140,21 +1140,21 @@ return [
         'meta_title' => ['en' => 'Mega Bundle: Open Water + Advanced Sharm | €600 (Save €90)', 'ar' => 'باقة Mega: Open Water + Advanced بشرم الشيخ | 600€ (وفّر 90€)'],
         'meta_desc' => ['en' => 'Go from complete beginner to 30 m Advanced diver in one Sharm El Sheikh holiday! Mega Bundle (€600, save €90, ~6 days): 5 pool + 9 Red Sea dives, gear, insurance & tax.', 'ar' => 'انتقل من مبتدئ تمامًا إلى غواص متقدم لعمق 30م في إجازة واحدة بشرم الشيخ! باقة Mega (600€، وفّر 90€، ~6 أيام): 9 غطسات بحرية شاملة المعدات والتأمين.'],
         'aeo_answer' => [
-            'en' => 'Sea College Dive Club\'s most booked multi-course offer, the Mega Bundle, costs €600 per person — saving €90 — and takes approximately 6 days in Sharm El Sheikh (minimum age 12). Starting with zero prior experience, you complete both PADI Open Water Diver (5 pool + 4 sea dives to 18 m) and PADI Advanced Open Water Diver (5 Adventure Dives to 30 m) for 9 open water Red Sea dives total, including full equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
-            'ar' => 'تُعد باقة Mega العرض المدمج الأكثر حجزًا في سي كوليدج دايف كلوب بشرم الشيخ، وتبلغ تكلفتها 600€ للفرد (بتوفير 90€) خلال نحو 6 أيام (من سن 12 سنة). تبدأ معك من الصفر تمامًا لتنجز شهادة PADI Open Water ثم PADI Advanced بمجموع 5 جلسات مسبح و9 غطسات بحرية حتى عمق 30 مترًا، شاملة تأجير المعدات الكامل وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
+            'en' => 'Sea College Dive Club\'s most booked multi-course offer, the Mega Bundle, costs €600 per person — saving €90+ — and takes approximately 6 days in Sharm El Sheikh (minimum age 12). Starting with zero prior experience, you complete both PADI Open Water Diver (5 pool + 4 sea dives to 18 m) and PADI Advanced Open Water Diver (5 Adventure Dives to 30 m) for 9 open water Red Sea dives total, including full equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
+            'ar' => 'تُعد باقة Mega العرض المدمج الأكثر حجزًا في سي كوليدج دايف كلوب بشرم الشيخ، وتبلغ تكلفتها 600€ للفرد خلال نحو 6 أيام (من سن 12 سنة). تبدأ معك من الصفر تمامًا لتنجز شهادة PADI Open Water ثم PADI Advanced بمجموع 5 جلسات مسبح و9 غطسات بحرية حتى عمق 30 مترًا، شاملة تأجير المعدات الكامل وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
         ],
         'overview' => [
             'en' => [
-                'Most beginners finish Open Water on Day 3, fall completely in love with the Red Sea, and immediately wish they could stay diving and reach 30-metre walls with their instructor! Booking `Mega` upfront locks in €90 savings plus full dive insurance across all 6 days.',
+                'Most beginners finish Open Water on Day 3, fall completely in love with the Red Sea, and immediately wish they could stay diving and reach 30-metre walls with their instructor! Booking `Mega` upfront locks in €150+ savings over standalone courses plus full dive insurance across all 6 days.',
                 'By Day 6 you hold 9 logged Red Sea dives, effortless buoyancy and a 30-metre PADI Advanced Open Water card valid on almost every recreational dive boat on Earth.',
             ],
             'ar' => [
-                'كثير من المبتدئين ينهون دورة Open Water في اليوم الثالث ويقعون في غرام البحر الأحمر فيتمنون لو أكملوا مباشرة إلى عمق 30 مترًا! يمنحك حجز باقة Mega مسبقًا توفيرًا قدره 90€ مع شمول تأمين الغوص والمعدات طوال الأيام الستة.',
+                'كثير من المبتدئين ينهون دورة Open Water في اليوم الثالث ويقعون في غرام البحر الأحمر فيتمنون لو أكملوا مباشرة إلى عمق 30 مترًا! يمنحك حجز باقة Mega مسبقًا توفيرًا كبيرًا مع شمول تأمين الغوص والمعدات طوال الأيام الستة.',
                 'بنهاية اليوم السادس تتخرج وفي سجلك 9 غطسات حقيقية في البحر الأحمر وشهادة PADI Advanced الدولية لعمق 30 مترًا.',
             ],
         ],
         'specs' => [
-            ['Bundle Price', 'سعر الباقة', '€600 per person (Save €90 · Most Popular Bundle!)', '600€ للفرد (وفّر 90€ · الباقة الأكثر طلبًا!)'],
+            ['Bundle Price', 'سعر الباقة', '€600 per person (Save €90+ · Most Popular Bundle!)', '600€ للفرد (الباقة الأكثر طلبًا!)'],
             ['Courses Included', 'الدورات المشمولة', 'PADI Open Water Diver + PADI Advanced Open Water Diver', 'دورة Open Water + دورة Advanced Open Water'],
             ['Total Dives', 'إجمالي الغطسات', '5 confined pool sessions + 9 Open Water Red Sea dives!', '5 جلسات مسبح + 9 غطسات في البحر الأحمر!'],
             ['Duration & Min Age', 'المدة والعمر', '~6 days · Minimum age 12 (21 m cap ages 12–14; 30 m 15+)', 'حوالي 6 أيام · من سن 12 سنة'],
@@ -1173,8 +1173,8 @@ return [
             'ar' => ['رسوم كتاب وشهادة PADI الرسمية (85€ لكل دورة × 2)', 'رسوم القارب (10€) والمحمية (5€) في أيام القارب'],
         ],
         'ideal_for' => [
-            'en' => ['Beginners on a 7-to-10-day Sharm El Sheikh holiday wanting maximum underwater progression (remember 18h no-fly after last dive!)', 'Want Nitrox included too? Upgrade to `Heros` (€750, save €120) for all 3 cards!'],
-            'ar' => ['المبتدئون القادمون لإجازة 7–10 أيام في شرم الشيخ الراغبون في أقصى تطور بـ 9 غطسات (مع ترك 18 ساعة قبل الطيران)', 'تريد إضافة النيتروكس أيضًا؟ شاهد باقة Heros الثلاثية (750€ بتوفير 120€)!'],
+            'en' => ['Beginners on a 7-to-10-day Sharm El Sheikh holiday wanting maximum underwater progression (remember 18h no-fly after last dive!)', 'Want Nitrox included too? Upgrade to `Heros` (€750, save €120+) for all 3 cards!'],
+            'ar' => ['المبتدئون القادمون لإجازة 7–10 أيام في شرم الشيخ الراغبون في أقصى تطور بـ 9 غطسات (مع ترك 18 ساعة قبل الطيران)', 'تريد إضافة النيتروكس أيضًا؟ شاهد باقة Heros الثلاثية (750€)!'],
         ],
         'schema_type' => 'Course',
         'compare_mode' => 'bundles',
@@ -1192,21 +1192,21 @@ return [
         'meta_title' => ['en' => 'Heros Bundle: OWD + Advanced + Nitrox Sharm | €750 (Save €120)', 'ar' => 'باقة Heros الثلاثية بشرم الشيخ | 750€ (وفّر 120€) | سي كوليدج'],
         'meta_desc' => ['en' => 'The ultimate 3-certification Red Sea package! Heros Bundle in Sharm El Sheikh (€750, save €120, 6–7 days): PADI Open Water + Advanced (30 m) + Nitrox, gear, insurance & tax.', 'ar' => 'الباقة الثلاثية الأقوى في البحر الأحمر! باقة Heros في شرم الشيخ (750€، وفّر 120€، 6–7 أيام): Open Water + Advanced (30م) + النيتروكس شاملة المعدات والتأمين.'],
         'aeo_answer' => [
-            'en' => 'The Heros PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €750 per person — our biggest saving at €120 off — and runs over 6 to 7 days (minimum age 12). Taking you from absolute beginner to holding THREE international PADI licenses (Open Water Diver, Advanced Open Water Diver to 30 m, and Enriched Air Nitrox Diver), it includes 5 pool sessions, 9+ open water Red Sea dives, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
-            'ar' => 'تبلغ تكلفة باقة Heros الثلاثية في سي كوليدج دايف كلوب بشرم الشيخ 750€ للفرد — بأكبر توفير لدينا وقدره 120€ — وتُنجز خلال 6 إلى 7 أيام (من سن 12 سنة). تنقلك من مبتدئ تمامًا إلى حامل لثلاث شهادات دولية من PADI (Open Water وAdvanced لعمق 30م وتخصص النيتروكس)، شاملة 5 جلسات مسبح و9 غطسات بحرية والمعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
+            'en' => 'The Heros PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €750 per person — our biggest saving at €120+ off — and runs over 6 to 7 days (minimum age 12). Taking you from absolute beginner to holding THREE international PADI licenses (Open Water Diver, Advanced Open Water Diver to 30 m, and Enriched Air Nitrox Diver), it includes 5 pool sessions, 9+ open water Red Sea dives, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
+            'ar' => 'تبلغ تكلفة باقة Heros الثلاثية في سي كوليدج دايف كلوب بشرم الشيخ 750€ للفرد — بأكبر توفير لدينا يتجاوز 120€ — وتُنجز خلال 6 إلى 7 أيام (من سن 12 سنة). تنقلك من مبتدئ تمامًا إلى حامل لثلاث شهادات دولية من PADI (Open Water وAdvanced لعمق 30م وتخصص النيتروكس)، شاملة 5 جلسات مسبح و9 غطسات بحرية والمعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
         ],
         'overview' => [
             'en' => [
                 '`Heros` is the gold-standard qualification trio requested by Red Sea liveaboards and dive resorts worldwide: 30-metre Advanced depth rating + Enriched Air Nitrox certification — earned in a single seamless week from your very first pool breath!',
-                'With €120 saved and full scuba gear plus diving insurance included across the entire week, you leave Sharm El Sheikh ready for any recreational dive expedition on the planet.',
+                'With €120+ saved and full scuba gear plus diving insurance included across the entire week, you leave Sharm El Sheikh ready for any recreational dive expedition on the planet.',
             ],
             'ar' => [
                 'تجمع باقة Heros الثلاثية المؤهلات الذهبية المطلوبة في رحلات السفاري البحرية ومراكز الغوص حول العالم: عمق 30 مترًا + رخصة النيتروكس — وتمنحك إياها في أسبوع واحد متكامل بدءًا من أول نفس لك في المسبح!',
-                'مع توفير 120€ وشمول كافة المعدات وتأمين الغوص طوال الأسبوع، تغادر شرم الشيخ وأنت مؤهل لأروع مغامرات الغوص في أي بحر بالعالم.',
+                'مع توفير يتجاوز 120€ وشمول كافة المعدات وتأمين الغوص طوال الأسبوع، تغادر شرم الشيخ وأنت مؤهل لأروع مغامرات الغوص في أي بحر بالعالم.',
             ],
         ],
         'specs' => [
-            ['Bundle Price', 'سعر الباقة', '€750 per person (Save €120 — Maximum Savings!)', '750€ للفرد (وفّر 120€ — أعلى توفير!)'],
+            ['Bundle Price', 'سعر الباقة', '€750 per person (Save €120+ — Maximum Savings!)', '750€ للفرد (وفّر 120€+ — أعلى توفير!)'],
             ['3 PADI Cards Earned', 'الشهادات الثلاث', 'Open Water + Advanced Open Water + Enriched Air Nitrox', 'Open Water + Advanced + Enriched Air Nitrox'],
             ['Duration & Min Age', 'المدة والعمر', '6–7 days · Minimum age 12', '6–7 أيام · من سن 12 سنة'],
             ['PADI Fees', 'رسوم PADI', '+€85 per course manual & certification card (3 × €85)', '+85€ رسوم كتاب وشهادة لكل دورة (3 × 85€)'],
@@ -1225,8 +1225,8 @@ return [
             'ar' => ['رسوم كتاب وشهادة PADI الرسمية (85€ لكل دورة × 3)', 'رسوم القارب (10€) والمحمية (5€) في أيام القارب'],
         ],
         'ideal_for' => [
-            'en' => ['Beginners on a 1–2 week Sharm El Sheikh trip who want the complete 3-card setup with €120 saved'],
-            'ar' => ['المبتدئون في إجازة أسبوع إلى أسبوعين بشرم الشيخ الباحثون عن التأهيل الثلاثي الأشمل وتوفير 120€'],
+            'en' => ['Beginners on a 1–2 week Sharm El Sheikh trip who want the complete 3-card setup with €120+ saved'],
+            'ar' => ['المبتدئون في إجازة أسبوع إلى أسبوعين بشرم الشيخ الباحثون عن التأهيل الثلاثي الأشمل وتوفير 120€+'],
         ],
         'schema_type' => 'Course',
         'compare_mode' => 'bundles',
@@ -1234,7 +1234,7 @@ return [
         'related' => ['bundle-mega', 'bundle-stars', 'dive-4', 'sup-thistlegorm'],
         'faqs' => [
             ['Can Nitrox training overlap with the 5 Advanced dives so it still finishes in 6 days?', 'Yes! Because Nitrox theory and O₂ cylinder analysis are done cleanly between dives, most students finish all 3 certifications in 6 days!', 'هل يمكن دمج تدريب النيتروكس مع أيام Advanced لإنهاء الباقة في 6 أيام؟', 'نعم! يتم التدريب العملي على تحليل الأسطوانات بسلاسة مع أيام الغوص المتقدم، لذا ينهي معظم المتدربين الشهادات الثلاث في 6 أيام!'],
-            ['How is the €120 saving calculated?', 'Purchasing Open Water (€380) + Advanced (€280) + Nitrox (€145) + 3–7 days of separate AOWD/Nitrox diving insurance exceeds €870 — Heros bundles everything including tax & insurance for €750.', 'كيف يتم توفير الـ 120€ في باقة Heros؟', 'عند جمع Open Water (380€) + Advanced (280€) + النيتروكس (145€) + تأمين الغوص للأيام الإضافية يتجاوز الإجمالي 870€، بينما تمنحك Heros الكل شاملًا الضريبة والتأمين بـ 750€ فقط.'],
+            ['How is the €120+ saving calculated?', 'Purchasing Open Water (€400) + Advanced (€350) + Nitrox (€145) + 3–7 days of separate AOWD/Nitrox diving insurance exceeds €920 — Heros bundles everything including tax & insurance for €750.', 'كيف يتم التوفير الكبير في باقة Heros؟', 'عند جمع Open Water (400€) + Advanced (350€) + النيتروكس (145€) + تأمين الغوص للأيام الإضافية يتجاوز الإجمالي 920€، بينما تمنحك Heros الكل شاملًا الضريبة والتأمين بـ 750€ فقط.'],
             ['After Heros, am I close to qualifying for the SS Thistlegorm wreck?', 'You will already hold the required AOWD + Nitrox cards and ~9–10 logged dives (Thistlegorm requires AOWD + 20 logged dives).', 'هل تقربني باقة Heros من غوص حطام ثيستلجورم؟', 'ستكون قد حصلت بالفعل على شهادتي Advanced والنيتروكس ونحو 9–10 غطسات مسجلة (يتطلب ثيستلجورم شهادة Advanced مع 20 غطسة مسجلة).'],
         ],
     ],

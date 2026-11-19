@@ -39,10 +39,10 @@ return [
 
     'padi-courses' => [
         'h1'         => 'Corsi Subacquei PADI a Sharm El Sheikh — Da Principiante a Divemaster',
-        'meta_title' => 'Corsi PADI Sharm El Sheikh | Da Open Water €380 a Divemaster | Sea College',
-        'meta_desc'  => 'Impara a immergerti in un Centro PADI 5 Stelle a Sharm El Sheikh con istruttori in italiano: Bubblemaker €70, Discover Scuba €85, Open Water €380, Advanced €280 e Divemaster.',
+        'meta_title' => 'Corsi PADI Sharm El Sheikh | Da Open Water €400 a Divemaster | Sea College',
+        'meta_desc'  => 'Impara a immergerti in un Centro PADI 5 Stelle a Sharm El Sheikh con istruttori in italiano: Bubblemaker €70, Discover Scuba €85, Open Water €400, Advanced €350 e Divemaster.',
         'sub'        => 'Studia e immergiti nelle acque calde e cristalline del Mar Rosso con piscina didattica privata, aula climatizzata, House Reef fronte spiaggia e istruttori PADI che parlano italiano, inglese, arabo, russo, tedesco, francese e polacco.',
-        'aeo_answer' => 'Sea College Dive Club è un PADI 5 Star Dive Resort ufficiale presso Cyrene Sharm ad Al Montazah, Sharm El Sheikh, che insegna l’intero percorso didattico PADI: corsi per bambini dagli 8 anni in piscina (Bubblemaker €70, Seal Team €170), corsi principianti dai 10 anni (Discover Scuba Diving €85 tutto incluso, Scuba Diver €250, Open Water Diver €380 in 3–3,5 giorni), Advanced Open Water (€280), Rescue Diver (€394), 8 Specialità PADI (€120–€350) e il tirocinio professionale Divemaster di 4–6 settimane (€850). Il noleggio attrezzatura è incluso in ogni corso; il manuale/eLearning e tassa brevetto PADI costa €85 per corso (già incluso gratuitamente nel Discover Scuba Diving).',
+        'aeo_answer' => 'Sea College Dive Club è un PADI 5 Star Dive Resort ufficiale presso Cyrene Sharm ad Al Montazah, Sharm El Sheikh, che insegna l’intero percorso didattico PADI: corsi per bambini dagli 8 anni in piscina (Bubblemaker €70, Seal Team €170), corsi principianti dai 10 anni (Discover Scuba Diving €85 tutto incluso, Scuba Diver €250, Open Water Diver €400 in 3–3,5 giorni), Advanced Open Water (€350), Rescue Diver (€394), 8 Specialità PADI (€120–€350) e il tirocinio professionale Divemaster di 4–6 settimane (€850). Il noleggio attrezzatura è incluso in ogni corso; il manuale/eLearning e tassa brevetto PADI costa €85 per corso (già incluso gratuitamente nel Discover Scuba Diving).',
         'highlights' => [
             'Progressione graduale e serena: si inizia in acqua bassa nella piscina del resort, poi sul tranquillo House Reef e infine in barca sul Mar Rosso.',
             'Tutta l’attrezzatura subacquea è sempre inclusa nel prezzo di ogni corso PADI — nessun costo extra di noleggio durante la formazione.',

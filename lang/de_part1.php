@@ -9,7 +9,7 @@ return [
     'meta_services_title' => 'Tauchen, PADI Tauchkurse & Bootsausflüge in Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Tauchpakete Rotes Meer, PADI Kurse vom Bubblemaker bis Divemaster, Spar-Kombiangebote, Schnorcheltouren und Privatboote in Sharm El Sheikh.',
     'meta_prices_title' => 'Tauchpreise Sharm El Sheikh 2026 | Tauchpakete, PADI Kurse & Angebote',
-    'meta_prices_desc' => 'Transparente Preisliste in EUR: Tauchpakete ab 45 €, PADI Open Water Diver 380 €, Schnuppertauchen ab 30 €, Schnorcheln ab 35 €, Privatboote. Online anfragen & buchen.',
+    'meta_prices_desc' => 'Transparente Preisliste in EUR: Tauchpakete ab 45 €, PADI Open Water Diver 400 €, Schnuppertauchen ab 30 €, Schnorcheln ab 35 €, Privatboote. Online anfragen & buchen.',
     'meta_about_title' => 'Über Sea College Dive Club | PADI 5 Sterne Tauchresort Sharm El Sheikh',
     'meta_about_desc' => 'Lernen Sie den Sea College Dive Club kennen: PADI 5 Sterne Tauchbasis mit Ausbildungspool, eigenem Hausriff und Tauchboot im Cyrene Sharm, Al Montazah.',
     'meta_contact_title' => 'Kontakt & Buchung | Sea College Dive Club Sharm El Sheikh',

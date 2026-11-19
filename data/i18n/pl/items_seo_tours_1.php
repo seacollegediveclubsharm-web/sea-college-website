@@ -83,7 +83,7 @@ return [
         'ideal_for' => [
             'Początkujący chcący nacieszyć się dłuższym czasem pod wodą w ciągu pół dnia',
             'Osoby wrażliwe na kołysanie jachtu wolące stabilne wejście z plaży',
-            'Goście testujący nurkowanie przed zapisaniem się na pełny kurs PADI Open Water (380 €)',
+            'Goście testujący nurkowanie przed zapisaniem się na pełny kurs PADI Open Water (400 €)',
         ],
         'faqs' => [
             ['q' => 'Wybrać 2 nurkowania z brzegu (75 €) czy 2 nurkowania z łodzi (100 €)?', 'a' => 'Jeśli masz tylko 3 godziny lub wolisz wejście z plaży, wybierz wariant za 75 €. Jeśli chcesz spędzić pełne 8 godzin na jachcie z transferem z hotelu, opłatą parkową, obiadem w bufecie i napojami w cenie, opcja z łodzi za 100 € ma rewelacyjny stosunek ceny do jakości!'],
@@ -167,7 +167,7 @@ return [
         ],
         'excluded' => [
             'Ręczniki plażowe oraz opcjonalne zdjęcia/wideo od fotografa podwodnego na łodzi',
-            'Licencja PADI (jeśli pokochasz nurkowanie, zapisz się w kolejne dni na kurs PADI Open Water za 380 €!)',
+            'Licencja PADI (jeśli pokochasz nurkowanie, zapisz się w kolejne dni na kurs PADI Open Water za 400 €!)',
         ],
         'ideal_for' => [
             'Debiutanci pragnący pełnej morskiej przygody i maksymalnego czasu pod wodą bez robienia wielodniowego kursu',

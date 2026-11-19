@@ -9,7 +9,7 @@ return [
     'meta_services_title' => 'Plongée, Cours PADI & Excursions Bateau à Charm el-Cheikh | Sea College',
     'meta_services_desc' => 'Forfaits plongée certifiés, cours PADI de Bubblemaker à Divemaster, packs combinés, sorties snorkeling Île Blanche et bateaux privés à Charm el-Cheikh (Sharm El Sheikh).',
     'meta_prices_title' => 'Tarifs Plongée Charm el-Cheikh 2026 | Forfaits, Cours PADI & Offres',
-    'meta_prices_desc' => 'Grille tarifaire complète en EUR à Sharm El Sheikh : forfaits plongée dès 45 €, PADI Open Water 380 €, baptême dès 30 €, snorkeling dès 35 € et bateaux privés. Réservation en ligne.',
+    'meta_prices_desc' => 'Grille tarifaire complète en EUR à Sharm El Sheikh : forfaits plongée dès 45 €, PADI Open Water 400 €, baptême dès 30 €, snorkeling dès 35 € et bateaux privés. Réservation en ligne.',
     'meta_about_title' => 'À propos de Sea College Dive Club | Centre PADI 5 Étoiles Charm el-Cheikh',
     'meta_about_desc' => 'Découvrez Sea College Dive Club : complexe de plongée PADI 5 Étoiles avec piscine d’entraînement, récif maison (House Reef) et bateau de plongée au Cyrene Sharm, Al Montazah.',
     'meta_contact_title' => 'Contact & Réservation | Sea College Dive Club Charm el-Cheikh',

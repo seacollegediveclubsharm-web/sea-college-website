@@ -9,7 +9,7 @@ return [
     'meta_services_title' => 'Immersioni Sharm El Sheikh, Corsi PADI & Escursioni in Barca | Sea College',
     'meta_services_desc' => 'Pacchetti immersioni Mar Rosso, corsi PADI da Bubblemaker a Divemaster, offerte corsi combinati, escursioni snorkeling Isola Bianca e barche private a Sharm El Sheikh.',
     'meta_prices_title' => 'Prezzi Immersioni Sharm El Sheikh 2026 | Pacchetti, Corsi PADI & Offerte',
-    'meta_prices_desc' => 'Listino prezzi ufficiale in EUR: pacchetti immersioni da €45 (€35/immersione), PADI Open Water €380, Battesimo del Mare da €30, snorkeling da €35 e yacht privati. Prenota online.',
+    'meta_prices_desc' => 'Listino prezzi ufficiale in EUR: pacchetti immersioni da €45 (€35/immersione), PADI Open Water €400, Battesimo del Mare da €30, snorkeling da €35 e yacht privati. Prenota online.',
     'meta_about_title' => 'Chi Siamo | Sea College Dive Club — Resort PADI 5 Stelle Sharm El Sheikh',
     'meta_about_desc' => 'Scopri Sea College Dive Club: centro diving PADI 5 Stelle direttamente sulla spiaggia con piscina didattica, House Reef e barca propria presso Cyrene Sharm, Al Montazah.',
     'meta_contact_title' => 'Contatti & Prenotazioni | Sea College Dive Club Sharm El Sheikh',

@@ -165,7 +165,7 @@ return [
         'faqs' => [
             ['q' => 'Acceptez-vous les brevets Niveau 1 FFESSM/CMAS ou SSI Open Water ?', 'a' => 'Oui ! PADI reconnaît tous les brevets équivalents (FFESSM, CMAS 1*, ANMP, SSI, BSAC, NAUI) pour intégrer directement le Pack Super.'],
             ['q' => 'Je n’ai pas plongé depuis plus de 6 mois : comment faire ?', 'a' => 'Prévenez-nous à la réservation : un rapide Check Dive (25 €) sur notre récif maison calme remet votre flottabilité d’aplomb avant d’attaquer les 30 m.'],
-            ['q' => 'Pourquoi prendre Super (400 €) plutôt que l’Advanced seul (280 €) ?', 'a' => 'Pour 120 € de plus, vous obtenez le cours Nitrox (valeur 145 €) PLUS l’assurance plongée incluse sur les 3 jours — soit 75 € d’économie réelle.'],
+            ['q' => 'Pourquoi prendre Super (400 €) plutôt que l’Advanced seul (350 €) ?', 'a' => 'Pour seulement 50 € de plus, vous obtenez le cours Nitrox (valeur 145 €) PLUS l’assurance plongée incluse sur les 3 jours — soit plus de 95 € d’économie réelle.'],
         ],
     ],
     'bundle-mega' => [
@@ -244,7 +244,7 @@ return [
         ],
         'faqs' => [
             ['q' => 'Peut-on intégrer l’atelier Nitrox pendant les journées Advanced pour finir en 6 jours ?', 'a' => 'Oui ! L’analyse des bouteilles et la théorie Nitrox s’intègrent parfaitement entre les plongées, permettant à la plupart des élèves de boucler les 3 brevets en 6 jours.'],
-            ['q' => 'D’où vient l’économie de 120 € ?', 'a' => 'En additionnant Open Water (380 €) + Advanced (280 €) + Nitrox (145 €) + l’assurance plongée sur la semaine, le total dépasse 870 € — le Pack Heros rassemble tout à 750 € TTC.'],
+            ['q' => 'D’où vient l’économie de 120 € ?', 'a' => 'En additionnant Open Water (400 €) + Advanced (350 €) + Nitrox (145 €) + l’assurance plongée sur la semaine, le total dépasse 920 € — le Pack Heros rassemble tout à 750 € TTC.'],
             ['q' => 'Serai-je proche du niveau requis pour le SS Thistlegorm après Heros ?', 'a' => 'Vous posséderez déjà les deux brevets idéaux (Advanced 30 m + Nitrox) et environ 9–10 plongées au carnet (le Thistlegorm demande AOWD + 20 plongées).'],
         ],
     ],

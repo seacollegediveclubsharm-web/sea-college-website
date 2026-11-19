@@ -84,7 +84,7 @@ return [
         'faqs' => [
             ['q' => 'Mon enfant peut-il faire Seal Team après un Bubblemaker ?', 'a' => 'Oui, c’est la suite idéale ! Bubblemaker donne confiance, puis Seal Team construit 5 vraies compétences techniques de flottabilité et de sécurité.'],
             ['q' => 'À quelle profondeur descend-on pendant PADI Seal Team ?', 'a' => 'L’AquaMission 1 reste sous les 2 mètres, et les missions 2 à 5 s’effectuent dans les limites sécurisées de notre piscine d’entraînement (< 4 m) sous surveillance directe.'],
-            ['q' => 'Quand mon enfant pourra-t-il plonger sur les coraux de la Mer Rouge ?', 'a' => 'Dès ses 10 ans ! Il pourra alors suivre PADI Discover Scuba Diving (85 €) ou décrocher son brevet Junior Open Water Diver (380 €).'],
+            ['q' => 'Quand mon enfant pourra-t-il plonger sur les coraux de la Mer Rouge ?', 'a' => 'Dès ses 10 ans ! Il pourra alors suivre PADI Discover Scuba Diving (85 €) ou décrocher son brevet Junior Open Water Diver (400 €).'],
         ],
     ],
     'dsd' => [
@@ -114,7 +114,7 @@ return [
         ],
         'excluded' => [
             'Sortie journée complète en yacht (préférez le forfait Discover Scuba 2 Plongées en Bateau à 100 € si vous souhaitez le yacht avec déjeuner)',
-            'Brevet autonome permanent 18 m (voir le cours PADI Open Water Diver à 380 €)',
+            'Brevet autonome permanent 18 m (voir le cours PADI Open Water Diver à 400 €)',
             'Photos/vidéos sous-marines optionnelles et serviette',
         ],
         'ideal_for' => [
@@ -123,7 +123,7 @@ return [
             'Adolescents et adultes recherchant l’encadrement officiel PADI le plus progressif',
         ],
         'faqs' => [
-            ['q' => 'Le programme Discover Scuba Diving donne-t-il un brevet de plongée autonome ?', 'a' => 'Il s’agit d’une attestation officielle d’initiation PADI et non d’une licence autonome. Pour obtenir votre brevet international valable à vie jusqu’à 18 m, choisissez le cours PADI Open Water Diver (380 €).'],
+            ['q' => 'Le programme Discover Scuba Diving donne-t-il un brevet de plongée autonome ?', 'a' => 'Il s’agit d’une attestation officielle d’initiation PADI et non d’une licence autonome. Pour obtenir votre brevet international valable à vie jusqu’à 18 m, choisissez le cours PADI Open Water Diver (400 €).'],
             ['q' => 'Dois-je payer les 85 € de frais PADI en plus ?', 'a' => 'Non ! Conformément à nos conditions officielles, Discover Scuba Diving est l’exception : le livret et le certificat PADI sont DÉJÀ compris dans les 85 €.'],
             ['q' => 'Quelle différence avec le baptême rapide à 30 € ?', 'a' => 'Le baptême à 30 € comprend un briefing suivi de 10 minutes sous l’eau depuis la plage. Ce programme PADI à 85 € inclut une vraie séance technique en piscine, une plongée récifale complète et l’enregistrement officiel PADI.'],
         ],
@@ -156,7 +156,7 @@ return [
         'excluded' => [
             'Manuel / eLearning & frais de certification PADI (85 €)',
             'Suppléments bateau (10 €/jour) et parc marin (5 €/jour) si les plongées mer ont lieu depuis le bateau',
-            'À noter : lors de futures sorties d’exploration en tant que Scuba Diver (12 m), un guide privé (75 €/jour) est requis — passer directement l’Open Water (380 €) supprime cette obligation !',
+            'À noter : lors de futures sorties d’exploration en tant que Scuba Diver (12 m), un guide privé (75 €/jour) est requis — passer directement l’Open Water (400 €) supprime cette obligation !',
         ],
         'ideal_for' => [
             'Voyageurs ne disposant que de 2 jours libres mais désirant une certification PADI officielle à vie',
@@ -164,7 +164,7 @@ return [
             'Élèves souhaitant fractionner leur Open Water sur deux séjours',
         ],
         'faqs' => [
-            ['q' => 'Vaut-il mieux choisir Scuba Diver (250 €) ou Open Water Diver (380 €) ?', 'a' => 'Si vous disposez de 3 à 3,5 jours, l’Open Water Diver (380 €) est beaucoup plus avantageux car il vous certifie en autonomie à 18 m sans obligation de guide privé (75 €/jour) lors de vos prochains voyages. Choisissez Scuba Diver si vous n’avez strictement que 2 jours.'],
+            ['q' => 'Vaut-il mieux choisir Scuba Diver (250 €) ou Open Water Diver (400 €) ?', 'a' => 'Si vous disposez de 3 à 3,5 jours, l’Open Water Diver (400 €) est beaucoup plus avantageux car il vous certifie en autonomie à 18 m sans obligation de guide privé (75 €/jour) lors de vos prochains voyages. Choisissez Scuba Diver si vous n’avez strictement que 2 jours.'],
             ['q' => 'Le brevet PADI Scuba Diver a-t-il une date d’expiration ?', 'a' => 'Non, il est valable à vie et vous pouvez effectuer la passerelle vers l’Open Water Diver en 1 à 2 jours (100 € chez Sea College) dans n’importe quel centre PADI du monde.'],
             ['q' => 'L’équipement et l’assurance sont-ils compris ?', 'a' => 'Oui, la location complète du matériel et l’assurance plongée sont toutes deux incluses dans les 250 €.'],
         ],
@@ -201,7 +201,7 @@ return [
         ],
         'ideal_for' => [
             'Titulaires du PADI Scuba Diver (obtenu dans n’importe quel pays et quelle que soit l’année)',
-            'Plongeurs souhaitant enchaîner sur un forfait 4–6 plongées ou le brevet Advanced Open Water (280 €)',
+            'Plongeurs souhaitant enchaîner sur un forfait 4–6 plongées ou le brevet Advanced Open Water (350 €)',
             'Familles désirant plonger en palanquée standard jusqu’à 18 m',
         ],
         'faqs' => [
@@ -212,12 +212,12 @@ return [
     ],
     'owd' => [
         'h1' => 'Cours PADI Open Water Diver à Charm el-Cheikh — Votre Brevet International 18 m',
-        'meta_title' => 'Cours PADI Open Water Charm el-Cheikh (Sharm El Sheikh) | 380 € | PADI 5★',
-        'meta_desc' => 'Passez votre brevet international PADI Open Water Diver à Charm el-Cheikh (380 €, 3–3,5 jours, dès 10 ans) : 5 séances piscine + 4 plongées Mer Rouge jusqu’à 18 m — équipement & assurance inclus.',
-        'aeo_answer' => 'Le cours PADI Open Water Diver chez Sea College Dive Club (centre PADI 5 Étoiles au Cyrene Sharm, Al Montazah, Charm el-Cheikh / Sharm El Sheikh) coûte 380 € par personne, dure 3 à 3,5 jours et accueille les grands débutants dès 10 ans sans aucune expérience préalable. Ce tarif comprend les 5 modules théoriques, 5 séances dans notre piscine d’entraînement, 4 plongées en Mer Rouge (vous certifiant à vie jusqu’à 18 m dans le monde entier), la location complète de l’équipement et l’assurance plongée ; les frais officiels de manuel/eLearning et carte PADI sont de 85 €.',
+        'meta_title' => 'Cours PADI Open Water Charm el-Cheikh (Sharm El Sheikh) | 400 € | PADI 5★',
+        'meta_desc' => 'Passez votre brevet international PADI Open Water Diver à Charm el-Cheikh (400 €, 3–3,5 jours, dès 10 ans) : 5 séances piscine + 4 plongées Mer Rouge jusqu’à 18 m — équipement & assurance inclus.',
+        'aeo_answer' => 'Le cours PADI Open Water Diver chez Sea College Dive Club (centre PADI 5 Étoiles au Cyrene Sharm, Al Montazah, Charm el-Cheikh / Sharm El Sheikh) coûte 400 € par personne, dure 3 à 3,5 jours et accueille les grands débutants dès 10 ans sans aucune expérience préalable. Ce tarif comprend les 5 modules théoriques, 5 séances dans notre piscine d’entraînement, 4 plongées en Mer Rouge (vous certifiant à vie jusqu’à 18 m dans le monde entier), la location complète de l’équipement et l’assurance plongée ; les frais officiels de manuel/eLearning et carte PADI sont de 85 €.',
         'overview' => ['Il existe peu d’endroits sur Terre aussi magiques que Charm el-Cheikh pour passer son premier brevet de plongée PADI Open Water Diver (équivalent Niveau 1 international) : une eau chaude toute l’année, 20 à 35 m de visibilité, et une piscine d’entraînement située à quelques pas seulement d’un récif corallien foisonnant de vie.', 'Avec nos instructeurs francophones et multilingues — tels que Mosab, Wessam, Alex et Sam, encensés dans plus de 3 082 avis Google (4.9★) — vous progressez sans stress de la piscine peu profonde vers le récif maison puis vers nos sorties en bateau.'],
         'specs' => [
-            ['Tarif du cours', '380 € par personne (équipement complet & assurance plongée inclus)'],
+            ['Tarif du cours', '400 € par personne (équipement complet & assurance plongée inclus)'],
             ['Frais PADI officiels', '+85 € manuel / PADI eLearning & carte de certification'],
             ['Durée', '3 à 3,5 jours (environ 08h00 – 16h30)'],
             ['Âge minimum', '10 ans (Junior Open Water 10–14 ans ; Open Water 15 ans et +)'],
@@ -249,18 +249,18 @@ return [
         'faqs' => [
             ['q' => 'Puis-je étudier la théorie en ligne en français avant d’arriver à Charm el-Cheikh ?', 'a' => 'Oui ! Demandez-nous l’option PADI eLearning en français afin de valider les cours théoriques tranquillement chez vous et de consacrer vos journées sur place au plaisir de l’eau.'],
             ['q' => 'Quel niveau de natation faut-il pour l’Open Water Diver ?', 'a' => 'PADI demande de nager 200 m sans limite de temps et quelle que soit la nage (ou 300 m avec masque, tuba et palmes) ainsi que de flotter/se maintenir en surface pendant 10 minutes.'],
-            ['q' => 'Les 380 € incluent-ils vraiment tout le matériel et l’assurance ?', 'a' => 'Oui ! L’équipement complet et l’assurance plongée sont inclus dans les 380 € ; seuls les 85 € de frais officiels PADI et les éventuels frais bateau/parc (10 € + 5 €/jour) s’ajoutent.'],
+            ['q' => 'Les 400 € incluent-ils vraiment tout le matériel et l’assurance ?', 'a' => 'Oui ! L’équipement complet et l’assurance plongée sont inclus dans les 400 € ; seuls les 85 € de frais officiels PADI et les éventuels frais bateau/parc (10 € + 5 €/jour) s’ajoutent.'],
             ['q' => 'Comment économiser si je veux aussi passer le Nitrox ou l’Advanced ?', 'a' => 'Réservez nos packs combinés : Stars (OWD + Nitrox = 500 €, -50 €), Mega (OWD + AOWD = 600 €, -90 €) ou Heros (OWD + AOWD + Nitrox = 750 €, -120 €) !'],
         ],
     ],
     'aowd' => [
         'h1' => 'Cours PADI Advanced Open Water Diver à Charm el-Cheikh — Brevet 30 Mètres',
-        'meta_title' => 'PADI Advanced Open Water Charm el-Cheikh | 280 € | 5 Plongées Aventure',
-        'meta_desc' => 'Accédez aux tombants et épaves à 30 m en Mer Rouge ! PADI Advanced Open Water à Charm el-Cheikh (280 €, 2,5–3 jours, dès 12 ans) : 5 plongées Aventure, équipement inclus.',
-        'aeo_answer' => 'Le cours PADI Advanced Open Water Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 280 € par personne (dès 12 ans, durée 2,5 à 3 jours) et inclut la location complète de l’équipement sur 5 plongées Aventure en Mer Rouge — sans examen écrit final ! Vous réalisez la plongée Profonde (vous certifiant jusqu’à 30 m, ou 21 m pour les 12–14 ans) et la plongée d’Orientation sous-marine, complétées par 3 plongées au choix telles qu’Épave, Dérivante, Maîtrise de la flottabilité ou Nuit (+85 € manuel et carte PADI).',
+        'meta_title' => 'PADI Advanced Open Water Charm el-Cheikh | 350 € | 5 Plongées Aventure',
+        'meta_desc' => 'Accédez aux tombants et épaves à 30 m en Mer Rouge ! PADI Advanced Open Water à Charm el-Cheikh (350 €, 2,5–3 jours, dès 12 ans) : 5 plongées Aventure, équipement inclus.',
+        'aeo_answer' => 'Le cours PADI Advanced Open Water Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 350 € par personne (dès 12 ans, durée 2,5 à 3 jours) et inclut la location complète de l’équipement sur 5 plongées Aventure en Mer Rouge — sans examen écrit final ! Vous réalisez la plongée Profonde (vous certifiant jusqu’à 30 m, ou 21 m pour les 12–14 ans) et la plongée d’Orientation sous-marine, complétées par 3 plongées au choix telles qu’Épave, Dérivante, Maîtrise de la flottabilité ou Nuit (+85 € manuel et carte PADI).',
         'overview' => ['L’Advanced Open Water est 100 % axé sur la pratique et le plaisir en mer : zéro examen théorique en salle, cinq superbes plongées Aventure en Mer Rouge et l’ouverture immédiate de la zone des 30 mètres pour explorer Shark & Yolanda Reef, Jackson Reef et le mythique SS Thistlegorm !', 'Comme le raconte Maren Z. dans son avis Google 5★ après avoir validé son AOWD jusqu’à 30 m sur épave avec notre instructeur Alex, nos moniteurs perfectionnent votre palmage, votre consommation d’air et votre aisance dans le courant à chaque immersion.'],
         'specs' => [
-            ['Tarif du cours', '280 € par personne (équipement de plongée complet inclus)'],
+            ['Tarif du cours', '350 € par personne (équipement de plongée complet inclus)'],
             ['Frais PADI', '+85 € manuel / eLearning & carte de certification PADI'],
             ['Durée', '2,5 à 3 jours · 5 plongées Aventure en Mer Rouge'],
             ['Prérequis', 'Dès 12 ans · PADI Open Water Diver, Niveau 1 CMAS/FFESSM ou SSI équivalent'],

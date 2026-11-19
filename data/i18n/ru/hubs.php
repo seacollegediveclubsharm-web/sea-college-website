@@ -40,10 +40,10 @@ return [
 
     'padi-courses' => [
         'h1' => 'Курсы дайвинга PADI в Шарм-эль-Шейхе — обучение на русском языке',
-        'meta_title' => 'Курсы PADI в Шарм-эль-Шейхе | Open Water €380, от новичка до Divemaster',
-        'meta_desc' => 'Обучение дайвингу в курорте PADI 5* в Шарм-эль-Шейхе: детский Bubblemaker €70, Discover Scuba €85, PADI Open Water €380, Advanced €280, спецкурсы и Divemaster.',
+        'meta_title' => 'Курсы PADI в Шарм-эль-Шейхе | Open Water €400, от новичка до Divemaster',
+        'meta_desc' => 'Обучение дайвингу в курорте PADI 5* в Шарм-эль-Шейхе: детский Bubblemaker €70, Discover Scuba €85, PADI Open Water €400, Advanced €350, спецкурсы и Divemaster.',
         'sub' => 'Проходите обучение в тёплом и прозрачном Красном море с собственным тренировочным бассейном, классом с кондиционером, домашним рифом и русскоговорящими инструкторами PADI.',
-        'aeo_answer' => 'Sea College Dive Club — официальный дайвинг-курорт PADI 5 Star Dive Resort в отеле Cyrene Sharm (Аль-Монтаза, Шарм-эль-Шейх), предлагающий всю линейку курсов PADI: детские программы с 8 лет (Bubblemaker €70, Seal Team €170), курсы для начинающих с 10 лет (Discover Scuba Diving €85 «всё включено», Scuba Diver €250, Open Water Diver €380 за 3–3,5 дня), Advanced Open Water (€280), Rescue Diver (€394), 8 спецкурсов PADI (€120–€350) и стажировку Divemaster (€850, 4–6 недель). Прокат полного комплекта снаряжения включён в каждый курс; учебник/eLearning и выпуск сертификата PADI составляют €85 за курс (в Discover Scuba Diving уже включены).',
+        'aeo_answer' => 'Sea College Dive Club — официальный дайвинг-курорт PADI 5 Star Dive Resort в отеле Cyrene Sharm (Аль-Монтаза, Шарм-эль-Шейх), предлагающий всю линейку курсов PADI: детские программы с 8 лет (Bubblemaker €70, Seal Team €170), курсы для начинающих с 10 лет (Discover Scuba Diving €85 «всё включено», Scuba Diver €250, Open Water Diver €400 за 3–3,5 дня), Advanced Open Water (€350), Rescue Diver (€394), 8 спецкурсов PADI (€120–€350) и стажировку Divemaster (€850, 4–6 недель). Прокат полного комплекта снаряжения включён в каждый курс; учебник/eLearning и выпуск сертификата PADI составляют €85 за курс (в Discover Scuba Diving уже включены).',
         'highlights' => [
             'Комфортная методика без спешки: первые шаги в неглубоком учебном бассейне, закрепление на тихом домашнем рифе, а затем погружения с дайв-яхты.',
             'Полный комплект снаряжения включён во все курсы PADI — никаких доплат за прокат оборудования на время учёбы.',

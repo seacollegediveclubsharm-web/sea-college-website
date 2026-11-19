@@ -83,7 +83,7 @@ return [
         'faqs' => [
             ['q' => 'Lohnt sich das Seal Team auch nach einem Bubblemaker?', 'a' => 'Absolut! Während der Bubblemaker ans Atmen unter Wasser gewöhnt, baut das Seal Team in 5 strukturierten Missionen echte Fertigkeiten wie Tarierung und Maskenübungen auf.'],
             ['q' => 'Wie tief tauchen die Kinder beim PADI Seal Team?', 'a' => 'AquaMission 1 bleibt unter 2 Metern, und auch die Missionen 2–5 finden ausschließlich im sicheren, flachen Trainingspool (< 4 m) statt.'],
-            ['q' => 'Wann darf mein Kind endlich ins Rote Meer ans Korallenriff?', 'a' => 'Pünktlich ab dem 10. Geburtstag! Dann stehen PADI Discover Scuba Diving (85 €) oder der Junior Open Water Diver (380 €) offen.'],
+            ['q' => 'Wann darf mein Kind endlich ins Rote Meer ans Korallenriff?', 'a' => 'Pünktlich ab dem 10. Geburtstag! Dann stehen PADI Discover Scuba Diving (85 €) oder der Junior Open Water Diver (400 €) offen.'],
         ],
     ],
 
@@ -116,14 +116,14 @@ return [
         ],
         'excluded' => [
             'Bootsausfahrt (Sie möchten lieber vom Tauchboot schnuppertauchen? Siehe 2 Boots-Schnuppertauchgänge für 100 €)',
-            'Dauerhafter eigenständiger Tauchschein (diesen erhalten Sie im PADI Open Water Diver Kurs für 380 €)',
+            'Dauerhafter eigenständiger Tauchschein (diesen erhalten Sie im PADI Open Water Diver Kurs für 400 €)',
         ],
         'ideal_for' => [
             'Ersttaucher ab 10 Jahren, die vor dem Meer in aller Ruhe im Ausbildungspool üben möchten',
             'Urlauber, die testen möchten, ob sie direkt im Anschluss den 3-tägigen Open Water Kurs anhängen wollen',
         ],
         'faqs' => [
-            ['q' => 'Ist PADI Discover Scuba Diving bereits ein vollwertiger Tauchschein?', 'a' => 'Es ist ein offiziell registriertes PADI Schnupperzertifikat (gültig als Vorstufe), aber noch kein eigenständiges Brevet. Für die lebenslange Lizenz bis 18 m weltweit wählen Sie den PADI Open Water Diver (380 €).'],
+            ['q' => 'Ist PADI Discover Scuba Diving bereits ein vollwertiger Tauchschein?', 'a' => 'Es ist ein offiziell registriertes PADI Schnupperzertifikat (gültig als Vorstufe), aber noch kein eigenständiges Brevet. Für die lebenslange Lizenz bis 18 m weltweit wählen Sie den PADI Open Water Diver (400 €).'],
             ['q' => 'Fällt hier zusätzlich die 85 € PADI-Gebühr an?', 'a' => 'Nein! Gemäß unseren Kursbedingungen ist Discover Scuba Diving ausdrücklich ausgenommen — Heft und PADI DSD-Zertifikat sind in den 85 € bereits enthalten.'],
             ['q' => 'Was unterscheidet die 85 € Variante vom 30 € Schnuppertauchen?', 'a' => 'Das 30-€-Angebot ist ein kurzer 10-Minuten-Tauchgang direkt vom Strand. Beim 85-€-Kurs erhalten Sie vorab echtes Pool-Training, einen längeren Rifftauchgang und die offizielle PADI DSD-Registrierung.'],
         ],
@@ -159,14 +159,14 @@ return [
         'excluded' => [
             'Offizielles PADI Lehrbuch / eLearning & Zertifizierungsgebühr (85 €)',
             'Boots- (10 €/Tag) & Nationalparkgebühr (5 €/Tag), sofern Freiwassertauchgänge vom Boot stattfinden',
-            'Hinweis: Spätere Tauchpakete als Scuba Diver erfordern laut Basisregeln einen Privatguide (75 €/Tag) — beim Open Water Diver (380 €) entfällt diese Pflicht!',
+            'Hinweis: Spätere Tauchpakete als Scuba Diver erfordern laut Basisregeln einen Privatguide (75 €/Tag) — beim Open Water Diver (400 €) entfällt diese Pflicht!',
         ],
         'ideal_for' => [
             'Urlauber mit knappem Zeitfenster von nur 2 Tagen, die dennoch ein echtes PADI Brevet möchten',
             'Junge Taucher von 10–11 Jahren oder vorsichtige Einsteiger mit Wunsch nach 12 m Maximaltiefe',
         ],
         'faqs' => [
-            ['q' => 'Soll ich lieber Scuba Diver (250 €) oder gleich Open Water Diver (380 €) buchen?', 'a' => 'Wenn Sie 3–3,5 Tage Zeit haben, lohnt sich der Open Water Diver (380 €) deutlich mehr, da Sie bis 18 m zertifiziert werden und später keinen obligatorischen Privatguide benötigen. Wählen Sie Scuba Diver (250 €), wenn Sie wirklich nur 2 Tage haben.'],
+            ['q' => 'Soll ich lieber Scuba Diver (250 €) oder gleich Open Water Diver (400 €) buchen?', 'a' => 'Wenn Sie 3–3,5 Tage Zeit haben, lohnt sich der Open Water Diver (400 €) deutlich mehr, da Sie bis 18 m zertifiziert werden und später keinen obligatorischen Privatguide benötigen. Wählen Sie Scuba Diver (250 €), wenn Sie wirklich nur 2 Tage haben.'],
             ['q' => 'Verfällt das PADI Scuba Diver Brevet irgendwann?', 'a' => 'Nein, Ihr PADI Brevet gilt lebenslang und kann jederzeit in 1–2 Tagen zum vollen Open Water Diver aufgestockt werden.'],
             ['q' => 'Sind Leihausrüstung und Versicherung im Preis enthalten?', 'a' => 'Ja, sowohl die komplette Tauchausrüstung als auch die Ausbildungs-Tauchversicherung sind in den 250 € enthalten.'],
         ],
@@ -215,16 +215,16 @@ return [
     ],
 
     'owd' => [
-        'h1' => 'PADI Open Water Diver Tauchkurs in Sharm El Sheikh (380 €)',
-        'meta_title' => 'PADI Open Water Diver Sharm El Sheikh | 380 € inkl. Ausrüstung | Sea College',
-        'meta_desc' => 'Machen Sie Ihren PADI Open Water Tauchschein in Sharm El Sheikh für 380 €! 3–3,5 Tage im PADI 5 Sterne Resort mit Pool, Hausriff, Leihausrüstung & deutschen Tauchlehrern.',
-        'aeo_answer' => 'Der PADI Open Water Diver Kurs im Sea College Dive Club in Sharm El Sheikh kostet 380 € pro Person (Mindestalter 10 Jahre, Dauer 3 bis 3,5 Tage) und ist die weltweit bekannteste lebenslange Tauchzertifizierung bis 18 Meter Tiefe. Im Kurspreis von 380 € sind alle 5 Theorieeinheiten, 5 Pool-Module in unserem Resort-Ausbildungspool, 4 Freiwassertauchgänge im Roten Meer, die komplette Leihausrüstung, die Ausbildungs-Tauchversicherung und der Hoteltransfer in Sharm El Sheikh enthalten (+85 € PADI Lehrbuch-/eLearning- & Brevetgebühr).',
+        'h1' => 'PADI Open Water Diver Tauchkurs in Sharm El Sheikh (400 €)',
+        'meta_title' => 'PADI Open Water Diver Sharm El Sheikh | 400 € inkl. Ausrüstung | Sea College',
+        'meta_desc' => 'Machen Sie Ihren PADI Open Water Tauchschein in Sharm El Sheikh für 400 €! 3–3,5 Tage im PADI 5 Sterne Resort mit Pool, Hausriff, Leihausrüstung & deutschen Tauchlehrern.',
+        'aeo_answer' => 'Der PADI Open Water Diver Kurs im Sea College Dive Club in Sharm El Sheikh kostet 400 € pro Person (Mindestalter 10 Jahre, Dauer 3 bis 3,5 Tage) und ist die weltweit bekannteste lebenslange Tauchzertifizierung bis 18 Meter Tiefe. Im Kurspreis von 400 € sind alle 5 Theorieeinheiten, 5 Pool-Module in unserem Resort-Ausbildungspool, 4 Freiwassertauchgänge im Roten Meer, die komplette Leihausrüstung, die Ausbildungs-Tauchversicherung und der Hoteltransfer in Sharm El Sheikh enthalten (+85 € PADI Lehrbuch-/eLearning- & Brevetgebühr).',
         'overview' => [
             'Kein Ort der Welt macht den Einstieg zum Tauchschein so angenehm wie Sharm El Sheikh: Statt kaltem, trübem Baggersee erwarten Sie im Sea College Dive Club 22–29 °C warmes Wasser, bis zu 35 m Sichtweite, ein eigener flacher Ausbildungspool und ein farbenprächtiges Hausriff direkt vor unserer PADI 5 Sterne Strandbasis in Al Montazah.',
             'Unsere deutschsprachigen PADI Tauchlehrer (wie Alex und Sam) begleiten Sie geduldig in kleinen Gruppen Schritt für Schritt vom ersten Atemzug im Pool bis zu Ihren vier Freiwassertauchgängen im Roten Meer — ideal auch als Kombi-Sparpaket „Mega“ (Open Water + Advanced für 600 €) oder „Stars“ (Open Water + Nitrox für 500 €).',
         ],
         'specs' => [
-            ['Kurspreis', '380 € pro Person (komplette Leihausrüstung & Tauchversicherung inklusive)'],
+            ['Kurspreis', '400 € pro Person (komplette Leihausrüstung & Tauchversicherung inklusive)'],
             ['PADI-Gebühr', '+85 € offizielles PADI Lehrbuch / eLearning & lebenslange digitale eCard'],
             ['Kursdauer', '3 bis 3,5 Tage (noch entspannter mit PADI eLearning vorab zu Hause)'],
             ['Mindestalter', 'Ab 10 Jahren (10–14 J.: Junior Open Water Diver)'],
@@ -259,15 +259,15 @@ return [
 
     'aowd' => [
         'h1' => 'PADI Advanced Open Water Diver Kurs in Sharm El Sheikh (30 Meter)',
-        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 280 € · 30 m | Sea College',
-        'meta_desc' => 'Erweitern Sie Ihr Limit auf 30 m! PADI Advanced Open Water Diver in Sharm El Sheikh für 280 € (2,5–3 Tage, 5 Abenteuertauchgänge inkl. Leihausrüstung, kein Examen).',
-        'aeo_answer' => 'Der PADI Advanced Open Water Diver Kurs (AOWD) im Sea College Dive Club in Sharm El Sheikh kostet 280 € pro Person (Mindestalter 12 Jahre, Dauer 2,5 bis 3 Tage) inklusive kompletter Leihausrüstung. Ganz ohne schriftliche Abschlussprüfung absolvieren Sie 5 reine Praxis-Abenteuertauchgänge — darunter Tieftauchen (bis 30 m) und Unterwassernavigation sowie 3 Wahltauchgänge wie Tarierung in Perfektion, Strömung oder Wrack — und schalten damit Ras Mohammeds Steilwände und die SS Thistlegorm frei (+85 € PADI Gebühr).',
+        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m | Sea College',
+        'meta_desc' => 'Erweitern Sie Ihr Limit auf 30 m! PADI Advanced Open Water Diver in Sharm El Sheikh für 350 € (2,5–3 Tage, 5 Abenteuertauchgänge inkl. Leihausrüstung, kein Examen).',
+        'aeo_answer' => 'Der PADI Advanced Open Water Diver Kurs (AOWD) im Sea College Dive Club in Sharm El Sheikh kostet 350 € pro Person (Mindestalter 12 Jahre, Dauer 2,5 bis 3 Tage) inklusive kompletter Leihausrüstung. Ganz ohne schriftliche Abschlussprüfung absolvieren Sie 5 reine Praxis-Abenteuertauchgänge — darunter Tieftauchen (bis 30 m) und Unterwassernavigation sowie 3 Wahltauchgänge wie Tarierung in Perfektion, Strömung oder Wrack — und schalten damit Ras Mohammeds Steilwände und die SS Thistlegorm frei (+85 € PADI Gebühr).',
         'overview' => [
             'In Sharm El Sheikh entfaltet der PADI Advanced Open Water Kurs sein volles Potenzial: Mit dem neuen 30-Meter-Tiefenlimit eröffnen sich Ihnen die weltberühmten Steilwände von Ras Mohammed, die Drift-Riffe der Straße von Tiran und legendäre Wracks wie die SS Dunraven und SS Thistlegorm (ab 20 Tauchgängen) — wie unsere deutsche Gästebewertung von Maren Z. bei Instructor Alex begeistert beschreibt.',
             'Es gibt kein trockenes Pauken und keinen Multiple-Choice-Test: Sie besprechen kurze Praxisfragen direkt mit Ihrem Tauchlehrer und verfeinern Ihre Wasserlage in 5 abwechslungsreichen Abenteuertauchgängen.',
         ],
         'specs' => [
-            ['Kurspreis', '280 € pro Person (komplette Leihausrüstung inklusive)'],
+            ['Kurspreis', '350 € pro Person (komplette Leihausrüstung inklusive)'],
             ['PADI-Gebühr', '+85 € PADI eLearning / Manual & digitale AOWD-Zertifizierung'],
             ['Dauer & Umfang', '2,5–3 Tage · 5 Freiwasser-Abenteuertauchgänge (keine schriftliche Prüfung!)'],
             ['Voraussetzung', 'PADI Open Water Diver (oder CMAS* / SSI OWD) · Ab 12 Jahren'],
@@ -309,7 +309,7 @@ return [
             'Anstatt zwei getrennte Kurse zu buchen, verbinden Sie die Nitrox-Sauerstoffanalyse und Computer-Einstellung direkt mit Ihren 5 Abenteuertauchgängen in nur 3 Urlaubstagen.',
         ],
         'specs' => [
-            ['Kombipreis', '380 € pro Person (spart 45 € gegenüber Einzelkursen; inkl. Leihausrüstung)'],
+            ['Kombipreis', '380 € pro Person (spart 115 € gegenüber Einzelkursen; inkl. Leihausrüstung)'],
             ['Tipp inkl. Versicherung', 'Siehe Sparpaket „Super“ (400 €) — enthält zusätzlich bereits die Tauchversicherung!'],
             ['PADI-Gebühren', '+85 € pro Zertifizierung (2 × 85 € für AOWD + Nitrox eCards)'],
             ['Dauer & Mindestalter', '3 Tage · Ab 12 Jahren (Voraussetzung: Open Water Diver)'],

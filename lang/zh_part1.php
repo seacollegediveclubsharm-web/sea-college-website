@@ -9,7 +9,7 @@ return [
     'meta_services_title' => '沙姆沙伊赫潜水、PADI 考证课程与红海船潜 | Sea College Dive Club',
     'meta_services_desc' => '沙姆沙伊赫持证潜水套餐、从儿童泡泡小勇士到潜水长的全系列 PADI 课程、课程省钱联报套餐、浮潜一日游与私人快艇游艇包船。',
     'meta_prices_title' => '2026 沙姆沙伊赫潜水价格表 | 船潜套餐、PADI 考证与优惠套餐',
-    'meta_prices_desc' => '透明欧元价格表：持证岸潜 €45 起（套餐 €35/潜），PADI 开放水域潜水员 (OW) €380，零基础体验潜水 €30 起，红海浮潜 €35 起，私人游艇包船。支持在线测算与预订。',
+    'meta_prices_desc' => '透明欧元价格表：持证岸潜 €45 起（套餐 €35/潜），PADI 开放水域潜水员 (OW) €400，零基础体验潜水 €30 起，红海浮潜 €35 起，私人游艇包船。支持在线测算与预订。',
     'meta_about_title' => '关于 Sea College Dive Club | 沙姆沙伊赫 PADI 五星潜水度假村',
     'meta_about_desc' => '了解位于沙姆沙伊赫 Al Montazah 海滨 Cyrene Sharm 度假村内的 Sea College Dive Club：自有教学泳池、私家房礁 (House Reef) 与专属红海潜水船。',
     'meta_contact_title' => '联系我们与在线预订 | 沙姆沙伊赫 Sea College Dive Club',

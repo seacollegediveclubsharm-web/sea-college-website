@@ -9,7 +9,7 @@ return [
     'meta_services_title' => 'Diving, PADI Courses & Boat Trips in Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Dive packages, PADI courses from Bubblemaker to Divemaster, course bundles, snorkeling trips and private boats in Sharm El Sheikh.',
     'meta_prices_title' => 'Diving Prices Sharm El Sheikh 2026 | Packages, Courses & Offers',
-    'meta_prices_desc' => 'Full price list in EUR: dive packages from €45, PADI Open Water €380, intro dives from €30, snorkeling from €35, private boats. Build your booking online.',
+    'meta_prices_desc' => 'Full price list in EUR: dive packages from €45, PADI Open Water €400, intro dives from €30, snorkeling from €35, private boats. Build your booking online.',
     'meta_about_title' => 'About Sea College Dive Club | PADI 5 Star Resort, Sharm El Sheikh',
     'meta_about_desc' => 'Meet Sea College Dive Club: PADI 5 Star dive resort with training pool, house reef and dive boat at Cyrene Sharm, Al Montazah.',
     'meta_contact_title' => 'Contact & Book | Sea College Dive Club Sharm El Sheikh',

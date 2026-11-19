@@ -77,7 +77,7 @@ return [
         'ideal_for' => [
             'Débutants souhaitant vraiment profiter d’une deuxième plongée détendue sans passer 8 h en mer',
             'Couples, amis et familles (dès 10 ans) cherchant le meilleur compromis temps/plaisir depuis la plage',
-            'Voyageurs voulant se tester avant d’entamer un cours PADI Open Water Diver (380 €)',
+            'Voyageurs voulant se tester avant d’entamer un cours PADI Open Water Diver (400 €)',
         ],
         'faqs' => [
             ['q' => 'Pourquoi choisir 2 baptêmes plutôt qu’un seul ?', 'a' => 'Lors de la 2e plongée, l’appréhension initiale a totalement disparu : votre respiration est lente et vous observez deux fois plus de vie marine !'],
@@ -239,7 +239,7 @@ return [
         'ideal_for' => [
             'Plongeurs certifiés n’ayant pas plongé depuis 1 an, 3 ans ou 10 ans+',
             'Plongeurs brevetés en carrière/lac souhaitant prendre leurs marques en eau chaude salée',
-            'Plongeurs reprenant avant d’attaquer un cours PADI Advanced Open Water (280 €)',
+            'Plongeurs reprenant avant d’attaquer un cours PADI Advanced Open Water (350 €)',
         ],
         'faqs' => [
             ['q' => 'Je n’ai pas plongé depuis 8 ans, mon brevet PADI est-il toujours valable ?', 'a' => 'Oui, un brevet PADI n’expire jamais ! Une simple demi-journée Scuba Review à 50 € suffit pour retrouver tous vos automatismes en douceur.'],
