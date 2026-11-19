@@ -40,7 +40,7 @@ function sc_promo_banner_config(string $theme): array
             'desc'  => t('banner_boats_desc'),
             'cta'   => t('banner_boats_cta'),
             'href'  => page_link('/snorkeling-and-boats-sharm-el-sheikh'),
-            'img'   => 'images/sea-college-dive-club-sharm-el-sheikh-private-yacht-boat-trip.jpg',
+            'img'   => 'images/sea-college-dive-club-sharm-el-sheikh-oceano-private-yacht-nov2026.jpg',
             'wa'    => 'Private Boat / Snorkeling Trip',
         ],
         'brand' => [

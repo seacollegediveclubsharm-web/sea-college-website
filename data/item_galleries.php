@@ -292,9 +292,9 @@ return [
   ],
   'fee-boat' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-01.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-04.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -820,9 +820,9 @@ return [
   ],
   'snork-ras-adult' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-04.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-06.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -832,9 +832,9 @@ return [
   ],
   'snork-ras-child' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-01.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-03.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -844,9 +844,9 @@ return [
   ],
   'snork-beach-day' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg'
+      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -856,9 +856,9 @@ return [
   ],
   'snork-beach-night' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg'
+      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-06.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -868,9 +868,9 @@ return [
   ],
   'snork-ras-land' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -880,9 +880,9 @@ return [
   ],
   'speed-1h' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg'
+      'images/items/sea-college-sharm-tiran-island-private-speedboat-2h-nov2026.jpg',
+      'images/items/sea-college-sharm-tiran-island-private-speedboat-3-hours.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-01.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -892,9 +892,9 @@ return [
   ],
   'speed-2h' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg'
+      'images/items/sea-college-sharm-private-speedboat-snorkeling-1h-rib-nov2026.jpg',
+      'images/items/sea-college-sharm-tiran-island-private-speedboat-3-hours.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-02.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -904,9 +904,9 @@ return [
   ],
   'speed-3h' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/sea-college-sharm-private-speedboat-snorkeling-1h-rib-nov2026.jpg',
+      'images/items/sea-college-sharm-tiran-island-private-speedboat-2h-nov2026.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-04.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -916,9 +916,9 @@ return [
   ],
   'private-1-5' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-03.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-06.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -928,9 +928,9 @@ return [
   ],
   'private-6-10' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-01.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-04.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-06.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -940,9 +940,9 @@ return [
   ],
   'private-11-15' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-04.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-07.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -952,9 +952,9 @@ return [
   ],
   'private-16-20' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg'
+      'images/items/gallery/sea-college-sharm-boats-nov2026-05.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-06.jpg',
+      'images/items/gallery/sea-college-sharm-boats-nov2026-08.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',

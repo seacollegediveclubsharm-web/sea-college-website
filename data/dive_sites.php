@@ -80,7 +80,7 @@ return sc_overlay_dive_sites([
                 'en' => ['Scalloped hammerheads (Jul–Sep)', 'Hawksbill turtles', 'Jacks & trevally', 'Red Sea bannerfish'],
                 'ar' => ['قرش المطرقة (يوليو–سبتمبر)', 'سلاحف صقرية المنقار', 'أسماك البياض والتريفالي', 'سمكة الراية'],
             ],
-            'img'     => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+            'img'     => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-rib-speedboat-nov2026.jpg',
             'item_id' => 'sup-zodiac-early',
         ],
         [

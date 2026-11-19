@@ -54,6 +54,11 @@ for p in \
   "/zh/prices.php" \
   "/assets/images/items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg" \
   "/assets/images/items/sea-college-sharm-ss-thistlegorm-wreck-dive-sharm-el-sheikh.jpg" \
+  "/assets/images/items/sea-college-sharm-white-island-ras-mohammed-nizar-boat-nov2026.jpg" \
+  "/assets/images/items/sea-college-sharm-private-boat-charter-1-5-omar4-nov2026.jpg" \
+  "/assets/images/items/sea-college-sharm-private-yacht-charter-11-15-oceano-nov2026.jpg" \
+  "/assets/images/items/sea-college-sharm-private-boat-charter-16-20-oceano-nov2026.jpg" \
+  "/assets/images/gallery/sea-college-dive-club-sharm-el-sheikh-oceano-luxury-yacht-nov2026.jpg" \
   "/assets/images/clients/sea-college-real-guests-padi-certificates-sharm.jpg" \
   "/assets/images/clients/sea-college-real-guests-boat-group-red-sea.jpg"; do
   check_code "$p" "200"

@@ -285,7 +285,7 @@ return sc_overlay_catalog([
                         'desc' => 'Mandatory per-person daily supplement on boat diving days (includes lunch & drinks on full-day boats).',
                         'desc_ar' => 'رسوم يومية للفرد في أيام الغوص بالقارب (تشمل الغداء والمشروبات في رحلات اليوم الكامل).',
                         'price' => 10, 'unit' => 'day', 'duration' => 'Per day',
-                        'img' => 'items/sea-college-sharm-boat-trip-daily-supplement-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-boat-trip-daily-supplement-oceano-deck-nov2026.jpg',
                     ],
                     [
                         'id' => 'fee-park', 'section' => 'tours', 'slug' => 'ras-mohammed-tiran-marine-park-fee',
@@ -781,7 +781,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full day yacht cruise. Mask, life jacket, buffet lunch & soft drinks, hotel transfers & marine park fees.',
                         'desc_ar' => 'رحلة يخت ليوم كامل تشمل القناع وسترة النجاة وغداء بوفيه والمشروبات والانتقالات ورسوم المحمية.',
                         'price' => 55, 'child_price' => 30, 'duration' => '8h', 'popular' => true,
-                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-boat-trip.jpg',
+                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-nizar-boat-nov2026.jpg',
                     ],
                     [
                         'id' => 'snork-ras-child', 'section' => 'tours', 'slug' => 'white-island-ras-mohammed-boat-child',
@@ -790,7 +790,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full day family ticket (ages 5–12) with child vest, mask, lunch, drinks, transfers & park fees.',
                         'desc_ar' => 'تذكرة الأطفال (5–12 سنة) لرحلة اليخت الكاملة شاملة سترة نجاة وقناع وغداء ومشروبات وانتقالات.',
                         'price' => 30, 'duration' => '8h',
-                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-boat-child.jpg',
+                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-family-boat-nov2026.jpg',
                     ],
                     [
                         'id' => 'snork-beach-day', 'section' => 'tours', 'slug' => 'house-reef-beach-snorkeling-sharm-el-sheikh',
@@ -832,7 +832,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for up to 3 guests (max 5; 4th & 5th +€50 each). Mask, vest & transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لـ 3 أفراد (بحد أقصى 5؛ الفرد الرابع والخامس +50€) شامل القناع والسترة والانتقالات.',
                         'price' => 75, 'unit' => 'boat', 'duration' => '1h',
-                        'img' => 'items/sea-college-sharm-private-speedboat-snorkeling-1-hour-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-speedboat-snorkeling-1h-rib-nov2026.jpg',
                     ],
                     [
                         'id' => 'speed-2h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-2-hours',
@@ -841,7 +841,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for 2 guests (max 5; extra guest +€75 each). Mask, vest & Sharm transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لفردين إلى جزيرة تيران (بحد أقصى 5؛ كل فرد إضافي +75€) شامل المعدات والانتقالات.',
                         'price' => 150, 'unit' => 'boat', 'duration' => '2h', 'popular' => true,
-                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-2-hours.jpg',
+                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-2h-nov2026.jpg',
                     ],
                     [
                         'id' => 'speed-3h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-3-hours',
@@ -865,7 +865,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full-day private boat for couples or small families (snorkeling & optional diving, custom route).',
                         'desc_ar' => 'قارب خاص ليوم كامل للأزواج والعائلات الصغيرة للسنوركل والغوص بمسار مخصص.',
                         'price' => 550, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'items/sea-college-sharm-private-boat-charter-1-5-guests-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-1-5-omar4-nov2026.jpg',
                     ],
                     [
                         'id' => 'private-6-10', 'section' => 'tours', 'slug' => 'private-boat-charter-6-10-guests-sharm',
@@ -874,7 +874,7 @@ return sc_overlay_catalog([
                         'desc' => 'Our most popular private charter for families & friends — Ras Mohammed or Tiran at your own pace.',
                         'desc_ar' => 'الأكثر طلبًا للعائلات والأصدقاء — يوم كامل في رأس محمد أو تيران بخصوصية تامة.',
                         'price' => 650, 'unit' => 'boat', 'duration' => '7–8h', 'popular' => true,
-                        'img' => 'items/sea-college-sharm-private-boat-charter-6-10-guests-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-6-10-oceano-nov2026.jpg',
                     ],
                     [
                         'id' => 'private-11-15', 'section' => 'tours', 'slug' => 'private-boat-charter-11-15-guests-sharm',
@@ -883,7 +883,7 @@ return sc_overlay_catalog([
                         'desc' => 'Spacious private Red Sea motor yacht for medium groups, celebrations & multi-family holidays.',
                         'desc_ar' => 'يخت واسع للمجموعات المتوسطة والمناسبات الخاصة وإجازات العائلات في البحر الأحمر.',
                         'price' => 900, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'items/sea-college-sharm-private-yacht-charter-11-15-guests-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-yacht-charter-11-15-oceano-nov2026.jpg',
                     ],
                     [
                         'id' => 'private-16-20', 'section' => 'tours', 'slug' => 'private-boat-charter-16-20-guests-sharm',
@@ -892,7 +892,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full-day private charter for dive clubs, large family reunions & VIP groups up to 20 guests.',
                         'desc_ar' => 'يخت خاص ليوم كامل لنوادي الغوص والتجمعات العائلية الكبيرة والمجموعات حتى 20 ضيفًا.',
                         'price' => 1100, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'items/sea-college-sharm-private-boat-charter-16-20-guests-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-16-20-oceano-nov2026.jpg',
                     ],
                 ],
             ],
