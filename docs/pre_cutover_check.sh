@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Sea College Dive Club — Pre-Cutover Automated Smoke Test
+# Sea College Dive Club — Production & Cutover Automated Smoke Test
 # Usage:
-#   ./docs/pre_cutover_check.sh https://papayawhip-pheasant-312330.hostingersite.com
-#   ./docs/pre_cutover_check.sh https://127.0.0.1:8080 www.seacollegediveclub.com
+#   ./docs/pre_cutover_check.sh https://seacollegediveclub.com
+#   ./docs/pre_cutover_check.sh https://127.0.0.1:8080 seacollegediveclub.com
 set -euo pipefail
 
-BASE_URL="${1:-https://papayawhip-pheasant-312330.hostingersite.com}"
+BASE_URL="${1:-https://seacollegediveclub.com}"
 HOST_HEADER="${2:-}"
 CURL_ARGS=(-sS --max-time 12)
 if [[ -n "$HOST_HEADER" ]]; then

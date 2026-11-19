@@ -149,7 +149,7 @@ function getLocalizedQuoteGreeting(lang, name, interest, eur) {
  * 3. Verifies HTTP 200 across all 8 language hubs & sitemap.xml.
  */
 function verifyWebsiteHealth() {
-  var base = CONFIG.STAGING_DOMAIN; // Switch to CONFIG.PROD_DOMAIN after DNS cutover
+  var base = CONFIG.PROD_DOMAIN;
   var paths = ['/', '/sitemap.xml', '/ru/', '/it/', '/pl/', '/de/', '/fr/', '/ar/', '/zh/'];
   var report = [];
   for (var i = 0; i < paths.length; i++) {

@@ -37,9 +37,9 @@ if (!function_exists('sc_env')) {
  * ------------------------------------------------------------- */
 define('SITE_NAME', 'Sea College Dive Club');
 $sc_req_host = strtolower((string) preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '')));
-$sc_is_prod_host = in_array($sc_req_host, ['seacollegediveclub.com', 'www.seacollegediveclub.com'], true);
-define('SITE_ENV', sc_env('SITE_ENV', $sc_is_prod_host ? 'production' : 'staging')); // staging | production
-define('SITE_URL', rtrim(sc_env('SITE_URL', SITE_ENV === 'production' ? 'https://seacollegediveclub.com' : 'https://papayawhip-pheasant-312330.hostingersite.com'), '/'));
+$sc_is_staging_host = ($sc_req_host !== '') && (str_contains($sc_req_host, 'hostingersite.com') || in_array($sc_req_host, ['localhost', '127.0.0.1'], true));
+define('SITE_ENV', sc_env('SITE_ENV', $sc_is_staging_host ? 'staging' : 'production')); // production | staging
+define('SITE_URL', rtrim(sc_env('SITE_URL', 'https://seacollegediveclub.com'), '/'));
 define('SITE_NOINDEX', SITE_ENV !== 'production'); // keep staging out of Google, index production automatically
 define('DEFAULT_LANG', 'en');
 define('SUPPORTED_LANGS', [
