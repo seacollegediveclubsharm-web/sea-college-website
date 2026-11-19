@@ -256,9 +256,9 @@ return [
   ],
   'sup-zodiac' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg'
+      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -268,14 +268,14 @@ return [
   ],
   'sup-zodiac-early' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-boats-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-boats-gallery-05.jpg'
+      'images/items/gallery/sea-college-sharm-wrecks-gallery-01.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
+      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
-      'poster' => 'images/gallery/sea-college-red-sea-coral-reef-video-poster.jpg',
-      'dur' => '0:18'
+      'src' => 'videos/sea-college-wall-dive-sharm-el-sheikh.mp4',
+      'poster' => 'images/gallery/sea-college-wall-dive-video-poster.jpg',
+      'dur' => '0:15'
     ]
   ],
   'sup-dahab' => [
