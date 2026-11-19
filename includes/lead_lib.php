@@ -14,9 +14,38 @@ function is_ajax(): bool
         || str_contains((string) ($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json');
 }
 
+/** Sanitize redirect targets to same-origin relative paths only (prevents Open Redirect attacks). */
+function safe_redirect_target(string $target, string $default = '/'): string
+{
+    $target = trim(str_replace(["\r", "\n", "\0"], '', $target));
+    if ($target === '') {
+        return $default;
+    }
+    if (str_starts_with($target, '/') && !str_starts_with($target, '//') && !str_starts_with($target, '/\\')) {
+        return $target;
+    }
+    $host = strtolower((string) parse_url($target, PHP_URL_HOST));
+    $allowedHosts = array_filter([
+        strtolower((string) parse_url(SITE_URL, PHP_URL_HOST)),
+        'seacollegediveclub.com',
+        'www.seacollegediveclub.com',
+        strtolower((string) preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? ''))),
+    ]);
+    if ($host !== '' && in_array($host, $allowedHosts, true)) {
+        $path = (string) (parse_url($target, PHP_URL_PATH) ?: '/');
+        $query = (string) (parse_url($target, PHP_URL_QUERY) ?: '');
+        return $path . ($query !== '' ? '?' . $query : '');
+    }
+    return $default;
+}
+
 /** Finish request: JSON for fetch(), redirect for classic form posts. */
 function respond(bool $ok, array $data = [], string $fallback = '/'): never
 {
+    $safeFallback = safe_redirect_target($fallback, '/');
+    if (isset($data['redirect'])) {
+        $data['redirect'] = safe_redirect_target((string) $data['redirect'], $safeFallback);
+    }
     if (is_ajax()) {
         http_response_code($ok ? 200 : (int) ($data['status'] ?? 422));
         header('Content-Type: application/json; charset=utf-8');
@@ -29,8 +58,48 @@ function respond(bool $ok, array $data = [], string $fallback = '/'): never
         $_SESSION['form_old'] = array_map(static fn($v) => is_string($v) ? substr($v, 0, 500) : '', $_POST);
         unset($_SESSION['form_old']['csrf_token']);
     }
-    header('Location: ' . ($data['redirect'] ?? $fallback), true, 303);
+    header('Location: ' . ($data['redirect'] ?? $safeFallback), true, 303);
     exit;
+}
+
+/** Per-IP file-backed rate limiter so cookie-less bots cannot flood POST handlers. */
+function sc_ip_rate_limit_exceeded(int $minIntervalSec = RATE_LIMIT_SECONDS, int $maxPerHour = 25): bool
+{
+    $ip = (string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+    if (in_array($ip, ['127.0.0.1', '::1', '0.0.0.0'], true)) {
+        return false;
+    }
+    $ipHash = substr(hash_hmac('sha256', $ip, sc_app_secret()), 0, 24);
+    $file = LEADS_STORAGE_DIR . '/.ratelimit_ip.json';
+    $now = time();
+    $fh = @fopen($file, 'c+');
+    if ($fh === false) {
+        return false;
+    }
+    flock($fh, LOCK_EX);
+    $raw = stream_get_contents($fh);
+    $map = is_string($raw) && $raw !== '' ? (json_decode($raw, true) ?: []) : [];
+    foreach ($map as $k => $entry) {
+        if (($now - (int) ($entry['last'] ?? 0)) > 3600) {
+            unset($map[$k]);
+        }
+    }
+    $rec = $map[$ipHash] ?? ['last' => 0, 'count' => 0, 'window' => $now];
+    if (($now - (int) $rec['window']) > 3600) {
+        $rec = ['last' => 0, 'count' => 0, 'window' => $now];
+    }
+    $blocked = (($now - (int) $rec['last']) < max(3, min($minIntervalSec, 8))) || ((int) $rec['count'] >= $maxPerHour);
+    if (!$blocked) {
+        $rec['last'] = $now;
+        $rec['count'] = (int) $rec['count'] + 1;
+        $map[$ipHash] = $rec;
+    }
+    ftruncate($fh, 0);
+    rewind($fh);
+    fwrite($fh, (string) json_encode($map));
+    flock($fh, LOCK_UN);
+    fclose($fh);
+    return $blocked;
 }
 
 function require_post_and_csrf(): void
@@ -40,6 +109,15 @@ function require_post_and_csrf(): void
         header('Allow: POST');
         exit('Method Not Allowed');
     }
+    $origin = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
+    if ($origin !== '') {
+        $oHost = strtolower((string) parse_url($origin, PHP_URL_HOST));
+        $reqHost = strtolower((string) preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')));
+        $allowed = array_filter([$reqHost, 'seacollegediveclub.com', 'www.seacollegediveclub.com', strtolower((string) parse_url(SITE_URL, PHP_URL_HOST))]);
+        if ($oHost !== '' && !in_array($oHost, $allowed, true)) {
+            respond(false, ['message' => t('form_error_csrf'), 'status' => 403], '/');
+        }
+    }
     if (!csrf_verify($_POST['csrf_token'] ?? null)) {
         respond(false, ['message' => t('form_error_csrf'), 'status' => 419], $_SERVER['HTTP_REFERER'] ?? '/');
     }
@@ -48,7 +126,7 @@ function require_post_and_csrf(): void
         respond(true, ['redirect' => '/thank-you.php']);
     }
     $last = (int) ($_SESSION['last_submit'] ?? 0);
-    if ($last && (time() - $last) < RATE_LIMIT_SECONDS) {
+    if (($last && (time() - $last) < RATE_LIMIT_SECONDS) || sc_ip_rate_limit_exceeded()) {
         respond(false, ['message' => t('form_error_rate'), 'status' => 429], $_SERVER['HTTP_REFERER'] ?? '/');
     }
 }

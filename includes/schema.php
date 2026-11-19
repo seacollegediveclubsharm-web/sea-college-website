@@ -79,6 +79,9 @@ $sc_graph = [
         'name' => SITE_NAME,
         'inLanguage' => array_keys(SUPPORTED_LANGS),
         'publisher' => ['@id' => $sc_org_id],
+        'copyrightHolder' => ['@id' => $sc_org_id],
+        'copyrightYear' => (int) date('Y'),
+        'license' => SITE_URL . '/terms.php#copyright',
     ],
 ];
 

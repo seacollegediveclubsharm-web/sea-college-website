@@ -64,13 +64,19 @@ require ROOT_DIR . '/includes/header.php';
       <li>If you prefer not to be included, please inform us in writing.</li>
     </ul>
 
-    <h2>8. Governing Law</h2>
+    <h2 id="copyright">8. Intellectual Property, Copyright &amp; Anti-Scraping Protection</h2>
+    <ul>
+      <li><strong>Exclusive Ownership:</strong> All content on this website — including text in all 8 languages, course and tour descriptions, pricing tables, interactive calculators, dive site maps, custom code, logos, and original underwater, boat fleet (<em>Oceano</em>, <em>Nizar</em>, <em>Omar 4</em>, and RIB Speedboats), and dive center photography and videography — is the exclusive intellectual property of <strong>Sea College Dive Club</strong> (© <?= e(BUSINESS['founded'] . '–' . date('Y')) ?> Sea College Dive Club, All Rights Reserved) and is protected under Egyptian Copyright Law No. 82 of 2002 and international copyright treaties (Berne Convention &amp; DMCA).</li>
+      <li><strong>Strict Prohibition of Copying &amp; Scraping:</strong> Any unauthorized copying, reproduction, translation, mirroring, hotlinking, automated scraping, or commercial reuse of our text, photographs, videos, or code on any third-party website, social media page, or OTA listing without prior written consent from Sea College Dive Club is strictly prohibited and will result in immediate DMCA takedown notices and legal enforcement.</li>
+    </ul>
+
+    <h2>9. Governing Law</h2>
     <p>These Terms are governed by the laws of Egypt.</p>
 
-    <h2>9. Modifications to Terms &amp; Conditions</h2>
+    <h2>10. Modifications to Terms &amp; Conditions</h2>
     <p>We reserve the right to modify these Terms at any time. Updated Terms will be posted on our website.</p>
 
-    <h2>10. Contact Us</h2>
+    <h2>11. Contact Us</h2>
     <p>If you have any questions regarding these Terms, please contact us at <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a>, by phone at <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a>, or on <a href="<?= e(whatsapp_link('', 'terms')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="terms">WhatsApp (<bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi>)</a>.</p>
   </div>
 </section>

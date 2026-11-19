@@ -72,6 +72,8 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <?php endforeach; ?>
 <link rel="alternate" hreflang="x-default" href="<?= e(canonical_url(DEFAULT_LANG)) ?>">
 <meta name="theme-color" content="#0B1D2C">
+<meta name="author" content="<?= e(SITE_NAME) ?>">
+<meta name="copyright" content="© <?= e(BUSINESS['founded'] . '–' . date('Y') . ' ' . SITE_NAME) ?>. All rights reserved.">
 
 <!-- Open Graph / Twitter -->
 <meta property="og:type" content="<?= e($page['type'] ?? 'website') ?>">

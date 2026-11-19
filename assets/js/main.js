@@ -1030,6 +1030,64 @@
 
   applyCurrency();
 
+  /* ---------------- Content & Copyright Protection Guard ---------------- */
+  function isEditableTarget(el) {
+    return !!(el && el.closest && el.closest('input, textarea, select, [contenteditable="true"], .allow-select'));
+  }
+  var cgToast = null;
+  var cgTimer = 0;
+  function showCopyGuardToast() {
+    var msg = '🔒 © ' + new Date().getFullYear() + ' Sea College Dive Club — Protected Content';
+    if (!cgToast) {
+      cgToast = document.createElement('div');
+      cgToast.className = 'copy-guard-toast';
+      cgToast.setAttribute('role', 'status');
+      cgToast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(cgToast);
+    }
+    cgToast.textContent = msg;
+    cgToast.classList.add('is-visible');
+    clearTimeout(cgTimer);
+    cgTimer = setTimeout(function () {
+      if (cgToast) { cgToast.classList.remove('is-visible'); }
+    }, 2400);
+  }
+  document.addEventListener('contextmenu', function (e) {
+    if (isEditableTarget(e.target)) { return; }
+    e.preventDefault();
+    showCopyGuardToast();
+  });
+  document.addEventListener('selectstart', function (e) {
+    if (isEditableTarget(e.target)) { return; }
+    e.preventDefault();
+  });
+  document.addEventListener('dragstart', function (e) {
+    if (isEditableTarget(e.target)) { return; }
+    e.preventDefault();
+  });
+  ['copy', 'cut'].forEach(function (evName) {
+    document.addEventListener(evName, function (e) {
+      if (isEditableTarget(e.target)) { return; }
+      e.preventDefault();
+      if (e.clipboardData) {
+        e.clipboardData.setData('text/plain', '© ' + new Date().getFullYear() + ' Sea College Dive Club (Sharm El Sheikh) — All rights reserved. ' + location.href);
+      }
+      showCopyGuardToast();
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (isEditableTarget(e.target)) { return; }
+    var k = String(e.key || '').toLowerCase();
+    var cmd = e.ctrlKey || e.metaKey;
+    if (cmd && (k === 'c' || k === 'x' || k === 'u' || k === 's' || k === 'a')) {
+      e.preventDefault();
+      showCopyGuardToast();
+    } else if (e.key === 'F12' || (cmd && e.shiftKey && (k === 'i' || k === 'j' || k === 'c'))) {
+      e.preventDefault();
+      showCopyGuardToast();
+    }
+  });
+
   /* Unregister any stale legacy WordPress Service Worker on returning devices */
   if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
     navigator.serviceWorker.getRegistrations().then(function (regs) {

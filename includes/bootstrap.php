@@ -15,6 +15,9 @@ function sc_ensure_session(): void
         return;
     }
     if (!headers_sent()) {
+        @ini_set('session.use_strict_mode', '1');
+        @ini_set('session.use_only_cookies', '1');
+        @ini_set('session.cookie_httponly', '1');
         $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
         session_name('sc_sid');
@@ -32,12 +35,16 @@ if ((($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') || !empty($_COOKIE['sc_si
     sc_ensure_session();
 }
 
-/* ---------------- Security headers ---------------- */
+/* ---------------- Security headers & WAF guard ---------------- */
 if (!headers_sent()) {
+    @header_remove('X-Powered-By');
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
     header('Referrer-Policy: strict-origin-when-cross-origin');
-    header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
+    header('X-Permitted-Cross-Domain-Policies: none');
+    header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
+    header('Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()');
+    header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://connect.facebook.net https://analytics.tiktok.com https://snap.licdn.com https://www.tripadvisor.com https://www.tripadvisor.com.eg https://static.tacdn.com https://www.jscache.com; style-src 'self' 'unsafe-inline' https://static.tacdn.com https://fonts.googleapis.com; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://www.tripadvisor.com https://www.tripadvisor.com.eg https://www.facebook.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests");
     if (SITE_NOINDEX) {
         header('X-Robots-Tag: noindex, nofollow');
     }

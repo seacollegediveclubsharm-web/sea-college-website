@@ -61,10 +61,10 @@ declare(strict_types=1);
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© <?= e(date('Y')) ?> <?= e(SITE_NAME) ?>. <?= te('footer_rights') ?></span>
+    <span>© <bdi dir="ltr"><?= e(BUSINESS['founded'] . '–' . date('Y')) ?></bdi> <strong><?= e(SITE_NAME) ?></strong> (<?= e(BUSINESS['padi_level']) ?>). <?= te('footer_rights') ?> 🔒</span>
     <span class="footer-bottom__links">
       <a href="<?= e(page_link('/privacy-policy.php')) ?>"><?= te('footer_privacy') ?></a>
-      <a href="<?= e(page_link('/terms.php')) ?>"><?= te('footer_terms') ?></a>
+      <a href="<?= e(page_link('/terms.php', 'copyright')) ?>">© <?= te('footer_terms') ?></a>
       <button type="button" class="linklike" data-consent-open><?= te('footer_cookie_settings') ?></button>
     </span>
   </div>

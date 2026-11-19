@@ -1,0 +1,5 @@
+# Prevent PHP or script execution inside static assets directory
+<FilesMatch "\.(php|php[0-9]|phtml|phar|pl|py|cgi|sh|bash)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI

@@ -1,0 +1,5 @@
+Contact: mailto:info@seacollegediveclub.com
+Preferred-Languages: en, ar, ru, it, pl, de, fr, zh
+Canonical: https://seacollegediveclub.com/.well-known/security.txt
+Policy: https://seacollegediveclub.com/terms.php#copyright
+Expires: 2027-11-19T00:00:00.000Z
