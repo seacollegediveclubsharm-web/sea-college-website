@@ -81,16 +81,27 @@ define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache
 define('GOOGLE_REVIEWS_URL', 'https://www.google.com/maps/place/sea+college+dive+club/@27.9805263,34.4239091,17z/data=!4m8!3m7!1s0x14534b9e420197ef:0xdde7d0c61cd3a32!8m2!3d27.9805263!4d34.4239091!9m1!1b1!16s%2Fg%2F11kjd4n05q');
 define('GOOGLE_WRITE_REVIEW_URL', 'https://search.google.com/local/writereview?placeid=' . GOOGLE_PLACE_ID);
 define('PADI_PROFILE_URL', 'https://www.padi.com/dive-center/egypt/sea-college-dive-club/');
+define('CDWS_PROFILE_URL', 'https://www.diveoneclub.com/Listing/sea-college-dive-club/');
+
+/* ---------------------------------------------------------------
+ * Tripadvisor Official Listing & Review Sync (Location ID 26104236)
+ * ------------------------------------------------------------- */
+define('TRIPADVISOR_LOCATION_ID', sc_env('TRIPADVISOR_LOCATION_ID', '26104236'));
+define('TRIPADVISOR_UNIQ_ID', sc_env('TRIPADVISOR_UNIQ_ID', '409'));
+define('TRIPADVISOR_URL', 'https://www.tripadvisor.com/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
+define('TRIPADVISOR_WRITE_REVIEW_URL', 'https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
+define('TRIPADVISOR_API_KEY', sc_env('TRIPADVISOR_API_KEY', '')); // optional Content/Terra API key in config/secrets.php
+define('TRIPADVISOR_CACHE_TTL', 21600); // 6 hours server-side cache
 
 /* ---------------------------------------------------------------
  * Social profiles (empty = hidden)
  * ------------------------------------------------------------- */
 define('SOCIAL', [
-    'facebook'  => 'https://www.facebook.com/seacollegediveclub',
-    'instagram' => 'https://www.instagram.com/seacollege.diveclub/',
-    'tiktok'    => sc_env('SOCIAL_TIKTOK', ''),
-    'youtube'   => sc_env('SOCIAL_YOUTUBE', ''),
-    'tripadvisor' => sc_env('SOCIAL_TRIPADVISOR', ''),
+    'facebook'    => 'https://www.facebook.com/seacollegediveclub',
+    'instagram'   => 'https://www.instagram.com/seacollege.diveclub/',
+    'tripadvisor' => sc_env('SOCIAL_TRIPADVISOR', TRIPADVISOR_URL),
+    'tiktok'      => sc_env('SOCIAL_TIKTOK', ''),
+    'youtube'     => sc_env('SOCIAL_YOUTUBE', ''),
 ]);
 
 /* ---------------------------------------------------------------

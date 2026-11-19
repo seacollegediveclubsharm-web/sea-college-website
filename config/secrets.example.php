@@ -20,6 +20,8 @@ return [
     'LINKEDIN_PARTNER_ID' => '',
     'GOOGLE_PLACES_API_KEY' => '',
     'GOOGLE_PLACE_ID' => 'ChIJ75cBQp5LUxQRMjrNYQx93g0',
+    'TRIPADVISOR_API_KEY' => '',
+    'TRIPADVISOR_LOCATION_ID' => '26104236',
     'CRM_WEBHOOK_URL' => '',
     'LEAD_NOTIFY_EMAIL' => '',
     'SMTP_USER' => '',

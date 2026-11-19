@@ -625,7 +625,7 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
 .feature-banner p:last-child { margin-bottom: 0; }
 
 @media (min-width: 700px) {
-  .inc-grid, .crows, .dcalc__row--two, .dquiz__opts, .site-grid, .gal-grid, .team-grid, .feature-duo { grid-template-columns: repeat(2, 1fr); }
+  .inc-grid, .crows, .dcalc__row--two, .dquiz__opts, .site-grid, .gal-grid, .team-grid, .feature-duo, .platforms-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (min-width: 960px) {
   .item-hero__grid { grid-template-columns: 1.25fr 1fr; gap: 2.5rem; }
@@ -633,8 +633,57 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
   .item-sidebar { position: sticky; top: calc(var(--header-h) + 1rem); }
   .item-sidebar .cart { position: static; }
   .dcalc__grid { grid-template-columns: minmax(0, 1.35fr) minmax(300px, .9fr); }
-  .dquiz__cards, .gal-grid, .team-grid { grid-template-columns: repeat(3, 1fr); }
+  .dquiz__cards, .gal-grid, .team-grid, .platforms-grid { grid-template-columns: repeat(3, 1fr); }
   .dmap { grid-template-columns: 1.2fr 1fr; }
+  .ta-widget-box { grid-template-columns: 1.15fr minmax(280px, .85fr); }
 }
+
+/* ==========================================================================
+   Official Tripadvisor Integration & Multi-Platform Reputation Hub
+   ========================================================================== */
+.btn--ta { background: #00aa6c; color: #fff; border: 1px solid #00aa6c; }
+.btn--ta:hover { background: #008a57; border-color: #008a57; color: #fff; }
+
+.ta-showcase { margin-top: 2.75rem; padding-top: 2.25rem; border-top: 1px solid rgba(255, 255, 255, .14); }
+.ta-showcase__title { color: #fff; font-size: 1.28rem; margin: 0 0 1.15rem; text-align: center; }
+.reviews--ta { margin-bottom: 1.5rem; }
+.review--ta .review__bubbles { color: #34e0a1; font-size: 1.05rem; letter-spacing: .12em; margin-bottom: .45rem; }
+.review--ta figcaption a { color: #34e0a1; text-decoration: underline; }
+
+.ta-widget-box { display: grid; gap: 1.25rem; align-items: center; background: #fff; color: var(--ink); border-radius: var(--radius); padding: 1.35rem 1.5rem; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.ta-widget-box__brand { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin-bottom: .45rem; font-size: 1.05rem; color: var(--navy); }
+.ta-owl-pill { display: inline-flex; align-items: center; gap: .3rem; background: #34e0a1; color: #0b1d2c; font-weight: 800; font-size: .82rem; padding: .24rem .65rem; border-radius: 999px; }
+.ta-bubbles { color: #00aa6c; letter-spacing: .08em; }
+.ta-widget-box__meta { font-size: .9rem; color: var(--muted); margin: 0 0 .85rem; }
+.ta-widget-box__actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+.ta-widget-box__embed { background: #f8fbfa; border: 1px solid #dcebe5; border-radius: var(--radius-sm); padding: .85rem 1rem; display: flex; justify-content: center; align-items: center; min-height: 76px; overflow-x: auto; color: #111; }
+.ta-widget-box__embed ul { list-style: none; margin: 0; padding: 0; }
+.ta-widget-box__embed img { max-width: 100%; height: auto; }
+
+.platforms-hub { margin-top: 2.75rem; padding-top: 2.25rem; border-top: 1px solid var(--line); }
+.platforms-hub--dark { border-top-color: rgba(255, 255, 255, .14); }
+.platforms-hub__head { text-align: center; max-width: 720px; margin: 0 auto 1.5rem; }
+.platforms-hub__head h3 { font-size: 1.35rem; margin: 0 0 .4rem; }
+.platforms-hub__head p { font-size: .95rem; color: var(--muted); margin: 0; }
+.platforms-hub--dark .platforms-hub__head h3 { color: #fff; }
+.platforms-hub--dark .platforms-hub__head p { color: #bcd5e3; }
+
+.platforms-grid { display: grid; gap: 1rem; }
+.platform-card { display: flex; flex-direction: column; gap: .4rem; padding: 1.15rem 1.2rem; border-radius: var(--radius); background: #fff; color: var(--ink); border: 1px solid var(--line); text-decoration: none; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; box-shadow: var(--shadow); }
+.platform-card:hover { transform: translateY(-2px); border-color: var(--ocean); box-shadow: var(--shadow-lg); }
+.platforms-hub--dark .platform-card { background: rgba(255, 255, 255, .06); color: #fff; border-color: rgba(255, 255, 255, .14); box-shadow: none; }
+.platforms-hub--dark .platform-card:hover { background: rgba(255, 255, 255, .1); border-color: #34e0a1; }
+.platform-card__top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .15rem; }
+.platform-card__icon { font-size: 1.3rem; }
+.platform-card__badge { font-size: .74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; padding: .2rem .55rem; border-radius: 999px; background: var(--sand); color: var(--navy); }
+.platforms-hub--dark .platform-card__badge { background: rgba(255, 255, 255, .14); color: #e9f5fb; }
+.platform-card__title { font-size: 1.03rem; color: inherit; }
+.platform-card__stat { font-size: .86rem; font-weight: 800; color: #008a57; }
+.platforms-hub--dark .platform-card__stat { color: #34e0a1; }
+.platform-card__desc { font-size: .84rem; color: var(--muted); margin: .1rem 0 .45rem; flex: 1; line-height: 1.45; }
+.platforms-hub--dark .platform-card__desc { color: #cfe3ee; }
+.platform-card__cta { font-size: .83rem; font-weight: 700; color: var(--ocean-dark); }
+.platforms-hub--dark .platform-card__cta { color: #7fd4f5; }
+
 
 

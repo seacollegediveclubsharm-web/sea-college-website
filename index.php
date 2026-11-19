@@ -130,9 +130,11 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
+<?php $ta = ta_reviews_data(); ?>
 <section class="section section--dark" id="google-reviews">
   <div class="container">
     <header class="section__head">
+      <p class="eyebrow">⭐ 🦉 <?= te('reviews_combined_eyebrow') ?></p>
       <h2><?= te('reviews_title', ['rating' => (string) $gbp['rating'], 'count' => number_format((int) $gbp['review_count'])]) ?></h2>
       <p><?= te('reviews_sub') ?></p>
     </header>
@@ -151,6 +153,29 @@ require ROOT_DIR . '/includes/header.php';
       <a class="btn btn--ghost" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= te('see_all_reviews') ?> ↗</a>
       <a class="btn btn--primary" href="<?= e(GOOGLE_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">★ <?= te('write_review') ?> ↗</a>
     </p>
+
+    <div class="ta-showcase" id="tripadvisor-reviews">
+      <h3 class="ta-showcase__title">🦉 <?= te('ta_section_title', ['rating' => number_format((float) $ta['rating'], 1), 'count' => number_format((int) $ta['review_count'])]) ?></h3>
+      <?php if (!empty($ta['reviews'])): ?>
+      <div class="reviews reviews--ta">
+        <?php foreach (array_slice($ta['reviews'], 0, 4) as $trev):
+            $tbubbles = max(1, min(5, (int) ($trev['rating'] ?? 5)));
+        ?>
+          <figure class="review review--ta card">
+            <div class="review__bubbles" aria-label="<?= e($tbubbles . '/5') ?>"><?= str_repeat('●', $tbubbles) ?></div>
+            <blockquote><p dir="auto">“<?= e((string) $trev['text']) ?>”</p></blockquote>
+            <figcaption>
+              <bdi dir="auto"><?= e((string) $trev['author']) ?></bdi> ·
+              <a href="<?= e((string) ($trev['url'] ?? TRIPADVISOR_URL)) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= e((string) ($trev['time'] ?? 'Tripadvisor')) ?> ↗</a>
+            </figcaption>
+          </figure>
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+      <?= ta_official_widget_html('home') ?>
+    </div>
+
+    <?= verified_platforms_hub_html(true) ?>
   </div>
 </section>
 

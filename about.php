@@ -28,14 +28,18 @@ require ROOT_DIR . '/includes/header.php';
     <div class="split__text">
       <p><?= te('about_p1') ?></p>
       <p><?= te('about_p2') ?></p>
+      <?php $aboutTa = ta_reviews_data(); ?>
       <ul class="chips">
         <li class="chip">🏅 <?= te('padi_badge') ?></li>
         <li class="chip">⭐ <?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></li>
+        <li class="chip">🦉 <?= te('ta_badge', ['rating' => number_format((float) $aboutTa['rating'], 1), 'count' => number_format((int) $aboutTa['review_count'])]) ?></li>
+        <li class="chip">🛡️ <?= te('cdws_badge') ?></li>
       </ul>
       <p class="hero__ctas">
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery')) ?>">🎬 <?= te('nav_gallery') ?></a>
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>">🗺️ <?= te('nav_dive_sites') ?></a>
-        <a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI profile ↗</a>
+        <a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI ↗</a>
+        <a class="linklike" href="<?= e(TRIPADVISOR_URL) ?>" target="_blank" rel="noopener">Tripadvisor ↗</a>
       </p>
     </div>
     <div class="split__media">
@@ -69,7 +73,16 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<section class="section section--tint">
+<section class="section section--tint" id="accreditations">
+  <div class="container">
+    <?= verified_platforms_hub_html(false) ?>
+    <div style="margin-top:1.5rem">
+      <?= ta_official_widget_html('about') ?>
+    </div>
+  </div>
+</section>
+
+<section class="section">
   <div class="container split split--rev">
     <div class="split__text">
       <h2><?= te('about_values_title') ?></h2>

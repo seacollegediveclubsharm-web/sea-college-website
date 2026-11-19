@@ -56,9 +56,9 @@ for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architect
   check_code "$p" "403"
 done
 
-echo "=== 2. Unified Tracking, GBP, Quiz & Home SEO Checks ==="
+echo "=== 2. Unified Tracking, GBP, Tripadvisor, Platforms, Quiz & Home SEO Checks ==="
 html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz"; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "diveoneclub.com/Listing/sea-college-dive-club"; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))

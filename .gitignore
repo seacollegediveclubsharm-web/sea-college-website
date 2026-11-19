@@ -1,6 +1,7 @@
 storage/*
 !storage/.htaccess
 !storage/.gitkeep
+!storage/tripadvisor_reviews_seed.json
 .env
 *.log
 .DS_Store

@@ -44,8 +44,15 @@ require ROOT_DIR . '/includes/header.php';
       <p class="badge-row" style="margin-top:.75rem">
         <a class="btn btn--ghost btn--sm" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
         <a class="btn btn--ghost btn--sm" href="<?= e(GOOGLE_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">★ <?= te('write_review') ?> ↗</a>
+        <a class="btn btn--ta btn--sm" href="<?= e(TRIPADVISOR_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🦉 <?= te('ta_write_review') ?> ↗</a>
       </p>
     </aside>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <?= ta_official_widget_html('contact') ?>
   </div>
 </section>
 <?php require ROOT_DIR . '/includes/footer.php';

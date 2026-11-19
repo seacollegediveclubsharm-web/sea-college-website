@@ -7,7 +7,12 @@
 declare(strict_types=1);
 
 $sc_org_id = SITE_URL . '/#organization';
-$sc_sameAs = array_values(array_filter([...array_values(SOCIAL), PADI_PROFILE_URL, MAPS_URL]));
+$sc_sameAs = array_values(array_unique(array_filter([
+    ...array_values(SOCIAL),
+    PADI_PROFILE_URL,
+    CDWS_PROFILE_URL,
+    MAPS_URL,
+])));
 
 $sc_business = [
     '@type' => ['LocalBusiness', 'SportsActivityLocation'],
@@ -39,6 +44,7 @@ if (BUSINESS['lat'] !== null && BUSINESS['lng'] !== null) {
     $sc_business['geo'] = ['@type' => 'GeoCoordinates', 'latitude' => BUSINESS['lat'], 'longitude' => BUSINESS['lng']];
 }
 require_once __DIR__ . '/google_reviews.php';
+require_once __DIR__ . '/tripadvisor_reviews.php';
 $sc_gbp = gbp_reviews_data();
 $sc_business['aggregateRating'] = [
     '@type'       => 'AggregateRating',
