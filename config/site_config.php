@@ -70,9 +70,9 @@ define('BUSINESS', [
     'country'      => 'EG',
     'lat'          => 27.9805263, // Verified GBP pin latitude
     'lng'          => 34.4239091, // Verified GBP pin longitude
-    'phone'        => '+201000344544',
-    'phone_display'=> '+20 100 034 4544',
-    'phone_alt'    => ['+201114567886', '+201006145500'],
+    'phone'        => '+201114567886',
+    'phone_display'=> '+20 111 456 7886',
+    'phone_alt'    => ['+201000344544', '+201006145500'],
     'email'        => 'info@seacollegediveclub.com',
     'hours'        => 'Mo-Su 08:00-18:00',
     'hours_display'=> 'Mon–Sun · 08:00–18:00',
@@ -120,7 +120,7 @@ define('SOCIAL', [
 /* ---------------------------------------------------------------
  * WhatsApp click-to-chat
  * ------------------------------------------------------------- */
-define('WHATSAPP_NUMBER', sc_env('WHATSAPP_NUMBER', '201000344544')); // digits only, intl format
+define('WHATSAPP_NUMBER', '201114567886'); // digits only, intl format (+201114567886)
 
 /* ---------------------------------------------------------------
  * Google ecosystem

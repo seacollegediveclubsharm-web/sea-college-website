@@ -81,7 +81,7 @@ require ROOT_DIR . '/includes/header.php';
     <p>You can ask to access, correct or delete your data, or withdraw consent at any time, by emailing <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a>.</p>
 
     <h2>7. Contact</h2>
-    <p><?= e(SITE_NAME) ?>, <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>, Egypt · <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a> · <a href="tel:<?= e(BUSINESS['phone']) ?>"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></p>
+    <p><?= e(SITE_NAME) ?>, <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>, Egypt · <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a> · <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a> · <a href="<?= e(whatsapp_link('', 'privacy')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="privacy">WhatsApp: <bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></p>
   </div>
 </section>
 <?php require ROOT_DIR . '/includes/footer.php';

@@ -15,7 +15,7 @@
 | Main base | Cyrene Sharm Hotel / Ivy Cyrene Island Aqua Park Resort, Al Montazah, Sharm El Sheikh, South Sinai, Egypt | PADI + GBP + ivy-resorts.com ✅ |
 | Other branches | Jaz Dreams & Jaz Fayrouz (Naama Bay) | ⚠️ Unverified — **not published** until owner confirms |
 | Rating | 4.9 / 5 from 3,082 Google reviews | GBP ✅ (update number periodically in `site_config.php`) |
-| Phone / WhatsApp | +20 100 034 4544 (PADI + GBP) | ✅ used as primary WhatsApp. Alternate numbers (+20 111 456 7886, +20 100 614 5500) held in config |
+| Phone / WhatsApp | +20 111 456 7886 (PADI + GBP) | ✅ used as primary WhatsApp. Alternate numbers (+20 100 034 4544, +20 100 614 5500) held in config |
 | Email | info@seacollegediveclub.com | Website + CDWS ✅ |
 | Hours | Mon–Sun 08:00–18:00 (PADI) vs “Open 24h” (GBP) | ⚠️ Website shows 08:00–18:00; owner to align GBP |
 | Languages spoken | English, Arabic, Russian, German, Italian, French | PADI ✅ |
@@ -116,7 +116,7 @@ All of these live **only** in `/config/site_config.php` (or environment variable
 | 8 | LinkedIn Insight partner ID | `LINKEDIN_PARTNER_ID` | ❌ Missing (optional — low B2C fit) |
 | 9 | Lead notification email + SMTP | `LEAD_NOTIFY_EMAIL`, `SMTP_*` | ⚠️ Defaults to info@…; Hostinger mailbox to confirm |
 | 10 | CRM / Sheets / Zapier webhook | `CRM_WEBHOOK_URL` | ✅ Live (Google Sheets CRM & OCT Hub) |
-| 11 | Confirmed WhatsApp Business number | `WHATSAPP_NUMBER` | ⚠️ Using +201000344544 (PADI/GBP) — confirm |
+| 11 | Confirmed WhatsApp Business number | `WHATSAPP_NUMBER` | ⚠️ Using +201114567886 (PADI/GBP) — confirm |
 | 12 | Branch addresses (Jaz Dreams / Fayrouz) | `LOCATIONS` | ⚠️ Not published until confirmed |
 | 13 | Season price validity (sheet says 01-01-2026 → 30-06-2026) | `PRICE_VALIDITY_NOTE` | ⚠️ Expired — owner must confirm current prices |
 | 14 | Diving insurance prices (blank in sheet) | catalog | ❌ Shown as “on request” |

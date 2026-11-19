@@ -44,6 +44,7 @@ declare(strict_types=1);
       <h2 class="footer-title"><?= te('footer_contact') ?></h2>
       <ul class="footer-links footer-links--contact">
         <li>📍 <?= e(BUSINESS['street']) ?>, <?= e(BUSINESS['city']) ?></li>
+        <li>💬 WhatsApp: <a href="<?= e(whatsapp_link('', 'footer_contact')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="footer_contact"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></li>
         <li>📞 <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></li>
         <li>✉️ <a href="mailto:<?= e(BUSINESS['email']) ?>" data-track="email_click"><?= e(BUSINESS['email']) ?></a></li>
         <li>🕗 <?= te('hours') ?>: <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></li>

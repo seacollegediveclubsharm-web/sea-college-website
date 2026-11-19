@@ -9,6 +9,7 @@ declare(strict_types=1);
 $sc_org_id = SITE_URL . '/#organization';
 $sc_sameAs = array_values(array_unique(array_filter([
     ...array_values(SOCIAL),
+    'https://wa.me/' . preg_replace('/\D/', '', WHATSAPP_NUMBER),
     PADI_PROFILE_URL,
     CDWS_PROFILE_URL,
     MAPS_URL,
@@ -24,6 +25,13 @@ $sc_business = [
     'image' => url('assets/images/og-default.jpg'),
     'telephone' => BUSINESS['phone'],
     'email' => BUSINESS['email'],
+    'contactPoint' => [
+        '@type' => 'ContactPoint',
+        'telephone' => BUSINESS['phone'],
+        'contactType' => 'customer support',
+        'url' => 'https://wa.me/' . preg_replace('/\D/', '', WHATSAPP_NUMBER),
+        'availableLanguage' => array_keys(SUPPORTED_LANGS),
+    ],
     'priceRange' => BUSINESS['price_range'],
     'currenciesAccepted' => 'EUR, USD, EGP',
     'paymentAccepted' => 'Cash, Credit Card, Debit Card, Bank Transfer',

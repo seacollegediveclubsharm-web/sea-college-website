@@ -73,10 +73,10 @@
       ]
     },
     "contacts_and_official_channels": {
-      "primary_whatsapp_and_phone": "+201000344544",
-      "whatsapp_deep_link": "https://wa.me/201000344544",
+      "primary_whatsapp_and_phone": "+201114567886",
+      "whatsapp_deep_link": "https://wa.me/201114567886",
       "backup_phones": [
-        "+201114567886",
+        "+201000344544",
         "+201006145500"
       ],
       "reservations_email": "info@seacollegediveclub.com",
@@ -184,7 +184,7 @@
       {
         "tool": "Multi-Item Booking Cart + Dual Checkout + Pre-Arrival Diver Check-In",
         "url": "https://seacollegediveclub.com/prices.php#checkin",
-        "mechanism": "Visitors add courses/dives/supplements to persistent cart -> submit instant Reservation Form (writes to CRM + fires Enhanced Conversions) OR send itemized cart to WhatsApp (+20 100 034 4544). Confirmed guests complete Online PADI Check-In prior to arrival."
+        "mechanism": "Visitors add courses/dives/supplements to persistent cart -> submit instant Reservation Form (writes to CRM + fires Enhanced Conversions) OR send itemized cart to WhatsApp (+20 111 456 7886). Confirmed guests complete Online PADI Check-In prior to arrival."
       }
     ],
     "analytics_and_ad_tracking": {

@@ -16,7 +16,8 @@ $sc_nav = [
   <div class="container topbar__inner">
     <span class="topbar__msg">🚐 <?= te('topbar_pickup') ?></span>
     <span class="topbar__links">
-      <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a>
+      <a href="<?= e(whatsapp_link('', 'topbar')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="topbar">💬 WhatsApp: <bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a>
+      <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click" class="hide-sm">📞 <bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a>
       <a href="mailto:<?= e(BUSINESS['email']) ?>" data-track="email_click" class="hide-sm"><?= e(BUSINESS['email']) ?></a>
     </span>
   </div>

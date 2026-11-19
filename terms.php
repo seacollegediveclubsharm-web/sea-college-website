@@ -71,7 +71,7 @@ require ROOT_DIR . '/includes/header.php';
     <p>We reserve the right to modify these Terms at any time. Updated Terms will be posted on our website.</p>
 
     <h2>10. Contact Us</h2>
-    <p>If you have any questions regarding these Terms, please contact us at <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a> or <a href="tel:+201006145500"><bdi dir="ltr">+20 100 614 5500</bdi></a>.</p>
+    <p>If you have any questions regarding these Terms, please contact us at <a href="mailto:<?= e(BUSINESS['email']) ?>"><?= e(BUSINESS['email']) ?></a>, by phone at <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a>, or on <a href="<?= e(whatsapp_link('', 'terms')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="terms">WhatsApp (<bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi>)</a>.</p>
   </div>
 </section>
 <?php require ROOT_DIR . '/includes/footer.php';

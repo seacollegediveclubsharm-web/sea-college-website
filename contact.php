@@ -37,6 +37,8 @@ require ROOT_DIR . '/includes/header.php';
           <h2><?= te('contact_details_title') ?></h2>
           <p><a class="btn btn--wa btn--block" href="<?= e(whatsapp_link('', 'contact')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="contact"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a></p>
           <dl class="nap">
+            <dt>WhatsApp</dt>
+            <dd><a href="<?= e(whatsapp_link('', 'contact_nap')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="contact_nap"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></dd>
             <dt><?= te('phone') ?></dt>
             <dd><a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></dd>
             <dt><?= te('email') ?></dt>
