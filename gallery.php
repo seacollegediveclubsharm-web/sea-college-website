@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 
 $catalog = require ROOT_DIR . '/data/catalog.php';
 $flat    = catalog_all_items($catalog);
@@ -62,6 +63,7 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section" id="media-grid">
   <div class="container" data-gallery>
+    <?= render_top_promo_banner('intro', 'gallery_top_banner') ?>
     <div class="zone-bar" role="toolbar" aria-label="<?= te('gallery_filter_label') ?>">
       <?php foreach ($galData['filters'] as $fKey => $fLabel): ?>
         <button type="button" class="zone-btn<?= $fKey === 'all' ? ' is-active' : '' ?>" data-gal-filter="<?= e($fKey) ?>" aria-pressed="<?= $fKey === 'all' ? 'true' : 'false' ?>"><?= e(loc($fLabel)) ?></button>

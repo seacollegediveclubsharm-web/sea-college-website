@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'prices';
@@ -37,6 +38,7 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section section--tint no-print">
   <div class="container">
+    <?= render_top_promo_banner('dives', 'prices_top_banner') ?>
     <?= render_budget_calculator($catalog, '#booking') ?>
   </div>
 </section>
@@ -87,17 +89,20 @@ require ROOT_DIR . '/includes/header.php';
       <p class="disclaimer"><?= te('prices_disclaimer') ?> <?= te('indicative_rate') ?></p>
     </div>
 
-    <aside class="cart card no-print" data-cart aria-labelledby="cart-title">
-      <h2 id="cart-title"><?= te('cart_title') ?></h2>
-      <p class="cart__empty" data-cart-empty><?= te('cart_empty') ?></p>
-      <ul class="cart__items" data-cart-items></ul>
-      <p class="cart__total"><span><?= te('cart_total') ?></span> <strong data-cart-total>€0</strong></p>
-      <p class="cart__note"><?= te('cart_note') ?></p>
-      <div class="cart__btns">
-        <a class="btn btn--primary" href="#booking" data-cart-next data-track="cta_click" data-placement="cart_continue"><?= te('cart_next') ?></a>
-        <button class="linklike" type="button" data-cart-clear><?= te('cart_clear') ?></button>
-      </div>
-    </aside>
+    <div class="prices-side no-print">
+      <aside class="cart card" data-cart aria-labelledby="cart-title">
+        <h2 id="cart-title"><?= te('cart_title') ?></h2>
+        <p class="cart__empty" data-cart-empty><?= te('cart_empty') ?></p>
+        <ul class="cart__items" data-cart-items></ul>
+        <p class="cart__total"><span><?= te('cart_total') ?></span> <strong data-cart-total>€0</strong></p>
+        <p class="cart__note"><?= te('cart_note') ?></p>
+        <div class="cart__btns">
+          <a class="btn btn--primary" href="#booking" data-cart-next data-track="cta_click" data-placement="cart_continue"><?= te('cart_next') ?></a>
+          <button class="linklike" type="button" data-cart-clear><?= te('cart_clear') ?></button>
+        </div>
+      </aside>
+      <?= render_side_promo_banner('bundles', 'prices_side_banner') ?>
+    </div>
   </div>
 </section>
 

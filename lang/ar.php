@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-return [
+return array_replace([
     // ---------- Meta ----------
     'meta_home_title' => 'سي كوليدج دايف كلوب | غوص PADI خمس نجوم في شرم الشيخ',
     'meta_home_desc' => 'منتجع غوص PADI خمس نجوم في شرم الشيخ. غطسات تجريبية، دورات PADI، رحلات قارب إلى رأس محمد وتيران، سنوركل وقوارب خاصة. تقييم 4.9★ من 3,082 مراجعة على جوجل.',
@@ -493,6 +493,6 @@ return [
     'checkin_none' => 'بدون شهادة / مبتدئ',
     'checkin_other' => 'NAUI / BSAC / أخرى',
     'checkin_child' => 'طفل',
-];
+], (require __DIR__ . '/extra_banners_i18n.php')['ar']);
 
 

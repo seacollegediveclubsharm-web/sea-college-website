@@ -43,13 +43,17 @@ for p in \
   "/courses/mega-bundle-open-water-advanced-sharm" \
   "/dive-sites-sharm-el-sheikh" \
   "/gallery" \
-  "/ar/" "/ru/" "/de/" "/it/" "/fr/" "/pl/" \
+  "/ar/" "/ru/" "/de/" "/it/" "/fr/" "/pl/" "/zh/" \
   "/ru/courses/padi-open-water-diver-sharm-el-sheikh?gclid=EAIaIQobChMI_test_ru" \
   "/de/prices.php?gclid=EAIaIQobChMI_test_de" \
   "/it/diving-trips-sharm-el-sheikh" \
   "/fr/dive-sites-sharm-el-sheikh" \
   "/pl/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh" \
   "/ar/courses/padi-open-water-diver-sharm-el-sheikh" \
+  "/zh/courses/padi-open-water-diver-sharm-el-sheikh?gclid=EAIaIQobChMI_test_zh" \
+  "/zh/prices.php" \
+  "/assets/images/items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg" \
+  "/assets/images/items/sea-college-sharm-ss-thistlegorm-wreck-dive-sharm-el-sheikh.jpg" \
   "/assets/images/clients/sea-college-real-guests-padi-certificates-sharm.jpg" \
   "/assets/images/clients/sea-college-real-guests-boat-group-red-sea.jpg"; do
   check_code "$p" "200"
@@ -63,9 +67,9 @@ for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architect
   check_code "$p" "403"
 done
 
-echo "=== 2. Unified Tracking, GBP, Tripadvisor, Real Guests, Quiz & Home SEO Checks ==="
+echo "=== 2. Unified Tracking, GBP, Tripadvisor, YouTube, Banners, Dropdown & Home SEO Checks ==="
 html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="de"' 'hreflang="it"' 'hreflang="fr"' 'hreflang="pl"' 'hreflang="ar"' 'hreflang="x-default"'; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))
@@ -86,8 +90,8 @@ for needle in 'lang="ar" dir="rtl"' "TA_cdswritereviewlgvi969" "uniq=969" "lang=
   fi
 done
 
-echo "=== 3. 7-Language Zero-Drop & Google Ads Subdirectory Checks ==="
-for lg in ru de it fr pl; do
+echo "=== 3. 8-Language Zero-Drop & Google Ads Subdirectory Checks ==="
+for lg in ru it pl de fr zh; do
   lg_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/${lg}/courses/padi-open-water-diver-sharm-el-sheikh")
   for needle in "lang=\"${lg}\"" "href=\"/${lg}/prices.php\"" "\"inLanguage\":\"${lg}\"" "\"@type\":\"Course\""; do
     if grep -q "$needle" <<<"$lg_html"; then
@@ -100,14 +104,14 @@ for lg in ru de it fr pl; do
   done
 done
 
-echo "=== 4. Item Page, Calculator, Dive Map & Gallery Schema Checks ==="
+echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Calculator, Dive Map & Gallery Checks ==="
 course_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/courses/padi-open-water-diver-sharm-el-sheikh")
-for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer'; do
+for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side'; do
   if grep -q "$needle" <<<"$course_html"; then
-    echo "PASS [course AEO/schema] $needle"
+    echo "PASS [course AEO/gallery/banner] $needle"
     pass=$((pass + 1))
   else
-    echo "FAIL [course AEO/schema] $needle"
+    echo "FAIL [course AEO/gallery/banner] $needle"
     fail=$((fail + 1))
   fi
 done
@@ -144,13 +148,14 @@ for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card"; do
 done
 
 smap_count=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/sitemap.xml" | grep -c "<loc>" || true)
-if [[ "$smap_count" -ge 651 ]]; then
-  echo "PASS [sitemap] $smap_count <loc> URLs (93 routes x 7 languages)"
+if [[ "$smap_count" -ge 744 ]]; then
+  echo "PASS [sitemap] $smap_count <loc> URLs (93 routes x 8 languages)"
   pass=$((pass + 1))
 else
-  echo "FAIL [sitemap] expected >= 651 <loc> URLs, got $smap_count"
+  echo "FAIL [sitemap] expected >= 744 <loc> URLs, got $smap_count"
   fail=$((fail + 1))
 fi
 
 echo "Summary: $pass passed, $fail failed"
 [[ "$fail" -eq 0 ]]
+

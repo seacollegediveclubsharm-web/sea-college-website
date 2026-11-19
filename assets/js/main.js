@@ -908,6 +908,51 @@
     }
   });
 
+  /* ---------------- Item Page Multi-Photo & Underwater Video Gallery ---------------- */
+  $$('[data-item-gallery]').forEach(function (wrap) {
+    var stageImg = $('[data-item-stage-img]', wrap);
+    var stageVid = $('[data-item-stage-vid]', wrap);
+    var thumbs = $$('[data-item-thumb]', wrap);
+    if (!thumbs.length) { return; }
+
+    function resetVid() {
+      if (!stageVid) { return; }
+      stageVid.pause();
+      stageVid.hidden = true;
+    }
+
+    thumbs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var kind = btn.getAttribute('data-item-thumb');
+        var src = btn.getAttribute('data-src') || '';
+        thumbs.forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        if (kind === 'video' && stageVid) {
+          if (stageImg) { stageImg.hidden = true; }
+          if (stageVid.getAttribute('src') !== src) {
+            stageVid.src = src;
+            var poster = btn.getAttribute('data-poster');
+            if (poster) { stageVid.poster = poster; }
+          }
+          stageVid.hidden = false;
+          var p = stageVid.play();
+          if (p && typeof p.catch === 'function') { p.catch(function () {}); }
+          track('item_gallery_select', { media_type: 'video', item_id: (SC.item && SC.item.id) || '' });
+        } else if (stageImg) {
+          resetVid();
+          stageImg.src = src;
+          var alt = btn.getAttribute('data-alt');
+          if (alt) { stageImg.alt = alt; }
+          stageImg.hidden = false;
+          track('item_gallery_select', { media_type: 'photo', item_id: (SC.item && SC.item.id) || '' });
+        }
+      });
+    });
+  });
+
   /* Re-sync calculator & quiz numbers whenever currency changes */
   $$('[data-currency-switch]').forEach(function (sel) {
     sel.addEventListener('change', function () {
@@ -918,5 +963,3 @@
 
   applyCurrency();
 })();
-
-

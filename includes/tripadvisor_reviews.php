@@ -14,6 +14,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/google_reviews.php';
+require_once __DIR__ . '/icons.php';
 
 function ta_widget_locale(?string $lang = null): string
 {
@@ -25,6 +26,7 @@ function ta_widget_locale(?string $lang = null): string
         'it' => 'it',
         'fr' => 'fr',
         'pl' => 'pl',
+        'zh' => 'zh_CN',
         default => 'en_US',
     };
 }
@@ -59,6 +61,7 @@ function sc_fetch_ta_api(string $locId, string $apiKey, string $lang): ?array
         'it' => 'it',
         'fr' => 'fr',
         'pl' => 'pl',
+        'zh' => 'zh',
         default => 'en',
     };
     $base = 'https://api.content.tripadvisor.com/api/v1/location/' . rawurlencode($locId);
@@ -250,6 +253,7 @@ function ta_profile_url(?string $lang = null): string
         'it' => 'https://www.tripadvisor.it' . $path,
         'fr' => 'https://www.tripadvisor.fr' . $path,
         'pl' => 'https://pl.tripadvisor.com' . $path,
+        'zh' => 'https://cn.tripadvisor.com' . $path,
         default => TRIPADVISOR_URL,
     };
 }
@@ -265,6 +269,7 @@ function ta_write_review_url(?string $lang = null): string
         'it' => 'https://www.tripadvisor.it' . $path,
         'fr' => 'https://www.tripadvisor.fr' . $path,
         'pl' => 'https://pl.tripadvisor.com' . $path,
+        'zh' => 'https://cn.tripadvisor.com' . $path,
         default => TRIPADVISOR_WRITE_REVIEW_URL,
     };
 }
@@ -311,7 +316,7 @@ function ta_official_widget_html(string $placement = 'home'): string
     <div class="ta-widget-box" data-ta-location="<?= e($locId) ?>">
       <div class="ta-widget-box__summary">
         <div class="ta-widget-box__brand">
-          <span class="ta-owl-pill" aria-hidden="true">🦉 Tripadvisor</span>
+          <span class="ta-owl-pill"><?= brand_icon('tripadvisor', 18) ?> <span>Tripadvisor</span></span>
           <strong><bdi dir="ltr"><?= e(number_format((float) $ta['rating'], 1)) ?> / 5.0</bdi> <span class="ta-bubbles" aria-hidden="true">●●●●●</span></strong>
         </div>
         <p class="ta-widget-box__meta">
@@ -319,7 +324,7 @@ function ta_official_widget_html(string $placement = 'home'): string
           <?php if (!empty($ta['ranking'])): ?> · <bdi dir="ltr"><?= e((string) $ta['ranking']) ?></bdi><?php endif; ?>
         </p>
         <div class="ta-widget-box__actions">
-          <a class="btn btn--ta btn--sm" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_read_<?= e($placement) ?>"><?= te('ta_read_reviews') ?> ↗</a>
+          <a class="btn btn--ta btn--sm" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_read_<?= e($placement) ?>"><?= brand_icon('tripadvisor', 16) ?> <span><?= te('ta_read_reviews') ?> ↗</span></a>
           <a class="btn btn--detail btn--sm" href="<?= e(ta_write_review_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_write_<?= e($placement) ?>">✎ <?= te('ta_write_review') ?> ↗</a>
         </div>
       </div>
@@ -343,16 +348,17 @@ function ta_official_widget_html(string $placement = 'home'): string
 }
 
 /**
- * Renders the 6-Card "Verified & Recommended Across Official Platforms" Hub.
+ * Renders the "Verified & Recommended Across Official Platforms" Hub with real SVG brand icons.
  */
 function verified_platforms_hub_html(bool $dark = false): string
 {
     $gbp = gbp_reviews_data();
     $ta = ta_reviews_data();
+    $ytUrl = SOCIAL['youtube'] !== '' ? SOCIAL['youtube'] : 'https://www.youtube.com/@seacollege.diveclub';
     $items = [
         [
             'badge' => 'Google',
-            'icon'  => '⭐',
+            'icon'  => brand_icon('google', 24),
             'title' => t('plat_google_t'),
             'stat'  => $gbp['rating'] . '★ · ' . number_format((int) $gbp['review_count']) . '+ ' . t('plat_reviews_word'),
             'desc'  => t('plat_google_d'),
@@ -361,7 +367,7 @@ function verified_platforms_hub_html(bool $dark = false): string
         ],
         [
             'badge' => 'Tripadvisor · Viator',
-            'icon'  => '🦉',
+            'icon'  => brand_icon('tripadvisor', 24),
             'title' => t('plat_ta_t'),
             'stat'  => number_format((float) $ta['rating'], 1) . ' ●●●●● · ' . number_format((int) $ta['review_count']) . '+ ' . t('plat_reviews_word'),
             'desc'  => t('plat_ta_d'),
@@ -369,8 +375,17 @@ function verified_platforms_hub_html(bool $dark = false): string
             'cta'   => t('ta_read_reviews'),
         ],
         [
+            'badge' => 'YouTube Official',
+            'icon'  => brand_icon('youtube', 24),
+            'title' => t('plat_yt_t'),
+            'stat'  => t('plat_yt_stat'),
+            'desc'  => t('plat_yt_d'),
+            'href'  => $ytUrl,
+            'cta'   => t('plat_yt_cta'),
+        ],
+        [
             'badge' => 'PADI Worldwide',
-            'icon'  => '🏅',
+            'icon'  => brand_icon('padi', 24),
             'title' => t('plat_padi_t'),
             'stat'  => BUSINESS['padi_level'],
             'desc'  => t('plat_padi_d'),
@@ -379,7 +394,7 @@ function verified_platforms_hub_html(bool $dark = false): string
         ],
         [
             'badge' => 'CDWS Egypt',
-            'icon'  => '🛡️',
+            'icon'  => brand_icon('cdws', 24),
             'title' => t('plat_cdws_t'),
             'stat'  => t('plat_cdws_stat'),
             'desc'  => t('plat_cdws_d'),
@@ -387,19 +402,10 @@ function verified_platforms_hub_html(bool $dark = false): string
             'cta'   => t('plat_cdws_cta'),
         ],
         [
-            'badge' => 'Al Montazah Base',
-            'icon'  => '🏖️',
-            'title' => t('plat_resort_t'),
-            'stat'  => 'Cyrene Sharm & Ivy Cyrene Island',
-            'desc'  => t('plat_resort_d'),
-            'href'  => MAPS_URL,
-            'cta'   => t('open_maps'),
-        ],
-        [
             'badge' => 'Social Community',
-            'icon'  => '📸',
+            'icon'  => '<span class="platform-card__multi-icons">' . brand_icon('instagram', 20) . brand_icon('facebook', 20) . brand_icon('tiktok', 20) . '</span>',
             'title' => t('plat_social_t'),
-            'stat'  => 'Instagram & Facebook',
+            'stat'  => 'Instagram · Facebook · TikTok',
             'desc'  => t('plat_social_d'),
             'href'  => SOCIAL['instagram'],
             'cta'   => t('plat_social_cta'),
@@ -430,3 +436,4 @@ function verified_platforms_hub_html(bool $dark = false): string
     <?php
     return (string) ob_get_clean();
 }
+

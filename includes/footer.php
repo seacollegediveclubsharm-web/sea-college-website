@@ -13,16 +13,17 @@ declare(strict_types=1);
       </a>
       <p><?= te('footer_about') ?></p>
       <?php
+      require_once ROOT_DIR . '/includes/icons.php';
       require_once ROOT_DIR . '/includes/google_reviews.php';
       require_once ROOT_DIR . '/includes/tripadvisor_reviews.php';
       $sc_footer_gbp = gbp_reviews_data();
       $sc_footer_ta = ta_reviews_data();
       ?>
       <p class="badge-row">
-        <a class="chip chip--light" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🏅 <?= te('padi_badge') ?></a>
-        <a class="chip chip--light" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">⭐ <?= te('rating_badge', ['rating' => $sc_footer_gbp['rating'], 'count' => number_format((int) $sc_footer_gbp['review_count'])]) ?></a>
-        <a class="chip chip--light" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link">🦉 <?= te('ta_badge', ['rating' => number_format((float) $sc_footer_ta['rating'], 1), 'count' => number_format((int) $sc_footer_ta['review_count'])]) ?></a>
-        <a class="chip chip--light" href="<?= e(CDWS_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🛡️ <?= te('cdws_badge') ?></a>
+        <a class="chip chip--light" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= brand_icon('padi', 16) ?> <span><?= te('padi_badge') ?></span></a>
+        <a class="chip chip--light" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= brand_icon('google', 15) ?> <span><?= te('rating_badge', ['rating' => $sc_footer_gbp['rating'], 'count' => number_format((int) $sc_footer_gbp['review_count'])]) ?></span></a>
+        <a class="chip chip--light" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= brand_icon('tripadvisor', 16) ?> <span><?= te('ta_badge', ['rating' => number_format((float) $sc_footer_ta['rating'], 1), 'count' => number_format((int) $sc_footer_ta['review_count'])]) ?></span></a>
+        <a class="chip chip--light" href="<?= e(CDWS_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= brand_icon('cdws', 16) ?> <span><?= te('cdws_badge') ?></span></a>
       </p>
     </div>
     <div class="footer-col">
@@ -51,8 +52,8 @@ declare(strict_types=1);
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_follow') ?></h2>
       <ul class="social">
-        <?php foreach (SOCIAL as $net => $href): if ($href === '') { continue; } $netHref = ($net === 'tripadvisor') ? ta_profile_url() : $href; ?>
-          <li><a href="<?= e($netHref) ?>" target="_blank" rel="noopener" data-track="outbound_link" aria-label="<?= e(ucfirst($net)) ?>"><?= e(ucfirst($net)) ?></a></li>
+        <?php foreach (SOCIAL as $net => $href): if ($href === '') { continue; } $netHref = ($net === 'tripadvisor') ? ta_profile_url() : $href; $netLabel = social_label($net); ?>
+          <li><a class="social__btn social__btn--<?= e($net) ?>" href="<?= e($netHref) ?>" target="_blank" rel="noopener" data-track="outbound_link" aria-label="<?= e($netLabel) ?>"><?= brand_icon($net, 18) ?><span><?= e($netLabel) ?></span></a></li>
         <?php endforeach; ?>
       </ul>
       <?php require ROOT_DIR . '/includes/newsletter_form.php'; ?>

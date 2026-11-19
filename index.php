@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 $galData = require ROOT_DIR . '/data/gallery_team.php';
 
@@ -50,6 +51,12 @@ require ROOT_DIR . '/includes/header.php';
     <div class="kpi"><strong><bdi dir="ltr"><?= e(number_format((int) $gbp['review_count'])) ?></bdi></strong><span><?= te('kpi_reviews') ?></span></div>
     <div class="kpi"><strong><?= te('kpi_padi') ?></strong><span><?= te('kpi_padi_sub') ?></span></div>
     <div class="kpi"><strong><?= price_html(30) ?></strong><span><?= te('kpi_from') ?></span></div>
+  </div>
+</section>
+
+<section class="section section--promo-top">
+  <div class="container">
+    <?= render_top_promo_banner('bundles', 'home_top_banner') ?>
   </div>
 </section>
 

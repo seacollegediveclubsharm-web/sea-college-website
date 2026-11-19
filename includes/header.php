@@ -9,12 +9,13 @@ $sc_desc = $page['description'] ?? t('meta_home_desc');
 $sc_canonical = canonical_url();
 $sc_og_locale = [
     'en' => 'en_GB',
-    'ar' => 'ar_EG',
     'ru' => 'ru_RU',
-    'de' => 'de_DE',
     'it' => 'it_IT',
-    'fr' => 'fr_FR',
     'pl' => 'pl_PL',
+    'de' => 'de_DE',
+    'fr' => 'fr_FR',
+    'ar' => 'ar_EG',
+    'zh' => 'zh_CN',
 ];
 ?><!DOCTYPE html>
 <html lang="<?= e(LANG) ?>" dir="<?= e(DIR) ?>">

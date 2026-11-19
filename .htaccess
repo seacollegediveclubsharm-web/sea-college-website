@@ -20,14 +20,14 @@ AddDefaultCharset UTF-8
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
 
-  # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /de/..., /it/..., /fr/..., /pl/..., /ar/..., /en/...)
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/?$ index.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)\.php$ $2.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/gallery/?$ gallery.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
-  RewriteRule ^(en|ar|ru|de|it|fr|pl)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
+  # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)\.php$ $2.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery/?$ gallery.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
   # Dive Sites Guide & Underwater Gallery SEO URLs (default English)
   RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]

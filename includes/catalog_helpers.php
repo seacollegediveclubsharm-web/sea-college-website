@@ -144,12 +144,21 @@ function schema_faq_pairs(array $faqs, ?array $i18nMap = null): array
  * Rich Schema.org entity (Course / TouristTrip / Service) + Product/Offer for an item detail page.
  * @return array<int, array>
  */
-function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp, ?array $resolved = null): array
+function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp, ?array $resolved = null, ?array $gallery = null): array
 {
     $res     = $resolved ?? sc_resolve_item_seo($it, $seo);
     $orgRef  = ['@id' => SITE_URL . '/#organization'];
     $fullUrl = canonical_url();
     $imgUrl  = url('assets/images/' . ($it['img'] ?? 'hero.jpg'));
+    $images  = [$imgUrl];
+    if (!empty($gallery['photos']) && is_array($gallery['photos'])) {
+        foreach ($gallery['photos'] as $gp) {
+            $u = url('assets/' . ltrim((string) $gp, '/'));
+            if (!in_array($u, $images, true)) {
+                $images[] = $u;
+            }
+        }
+    }
     $name    = $res['h1'] ?: item_name($it);
     $desc    = $res['aeo_answer'] ?: item_desc($it);
     $type    = $seo['schema_type'] ?? (($it['section'] ?? 'tours') === 'courses' ? 'Course' : 'TouristTrip');
@@ -171,7 +180,7 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
         'name'        => $name,
         'description' => $desc,
         'url'         => $fullUrl,
-        'image'       => $imgUrl,
+        'image'       => count($images) > 1 ? $images : $imgUrl,
         'inLanguage'  => LANG,
         'provider'    => $orgRef,
     ];
@@ -226,7 +235,7 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
             'sku'         => $it['id'],
             'name'        => item_name($it),
             'description' => item_desc($it) ?: $desc,
-            'image'       => $imgUrl,
+            'image'       => count($images) > 1 ? $images : $imgUrl,
             'category'    => $catLabel,
             'brand'       => ['@type' => 'Brand', 'name' => SITE_NAME],
             'offers'      => $offer,
@@ -237,6 +246,20 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
                 'worstRating' => '1',
                 'reviewCount' => (string) ($gbp['review_count'] ?? '3082'),
             ],
+        ];
+    }
+
+    if (!empty($gallery['video']['src'])) {
+        $vid = $gallery['video'];
+        $nodes[] = [
+            '@type'        => 'VideoObject',
+            '@id'          => SITE_URL . item_path($it) . '#video',
+            'name'         => $name . ' — ' . SITE_NAME,
+            'description'  => $desc,
+            'thumbnailUrl' => [url('assets/' . ltrim((string) ($vid['poster'] ?? ('images/' . ($it['img'] ?? 'hero.jpg'))), '/'))],
+            'contentUrl'   => url('assets/' . ltrim((string) $vid['src'], '/')),
+            'uploadDate'   => '2026-01-15T08:00:00+02:00',
+            'publisher'    => $orgRef,
         ];
     }
 

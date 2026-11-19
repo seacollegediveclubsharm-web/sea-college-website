@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 $galData = require ROOT_DIR . '/data/gallery_team.php';
 
 $page['id'] = 'about';
@@ -24,26 +25,30 @@ require ROOT_DIR . '/includes/header.php';
 </section>
 
 <section class="section">
-  <div class="container split">
+  <div class="container">
+    <?= render_top_promo_banner('brand', 'about_top_banner') ?>
+    <div class="split">
     <div class="split__text">
       <p><?= te('about_p1') ?></p>
       <p><?= te('about_p2') ?></p>
       <?php $aboutTa = ta_reviews_data(); ?>
       <ul class="chips">
-        <li class="chip">🏅 <?= te('padi_badge') ?></li>
-        <li class="chip">⭐ <?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></li>
-        <li class="chip">🦉 <?= te('ta_badge', ['rating' => number_format((float) $aboutTa['rating'], 1), 'count' => number_format((int) $aboutTa['review_count'])]) ?></li>
-        <li class="chip">🛡️ <?= te('cdws_badge') ?></li>
+        <li class="chip"><?= brand_icon('padi', 16) ?> <span><?= te('padi_badge') ?></span></li>
+        <li class="chip"><?= brand_icon('google', 15) ?> <span><?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></span></li>
+        <li class="chip"><?= brand_icon('tripadvisor', 16) ?> <span><?= te('ta_badge', ['rating' => number_format((float) $aboutTa['rating'], 1), 'count' => number_format((int) $aboutTa['review_count'])]) ?></span></li>
+        <li class="chip"><?= brand_icon('cdws', 16) ?> <span><?= te('cdws_badge') ?></span></li>
       </ul>
       <p class="hero__ctas">
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery')) ?>">🎬 <?= te('nav_gallery') ?></a>
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>">🗺️ <?= te('nav_dive_sites') ?></a>
+        <a class="btn btn--detail btn--sm" href="<?= e(SOCIAL['youtube']) ?>" target="_blank" rel="noopener" data-track="outbound_link"><?= brand_icon('youtube', 16) ?> <span>YouTube ↗</span></a>
         <a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI ↗</a>
         <a class="linklike" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener">Tripadvisor ↗</a>
       </p>
     </div>
     <div class="split__media">
       <img src="<?= e(asset(seo_img('dive-boat-briefing-instructor'))) ?>" alt="<?= e(SITE_NAME) ?> — dive briefing on the boat, Sharm El Sheikh" width="800" height="600" loading="lazy">
+    </div>
     </div>
   </div>
 </section>

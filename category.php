@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 
 $catalog = require ROOT_DIR . '/data/catalog.php';
 $seoAll  = require ROOT_DIR . '/data/items_seo.php';
@@ -79,6 +80,16 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section">
   <div class="container">
+    <?php
+    $hubBannerTheme = match ($catKey) {
+        'dive-packages' => 'dives',
+        'padi-courses'  => 'bundles',
+        'offers'        => 'brand',
+        'snorkeling'    => 'boats',
+        default         => 'bundles',
+    };
+    echo render_top_promo_banner($hubBannerTheme, 'hub_' . $catKey . '_banner');
+    ?>
     <?php if ($aeoText !== ''): ?>
     <aside class="aeo-box" id="quick-answer" aria-labelledby="hub-aeo-heading">
       <h2 id="hub-aeo-heading" class="aeo-box__label"><?= te('quick_answer_label') ?></h2>

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 
 $catalog  = require ROOT_DIR . '/data/catalog.php';
 $flat     = catalog_all_items($catalog);
@@ -66,6 +67,7 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section" id="dive-map">
   <div class="container">
+    <?= render_top_promo_banner('dives', 'sites_top_banner') ?>
     <aside class="aeo-box" id="quick-answer" aria-labelledby="sites-aeo-heading">
       <h2 id="sites-aeo-heading" class="aeo-box__label"><?= te('quick_answer_label') ?></h2>
       <p class="aeo-box__text" dir="auto"><?= e(loc($siteData['aeo_answer'])) ?></p>

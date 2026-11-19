@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'services';
@@ -44,7 +45,10 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<div class="container"><p class="alert" data-filter-empty hidden style="margin-top:1.5rem"><?= te('filter_empty') ?></p></div>
+<div class="container promo-wrap-top">
+  <?= render_top_promo_banner('bundles', 'services_top_banner') ?>
+  <p class="alert" data-filter-empty hidden style="margin-top:1rem"><?= te('filter_empty') ?></p>
+</div>
 
 <?php foreach ($catalog as $slug => $cat): ?>
 <section class="section<?= in_array($slug, ['padi-courses', 'snorkeling'], true) ? ' section--tint' : '' ?>" id="<?= e($slug) ?>" data-filter-section>

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/google_reviews.php';
+require_once __DIR__ . '/tripadvisor_reviews.php';
+require_once __DIR__ . '/icons.php';
 require_once __DIR__ . '/catalog_helpers.php';
 
 function price_html(int|float|null $eur, string $unit = ''): string

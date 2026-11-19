@@ -43,12 +43,13 @@ define('SITE_NOINDEX', SITE_ENV !== 'production'); // keep staging out of Google
 define('DEFAULT_LANG', 'en');
 define('SUPPORTED_LANGS', [
     'en' => 'English',
-    'ar' => 'العربية',
     'ru' => 'Русский',
-    'de' => 'Deutsch',
     'it' => 'Italiano',
-    'fr' => 'Français',
     'pl' => 'Polski',
+    'de' => 'Deutsch',
+    'fr' => 'Français',
+    'ar' => 'العربية',
+    'zh' => '中文',
 ]);
 define('RTL_LANGS', ['ar']);
 define('PRIMARY_CURRENCY', 'EUR');
@@ -108,11 +109,11 @@ define('TRIPADVISOR_CACHE_TTL', 21600); // 6 hours server-side cache
  * Social profiles (empty = hidden)
  * ------------------------------------------------------------- */
 define('SOCIAL', [
-    'facebook'    => 'https://www.facebook.com/seacollegediveclub',
+    'youtube'     => sc_env('SOCIAL_YOUTUBE', 'https://www.youtube.com/@seacollege.diveclub'),
     'instagram'   => 'https://www.instagram.com/seacollege.diveclub/',
+    'facebook'    => 'https://www.facebook.com/seacollegediveclub',
+    'tiktok'      => sc_env('SOCIAL_TIKTOK', 'https://www.tiktok.com/@seacollegediveclub'),
     'tripadvisor' => sc_env('SOCIAL_TRIPADVISOR', TRIPADVISOR_URL),
-    'tiktok'      => sc_env('SOCIAL_TIKTOK', ''),
-    'youtube'     => sc_env('SOCIAL_YOUTUBE', ''),
 ]);
 
 /* ---------------------------------------------------------------

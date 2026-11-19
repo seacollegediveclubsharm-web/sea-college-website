@@ -44,7 +44,7 @@ return sc_overlay_catalog([
                         'desc' => 'Briefing + 1 open water shore dive (10 min). Equipment included.',
                         'desc_ar' => 'شرح سلامة + غطسة شاطئية واحدة مع مدرب (10 دقائق). شاملة المعدات.',
                         'price' => 30, 'duration' => '2h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-pool-training-scuba-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-quick-discover-scuba-diving-house-reef.jpg',
                     ],
                     [
                         'id' => 'dsd-2-reef', 'section' => 'tours', 'slug' => 'discover-scuba-diving-2-dives-house-reef',
@@ -53,7 +53,7 @@ return sc_overlay_catalog([
                         'desc' => 'Briefing + 2 open water shore dives (15 min each). Equipment included.',
                         'desc_ar' => 'شرح سلامة + غطستان شاطئيتان مع مدرب (15 دقيقة لكل غطسة). شاملة المعدات.',
                         'price' => 75, 'duration' => '3h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-pool-training-scuba-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-discover-scuba-diving-2-dives-house-reef.jpg',
                     ],
                     [
                         'id' => 'dsd-quick-boat', 'section' => 'tours', 'slug' => 'quick-discover-scuba-diving-boat-sharm',
@@ -62,7 +62,7 @@ return sc_overlay_catalog([
                         'desc' => 'Briefing + 1 boat dive (10 min). Food, soft drinks, transfers, park fees & equipment included.',
                         'desc_ar' => 'شرح سلامة + غطسة واحدة بالقارب (10 دقائق). شاملة الغداء والمشروبات والانتقالات ورسوم المحمية والمعدات.',
                         'price' => 70, 'duration' => '8h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-intro-dive-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-quick-discover-scuba-diving-boat-sharm.jpg',
                     ],
                     [
                         'id' => 'dsd-2-boat', 'section' => 'tours', 'slug' => 'discover-scuba-diving-2-dives-boat-sharm',
@@ -71,7 +71,7 @@ return sc_overlay_catalog([
                         'desc' => 'Briefing + 2 boat dives (15 min each). Food, soft drinks, transfers, park fees & equipment included.',
                         'desc_ar' => 'شرح سلامة + غطستان بالقارب (15 دقيقة لكل غطسة). شاملة الغداء والمشروبات والانتقالات ورسوم المحمية والمعدات.',
                         'price' => 100, 'duration' => '8h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-intro-dive-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-discover-scuba-diving-2-dives-boat-sharm.jpg',
                     ],
                 ],
             ],
@@ -86,7 +86,7 @@ return sc_overlay_catalog([
                         'desc' => 'Mandatory if you have not dived for more than 6 months. Briefing + confined/shore dive.',
                         'desc_ar' => 'إلزامية عند الانقطاع عن الغوص لأكثر من 6 أشهر. شرح + غطسة شاطئية أو بحمام السباحة.',
                         'price' => 25, 'duration' => '1.5–2h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-happy-divers.jpg',
+                        'img' => 'items/sea-college-sharm-check-dive-refresher-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'scuba-review', 'section' => 'tours', 'slug' => 'scuba-review-refresher-sharm-el-sheikh',
@@ -95,7 +95,7 @@ return sc_overlay_catalog([
                         'desc' => 'Mandatory if you have not dived for more than 1 year. Confined + open water shore dive.',
                         'desc_ar' => 'إلزامية عند الانقطاع عن الغوص لأكثر من عام. تدريب مهارات + غطسة شاطئية مفتوحة.',
                         'price' => 50, 'duration' => 'Half day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-happy-divers.jpg',
+                        'img' => 'items/sea-college-sharm-scuba-review-refresher-sharm-el-sheikh.jpg',
                     ],
                 ],
             ],
@@ -110,7 +110,7 @@ return sc_overlay_catalog([
                         'desc' => 'Guided house reef dive with 12L air tank, weights & Sharm hotel transfers.',
                         'desc_ar' => 'غطسة على الشعاب المنزلية مع مرشد وأسطوانة 12 لتر وأوزان وانتقالات الفندق.',
                         'price' => 45, 'duration' => '2–3h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-single-shore-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-2', 'section' => 'tours', 'slug' => '2-dives-boat-or-shore-sharm-el-sheikh',
@@ -119,7 +119,7 @@ return sc_overlay_catalog([
                         'desc' => 'Guide, 12L tanks, weights & hotel transfers (+€10 boat & +€5 park fee on boat days).',
                         'desc_ar' => 'مرشد وأسطوانات 12 لتر وأوزان وانتقالات (+10€ قارب و5€ محمية في أيام القارب).',
                         'price' => 85, 'duration' => '1 day', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-2-dives-boat-or-shore-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-3', 'section' => 'tours', 'slug' => '3-dives-package-sharm-el-sheikh',
@@ -128,7 +128,7 @@ return sc_overlay_catalog([
                         'desc' => '€35 per dive — guide, 12L tanks, weights & Sharm hotel transfers.',
                         'desc_ar' => '35€ للغطسة — تشمل المرشد وأسطوانات 12 لتر والأوزان وانتقالات الفندق.',
                         'price' => 105, 'duration' => '1–2 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-3-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-4', 'section' => 'tours', 'slug' => '4-dives-package-sharm-el-sheikh',
@@ -137,7 +137,7 @@ return sc_overlay_catalog([
                         'desc' => '2-day certified diver package (€35/dive) with guide, 12L tanks, weights & transfers.',
                         'desc_ar' => 'باقة يومين للمعتمدين (35€ للغطسة) مع مرشد وأسطوانات 12 لتر وأوزان وانتقالات.',
                         'price' => 140, 'duration' => '2 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-4-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-5', 'section' => 'tours', 'slug' => '5-dives-package-sharm-el-sheikh',
@@ -146,7 +146,7 @@ return sc_overlay_catalog([
                         'desc' => '€35 per dive across Ras Mohammed, Tiran & local reefs — guide, tanks, weights & transfers.',
                         'desc_ar' => '35€ للغطسة في رأس محمد وتيران والشعاب المحلية — شاملة المرشد والأسطوانات والانتقالات.',
                         'price' => 175, 'duration' => '2–3 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-5-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-6', 'section' => 'tours', 'slug' => '6-dives-package-sharm-el-sheikh',
@@ -155,7 +155,7 @@ return sc_overlay_catalog([
                         'desc' => '3-day Red Sea dive package (€35/dive) covering Ras Mohammed, Straits of Tiran & local reefs.',
                         'desc_ar' => 'باقة 3 أيام (35€ للغطسة) تشمل رأس محمد ومضيق تيران والشعاب المحلية.',
                         'price' => 210, 'duration' => '3 days', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-6-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-7', 'section' => 'tours', 'slug' => '7-dives-package-sharm-el-sheikh',
@@ -164,7 +164,7 @@ return sc_overlay_catalog([
                         'desc' => 'Flexible 3–4 day certified dive package (€35/dive) with guide, tanks, weights & transfers.',
                         'desc_ar' => 'باقة مرنة 3–4 أيام للمعتمدين (35€ للغطسة) مع مرشد وأسطوانات وأوزان وانتقالات.',
                         'price' => 245, 'duration' => '3–4 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-7-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-8', 'section' => 'tours', 'slug' => '8-dives-package-sharm-el-sheikh',
@@ -173,7 +173,7 @@ return sc_overlay_catalog([
                         'desc' => '4-day dive package (€35/dive) with guide, 12L tanks, weights & Sharm hotel transfers.',
                         'desc_ar' => 'باقة 4 أيام غوص (35€ للغطسة) تشمل المرشد وأسطوانات 12 لتر والأوزان وانتقالات الفندق.',
                         'price' => 280, 'duration' => '4 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-8-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-9', 'section' => 'tours', 'slug' => '9-dives-package-sharm-el-sheikh',
@@ -182,7 +182,7 @@ return sc_overlay_catalog([
                         'desc' => '4–5 day certified dive package (€35/dive) with guide, 12L tanks, weights & transfers.',
                         'desc_ar' => 'باقة 4–5 أيام للمعتمدين (35€ للغطسة) تشمل المرشد والأسطوانات والأوزان والانتقالات.',
                         'price' => 315, 'duration' => '4–5 days',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-9-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-10', 'section' => 'tours', 'slug' => '10-dives-package-sharm-el-sheikh',
@@ -191,7 +191,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full 5-day Red Sea diving week (€35/dive) — extra dives after the 10th drop to €30.',
                         'desc_ar' => 'أسبوع غوص كامل 5 أيام (35€ للغطسة) — وكل غطسة إضافية بعد العاشرة بـ 30€ فقط.',
                         'price' => 350, 'duration' => '5 days', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-10-dives-package-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'dive-extra', 'section' => 'tours', 'slug' => 'extra-dive-after-10-dives-sharm',
@@ -200,7 +200,7 @@ return sc_overlay_catalog([
                         'desc' => 'Reduced €30 per-dive rate for every additional dive added onto a 10-dive package.',
                         'desc_ar' => 'سعر مخفض 30€ لكل غطسة إضافية بعد إتمام باقة الـ 10 غطسات.',
                         'price' => 30, 'duration' => 'Per dive',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-extra-dive-after-10-dives-sharm.jpg',
                     ],
                 ],
             ],
@@ -215,7 +215,7 @@ return sc_overlay_catalog([
                         'desc' => 'Supplement on 1 dive of your package to explore nocturnal reef life or dawn pelagics.',
                         'desc_ar' => 'إضافة على غطسة من باقتك لاستكشاف الكائنات الليلية أو غطسة الفجر.',
                         'price' => 30, 'duration' => '2h',
-                        'img' => 'courses/13_padi_night_diver.jpg',
+                        'img' => 'items/sea-college-sharm-night-early-morning-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-thistlegorm', 'section' => 'tours', 'slug' => 'ss-thistlegorm-wreck-dive-sharm-el-sheikh',
@@ -224,7 +224,7 @@ return sc_overlay_catalog([
                         'desc' => 'Iconic WWII wreck trip. Min. Advanced Open Water + 20 logged dives. Book 72 h ahead.',
                         'desc_ar' => 'أشهر حطام سفينة من الحرب العالمية الثانية. يتطلب Advanced + 20 غطسة مسجلة وحجز قبل 72 ساعة.',
                         'price' => 150, 'duration' => '7–8h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-ss-thistlegorm-wreck-dive.jpg',
+                        'img' => 'items/sea-college-sharm-ss-thistlegorm-wreck-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-dunraven', 'section' => 'tours', 'slug' => 'ss-dunraven-wreck-dive-sharm-el-sheikh',
@@ -233,7 +233,7 @@ return sc_overlay_catalog([
                         'desc' => '1876 Victorian steam-sailship wreck near Beacon Rock. Book 72 h ahead.',
                         'desc_ar' => 'حطام السفينة التاريخية البريطانية لعام 1876 المكسو بالمرجان. يُحجز قبل 72 ساعة.',
                         'price' => 30, 'duration' => 'Full day',
-                        'img' => 'courses/12_padi_wreck_diver.jpg',
+                        'img' => 'items/sea-college-sharm-ss-dunraven-wreck-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-millionhope', 'section' => 'tours', 'slug' => 'million-hope-wreck-dive-sharm-el-sheikh',
@@ -242,7 +242,7 @@ return sc_overlay_catalog([
                         'desc' => 'Largest wreck in Sharm El Sheikh at Nabq. Min. 4 divers. Book 48 h ahead.',
                         'desc_ar' => 'أضخم حطام سفينة في شرم الشيخ بمنطقة نبق (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
                         'price' => 30, 'duration' => 'Half day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-ss-thistlegorm-wreck-dive.jpg',
+                        'img' => 'items/sea-college-sharm-million-hope-wreck-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-zodiac', 'section' => 'tours', 'slug' => 'zodiac-speedboat-dive-sharm-el-sheikh',
@@ -251,7 +251,7 @@ return sc_overlay_catalog([
                         'desc' => 'Fast RIB drop-offs onto Tiran & local drift reefs. Min. 4 divers. Book 48 h ahead.',
                         'desc_ar' => 'وصول سريع بقارب الزودياك لمواقع تيران والشعاب القريبة (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
                         'price' => 50, 'duration' => 'Half day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+                        'img' => 'items/sea-college-sharm-zodiac-speedboat-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-zodiac-early', 'section' => 'tours', 'slug' => 'early-morning-zodiac-dive-hammerheads-sharm',
@@ -260,7 +260,7 @@ return sc_overlay_catalog([
                         'desc' => 'First-in-the-water dawn Zodiac run for pelagics or Million Hope. Min. 4 divers, 48 h ahead.',
                         'desc_ar' => 'انطلاق فجرًا بالزودياك قبل القوارب اليومية لرؤية الكائنات الكبيرة أو مليون هوب (4 غواصين كحد أدنى).',
                         'price' => 70, 'duration' => '3–4h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+                        'img' => 'items/sea-college-sharm-early-morning-zodiac-dive-hammerheads-sharm.jpg',
                     ],
                     [
                         'id' => 'sup-dahab', 'section' => 'tours', 'slug' => 'dahab-dive-trip-from-sharm-el-sheikh',
@@ -269,7 +269,7 @@ return sc_overlay_catalog([
                         'desc' => 'Day excursion from Sharm to Dahab signature sites. Min. 4 divers. Book 48 h ahead.',
                         'desc_ar' => 'رحلة يومية من شرم الشيخ للغوص في أشهر مواقع دهب (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
                         'price' => 115, 'duration' => 'Full day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-dahab-dive-trip-from-sharm-el-sheikh.jpg',
                     ],
                 ],
             ],
@@ -285,7 +285,7 @@ return sc_overlay_catalog([
                         'desc' => 'Mandatory per-person daily supplement on boat diving days (includes lunch & drinks on full-day boats).',
                         'desc_ar' => 'رسوم يومية للفرد في أيام الغوص بالقارب (تشمل الغداء والمشروبات في رحلات اليوم الكامل).',
                         'price' => 10, 'unit' => 'day', 'duration' => 'Per day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-boat-trip-daily-supplement-sharm.jpg',
                     ],
                     [
                         'id' => 'fee-park', 'section' => 'tours', 'slug' => 'ras-mohammed-tiran-marine-park-fee',
@@ -294,7 +294,7 @@ return sc_overlay_catalog([
                         'desc' => 'Per person, per day environmental fee for all Sharm El Sheikh marine park zones except House Reef.',
                         'desc_ar' => 'رسوم المحميات الطبيعية للفرد يوميًا لجميع مناطق شرم الشيخ باستثناء الشعاب المنزلية.',
                         'price' => 5, 'unit' => 'day', 'duration' => 'Per day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+                        'img' => 'items/sea-college-sharm-ras-mohammed-tiran-marine-park-fee.jpg',
                     ],
                     [
                         'id' => 'private-guide', 'section' => 'tours', 'slug' => 'private-dive-guide-sharm-el-sheikh',
@@ -303,7 +303,7 @@ return sc_overlay_catalog([
                         'desc' => 'Dedicated 1-on-1 or private-group PADI dive guide per day (mandatory for ages 10–11 & PADI Scuba Divers).',
                         'desc_ar' => 'مرشد PADI خاص لك أو لمجموعتك طوال اليوم (إلزامي لسن 10–11 سنة وحاملي Scuba Diver).',
                         'price' => 75, 'unit' => 'day', 'duration' => 'Full day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
+                        'img' => 'items/sea-college-sharm-private-dive-guide-sharm-el-sheikh.jpg',
                     ],
                 ],
             ],
@@ -319,7 +319,7 @@ return sc_overlay_catalog([
                         'desc' => 'BCD, regulator, wetsuit, mask & fins for 2–3 dives/day (no torch/computer).',
                         'desc_ar' => 'بي سي دي ومنظم وبدلة وقناع وزعانف لـ 2–3 غطسات يوميًا (بدون كشاف أو كمبيوتر).',
                         'price' => 25, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-full-scuba-equipment-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-mask', 'section' => 'tours', 'slug' => 'dive-mask-snorkel-rental-sharm',
@@ -328,7 +328,7 @@ return sc_overlay_catalog([
                         'desc' => 'Tempered-glass silicone scuba mask rental per day.',
                         'desc_ar' => 'تأجير قناع غوص سيليكون بزجاج مقوى لليوم.',
                         'price' => 4, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-dive-mask-snorkel-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-fins', 'section' => 'tours', 'slug' => 'scuba-fins-rental-sharm',
@@ -337,7 +337,7 @@ return sc_overlay_catalog([
                         'desc' => 'Open-heel or full-foot scuba fins rental per day.',
                         'desc_ar' => 'تأجير زعانف غوص بجميع المقاسات لليوم.',
                         'price' => 4, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-scuba-fins-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-bcd', 'section' => 'tours', 'slug' => 'bcd-buoyancy-compensator-rental-sharm',
@@ -346,7 +346,7 @@ return sc_overlay_catalog([
                         'desc' => 'Serviced scuba buoyancy compensator jacket (XS–XXL) per day.',
                         'desc_ar' => 'تأجير سترة التحكم بالطفو BCD بجميع المقاسات لليوم.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-bcd-buoyancy-compensator-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-reg', 'section' => 'tours', 'slug' => 'scuba-regulator-rental-sharm',
@@ -355,7 +355,7 @@ return sc_overlay_catalog([
                         'desc' => 'Serviced regulator set with octopus & SPG pressure gauge per day.',
                         'desc_ar' => 'تأجير منظم تنفس كامل مع احتياطي وعداد ضغط لليوم.',
                         'price' => 13, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-scuba-regulator-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-wetsuit', 'section' => 'tours', 'slug' => 'wetsuit-rental-sharm-el-sheikh',
@@ -364,7 +364,7 @@ return sc_overlay_catalog([
                         'desc' => 'Shorty or 5mm full Red Sea neoprene wetsuit rental per day.',
                         'desc_ar' => 'تأجير بدلة غوص قصيرة أو طويلة 5 مم لليوم.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-wetsuit-rental-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'eq-boots', 'section' => 'tours', 'slug' => 'neoprene-dive-boots-rental-sharm',
@@ -373,7 +373,7 @@ return sc_overlay_catalog([
                         'desc' => 'Neoprene dive boots for shore entries & open-heel fins per day.',
                         'desc_ar' => 'تأجير حذاء غوص نيوبرين للغطسات الشاطئية والزعانف المفتوحة لليوم.',
                         'price' => 5, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-neoprene-dive-boots-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-computer', 'section' => 'tours', 'slug' => 'dive-computer-rental-sharm-el-sheikh',
@@ -382,7 +382,7 @@ return sc_overlay_catalog([
                         'desc' => 'Air & Enriched Air Nitrox wrist dive computer rental per day.',
                         'desc_ar' => 'تأجير كمبيوتر غوص يدعم الهواء والنيتروكس لليوم.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-dive-computer-rental-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'eq-torch', 'section' => 'tours', 'slug' => 'underwater-dive-torch-rental-sharm',
@@ -391,7 +391,7 @@ return sc_overlay_catalog([
                         'desc' => 'Rechargeable LED underwater dive light for night & wreck dives.',
                         'desc_ar' => 'تأجير كشاف غوص قوي للغطس الليلي وحطام السفن.',
                         'price' => 6, 'unit' => 'day',
-                        'img' => 'courses/13_padi_night_diver.jpg',
+                        'img' => 'items/sea-college-sharm-underwater-dive-torch-rental-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-15air', 'section' => 'tours', 'slug' => '15l-air-tank-upgrade-sharm',
@@ -400,7 +400,7 @@ return sc_overlay_catalog([
                         'desc' => '100 cu. ft. (15L) aluminum air cylinder upgrade per day.',
                         'desc_ar' => 'ترقية إلى أسطوانة ألومنيوم كبيرة 15 لتر هواء لليوم.',
                         'price' => 6, 'unit' => 'day',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
+                        'img' => 'items/sea-college-sharm-15l-air-tank-upgrade-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-15nx', 'section' => 'tours', 'slug' => '15l-nitrox-tank-upgrade-sharm',
@@ -409,7 +409,7 @@ return sc_overlay_catalog([
                         'desc' => '15L Enriched Air Nitrox cylinder upgrade for certified Nitrox divers.',
                         'desc_ar' => 'أسطوانة 15 لتر هواء مخصب (نيتروكس) للغواصين المعتمدين.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'courses/10_padi_enriched_air_nitrox.jpg',
+                        'img' => 'items/sea-college-sharm-15l-nitrox-tank-upgrade-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-12nx', 'section' => 'tours', 'slug' => '12l-nitrox-tank-fill-sharm',
@@ -418,7 +418,7 @@ return sc_overlay_catalog([
                         'desc' => '12L Enriched Air Nitrox fill for certified Nitrox divers.',
                         'desc_ar' => 'تعبئة أسطوانة 12 لتر هواء مخصب (نيتروكس) للغواصين المعتمدين.',
                         'price' => 8, 'unit' => 'day',
-                        'img' => 'courses/10_padi_enriched_air_nitrox.jpg',
+                        'img' => 'items/sea-college-sharm-12l-nitrox-tank-fill-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-sm-tank', 'section' => 'tours', 'slug' => '12l-sidemount-air-tank-sharm',
@@ -427,7 +427,7 @@ return sc_overlay_catalog([
                         'desc' => 'Rigged 12L aluminum cylinder for sidemount configuration per day.',
                         'desc_ar' => 'أسطوانة 12 لتر مجهزة لنظام الغوص الجانبي (Sidemount) لليوم.',
                         'price' => 5, 'unit' => 'day',
-                        'img' => 'courses/14_padi_sidemount_diver.jpg',
+                        'img' => 'items/sea-college-sharm-12l-sidemount-air-tank-sharm.jpg',
                     ],
                     [
                         'id' => 'eq-sm-full', 'section' => 'tours', 'slug' => 'full-sidemount-equipment-rental-sharm',
@@ -436,7 +436,7 @@ return sc_overlay_catalog([
                         'desc' => 'Complete sidemount harness/wing, twin regulators & rigging kit per day.',
                         'desc_ar' => 'طقم معدات الغوص الجانبي الكامل (هارنس ومنظمات مزدوجة وتجهيزات) لليوم.',
                         'price' => 50, 'unit' => 'day',
-                        'img' => 'courses/14_padi_sidemount_diver.jpg',
+                        'img' => 'items/sea-college-sharm-full-sidemount-equipment-rental-sharm.jpg',
                     ],
                 ],
             ],
@@ -452,7 +452,7 @@ return sc_overlay_catalog([
                         'desc' => '3-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
                         'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 3 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
                         'price' => null, 'duration' => '3 days',
-                        'img' => 'courses/08_emergency_first_response.jpg',
+                        'img' => 'items/sea-college-sharm-diving-insurance-3-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-7', 'section' => 'tours', 'slug' => 'diving-insurance-7-days-sharm',
@@ -461,7 +461,7 @@ return sc_overlay_catalog([
                         'desc' => '7-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
                         'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 7 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
                         'price' => null, 'duration' => '7 days',
-                        'img' => 'courses/08_emergency_first_response.jpg',
+                        'img' => 'items/sea-college-sharm-diving-insurance-7-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-10', 'section' => 'tours', 'slug' => 'diving-insurance-10-days-sharm',
@@ -470,7 +470,7 @@ return sc_overlay_catalog([
                         'desc' => '10-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
                         'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 10 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
                         'price' => null, 'duration' => '10 days',
-                        'img' => 'courses/08_emergency_first_response.jpg',
+                        'img' => 'items/sea-college-sharm-diving-insurance-10-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-14', 'section' => 'tours', 'slug' => 'diving-insurance-14-days-sharm',
@@ -479,7 +479,7 @@ return sc_overlay_catalog([
                         'desc' => '14-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
                         'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 14 يومًا في شرم الشيخ. يُؤكد السعر عند الحجز.',
                         'price' => null, 'duration' => '14 days',
-                        'img' => 'courses/08_emergency_first_response.jpg',
+                        'img' => 'items/sea-college-sharm-diving-insurance-14-days-sharm.jpg',
                     ],
                 ],
             ],
@@ -516,7 +516,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة PADI Bubblemaker للأطفال',
                         'desc' => 'Age 8+. 2–3 hours in the pool (under 2 m) with a PADI Instructor. Equipment included.',
                         'desc_ar' => 'من سن 8 سنوات. 2–3 ساعات في حمام السباحة (أقل من مترين) مع مدرب PADI شاملة المعدات.',
-                        'price' => 70, 'img' => 'courses/01_padi_bubblemaker.jpg', 'duration' => '2–3h', 'popular' => true,
+                        'price' => 70, 'img' => 'items/sea-college-sharm-padi-bubblemaker-sharm-el-sheikh.jpg', 'duration' => '2–3h', 'popular' => true,
                     ],
                     [
                         'id' => 'seal-team', 'section' => 'courses', 'slug' => 'padi-seal-team-sharm-el-sheikh',
@@ -524,7 +524,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'برنامج PADI Seal Team للأطفال',
                         'desc' => 'Age 8+. 1 day of action-packed pool AquaMissions 1–5 with full child scuba gear.',
                         'desc_ar' => 'من سن 8 سنوات. يوم كامل من مهمات AquaMissions 1–5 في حمام السباحة مع معدات الأطفال.',
-                        'price' => 170, 'img' => 'courses/02_padi_seal_team.jpg', 'duration' => '1 day',
+                        'price' => 170, 'img' => 'items/sea-college-sharm-padi-seal-team-sharm-el-sheikh.jpg', 'duration' => '1 day',
                     ],
                 ],
             ],
@@ -538,7 +538,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'برنامج PADI Discover Scuba Diving للمبتدئين',
                         'desc' => 'Age 10+. Pool skills + supervised open water dive. Equipment, manual & certificate included.',
                         'desc_ar' => 'من سن 10 سنوات. مهارات المسبح + غطسة بحرية مع مدرب. شاملة المعدات والكتيب والشهادة.',
-                        'price' => 85, 'img' => 'courses/03_padi_discover_scuba_diving.jpg', 'duration' => '1 day',
+                        'price' => 85, 'img' => 'items/sea-college-sharm-padi-discover-scuba-diving-sharm-el-sheikh.jpg', 'duration' => '1 day',
                     ],
                     [
                         'id' => 'scuba-diver', 'section' => 'courses', 'slug' => 'padi-scuba-diver-course-sharm-el-sheikh',
@@ -546,7 +546,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة غواص PADI Scuba Diver',
                         'desc' => 'Age 10+. 3 pool + 2 open water dives; certifies you to dive to 12 m with a PADI Pro.',
                         'desc_ar' => 'من سن 10 سنوات. 3 غطسات مسبح + غطستان بالبحر لعمق 12 مترًا برفقة محترف PADI.',
-                        'price' => 250, 'img' => 'courses/04_padi_scuba_diver.jpg', 'duration' => '2 days',
+                        'price' => 250, 'img' => 'items/sea-college-sharm-padi-scuba-diver-course-sharm-el-sheikh.jpg', 'duration' => '2 days',
                     ],
                     [
                         'id' => 'upgrade-owd', 'section' => 'courses', 'slug' => 'upgrade-scuba-diver-to-open-water-sharm',
@@ -554,7 +554,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'ترقية شهادة Scuba Diver إلى Open Water',
                         'desc' => 'Complete 2 confined + 2 open water dives & theory modules to earn full 18 m Open Water certification.',
                         'desc_ar' => 'أكمل غطستين في المسبح وغطستين بالبحر والوحدات المتبقية للحصول على شهادة Open Water لعمق 18م.',
-                        'price' => 100, 'img' => 'courses/05_padi_open_water_diver.jpg', 'duration' => '1–2 days',
+                        'price' => 100, 'img' => 'items/sea-college-sharm-upgrade-scuba-diver-to-open-water-sharm.jpg', 'duration' => '1–2 days',
                     ],
                     [
                         'id' => 'owd', 'section' => 'courses', 'slug' => 'padi-open-water-diver-sharm-el-sheikh',
@@ -562,7 +562,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة غواص المياه المفتوحة PADI Open Water',
                         'desc' => 'Age 10+. The world\'s most popular scuba certification: 5 pool + 4 open water dives, up to 18 m.',
                         'desc_ar' => 'من سن 10 سنوات. أشهر شهادة غوص دولية: 5 جلسات مسبح + 4 غطسات بحر مفتوح حتى عمق 18 مترًا.',
-                        'price' => 380, 'img' => 'courses/05_padi_open_water_diver.jpg', 'duration' => '3–3.5 days', 'popular' => true,
+                        'price' => 380, 'img' => 'items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '3–3.5 days', 'popular' => true,
                     ],
                 ],
             ],
@@ -576,7 +576,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة الغوص المتقدم PADI Advanced Open Water',
                         'desc' => 'Age 12+. 5 Adventure Dives incl. Deep & Underwater Navigation, certifying you down to 30 m.',
                         'desc_ar' => 'من سن 12 سنة. 5 غطسات مغامرة تشمل العميق والملاحة وتؤهلك للغوص حتى عمق 30 مترًا.',
-                        'price' => 280, 'img' => 'courses/06_padi_advanced_open_water_diver.jpg', 'duration' => '2.5–3 days', 'popular' => true,
+                        'price' => 280, 'img' => 'items/sea-college-sharm-padi-advanced-open-water-diver-sharm-el-sheikh.jpg', 'duration' => '2.5–3 days', 'popular' => true,
                     ],
                     [
                         'id' => 'aowd-green', 'section' => 'courses', 'slug' => 'advanced-open-water-nitrox-green-sharm',
@@ -584,7 +584,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة Advanced Open Water Green (المتقدم + النيتروكس)',
                         'desc' => '5 Adventure Dives (up to 30 m) combined with the PADI Enriched Air Nitrox dry specialty.',
                         'desc_ar' => '5 غطسات مغامرة حتى 30 مترًا مدمجة مع تخصص الهواء المخصب (النيتروكس) في برنامج واحد.',
-                        'price' => 380, 'img' => 'courses/06_padi_advanced_open_water_diver.jpg', 'duration' => '3 days',
+                        'price' => 380, 'img' => 'items/sea-college-sharm-advanced-open-water-nitrox-green-sharm.jpg', 'duration' => '3 days',
                     ],
                     [
                         'id' => 'efr', 'section' => 'courses', 'slug' => 'emergency-first-response-efr-sharm-el-sheikh',
@@ -592,7 +592,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة الاستجابة الأولية للطوارئ (EFR)',
                         'desc' => 'CPR, first aid, AED & care for children. Open to divers and non-divers alike.',
                         'desc_ar' => 'الإنعاش القلبي الرئوي والإسعافات الأولية وجهاز AED ورعاية الأطفال — متاحة للجميع.',
-                        'price' => 143, 'img' => 'courses/08_emergency_first_response.jpg', 'duration' => '1 day',
+                        'price' => 143, 'img' => 'items/sea-college-sharm-emergency-first-response-efr-sharm-el-sheikh.jpg', 'duration' => '1 day',
                     ],
                     [
                         'id' => 'rescue', 'section' => 'courses', 'slug' => 'padi-rescue-diver-course-sharm-el-sheikh',
@@ -600,7 +600,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة غواص الإنقاذ PADI Rescue Diver',
                         'desc' => 'Age 12+. Self-rescue, managing diver stress, emergency equipment & open-water rescue scenarios.',
                         'desc_ar' => 'من سن 12 سنة. الإنقاذ الذاتي وإدارة إجهاد الغواصين وسيناريوهات الطوارئ والإنقاذ البحري.',
-                        'price' => 394, 'img' => 'courses/07_padi_rescue_diver.jpg', 'duration' => '3–4 days',
+                        'price' => 394, 'img' => 'items/sea-college-sharm-padi-rescue-diver-course-sharm-el-sheikh.jpg', 'duration' => '3–4 days',
                     ],
                 ],
             ],
@@ -614,7 +614,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص الهواء المخصب PADI Enriched Air Nitrox',
                         'desc' => 'Age 12+. Longer no-stop dive times; analyse O₂ cylinders and configure Nitrox computers.',
                         'desc_ar' => 'من سن 12 سنة. أوقات غوص أطول بدون توقف؛ تحليل نسبة الأكسجين وضبط كمبيوتر الغوص.',
-                        'price' => 145, 'img' => 'courses/10_padi_enriched_air_nitrox.jpg', 'duration' => '1 day', 'popular' => true,
+                        'price' => 145, 'img' => 'items/sea-college-sharm-padi-enriched-air-nitrox-sharm-el-sheikh.jpg', 'duration' => '1 day', 'popular' => true,
                     ],
                     [
                         'id' => 'spec-2', 'section' => 'courses', 'slug' => 'padi-2-dive-specialty-sharm-el-sheikh',
@@ -622,7 +622,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة تخصص PADI من غطستين',
                         'desc' => 'Choose Peak Performance Buoyancy, Drift Diver, Boat Diver, Underwater Naturalist or Digital Underwater Photo.',
                         'desc_ar' => 'اختر إتقان الطفو، الغوص مع التيار، غوص القوارب، عالم الطبيعة البحرية أو التصوير تحت الماء.',
-                        'price' => 145, 'img' => 'sea-college-dive-club-sharm-el-sheikh-padi-diving-course-students-underwater.jpg', 'duration' => '1 day',
+                        'price' => 145, 'img' => 'items/sea-college-sharm-padi-2-dive-specialty-sharm-el-sheikh.jpg', 'duration' => '1 day',
                     ],
                     [
                         'id' => 'spec-3', 'section' => 'courses', 'slug' => 'padi-underwater-navigator-3-dive-specialty',
@@ -630,7 +630,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'دورة تخصص 3 غطسات / الملاحة تحت الماء',
                         'desc' => 'Master compass patterns, natural reef navigation & distance estimation across 3 open water dives.',
                         'desc_ar' => 'إتقان الملاحة بالبوصلة والمعالم الطبيعية وتقدير المسافات تحت الماء خلال 3 غطسات بحرية.',
-                        'price' => 250, 'img' => 'sea-college-dive-club-sharm-el-sheikh-padi-diving-course-students-underwater.jpg', 'duration' => '1.5–2 days',
+                        'price' => 250, 'img' => 'items/sea-college-sharm-padi-underwater-navigator-3-dive-specialty.jpg', 'duration' => '1.5–2 days',
                     ],
                     [
                         'id' => 'deep', 'section' => 'courses', 'slug' => 'padi-deep-diver-course-sharm-el-sheikh',
@@ -638,7 +638,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص الغوص العميق PADI Deep Diver',
                         'desc' => 'Age 15+. 4 deep dives down to 40 m along Sharm El Sheikh\'s dramatic Red Sea walls.',
                         'desc_ar' => 'من سن 15 سنة. 4 غطسات عميقة حتى 40 مترًا على الجدران المرجانية الشهيرة بشرم الشيخ.',
-                        'price' => 325, 'img' => 'courses/11_padi_deep_diver.jpg', 'duration' => '2 days',
+                        'price' => 325, 'img' => 'items/sea-college-sharm-padi-deep-diver-course-sharm-el-sheikh.jpg', 'duration' => '2 days',
                     ],
                     [
                         'id' => 'wreck', 'section' => 'courses', 'slug' => 'padi-wreck-diver-course-sharm-el-sheikh',
@@ -646,7 +646,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص غوص الحطام PADI Wreck Diver',
                         'desc' => 'Age 15+. 4 wreck dives learning mapping, line/reel handling & safe penetration on Red Sea wrecks.',
                         'desc_ar' => 'من سن 15 سنة. 4 غطسات حطام لتعلم رسم الخرائط واستخدام البكرات والدخول الآمن لحطام البحر الأحمر.',
-                        'price' => 325, 'img' => 'courses/12_padi_wreck_diver.jpg', 'duration' => '2 days',
+                        'price' => 325, 'img' => 'items/sea-college-sharm-padi-wreck-diver-course-sharm-el-sheikh.jpg', 'duration' => '2 days',
                     ],
                     [
                         'id' => 'night', 'section' => 'courses', 'slug' => 'padi-night-diver-course-sharm-el-sheikh',
@@ -654,7 +654,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص الغوص الليلي PADI Night Diver',
                         'desc' => 'Age 12+. 3 guided night dives mastering torch signals, dark navigation & nocturnal reef life.',
                         'desc_ar' => 'من سن 12 سنة. 3 غطسات ليلية لإتقان التواصل بالكشاف والملاحة الليلية ومراقبة الكائنات الليلية.',
-                        'price' => 265, 'img' => 'courses/13_padi_night_diver.jpg', 'duration' => '3 evenings',
+                        'price' => 265, 'img' => 'items/sea-college-sharm-padi-night-diver-course-sharm-el-sheikh.jpg', 'duration' => '3 evenings',
                     ],
                     [
                         'id' => 'sidemount', 'section' => 'courses', 'slug' => 'padi-sidemount-diver-course-sharm-el-sheikh',
@@ -662,7 +662,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص الغوص الجانبي PADI Sidemount Diver',
                         'desc' => 'Age 15+. 1 confined setup session + 3 open water dives for effortless trim and gas redundancy.',
                         'desc_ar' => 'من سن 15 سنة. جلسة مسبح + 3 غطسات بحرية لضبط التوازن الأفقي وإدارة الأسطوانات الجانبية.',
-                        'price' => 350, 'img' => 'courses/14_padi_sidemount_diver.jpg', 'duration' => '2–3 days',
+                        'price' => 350, 'img' => 'items/sea-college-sharm-padi-sidemount-diver-course-sharm-el-sheikh.jpg', 'duration' => '2–3 days',
                     ],
                     [
                         'id' => 'adaptive', 'section' => 'courses', 'slug' => 'padi-adaptive-support-diver-sharm-el-sheikh',
@@ -670,7 +670,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'تخصص دعم الغوص التكيفي PADI Adaptive Support',
                         'desc' => 'Age 15+. 1 confined + 1 open water workshop on adaptive techniques for buddies with physical or mental challenges.',
                         'desc_ar' => 'من سن 15 سنة. ورشة مسبح + ورشة بحر مفتوح لدعم زملاء الغوص من ذوي التحديات الجسدية أو الذهنية.',
-                        'price' => 120, 'img' => 'courses/15_padi_adaptive_support_diver.jpg', 'duration' => 'Half day',
+                        'price' => 120, 'img' => 'items/sea-college-sharm-padi-adaptive-support-diver-sharm-el-sheikh.jpg', 'duration' => 'Half day',
                     ],
                 ],
             ],
@@ -684,7 +684,7 @@ return sc_overlay_catalog([
                         'name_ar' => 'برنامج مرشد الغوص الاحترافي PADI Divemaster',
                         'desc' => 'Age 18+, 40 logged dives, AOWD + Rescue + EFR. 4–6 weeks incl. airport & daily transfers, breakfast & lunch, equipment, insurance & Course Director mentoring.',
                         'desc_ar' => 'من سن 18 سنة (40 غطسة مسجلة). 4–6 أسابيع شاملة استقبال المطار والانتقالات والإفطار والغداء والمعدات والتأمين والتوجيه المهني.',
-                        'price' => 850, 'img' => 'courses/09_padi_divemaster_program.jpg', 'duration' => '4–6 weeks', 'popular' => true,
+                        'price' => 850, 'img' => 'items/sea-college-sharm-padi-divemaster-internship-sharm-el-sheikh.jpg', 'duration' => '4–6 weeks', 'popular' => true,
                     ],
                 ],
             ],
@@ -718,7 +718,7 @@ return sc_overlay_catalog([
                         'desc' => 'Save €50. Includes both PADI courses, full equipment rental, dive insurance & sales tax.',
                         'desc_ar' => 'وفّر 50€. تشمل الدورتين وتأجير المعدات الكامل وتأمين الغوص والضريبة.',
                         'price' => 500, 'save' => 50, 'duration' => '4 days',
-                        'img' => 'courses/05_padi_open_water_diver.jpg',
+                        'img' => 'items/sea-college-sharm-stars-bundle-open-water-nitrox-sharm.jpg',
                     ],
                     [
                         'id' => 'bundle-super', 'section' => 'courses', 'slug' => 'super-bundle-advanced-open-water-nitrox',
@@ -727,7 +727,7 @@ return sc_overlay_catalog([
                         'desc' => 'Save €75. Certifies Open Water divers to 30 m + Enriched Air Nitrox with gear & insurance included.',
                         'desc_ar' => 'وفّر 75€. تؤهلك لعمق 30 مترًا مع شهادة النيتروكس شاملة المعدات وتأمين الغوص.',
                         'price' => 400, 'save' => 75, 'duration' => '3 days',
-                        'img' => 'courses/06_padi_advanced_open_water_diver.jpg',
+                        'img' => 'items/sea-college-sharm-super-bundle-advanced-open-water-nitrox.jpg',
                     ],
                     [
                         'id' => 'bundle-mega', 'section' => 'courses', 'slug' => 'mega-bundle-open-water-advanced-sharm',
@@ -736,7 +736,7 @@ return sc_overlay_catalog([
                         'desc' => 'Save €90. Go from complete beginner to 30 m Advanced diver in one holiday — gear & insurance included.',
                         'desc_ar' => 'وفّر 90€. انتقل من مبتدئ تمامًا إلى غواص متقدم لعمق 30م في إجازة واحدة شاملة المعدات والتأمين.',
                         'price' => 600, 'save' => 90, 'duration' => '6 days', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-padi-diving-course-students-underwater.jpg',
+                        'img' => 'items/sea-college-sharm-mega-bundle-open-water-advanced-sharm.jpg',
                     ],
                     [
                         'id' => 'bundle-heros', 'section' => 'courses', 'slug' => 'heros-bundle-open-water-advanced-nitrox',
@@ -745,7 +745,7 @@ return sc_overlay_catalog([
                         'desc' => 'Save €120. Complete 3-certification package (up to 30 m + Nitrox) with full gear, insurance & tax.',
                         'desc_ar' => 'وفّر 120€. الباقة الثلاثية الأشمل (3 شهادات PADI) شاملة المعدات الكاملة والتأمين والضريبة.',
                         'price' => 750, 'save' => 120, 'duration' => '6–7 days',
-                        'img' => 'courses/10_padi_enriched_air_nitrox.jpg',
+                        'img' => 'items/sea-college-sharm-heros-bundle-open-water-advanced-nitrox.jpg',
                     ],
                 ],
             ],
@@ -781,7 +781,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full day yacht cruise. Mask, life jacket, buffet lunch & soft drinks, hotel transfers & marine park fees.',
                         'desc_ar' => 'رحلة يخت ليوم كامل تشمل القناع وسترة النجاة وغداء بوفيه والمشروبات والانتقالات ورسوم المحمية.',
                         'price' => 55, 'child_price' => 30, 'duration' => '8h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-snorkeling-trip-family-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-boat-trip.jpg',
                     ],
                     [
                         'id' => 'snork-ras-child', 'section' => 'tours', 'slug' => 'white-island-ras-mohammed-boat-child',
@@ -790,7 +790,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full day family ticket (ages 5–12) with child vest, mask, lunch, drinks, transfers & park fees.',
                         'desc_ar' => 'تذكرة الأطفال (5–12 سنة) لرحلة اليخت الكاملة شاملة سترة نجاة وقناع وغداء ومشروبات وانتقالات.',
                         'price' => 30, 'duration' => '8h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-snorkeling-trip-family-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-white-island-ras-mohammed-boat-child.jpg',
                     ],
                     [
                         'id' => 'snork-beach-day', 'section' => 'tours', 'slug' => 'house-reef-beach-snorkeling-sharm-el-sheikh',
@@ -799,7 +799,7 @@ return sc_overlay_catalog([
                         'desc' => 'Guided daytime coral reef snorkeling (min. 6 guests). Mask, life jacket, transfers & park fees included.',
                         'desc_ar' => 'جولة سنوركل نهارية مع مرشد على الشعاب المرجانية (حد أدنى 6 أفراد) شاملة المعدات والانتقالات.',
                         'price' => 35, 'duration' => '2–3h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-snorkeling-trip-family-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-house-reef-beach-snorkeling-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'snork-beach-night', 'section' => 'tours', 'slug' => 'night-snorkeling-house-reef-sharm-el-sheikh',
@@ -808,7 +808,7 @@ return sc_overlay_catalog([
                         'desc' => 'Guided after-dark reef adventure (min. 6 guests). Includes underwater torch, mask, vest & transfers.',
                         'desc_ar' => 'مغامرة سنوركل ليلية مذهلة (حد أدنى 6 أفراد) شاملة كشاف إضاءة تحت الماء وقناع وسترة وانتقالات.',
                         'price' => 40, 'duration' => '2h',
-                        'img' => 'courses/13_padi_night_diver.jpg',
+                        'img' => 'items/sea-college-sharm-night-snorkeling-house-reef-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'snork-ras-land', 'section' => 'tours', 'slug' => 'ras-mohammed-national-park-snorkeling-by-bus',
@@ -817,7 +817,7 @@ return sc_overlay_catalog([
                         'desc' => 'Half-day park tour: Gate of Allah, Mangroves, Magic Lake & reef snorkeling (min. 6 guests).',
                         'desc_ar' => 'رحلة نصف يوم لبوابة الله وأشجار المانجروف والبحيرة السحرية والسنوركل شاملة الانتقالات ورسوم المحمية.',
                         'price' => 60, 'duration' => '5–6h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-snorkeling-trip-family-red-sea.jpg',
+                        'img' => 'items/sea-college-sharm-ras-mohammed-national-park-snorkeling-by-bus.jpg',
                     ],
                 ],
             ],
@@ -832,7 +832,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for up to 3 guests (max 5; 4th & 5th +€50 each). Mask, vest & transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لـ 3 أفراد (بحد أقصى 5؛ الفرد الرابع والخامس +50€) شامل القناع والسترة والانتقالات.',
                         'price' => 75, 'unit' => 'boat', 'duration' => '1h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+                        'img' => 'items/sea-college-sharm-private-speedboat-snorkeling-1-hour-sharm.jpg',
                     ],
                     [
                         'id' => 'speed-2h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-2-hours',
@@ -841,7 +841,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for 2 guests (max 5; extra guest +€75 each). Mask, vest & Sharm transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لفردين إلى جزيرة تيران (بحد أقصى 5؛ كل فرد إضافي +75€) شامل المعدات والانتقالات.',
                         'price' => 150, 'unit' => 'boat', 'duration' => '2h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-2-hours.jpg',
                     ],
                     [
                         'id' => 'speed-3h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-3-hours',
@@ -850,7 +850,7 @@ return sc_overlay_catalog([
                         'desc' => 'Extended 3-hour private Tiran lagoon & reef charter for 2 guests (max 5; extra guest +€100 each).',
                         'desc_ar' => 'رحلة قارب سريع ممتدة 3 ساعات لشعاب وبحيرات جزيرة تيران لفردين (بحد أقصى 5؛ الإضافي +100€).',
                         'price' => 225, 'unit' => 'boat', 'duration' => '3h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-private-speedboat.jpg',
+                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-3-hours.jpg',
                     ],
                 ],
             ],
@@ -865,7 +865,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full-day private boat for couples or small families (snorkeling & optional diving, custom route).',
                         'desc_ar' => 'قارب خاص ليوم كامل للأزواج والعائلات الصغيرة للسنوركل والغوص بمسار مخصص.',
                         'price' => 550, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-private-yacht-boat-trip.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-1-5-guests-sharm.jpg',
                     ],
                     [
                         'id' => 'private-6-10', 'section' => 'tours', 'slug' => 'private-boat-charter-6-10-guests-sharm',
@@ -874,7 +874,7 @@ return sc_overlay_catalog([
                         'desc' => 'Our most popular private charter for families & friends — Ras Mohammed or Tiran at your own pace.',
                         'desc_ar' => 'الأكثر طلبًا للعائلات والأصدقاء — يوم كامل في رأس محمد أو تيران بخصوصية تامة.',
                         'price' => 650, 'unit' => 'boat', 'duration' => '7–8h', 'popular' => true,
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-private-yacht-boat-trip.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-6-10-guests-sharm.jpg',
                     ],
                     [
                         'id' => 'private-11-15', 'section' => 'tours', 'slug' => 'private-boat-charter-11-15-guests-sharm',
@@ -883,7 +883,7 @@ return sc_overlay_catalog([
                         'desc' => 'Spacious private Red Sea motor yacht for medium groups, celebrations & multi-family holidays.',
                         'desc_ar' => 'يخت واسع للمجموعات المتوسطة والمناسبات الخاصة وإجازات العائلات في البحر الأحمر.',
                         'price' => 900, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-private-yacht-boat-trip.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-11-15-guests-sharm.jpg',
                     ],
                     [
                         'id' => 'private-16-20', 'section' => 'tours', 'slug' => 'private-boat-charter-16-20-guests-sharm',
@@ -892,7 +892,7 @@ return sc_overlay_catalog([
                         'desc' => 'Full-day private charter for dive clubs, large family reunions & VIP groups up to 20 guests.',
                         'desc_ar' => 'يخت خاص ليوم كامل لنوادي الغوص والتجمعات العائلية الكبيرة والمجموعات حتى 20 ضيفًا.',
                         'price' => 1100, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'sea-college-dive-club-sharm-el-sheikh-private-yacht-boat-trip.jpg',
+                        'img' => 'items/sea-college-sharm-private-boat-charter-16-20-guests-sharm.jpg',
                     ],
                 ],
             ],
