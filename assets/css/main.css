@@ -836,3 +836,35 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
   .wa-float .icon { width: 26px; height: 26px; }
   .item-thumb__play { font-size: .58rem; padding: .12rem .2rem; }
 }
+
+/* ==========================================================================
+   Grouped Boat Fleet Albums & Physical Dive Center Premises Showcase
+   ========================================================================== */
+.fleet-stack { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.25rem; }
+.fleet-group { padding: 1.35rem; border-radius: var(--radius); border: 1px solid rgba(11, 29, 44, .1); background: #fff; box-shadow: var(--shadow); }
+.fleet-group--center { background: linear-gradient(180deg, #f4fbfe 0%, #ffffff 100%); border-color: rgba(14, 165, 233, .28); }
+.fleet-group--plain { padding: 1.25rem 0 0; border: 0; background: transparent; box-shadow: none; }
+.fleet-group__head { display: flex; flex-direction: column; gap: .85rem; margin-bottom: 1.15rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(11, 29, 44, .08); }
+.fleet-group--plain .fleet-group__head { padding-bottom: .5rem; border-bottom: 0; }
+.fleet-group__badges { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-bottom: .3rem; }
+.fleet-group__badge { display: inline-flex; align-items: center; gap: .35rem; background: rgba(14, 165, 233, .12); color: #0369a1; font-weight: 700; font-size: .78rem; padding: .28rem .7rem; border-radius: 999px; }
+.fleet-group--center .fleet-group__badge { background: rgba(11, 29, 44, .9); color: #facc15; }
+.fleet-group__count { display: inline-flex; align-items: center; font-size: .76rem; font-weight: 700; color: var(--muted); background: rgba(11, 29, 44, .06); padding: .24rem .62rem; border-radius: 999px; }
+.fleet-group__title { margin: 0 0 .35rem; font-size: 1.28rem; line-height: 1.28; color: var(--navy); }
+.fleet-group__desc { margin: 0; color: var(--muted); font-size: .95rem; max-width: 72ch; }
+.fleet-group__cta { display: flex; flex-wrap: wrap; gap: .55rem; align-items: center; }
+.gal-grid--4 { grid-template-columns: 1fr; }
+.center-preview-img { display: block; width: 100%; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 1rem; aspect-ratio: 4/3; background: var(--navy); }
+.center-preview-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 640px) {
+  .gal-grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .fleet-group { padding: 1.65rem; }
+  .fleet-group__head { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
+  .fleet-group__cta { flex-shrink: 0; }
+}
+@media (min-width: 1100px) {
+  .gal-grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+

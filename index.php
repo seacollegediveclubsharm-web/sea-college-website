@@ -198,11 +198,15 @@ require ROOT_DIR . '/includes/header.php';
 <section class="section section--tint" id="location-map">
   <div class="container split">
     <div>
+      <a class="center-preview-img" href="<?= e(page_link('/about.php', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
+        <img src="<?= e(asset('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg')) ?>" alt="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?>" width="960" height="720" loading="lazy">
+      </a>
       <h2><?= te('map_title') ?> — <?= e(BUSINESS['city']) ?></h2>
       <p><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></p>
       <p><strong><?= te('hours') ?>:</strong> <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></p>
       <p class="hero__ctas">
         <a class="btn btn--primary" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
+        <a class="btn btn--detail" href="<?= e(page_link('/about.php', 'dive-center')) ?>">🏛️ <?= e(loc($galData['ui']['jump_center'])) ?> →</a>
         <a class="btn btn--wa" href="<?= e(whatsapp_link('', 'home_map')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="home_map"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
       </p>
     </div>

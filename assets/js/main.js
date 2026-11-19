@@ -896,17 +896,26 @@
       else if (dlg) { dlg.removeAttribute('open'); }
     }
 
+    var groups = $$('[data-gal-group]', gal);
+
+    function applyFilter(f) {
+      $$('[data-gal-filter]', gal).forEach(function (b) {
+        var on = b.getAttribute('data-gal-filter') === f;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+      items.forEach(function (el) {
+        el.hidden = !(f === 'all' || el.getAttribute('data-gal-cat') === f);
+      });
+      groups.forEach(function (grp) {
+        var hasVis = $$('[data-gal-item]', grp).some(function (el) { return !el.hidden; });
+        grp.hidden = !hasVis;
+      });
+    }
+
     $$('[data-gal-filter]', gal).forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var f = btn.getAttribute('data-gal-filter');
-        $$('[data-gal-filter]', gal).forEach(function (b) {
-          var on = b === btn;
-          b.classList.toggle('is-active', on);
-          b.setAttribute('aria-pressed', String(on));
-        });
-        items.forEach(function (el) {
-          el.hidden = !(f === 'all' || el.getAttribute('data-gal-cat') === f);
-        });
+        applyFilter(btn.getAttribute('data-gal-filter') || 'all');
       });
     });
 

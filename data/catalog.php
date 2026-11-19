@@ -319,7 +319,7 @@ return sc_overlay_catalog([
                         'desc' => 'BCD, regulator, wetsuit, mask & fins for 2–3 dives/day (no torch/computer).',
                         'desc_ar' => 'بي سي دي ومنظم وبدلة وقناع وزعانف لـ 2–3 غطسات يوميًا (بدون كشاف أو كمبيوتر).',
                         'price' => 25, 'unit' => 'day',
-                        'img' => 'items/sea-college-sharm-full-scuba-equipment-rental-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-full-scuba-equipment-rental-center-nov2026.jpg',
                     ],
                     [
                         'id' => 'eq-mask', 'section' => 'tours', 'slug' => 'dive-mask-snorkel-rental-sharm',
@@ -337,7 +337,7 @@ return sc_overlay_catalog([
                         'desc' => 'Open-heel or full-foot scuba fins rental per day.',
                         'desc_ar' => 'تأجير زعانف غوص بجميع المقاسات لليوم.',
                         'price' => 4, 'unit' => 'day',
-                        'img' => 'items/sea-college-sharm-scuba-fins-rental-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-scuba-fins-rental-center-nov2026.jpg',
                     ],
                     [
                         'id' => 'eq-bcd', 'section' => 'tours', 'slug' => 'bcd-buoyancy-compensator-rental-sharm',
@@ -346,7 +346,7 @@ return sc_overlay_catalog([
                         'desc' => 'Serviced scuba buoyancy compensator jacket (XS–XXL) per day.',
                         'desc_ar' => 'تأجير سترة التحكم بالطفو BCD بجميع المقاسات لليوم.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'items/sea-college-sharm-bcd-buoyancy-compensator-rental-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-bcd-buoyancy-compensator-rental-center-nov2026.jpg',
                     ],
                     [
                         'id' => 'eq-reg', 'section' => 'tours', 'slug' => 'scuba-regulator-rental-sharm',
@@ -355,7 +355,7 @@ return sc_overlay_catalog([
                         'desc' => 'Serviced regulator set with octopus & SPG pressure gauge per day.',
                         'desc_ar' => 'تأجير منظم تنفس كامل مع احتياطي وعداد ضغط لليوم.',
                         'price' => 13, 'unit' => 'day',
-                        'img' => 'items/sea-college-sharm-scuba-regulator-rental-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-scuba-regulator-rental-center-nov2026.jpg',
                     ],
                     [
                         'id' => 'eq-wetsuit', 'section' => 'tours', 'slug' => 'wetsuit-rental-sharm-el-sheikh',
@@ -364,7 +364,7 @@ return sc_overlay_catalog([
                         'desc' => 'Shorty or 5mm full Red Sea neoprene wetsuit rental per day.',
                         'desc_ar' => 'تأجير بدلة غوص قصيرة أو طويلة 5 مم لليوم.',
                         'price' => 10, 'unit' => 'day',
-                        'img' => 'items/sea-college-sharm-wetsuit-rental-sharm-el-sheikh.jpg',
+                        'img' => 'items/sea-college-sharm-wetsuit-rental-center-nov2026.jpg',
                     ],
                     [
                         'id' => 'eq-boots', 'section' => 'tours', 'slug' => 'neoprene-dive-boots-rental-sharm',
@@ -832,7 +832,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for up to 3 guests (max 5; 4th & 5th +€50 each). Mask, vest & transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لـ 3 أفراد (بحد أقصى 5؛ الفرد الرابع والخامس +50€) شامل القناع والسترة والانتقالات.',
                         'price' => 75, 'unit' => 'boat', 'duration' => '1h',
-                        'img' => 'items/sea-college-sharm-private-speedboat-snorkeling-1h-rib-nov2026.jpg',
+                        'img' => 'items/sea-college-sharm-private-speedboat-1h-suzuki-rib-nov2026.jpg',
                     ],
                     [
                         'id' => 'speed-2h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-2-hours',
@@ -841,7 +841,7 @@ return sc_overlay_catalog([
                         'desc' => 'Private boat price for 2 guests (max 5; extra guest +€75 each). Mask, vest & Sharm transfers included.',
                         'desc_ar' => 'سعر القارب الخاص لفردين إلى جزيرة تيران (بحد أقصى 5؛ كل فرد إضافي +75€) شامل المعدات والانتقالات.',
                         'price' => 150, 'unit' => 'boat', 'duration' => '2h', 'popular' => true,
-                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-2h-nov2026.jpg',
+                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-2h-suzuki-nov2026.jpg',
                     ],
                     [
                         'id' => 'speed-3h', 'section' => 'tours', 'slug' => 'tiran-island-private-speedboat-3-hours',
@@ -850,7 +850,7 @@ return sc_overlay_catalog([
                         'desc' => 'Extended 3-hour private Tiran lagoon & reef charter for 2 guests (max 5; extra guest +€100 each).',
                         'desc_ar' => 'رحلة قارب سريع ممتدة 3 ساعات لشعاب وبحيرات جزيرة تيران لفردين (بحد أقصى 5؛ الإضافي +100€).',
                         'price' => 225, 'unit' => 'boat', 'duration' => '3h',
-                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-3-hours.jpg',
+                        'img' => 'items/sea-college-sharm-tiran-island-private-speedboat-3h-suzuki-nov2026.jpg',
                     ],
                 ],
             ],

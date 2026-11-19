@@ -1,25 +1,524 @@
 <?php
 /**
- * Underwater Photo/Video Gallery & Named Instructor Team Showcase data.
- * Built exclusively from verified Sea College media and real guest reviews (3,082 GBP reviews, 4.9★).
+ * Underwater Photo/Video Gallery, Grouped Fleet Albums (Oceano, Nizar, Omar 4, Speedboats),
+ * Physical Sea College Dive Club Center Premises Showcase & Named Instructor Team Showcase.
+ * Built exclusively from verified Sea College media (November 2026) and real guest reviews (3,082+ GBP reviews, 4.9★).
  */
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/i18n_data.php';
 
 return sc_overlay_gallery_team([
-    'filters' => [
-        'all'        => ['en' => 'All Media (23)', 'ar' => 'الكل (23)'],
-        'guests'     => ['en' => 'Real Guests & PADI Graduates (5)', 'ar' => 'ضيوفنا وخريجو PADI (5)'],
-        'videos'     => ['en' => 'Underwater Videos (3)', 'ar' => 'فيديوهات الغوص (3)'],
-        'underwater' => ['en' => 'Coral Reefs & Divers', 'ar' => 'الشعاب والغوص'],
-        'courses'    => ['en' => 'PADI Courses & Kids', 'ar' => 'الدورات والأطفال'],
-        'boats'      => ['en' => 'Yachts & Speedboats', 'ar' => 'اليخوت والقوارب'],
-        'wrecks'     => ['en' => 'Red Sea Wrecks', 'ar' => 'حطام السفن'],
+    'ui' => [
+        'fleet_eyebrow' => [
+            'en' => 'Updated Fleet · November 2026',
+            'ar' => 'أسطولنا المحدث · نوفمبر 2026',
+            'ru' => 'Обновлённый флот · Ноябрь 2026',
+            'it' => 'Flotta Aggiornata · Novembre 2026',
+            'pl' => 'Zaktualizowana Flota · Listopad 2026',
+            'de' => 'Aktualisierte Flotte · November 2026',
+            'fr' => 'Flotte Mise à Jour · Novembre 2026',
+            'zh' => '最新船队实拍 · 2026年11月',
+        ],
+        'fleet_title' => [
+            'en' => 'Our Yachts & Speedboats — Collected by Vessel',
+            'ar' => 'يخوتنا وقواربنا السريعة — ألبوم صور مستقل لكل قارب',
+            'ru' => 'Наши яхты и скоростные катера — фото каждого судна',
+            'it' => 'I Nostri Yacht e Motoscafi — Raccolti per Imbarcazione',
+            'pl' => 'Nasze Jachty i Motorówki — Zdjęcia Każdej Jednostki',
+            'de' => 'Unsere Yachten & Schnellboote — Nach Boot Gruppiert',
+            'fr' => 'Nos Yachts & Bateaux Rapides — Regroupés par Navire',
+            'zh' => '我们的游艇与快艇船队 — 按船只分类实拍图集',
+        ],
+        'fleet_sub' => [
+            'en' => 'Compare every yacht and speedboat before you book: exterior profile, shaded sun decks, air-conditioned salons and dive platforms.',
+            'ar' => 'شاهد صور كل يخت وقارب سريع مجمعة معًا قبل الحجز: الشكل الخارجي، أسطح التشميس المظللة، الصالون المكيف ومنصة الغوص.',
+            'ru' => 'Осмотрите каждую яхту и катер перед бронированием: внешний вид, тенистые палубы, кондиционированные салоны и дайв-платформы.',
+            'it' => 'Esplora ogni yacht e motoscafo prima di prenotare: profilo esterno, ponti ombreggiati, saloni climatizzati e piattaforme sub.',
+            'pl' => 'Zobacz każdy jacht i motorówkę przed rezerwacją: sylwetka, zacienione pokłady, klimatyzowane salony i platformy nurkowe.',
+            'de' => 'Sehen Sie jede Yacht und jedes Schnellboot im Detail: Außenansicht, Sonnendecks, klimatisierter Salon und Tauchplattform.',
+            'fr' => 'Découvrez chaque yacht et speedboat en détail : extérieur, ponts ombragés, salons climatisés et plateformes de plongée.',
+            'zh' => '预订前全面预览每艘游艇与快艇：外观轮廓、遮阳甲板、空调沙龙舱与尾部潜水平台。',
+        ],
+        'center_eyebrow' => [
+            'en' => 'Our Physical Base · Cyrene Sharm, Al Montazah',
+            'ar' => 'مقرنا الفعلي · فندق سيرين شرم، المنتزه',
+            'ru' => 'Наш дайв-центр · Cyrene Sharm, Аль-Монтаза',
+            'it' => 'La Nostra Sede · Cyrene Sharm, Al Montazah',
+            'pl' => 'Nasza Baza Stacjonarna · Cyrene Sharm, Al Montazah',
+            'de' => 'Unsere Tauchbasis vor Ort · Cyrene Sharm, Al Montazah',
+            'fr' => 'Notre Centre sur Place · Cyrene Sharm, Al Montazah',
+            'zh' => '实体潜水中心实拍 · 沙姆沙伊赫 Al Montazah (Cyrene Sharm)',
+        ],
+        'center_title' => [
+            'en' => 'Inside Sea College Dive Club Center — Al Montazah, Sharm El Sheikh',
+            'ar' => 'جولة داخل مركز غوص سي كوليدج — المنتزه، شرم الشيخ',
+            'ru' => 'Внутри дайв-центра Sea College Dive Club в Аль-Монтазе',
+            'it' => 'Dentro il Centro Sea College Dive Club ad Al Montazah',
+            'pl' => 'Wnętrze Centrum Nurkowego Sea College w Al Montazah',
+            'de' => 'Einblick in unser Sea College Dive Club Center in Al Montazah',
+            'fr' => 'À l’Intérieur du Centre Sea College Dive Club à Al Montazah',
+            'zh' => '走进 Sea College 实体潜水中心 — 门头、休息廊与专业装备库',
+        ],
+        'center_sub' => [
+            'en' => 'Real photos of our beachfront dive center entrance, shaded diver lounge, branded Sea College wetsuits, serviced Seac BCDs, regulators & equipment lockers.',
+            'ar' => 'صور حقيقية لواجهة ومدخل مركز الغوص في المنتزه، استراحة الغواصين المظللة، بدلات الغوص المطبوعة بشعارنا، وغرف المعدات المفحوصة.',
+            'ru' => 'Реальные фото входа в наш дайв-центр, тенистой зоны отдыха, фирменных гидрокостюмов Sea College, обслуженных компенсаторов Seac и снаряжения.',
+            'it' => 'Foto reali dell’ingresso del centro, area relax ombreggiata, mute firmate Sea College, gav Seac revisionati, erogatori e sala attrezzature.',
+            'pl' => 'Prawdziwe zdjęcia wejścia do bazy, zacienionej strefy relaksu, pianek Sea College, serwisowanych jacketów Seac, automatów i szatni sprzętowej.',
+            'de' => 'Echte Fotos unseres Eingangs, der schattigen Taucher-Lounge, Sea College Neoprenanzüge sowie gewarteter Seac-Jackets, Lungenautomaten und Spinde.',
+            'fr' => 'Vraies photos de l’entrée du centre, de la pergola ombragée, des combinaisons Sea College, des gilets Seac révisés, détendeurs et vestiaires.',
+            'zh' => '实拍展示海滨潜水中心正门、遮阳休息长廊、Sea College 定制湿衣及定期保养的 Seac 浮力背心与调节器装备室。',
+        ],
+        'other_media_title' => [
+            'en' => 'Underwater Videos, Real Guests, Coral Reefs & Wrecks',
+            'ar' => 'فيديوهات تحت الماء، ضيوفنا، الشعاب المرجانية وحطام السفن',
+            'ru' => 'Подводные видео, реальные гости, коралловые рифы и рэки',
+            'it' => 'Video Subacquei, Ospiti Reali, Barriere Coralline e Relitti',
+            'pl' => 'Filmy Podwodne, Nasi Goście, Rafy Koralowe i Wraki',
+            'de' => 'Unterwasservideos, Echte Gäste, Korallenriffe & Wracks',
+            'fr' => 'Vidéos Sous-Marines, Vrais Clients, Récifs & Épaves',
+            'zh' => '水下高清视频、真实宾客毕业照、珊瑚礁与沉船探秘',
+        ],
+        'photos_count_unit' => [
+            'en' => 'photos',
+            'ar' => 'صور',
+            'ru' => 'фото',
+            'it' => 'foto',
+            'pl' => 'zdjęć',
+            'de' => 'Fotos',
+            'fr' => 'photos',
+            'zh' => '张实拍',
+        ],
+        'jump_fleet' => [
+            'en' => 'Our Boats (4)',
+            'ar' => 'اليخوت والقوارب (4)',
+            'ru' => 'Наши лодки (4)',
+            'it' => 'Le Nostre Barche (4)',
+            'pl' => 'Nasze Łodzie (4)',
+            'de' => 'Unsere Boote (4)',
+            'fr' => 'Nos Bateaux (4)',
+            'zh' => '游艇与快艇 (4)',
+        ],
+        'jump_center' => [
+            'en' => 'Our Dive Center (8)',
+            'ar' => 'مركز الغوص (8)',
+            'ru' => 'Дайв-центр (8)',
+            'it' => 'Centro Diving (8)',
+            'pl' => 'Centrum Nurkowe (8)',
+            'de' => 'Tauchbasis (8)',
+            'fr' => 'Centre de Plongée (8)',
+            'zh' => '实体潜水中心 (8)',
+        ],
     ],
 
-    'media' => [
+    'filters' => [
+        'all' => [
+            'en' => 'All Media (47)', 'ar' => 'كل الصور والفيديو (47)', 'ru' => 'Все материалы (47)',
+            'it' => 'Tutti i Media (47)', 'pl' => 'Wszystkie (47)', 'de' => 'Alle Medien (47)',
+            'fr' => 'Tous les Médias (47)', 'zh' => '全部影像 (47)',
+        ],
+        'boats' => [
+            'en' => 'Boats & Speedboats (4 Vessels)', 'ar' => 'اليخوت والقوارب السريعة (4 قوارب)', 'ru' => 'Яхты и катера (4 судна)',
+            'it' => 'Yacht e Motoscafi (4 Barche)', 'pl' => 'Jachty i Motorówki (4 Łodzie)', 'de' => 'Yachten & Speedboote (4 Boote)',
+            'fr' => 'Yachts & Speedboats (4 Bateaux)', 'zh' => '游艇与快艇船队 (4艘)',
+        ],
+        'center' => [
+            'en' => 'Dive Center Premises (8)', 'ar' => 'مقر مركز الغوص (8)', 'ru' => 'Наш дайв-центр (8)',
+            'it' => 'Sede Centro Diving (8)', 'pl' => 'Nasze Centrum (8)', 'de' => 'Unsere Tauchbasis (8)',
+            'fr' => 'Notre Centre (8)', 'zh' => '实体潜水中心 (8)',
+        ],
+        'guests' => [
+            'en' => 'Real Guests & PADI Graduates', 'ar' => 'ضيوفنا وخريجو PADI', 'ru' => 'Наши гости и выпускники PADI',
+            'it' => 'Ospiti Reali e Brevetti PADI', 'pl' => 'Nasi Goście i Absolwenci PADI', 'de' => 'Echte Gäste & PADI-Absolventen',
+            'fr' => 'Vrais Clients & Diplômés PADI', 'zh' => '真实宾客与 PADI 学员',
+        ],
+        'videos' => [
+            'en' => 'Underwater Videos (3)', 'ar' => 'فيديوهات الغوص (3)', 'ru' => 'Подводные видео (3)',
+            'it' => 'Video Subacquei (3)', 'pl' => 'Filmy Podwodne (3)', 'de' => 'Unterwasservideos (3)',
+            'fr' => 'Vidéos Sous-Marines (3)', 'zh' => '水下高清视频 (3)',
+        ],
+        'underwater' => [
+            'en' => 'Coral Reefs & Divers', 'ar' => 'الشعاب والغوص', 'ru' => 'Коралловые рифы и дайверы',
+            'it' => 'Barriere e Subacquei', 'pl' => 'Rafy Koralowe i Nurkowie', 'de' => 'Korallenriffe & Taucher',
+            'fr' => 'Récifs & Plongeurs', 'zh' => '红海珊瑚礁与潜水',
+        ],
+        'courses' => [
+            'en' => 'PADI Courses & Kids', 'ar' => 'الدورات والأطفال', 'ru' => 'Курсы PADI и дети',
+            'it' => 'Corsi PADI e Bambini', 'pl' => 'Kursy PADI i Dzieci', 'de' => 'PADI-Kurse & Kinder',
+            'fr' => 'Cours PADI & Enfants', 'zh' => 'PADI 课程与青少年',
+        ],
+        'wrecks' => [
+            'en' => 'Red Sea Wrecks', 'ar' => 'حطام السفن', 'ru' => 'Затонувшие корабли',
+            'it' => 'Relitti del Mar Rosso', 'pl' => 'Wraki Morza Czerwonego', 'de' => 'Wracks im Roten Meer',
+            'fr' => 'Épaves de Mer Rouge', 'zh' => '红海传奇沉船',
+        ],
+    ],
+
+    /* =========================================================================
+     * GROUPED COLLECTIONS: 4 Vessel Albums + 1 Physical Dive Center Album
+     * ========================================================================= */
+    'collections' => [
         [
+            'id'      => 'oceano',
+            'cat'     => 'boats',
+            'icon'    => '🛥️',
+            'item_id' => 'private-16-20',
+            'badge'   => [
+                'en' => 'Luxury Motor Yacht · Up to 20 Guests',
+                'ar' => 'يخت فاخر متعدد الطوابق · حتى 20 ضيفًا',
+                'ru' => 'Моторная яхта люкс · До 20 гостей',
+                'it' => 'Yacht a Motore Luxury · Fino a 20 Ospiti',
+                'pl' => 'Luksusowy Jacht Motorowy · Do 20 Gości',
+                'de' => 'Luxus-Motoryacht · Bis zu 20 Gäste',
+                'fr' => 'Yacht à Moteur Luxe · Jusqu’à 20 Invités',
+                'zh' => '豪华多层动力游艇 · 最多容纳 20 位宾客',
+            ],
+            'title'   => [
+                'en' => 'Oceano — Luxury Multi-Deck Red Sea Yacht',
+                'ar' => 'يخت أوشيانو (Oceano) الفاخر — 6 صور لليخت من الخارج والداخل',
+                'ru' => 'Яхта Oceano — многопалубная яхта для дайвинга и приватного чартера',
+                'it' => 'Yacht Oceano — Yacht Multipiano per Immersioni e Charter Privati',
+                'pl' => 'Jacht Oceano — Wielopokładowy Jacht Motorowy na Morzu Czerwonym',
+                'de' => 'Motoryacht Oceano — Mehrdeck-Yacht für Tauch- & Privatcharter',
+                'fr' => 'Yacht Oceano — Yacht Multi-Ponts pour Plongée & Privatisation',
+                'zh' => 'Oceano 号豪华多层红海游艇',
+            ],
+            'desc'    => [
+                'en' => 'Spacious shaded upper helm deck, cushioned aft L-lounge, outdoor dining booths, wood-trimmed air-conditioned salon & wide water-level dive platform.',
+                'ar' => 'سطح علوي مظلل واسع، جلسات خارجية مريحة، طاولات طعام، صالون داخلي مكيف بالخشب الفاخر ومنصة غوص خلفية عريضة.',
+                'ru' => 'Просторная тенистая верхняя палуба, угловой диван на корме, обеденные зоны, кондиционированный салон и широкая дайв-платформа.',
+                'it' => 'Ampio ponte superiore ombreggiato, divano a L di poppa, tavoli esterni, salone climatizzato in legno e grande piattaforma sub.',
+                'pl' => 'Przestronny zacieniony górny pokład, narożna kanapa rufowa, stoliki, klimatyzowany salon w drewnie i szeroka platforma nurkowa.',
+                'de' => 'Großzügiges schattiges Oberdeck, L-Lounge am Heck, Sitzgruppen, klimatisierter Holzsalon und breite Tauchplattform.',
+                'fr' => 'Grand pont supérieur ombragé, salon arrière en L, tables extérieures, salon intérieur climatisé boisé et large plateforme de plongée.',
+                'zh' => '配备宽敞遮阳上层甲板、船尾 L 型沙发休息区、户外餐桌、木饰空调内舱沙龙及宽阔亲水潜水平台。',
+            ],
+            'photos'  => [
+                [
+                    'id' => 'oceano-01', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-16-20',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-01-exterior-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Full Side Profile on the Red Sea', 'ar' => 'يخت أوشيانو (Oceano) — المنظر الجانبي الكامل في البحر الأحمر'],
+                    'caption' => ['en' => 'Three-deck Red Sea motor yacht available for private group charters and VIP Ras Mohammed & Tiran cruises.', 'ar' => 'يخت من ثلاثة طوابق متاح للرحلات الخاصة ومجموعات الغوص والسنوركل إلى رأس محمد وتيران.'],
+                ],
+                [
+                    'id' => 'oceano-02', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-11-15',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-02-cruising-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Cruising Turquoise Sharm Waters', 'ar' => 'يخت أوشيانو — الإبحار في مياه شرم الشيخ الفيروزية'],
+                    'caption' => ['en' => 'Smooth, stable hull design for comfortable crossings to Ras Mohammed and the Straits of Tiran.', 'ar' => 'تصميم انسيابي ومستقر للإبحار المريح نحو محمية رأس محمد ومضيق تيران.'],
+                ],
+                [
+                    'id' => 'oceano-03', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-16-20',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-03-upper-deck-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Shaded Upper Lounge Deck & Helm', 'ar' => 'يخت أوشيانو — السطح العلوي المظلل ومنطقة القيادة'],
+                    'caption' => ['en' => 'Panoramic open-air upper deck with full sun canopy and cushioned wraparound seating.', 'ar' => 'سطح علوي بانورامي مظلل بالكامل مع مقاعد مبطنة مريحة بين الغطسات.'],
+                ],
+                [
+                    'id' => 'oceano-04', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-11-15',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-04-aft-lounge-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Aft L-Shaped Sun & Coffee Lounge', 'ar' => 'يخت أوشيانو — جلسة الاسترخاء الخلفية المطلة على البحر'],
+                    'caption' => ['en' => 'Relax with fresh drinks and sea views between snorkeling stops and guided reef dives.', 'ar' => 'استمتع بالمشروبات وإطلالة البحر المباشرة بين وقفات السنوركل والغوص.'],
+                ],
+                [
+                    'id' => 'oceano-05', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-6-10',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-05-sundeck-booths-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Twin Cushioned Dining & Briefing Booths', 'ar' => 'يخت أوشيانو — جلسات وطاولات السطح العلوي'],
+                    'caption' => ['en' => 'Ideal for family lunches, logbook signing and pre-dive reef briefings.', 'ar' => 'مثالية لغداء العائلات وتسجيل الغطسات وشرح خرائط الشعاب المرجانية.'],
+                ],
+                [
+                    'id' => 'oceano-06', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-16-20',
+                    'src' => 'images/fleet/sea-college-oceano-yacht-06-indoor-salon-nov2026.jpg',
+                    'title' => ['en' => 'Oceano — Air-Conditioned Wood-Trimmed Indoor Salon', 'ar' => 'يخت أوشيانو — الصالون الداخلي المكيف'],
+                    'caption' => ['en' => 'Cool indoor lounge with wide sea-view windows, plush sofas and buffet dining.', 'ar' => 'صالة داخلية مكيفة بنوافذ بحرية واسعة وأرائك مريحة وبوفيه غداء طازج.'],
+                ],
+            ],
+        ],
+        [
+            'id'      => 'nizar',
+            'cat'     => 'boats',
+            'icon'    => '⛵',
+            'item_id' => 'snork-ras-adult',
+            'badge'   => [
+                'en' => 'Daily Cruises & Private Yacht · 6–15 Guests',
+                'ar' => 'رحلات يومية وشارتر خاص · 6–15 ضيفًا',
+                'ru' => 'Ежедневные круизы и чартер · 6–15 гостей',
+                'it' => 'Crociere Giornaliere e Charter · 6–15 Ospiti',
+                'pl' => 'Rejsy Codzienne i Czarter · 6–15 Gości',
+                'de' => 'Tagesfahrten & Privatcharter · 6–15 Gäste',
+                'fr' => 'Croisières & Privatisation · 6–15 Invités',
+                'zh' => '每日出海与私人包船 · 6–15 位宾客',
+            ],
+            'title'   => [
+                'en' => 'Nizar — Ras Mohammed, White Island & Dive Yacht',
+                'ar' => 'يخت نزار (Nizar) — رحلات رأس محمد والجزيرة البيضاء والغوص',
+                'ru' => 'Яхта Nizar — круизы в Рас-Мохаммед, Белый остров и дайвинг',
+                'it' => 'Yacht Nizar — Ras Mohammed, Isola Bianca e Immersioni',
+                'pl' => 'Jacht Nizar — Ras Mohammed, Biała Wyspa i Nurkowanie',
+                'de' => 'Yacht Nizar — Ras Mohammed, White Island & Tauchausfahrten',
+                'fr' => 'Yacht Nizar — Ras Mohammed, Île Blanche & Plongée',
+                'zh' => 'Nizar 号 — 穆罕默德角、白岛与潜水游艇',
+            ],
+            'desc'    => [
+                'en' => 'Popular Red Sea yacht for White Island & Ras Mohammed family trips, certified boat diving and private 6–15 guest charters with freshly cooked onboard lunch.',
+                'ar' => 'يخت مميز لرحلات الجزيرة البيضاء ورأس محمد العائلية ورحلات الغوص والشارتر الخاص مع غداء طازج يُطهى على متن اليخت.',
+                'ru' => 'Любимая гостями яхта для семейных поездок к Белому острову и Рас-Мохаммеду, дайвинга и приватного отдыха со свежим обедом.',
+                'it' => 'Yacht ideale per escursioni a Isola Bianca e Ras Mohammed, immersioni guidate e charter privati con pranzo cucinato a bordo.',
+                'pl' => 'Popularny jacht na rodzinne rejsy na Białą Wyspę i Ras Mohammed, nurkowania oraz prywatne czartery ze świeżym lunchem.',
+                'de' => 'Beliebte Yacht für Familienausflüge nach White Island & Ras Mohammed, Bootstauchgänge und Privatcharter mit frischem Mittagsbuffet.',
+                'fr' => 'Yacht apprécié pour les sorties famille à l’Île Blanche et Ras Mohammed, la plongée bateau et les privatisations avec déjeuner à bord.',
+                'zh' => '备受好评的红海游艇，执航白岛与穆罕默德角家庭一日游、持证船潜及私人包船，含船上现做午餐。',
+            ],
+            'photos'  => [
+                [
+                    'id' => 'nizar-01', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'snork-ras-adult',
+                    'src' => 'images/fleet/sea-college-nizar-yacht-01-cruising-nov2026.jpg',
+                    'title' => ['en' => 'Nizar — Cruising Open Red Sea Waters', 'ar' => 'يخت نزار (Nizar) — أثناء الإبحار في البحر الأحمر'],
+                    'caption' => ['en' => 'Upper sun deck, shaded main deck and low-step swim & dive platform.', 'ar' => 'طابق علوي للتشميس، سطح رئيسي مظلل ومنصة خلفية مريحة للسباحة والغوص.'],
+                ],
+                [
+                    'id' => 'nizar-02', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-6-10',
+                    'src' => 'images/fleet/sea-college-nizar-yacht-02-ras-mohammed-nov2026.jpg',
+                    'title' => ['en' => 'Nizar — Anchored Off Ras Mohammed National Park', 'ar' => 'يخت نزار — راسيًا أمام سواحل محمية رأس محمد'],
+                    'caption' => ['en' => 'Guests relaxing across three decks over crystal-clear turquoise reef lagoons.', 'ar' => 'ضيوفنا يستمتعون بالأجواء المشمسة فوق البحيرات الفيروزية الصافية بمحمية رأس محمد.'],
+                ],
+                [
+                    'id' => 'nizar-03', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'snork-ras-adult',
+                    'src' => 'images/fleet/sea-college-nizar-yacht-03-indoor-salon-nov2026.jpg',
+                    'title' => ['en' => 'Nizar — Classic Wood-Trimmed Dining Salon', 'ar' => 'يخت نزار — صالون الطعام والاستراحة الداخلي'],
+                    'caption' => ['en' => 'Comfortable indoor booth seating where freshly cooked Egyptian buffet lunch is served.', 'ar' => 'جلسات داخلية مريحة يُقدم فيها بوفيه الغداء الطازج والمشروبات الباردة والساخنة.'],
+                ],
+                [
+                    'id' => 'nizar-04', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'dive-2',
+                    'src' => 'images/fleet/sea-college-nizar-yacht-04-dive-deck-nov2026.jpg',
+                    'title' => ['en' => 'Nizar — Teak Aft Preparation & Dive Deck', 'ar' => 'يخت نزار — منطقة تجهيز الغواصين والمنصة الخلفية'],
+                    'caption' => ['en' => 'Organised kitting-up deck with wetsuit racks and direct step-down sea entry.', 'ar' => 'مساحة منظمة لارتداء البدلات والمعدات مع سلم نزول مباشر ومريح إلى البحر.'],
+                ],
+            ],
+        ],
+        [
+            'id'      => 'omar4',
+            'cat'     => 'boats',
+            'icon'    => '🛥️',
+            'item_id' => 'private-1-5',
+            'badge'   => [
+                'en' => 'Private Family Charter Yacht · 1–10 Guests',
+                'ar' => 'يخت خاص للعائلات والمجموعات الصغيرة · 1–10 ضيوف',
+                'ru' => 'Приватная семейная яхта · 1–10 гостей',
+                'it' => 'Yacht Privato per Famiglie · 1–10 Ospiti',
+                'pl' => 'Prywatny Jacht Rodzinny · 1–10 Gości',
+                'de' => 'Private Familienyacht · 1–10 Gäste',
+                'fr' => 'Yacht Privé Famille · 1–10 Invités',
+                'zh' => '家庭与小团体私人游艇 · 1–10 位宾客',
+            ],
+            'title'   => [
+                'en' => 'Omar 4 — Private Family & Couples Motor Yacht',
+                'ar' => 'يخت عمر 4 (Omar 4) — يخت خاص للأزواج والعائلات',
+                'ru' => 'Яхта Omar 4 — приватный чартер для пар и семей',
+                'it' => 'Yacht Omar 4 — Charter Privato per Coppie e Famiglie',
+                'pl' => 'Jacht Omar 4 — Prywatny Rejs dla Par i Rodzin',
+                'de' => 'Yacht Omar 4 — Privatcharter für Paare & Familien',
+                'fr' => 'Yacht Omar 4 — Privatisation Couples & Familles',
+                'zh' => 'Omar 4 号 — 情侣与家庭专属私人游艇',
+            ],
+            'desc'    => [
+                'en' => 'Tailor-made full-day private yacht from €550/boat: set your own departure time, snorkel uncrowded Tiran lagoons or try 1-on-1 scuba diving.',
+                'ar' => 'يخت خاص ليوم كامل ابتداءً من 550€ للقارب: اختر موعد انطلاقك واستمتع بالسنوركل أو تجربة الغوص بخصوصية كاملة.',
+                'ru' => 'Приватная яхта на весь день от €550 за судно: свой график, уединённые лагуны Тирана, снорклинг и индивидуальный дайвинг.',
+                'it' => 'Yacht privato per l’intera giornata da €550/barca: orari flessibili, lagune di Tiran lontano dalla folla e immersioni private.',
+                'pl' => 'Prywatny jacht na cały dzień od €550/łódź: własny harmonogram, spokojne laguny Tiranu, snorkeling i prywatne nurkowanie.',
+                'de' => 'Ganztägige Privatyacht ab €550/Boot: eigenes Tempo, ruhige Tiran-Lagunen zum Schnorcheln und auf Wunsch privates Tauchen.',
+                'fr' => 'Yacht privé à la journée dès 550 €/bateau : horaires libres, lagons calmes de Tiran en snorkeling et plongée privée sur demande.',
+                'zh' => '全天私人包船 €550/船起：自由安排出发时间，畅享蒂朗岛静谧泻湖浮潜或 1对1 私人体验潜水。',
+            ],
+            'photos'  => [
+                [
+                    'id' => 'omar4-01', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-1-5',
+                    'src' => 'images/fleet/sea-college-omar4-yacht-01-exterior-nov2026.jpg',
+                    'title' => ['en' => 'Omar 4 — Golden-Hour Mooring in Sharm El Sheikh', 'ar' => 'يخت عمر 4 (Omar 4) — إطلالة وقت الغروب في شرم الشيخ'],
+                    'caption' => ['en' => 'Sleek private motor yacht ideal for couples, honeymooners and families of 1 to 10 guests.', 'ar' => 'يخت خاص أنيق مثالي للأزواج وشهر العسل والعائلات الصغيرة من 1 إلى 10 ضيوف.'],
+                ],
+                [
+                    'id' => 'omar4-02', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-1-5',
+                    'src' => 'images/fleet/sea-college-omar4-yacht-02-upper-deck-nov2026.jpg',
+                    'title' => ['en' => 'Omar 4 — Shaded Upper Lounge & Dining Deck', 'ar' => 'يخت عمر 4 — السطح العلوي المظلل وطاولة الطعام'],
+                    'caption' => ['en' => 'Breezy shaded upper deck with cushioned benches, dining table and 360° Red Sea views.', 'ar' => 'سطح علوي مظلل ومنعش بمقاعد مبطنة وطاولة طعام وإطلالة بانورامية على البحر الأحمر.'],
+                ],
+                [
+                    'id' => 'omar4-03', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-6-10',
+                    'src' => 'images/fleet/sea-college-omar4-yacht-03-sinai-bay-nov2026.jpg',
+                    'title' => ['en' => 'Omar 4 — Starboard Profile Beneath Sinai Mountains', 'ar' => 'يخت عمر 4 — أمام جبال سيناء ومياه شرم الشيخ'],
+                    'caption' => ['en' => 'Full two-deck layout with forward sun mattresses and sheltered main salon.', 'ar' => 'تصميم متكامل من طابقين مع منطقة تشميس أمامية وصالون رئيسي مريح.'],
+                ],
+                [
+                    'id' => 'omar4-04', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'private-1-5',
+                    'src' => 'images/fleet/sea-college-omar4-yacht-04-aft-deck-nov2026.jpg',
+                    'title' => ['en' => 'Omar 4 — Bright Shaded Aft Deck & Salon Entrance', 'ar' => 'يخت عمر 4 — السطح الخلفي المظلل ومدخل الصالون'],
+                    'caption' => ['en' => 'Clean, spacious aft deck leading directly to the swim & snorkeling platform.', 'ar' => 'سطح خلفي واسع ونظيف يؤدي مباشرة إلى منصة السباحة والسنوركل والغوص.'],
+                ],
+            ],
+        ],
+        [
+            'id'      => 'speedboats',
+            'cat'     => 'boats',
+            'icon'    => '🚤',
+            'item_id' => 'speed-2h',
+            'badge'   => [
+                'en' => 'Direct Beach Jetty · 15 Min to Tiran Island',
+                'ar' => 'انطلاق مباشر من شاطئ المنتزه · 15 دقيقة لجزيرة تيران',
+                'ru' => 'Прямой выход с пляжа · 15 мин до острова Тиран',
+                'it' => 'Partenza dalla Spiaggia · 15 Min per l’Isola di Tiran',
+                'pl' => 'Start z Naszej Plaży · 15 Min na Wyspę Tiran',
+                'de' => 'Direkt ab Strandsteg · 15 Min zur Tiran-Insel',
+                'fr' => 'Départ Plage Direct · 15 Min de l’Île de Tiran',
+                'zh' => '海滨浮桥直发 · 15分钟直达蒂朗岛',
+            ],
+            'title'   => [
+                'en' => 'Private Suzuki Speedboats & Zodiac Dive RIBs',
+                'ar' => 'القوارب السريعة الخاصة (Suzuki Speedboats) وزودياك الغوص',
+                'ru' => 'Приватные скоростные катера Suzuki и дайв-катера Zodiac RIB',
+                'it' => 'Motoscafi Privati Suzuki e Gommoni Subacquei Zodiac RIB',
+                'pl' => 'Prywatne Motorówki Suzuki i Pontony Nurkowe Zodiac RIB',
+                'de' => 'Private Suzuki-Schnellboote & Zodiac-Tauchschlauchboote (RIB)',
+                'fr' => 'Speedboats Privés Suzuki & Semi-Rigides Zodiac de Plongée',
+                'zh' => '私人铃木快艇与 Zodiac 专业冲锋舟船队',
+            ],
+            'desc'    => [
+                'en' => 'Depart right from our Al Montazah floating pontoon: 1-hour local reef trips (€75/boat), 2–3 hour private Tiran Island charters (€150–€225) & fast Zodiac drift dives.',
+                'ar' => 'انطلق مباشرة من مرسانا العائم بالمنتزه: رحلات ساعة للشعاب القريبة (75€ للقارب)، ساعتين أو 3 ساعات لجزيرة تيران (150–225€) وغطسات الزودياك السريعة.',
+                'ru' => 'Выход прямо с нашего понтона в Аль-Монтазе: 1 час по ближним рифам (€75/катер), 2–3 часа к острову Тиран (€150–€225) и быстрые дайвы на Zodiac.',
+                'it' => 'Partenza dal nostro pontile ad Al Montazah: 1 ora sui reef locali (€75/barca), 2–3 ore a Tiran (€150–€225) e immersioni rapide in Zodiac.',
+                'pl' => 'Wypłynięcie prosto z naszego pomostu w Al Montazah: 1h na lokalne rafy (€75/łódź), 2–3h na wyspę Tiran (€150–€225) oraz szybkie nurkowania z Zodiaca.',
+                'de' => 'Start direkt von unserem Schwimmsteg in Al Montazah: 1 Std. Hausriffe (€75/Boot), 2–3 Std. Tiran-Insel (€150–€225) & schnelle Zodiac-Drifttauchgänge.',
+                'fr' => 'Départ direct depuis notre ponton à Al Montazah : 1h récifs locaux (75 €/bateau), 2–3h île de Tiran (150–225 €) et plongées dérivantes en Zodiac.',
+                'zh' => '从 Al Montazah 海滨浮桥直接出发：1小时近岸珊瑚礁（€75/船）、2–3小时蒂朗岛包船（€150–€225）及 Zodiac 高速放流潜。',
+            ],
+            'photos'  => [
+                [
+                    'id' => 'speed-01', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'speed-1h',
+                    'src' => 'images/fleet/sea-college-speedboat-suzuki-rib-pontoon-nov2026.jpg',
+                    'title' => ['en' => 'Suzuki RIB Speedboat at Our Al Montazah Floating Pontoon', 'ar' => 'قارب سوزوكي السريع على مرسانا العائم بشاطئ المنتزه'],
+                    'caption' => ['en' => 'Step aboard directly from Cyrene Sharm beach — zero marina bus transfer or harbour queues.', 'ar' => 'اركب مباشرة من شاطئ سيرين شرم بالمنتزه بدون انتظار أو ازدحام الموانئ.'],
+                ],
+                [
+                    'id' => 'speed-02', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'speed-2h',
+                    'src' => 'images/fleet/sea-college-speedboat-tiran-island-suzuki-nov2026.jpg',
+                    'title' => ['en' => 'Shaded Suzuki Canopy RIB Facing Tiran Island', 'ar' => 'قارب سوزوكي السريع المظلل في مواجهة جزيرة تيران'],
+                    'caption' => ['en' => 'Tiran Island sits directly opposite our beach — just 15 minutes across turquoise Red Sea water.', 'ar' => 'تقع جزيرة تيران مباشرة قبالة شاطئنا على بُعد 15 دقيقة فقط عبر المياه الفيروزية.'],
+                ],
+                [
+                    'id' => 'speed-03', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'speed-3h',
+                    'src' => 'images/fleet/sea-college-speedboat-bowrider-lagoon-nov2026.jpg',
+                    'title' => ['en' => 'Suzuki Bowrider Speedboat in Al Montazah Lagoon', 'ar' => 'قارب سوزوكي السريع في بحيرة المنتزه الصافية'],
+                    'caption' => ['en' => 'Cushioned bow seating and bimini shade for private couples & family snorkeling charters (up to 5 guests).', 'ar' => 'مقاعد أمامية مريحة ومظلة واقية لرحلات السنوركل الخاصة للأزواج والعائلات (حتى 5 أفراد).'],
+                ],
+                [
+                    'id' => 'speed-04', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'sup-zodiac',
+                    'src' => 'images/items/sea-college-sharm-zodiac-rib-speedboat-dive-sharm-el-sheikh.jpg',
+                    'title' => ['en' => 'Zodiac Dive RIB for Straits of Tiran Drift Reefs', 'ar' => 'زودياك الغوص السريع لشعاب مضيق تيران'],
+                    'caption' => ['en' => 'Fast back-roll entries on Jackson, Woodhouse, Thomas & Gordon Reefs before day-boats arrive.', 'ar' => 'وصول سريع ومبكر إلى شعاب جاكسون وودهاوس وتوماس وجوردون قبل وصول اليخوت اليومية.'],
+                ],
+                [
+                    'id' => 'speed-05', 'type' => 'photo', 'cat' => 'boats', 'item_id' => 'speed-2h',
+                    'src' => 'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg',
+                    'title' => ['en' => 'Golden-Hour Return From Tiran Reefs by Speedboat', 'ar' => 'عودة ضيوفنا وقت الغروب من شعاب تيران بالقارب السريع'],
+                    'caption' => ['en' => 'Real Sea College guests cruising back across calm sunset waters after a Tiran speedboat trip.', 'ar' => 'ابتسامات ضيوفنا الحقيقيين أثناء العودة وقت الغروب من رحلة القارب السريع بتيران.'],
+                ],
+            ],
+        ],
+        [
+            'id'      => 'dive-center',
+            'cat'     => 'center',
+            'icon'    => '🏛️',
+            'item_id' => 'owd',
+            'badge'   => [
+                'en' => 'PADI 5★ Dive Center · Cyrene Sharm, Al Montazah',
+                'ar' => 'مركز غوص PADI خمس نجوم · سيرين شرم، المنتزه',
+                'ru' => 'Дайв-центр PADI 5★ · Cyrene Sharm, Аль-Монтаза',
+                'it' => 'Centro PADI 5★ · Cyrene Sharm, Al Montazah',
+                'pl' => 'Centrum PADI 5★ · Cyrene Sharm, Al Montazah',
+                'de' => 'PADI 5★ Tauchbasis · Cyrene Sharm, Al Montazah',
+                'fr' => 'Centre PADI 5★ · Cyrene Sharm, Al Montazah',
+                'zh' => 'PADI 五星潜水中心 · Cyrene Sharm, Al Montazah',
+            ],
+            'title'   => [
+                'en' => 'Sea College Dive Club Center — Our Physical Place in Al Montazah',
+                'ar' => 'مقر مركز غوص سي كوليدج الفعلي — المنتزه، شرم الشيخ',
+                'ru' => 'Дайв-центр Sea College Dive Club — наша база в Аль-Монтазе',
+                'it' => 'Sede Sea College Dive Club — Il Nostro Centro ad Al Montazah',
+                'pl' => 'Baza Sea College Dive Club — Nasze Miejsce w Al Montazah',
+                'de' => 'Sea College Dive Club Center — Unsere Basis in Al Montazah',
+                'fr' => 'Centre Sea College Dive Club — Nos Locaux à Al Montazah',
+                'zh' => 'Sea College 实体潜水中心 — 沙姆沙伊赫 Al Montazah 基地实拍',
+            ],
+            'desc'    => [
+                'en' => 'Located beachfront inside Cyrene Sharm Hotel in Al Montazah (08:00–17:00 daily): shaded pergola lounge, air-conditioned equipment hall, guest lockers, branded Sea College wetsuits & serviced Seac rigs.',
+                'ar' => 'يقع مقرنا على الشاطئ داخل فندق سيرين شرم بمنطقة المنتزه (يوميًا 08:00–17:00): استراحة مظللة للغواصين، قاعة معدات مكيفة وخزائن شخصية، بدلات سي كوليدج الحديثة ومعدات Seac مفحوصة.',
+                'ru' => 'Пляжная база на территории отеля Cyrene Sharm в Аль-Монтазе (ежедневно 08:00–17:00): тенистая пергола для брифингов, кондиционированный зал снаряжения, шкафчики, фирменные гидрокостюмы и комплекты Seac.',
+                'it' => 'Situato fronte mare presso il Cyrene Sharm Hotel ad Al Montazah (08:00–17:00): pergola ombreggiata, sala attrezzature climatizzata, armadietti, mute firmate Sea College e gav/erogatori Seac revisionati.',
+                'pl' => 'Położona przy plaży w hotelu Cyrene Sharm w Al Montazah (codziennie 08:00–17:00): zacieniona pergola, klimatyzowana wypożyczalnia ze schowkami, firmowe pianki Sea College i serwisowany sprzęt Seac.',
+                'de' => 'Direkt am Strand im Cyrene Sharm Hotel in Al Montazah (täglich 08:00–17:00 Uhr): schattige Briefing-Pergola, klimatisierter Ausrüstungsraum, Gästespinde, Sea College Neoprenanzüge & gewartete Seac-Ausrüstung.',
+                'fr' => 'Situé en bord de mer au Cyrene Sharm Hotel à Al Montazah (08h00–17h00) : pergola ombragée, salle d’équipement climatisée, casiers, combinaisons Sea College et équipements Seac révisés.',
+                'zh' => '坐落于 Al Montazah 海滨 Cyrene Sharm 酒店内（每日 08:00–17:00）：设有遮阳简报长廊、空调装备大厅、宾客储物柜、Sea College 品牌潜水服与全套保养 Seac 装备。',
+            ],
+            'photos'  => [
+                [
+                    'id' => 'center-01', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'owd',
+                    'src' => 'images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg',
+                    'title' => ['en' => 'Sea College Dive Club — Main Entrance & Flags (Al Montazah)', 'ar' => 'المدخل الرئيسي لمركز سي كوليدج للغوص في المنتزه'],
+                    'caption' => ['en' => 'Welcome to our official PADI & CDWS accredited dive center at Cyrene Sharm, Al Montazah.', 'ar' => 'مرحبًا بكم في مقرنا الرسمي المعتمد من PADI وغرفة سياحة الغوص CDWS في سيرين شرم بالمنتزه.'],
+                ],
+                [
+                    'id' => 'center-02', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'dsd-quick-reef',
+                    'src' => 'images/center/sea-college-dive-club-center-02-frontage-signboard-nov2026.jpg',
+                    'title' => ['en' => 'Dive Center Frontage — Diving, PADI Courses & Snorkeling Hub', 'ar' => 'واجهة مركز غوص سي كوليدج — الغوص والدورات والسنوركل'],
+                    'caption' => ['en' => 'Steps away from our training pool, House Reef beach entry and private speedboat pontoon.', 'ar' => 'على بُعد خطوات قليلة من حمام السباحة التدريبي والشعاب المنزلية ومرسى القوارب السريعة.'],
+                ],
+                [
+                    'id' => 'center-03', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'aowd',
+                    'src' => 'images/center/sea-college-dive-club-center-03-shaded-pergola-lounge-nov2026.jpg',
+                    'title' => ['en' => 'Shaded Diver Pergola, Briefing Corridor & Lounge', 'ar' => 'الممر المظلل واستراحة الغواصين والشرح النظري'],
+                    'caption' => ['en' => 'Breezy shaded walkway with seating benches, Red Sea reef murals and official CDWS & DAN safety flags.', 'ar' => 'استراحة مظللة بمقاعد مريحة وجداريات للحياة البحرية وأعلام الاعتماد والسلامة الرسمية.'],
+                ],
+                [
+                    'id' => 'center-04', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'eq-full',
+                    'src' => 'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg',
+                    'title' => ['en' => 'Air-Conditioned Equipment Room & Guest Storage Lockers', 'ar' => 'قاعة المعدات المكيفة وخزائن الضيوف الشخصية'],
+                    'caption' => ['en' => 'Spacious, spotless tiled equipment hall where your sized scuba kit is prepared before arrival.', 'ar' => 'قاعة معدات مكيفة ونظيفة تُجهز فيها معداتك حسب مقاسك قبل وصولك إلى المركز.'],
+                ],
+                [
+                    'id' => 'center-05', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'eq-wetsuit',
+                    'src' => 'images/center/sea-college-dive-club-center-05-branded-wetsuits-nov2026.jpg',
+                    'title' => ['en' => 'Custom Branded Sea College Dive Club Neoprene Wetsuits', 'ar' => 'بدلات الغوص الرسمية الحاملة لشعار Sea College Dive Club'],
+                    'caption' => ['en' => 'Freshly sanitised shorty and full 5mm wetsuits in child, women\'s and men\'s sizes (XS–3XL).', 'ar' => 'بدلات غوص قصيرة وطويلة 5 مم معقمة ونظيفة بجميع مقاسات الأطفال والنساء والرجال.'],
+                ],
+                [
+                    'id' => 'center-06', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'eq-reg',
+                    'src' => 'images/center/sea-college-dive-club-center-06-regulators-fins-nov2026.jpg',
+                    'title' => ['en' => 'Serviced Scuba Regulators & Colour-Coded Fins Wall', 'ar' => 'حائط منظمات التنفس المفحوصة والزعانف المصنفة بالمقاسات'],
+                    'caption' => ['en' => 'Every regulator set includes primary second stage, yellow octopus, SPG gauge & BCD inflator hose.', 'ar' => 'أطقم منظمات تنفس مفحوصة بانتظام مع منظم احتياطي أصفر وعداد ضغط وزعانف بجميع المقاسات.'],
+                ],
+                [
+                    'id' => 'center-07', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'dive-6',
+                    'src' => 'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg',
+                    'title' => ['en' => 'Complete Rental Scuba Rigs Ready for Daily Divers', 'ar' => 'أطقم الغوص الكاملة الجاهزة للرحلات اليومية والدورات'],
+                    'caption' => ['en' => 'Included free in all PADI courses & Try-Dives, or €25/day for certified divers.', 'ar' => 'مشمولة مجانًا في جميع دورات PADI والغطسات التجريبية، أو 25€ لليوم للغواصين المعتمدين.'],
+                ],
+                [
+                    'id' => 'center-08', 'type' => 'photo', 'cat' => 'center', 'item_id' => 'eq-bcd',
+                    'src' => 'images/center/sea-college-dive-club-center-08-seac-bcds-rack-nov2026.jpg',
+                    'title' => ['en' => 'Seac Buoyancy Compensators (BCDs) Organised by Size', 'ar' => 'سترات الطفو الاحترافية (Seac BCDs) مرتبة حسب المقاس'],
+                    'caption' => ['en' => 'Well-maintained Seac BCD jackets rinsed in fresh disinfectant water after every dive day.', 'ar' => 'سترات طفو حديثة من ماركة Seac تُغسل وتُعقم بالمياه العذبة بعد كل يوم غوص.'],
+                ],
+            ],
+        ],
+    ],
+
+    /* =========================================================================
+     * GENERAL MEDIA: Underwater Videos, Real Guests, Reefs, Courses & Wrecks
+     * (Preserve original indices 0..22 for data/i18n/{lang}/gallery_team.php overlays)
+     * ========================================================================= */
+    'media' => [
+        0 => [
             'type'    => 'video',
             'cat'     => 'videos',
             'src'     => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
@@ -29,7 +528,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Crystal-clear Red Sea reef visibility filmed on a daily Sea College boat dive.', 'ar' => 'رؤية مائية صافية في البحر الأحمر مصورة خلال رحلة غوص يومية مع سي كوليدج.'],
             'item_id' => 'dive-6',
         ],
-        [
+        1 => [
             'type'    => 'video',
             'cat'     => 'videos',
             'src'     => 'videos/sea-college-wall-dive-sharm-el-sheikh.mp4',
@@ -39,7 +538,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Effortless buoyancy beside a towering soft- and hard-coral wall in Sharm El Sheikh.', 'ar' => 'انسيابية هادئة بجوار جدار مرجاني غني بالحياة البحرية في شرم الشيخ.'],
             'item_id' => 'aowd',
         ],
-        [
+        2 => [
             'type'    => 'video',
             'cat'     => 'videos',
             'src'     => 'videos/sea-college-boat-dive-entry-red-sea.mp4',
@@ -49,7 +548,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Stepping off the aft dive platform into warm cobalt Red Sea water.', 'ar' => 'الانطلاق من منصة الغوص الخلفية للقارب إلى مياه البحر الأحمر الفيروزية.'],
             'item_id' => 'dive-2',
         ],
-        [
+        3 => [
             'type'    => 'photo',
             'cat'     => 'guests',
             'src'     => 'images/clients/sea-college-real-guests-padi-certificates-sharm.jpg',
@@ -57,7 +556,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Real Sea College guests celebrating their 30 m PADI Advanced Open Water diplomas with their instructor.', 'ar' => 'ضيوف سي كوليدج يحتفلون باستلام شهادات PADI Advanced Open Water الرسمية مع مدربهم.'],
             'item_id' => 'aowd',
         ],
-        [
+        4 => [
             'type'    => 'photo',
             'cat'     => 'guests',
             'src'     => 'images/clients/sea-college-real-guests-boat-group-red-sea.jpg',
@@ -65,7 +564,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Verified Google & Tripadvisor guests flashing the scuba OK sign between Ras Mohammed & Tiran dives.', 'ar' => 'ضيوفنا من مختلف الجنسيات يرفعون علامة الغوص OK بين غطسات رأس محمد وتيران.'],
             'item_id' => 'private-11-15',
         ],
-        [
+        5 => [
             'type'    => 'photo',
             'cat'     => 'guests',
             'src'     => 'images/clients/sea-college-real-guests-wetsuits-al-montazah-beach.jpg',
@@ -73,15 +572,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Guests in Sea College Dive Club wetsuits ready for a calm House Reef dive opposite Tiran Island.', 'ar' => 'ضيوفنا ببدلات سي كوليدج الرسمية قبل النزول مباشرة إلى الشعاب المنزلية بالمنتزه.'],
             'item_id' => 'dsd-2-reef',
         ],
-        [
-            'type'    => 'photo',
-            'cat'     => 'guests',
-            'src'     => 'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg',
-            'title'   => ['en' => 'Golden-Hour Return From Tiran Reefs by Speedboat', 'ar' => 'العودة وقت الغروب من شعاب تيران بالقارب السريع'],
-            'caption' => ['en' => 'Smiling divers returning across calm Red Sea waters after an afternoon two-tank speedboat trip.', 'ar' => 'ابتسامات ضيوفنا أثناء العودة عبر مياه البحر الأحمر الهادئة بعد رحلة غوص ممتعة.'],
-            'item_id' => 'speed-2h',
-        ],
-        [
+        7 => [
             'type'    => 'photo',
             'cat'     => 'guests',
             'src'     => 'images/clients/sea-college-real-guest-dive-platform-ok-red-sea.jpg',
@@ -89,15 +580,15 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Why 3,082 Google & 129 Tripadvisor reviewers praise Sea College’s patient 1-on-1 supervision.', 'ar' => 'تجسيد حقيقي لسبب إشادة أكثر من 3,200 مراجعة على جوجل وتريب أدفايزر بصبر واهتمام مدربينا.'],
             'item_id' => 'dsd-2-boat',
         ],
-        [
+        8 => [
             'type'    => 'photo',
-            'cat'     => 'boats',
+            'cat'     => 'underwater',
             'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-divers-yacht-deck-red-sea.jpg',
             'title'   => ['en' => 'Geared Up on the Aft Teak Dive Platform', 'ar' => 'الاستعداد للغوص على منصة القارب الخلفية'],
             'caption' => ['en' => 'Small-group certified divers ready to drop into the Straits of Tiran.', 'ar' => 'مجموعة صغيرة من الغواصين المعتمدين قبل النزول إلى مياه مضيق تيران.'],
             'item_id' => 'dive-6',
         ],
-        [
+        9 => [
             'type'    => 'photo',
             'cat'     => 'courses',
             'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-padi-instructors-dive-base.jpg',
@@ -105,15 +596,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Pre-dive equipment check before walking straight onto our sheltered House Reef.', 'ar' => 'فحص المعدات في المركز قبل التوجه مباشرة إلى الشعاب المنزلية.'],
             'item_id' => 'dive-1',
         ],
-        [
-            'type'    => 'photo',
-            'cat'     => 'boats',
-            'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-al-montazah-speedboat-lagoon.jpg',
-            'title'   => ['en' => 'Private Suzuki Speedboat in Al Montazah Lagoon', 'ar' => 'القارب السريع الخاص في مياه المنتزه الفيروزية'],
-            'caption' => ['en' => '15-minute private speedboat departures directly to Tiran Island lagoons.', 'ar' => 'انطلاق مباشر خلال 15 دقيقة بالقارب السريع الخاص إلى جزيرة تيران.'],
-            'item_id' => 'speed-2h',
-        ],
-        [
+        11 => [
             'type'    => 'photo',
             'cat'     => 'wrecks',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-ss-thistlegorm-wreck-dive.jpg',
@@ -121,7 +604,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Sunk in 1941 at Sha\'ab Ali (16–30 m) — the Red Sea\'s most legendary wreck.', 'ar' => 'حطام سفينة الإمداد البريطانية الغارقة عام 1941 على عمق 16–30 مترًا.'],
             'item_id' => 'sup-thistlegorm',
         ],
-        [
+        12 => [
             'type'    => 'photo',
             'cat'     => 'underwater',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-intro-dive-red-sea.jpg',
@@ -129,7 +612,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => '1-on-1 hand-held supervision for complete beginners from €30.', 'ar' => 'إشراف فردي مباشر للمبتدئين بدون أي خبرة سابقة ابتداءً من 30€.'],
             'item_id' => 'dsd-2-boat',
         ],
-        [
+        13 => [
             'type'    => 'photo',
             'cat'     => 'courses',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-pool-training-scuba-instructor.jpg',
@@ -137,7 +620,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Every student masters regulator clearing and buoyancy in calm shallow water first.', 'ar' => 'يتقن كل متدرب المهارات الأساسية والطفو في حمام السباحة الهادئ قبل نزول البحر.'],
             'item_id' => 'owd',
         ],
-        [
+        14 => [
             'type'    => 'photo',
             'cat'     => 'courses',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-padi-diving-course-students-underwater.jpg',
@@ -145,15 +628,15 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Small-group PADI certification dives in warm, high-visibility Red Sea water.', 'ar' => 'غطسات تأهيل شهادة PADI في مجموعات صغيرة بمياه البحر الأحمر الدافئة.'],
             'item_id' => 'bundle-mega',
         ],
-        [
+        15 => [
             'type'    => 'photo',
-            'cat'     => 'boats',
+            'cat'     => 'courses',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-dive-boat-briefing-instructor.jpg',
             'title'   => ['en' => 'Detailed Reef Map Briefing on Board', 'ar' => 'شرح تفصيلي لخريطة موقع الغوص على متن اليخت'],
             'caption' => ['en' => 'Clear depth, current, entry/exit and marine-life briefings before every splash.', 'ar' => 'شرح واضح للأعماق والتيارات ومسار الغطسة وإشارات السلامة قبل كل نزول.'],
             'item_id' => 'dive-10',
         ],
-        [
+        16 => [
             'type'    => 'photo',
             'cat'     => 'underwater',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
@@ -161,93 +644,15 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Exploring Shark & Yolanda Reef and Tiran walls in levels-matched buddy teams.', 'ar' => 'استكشاف شعاب رأس محمد وتيران في فرق متوافقة المستوى مع مرشدينا.'],
             'item_id' => 'dive-6',
         ],
-        [
+        18 => [
             'type'    => 'photo',
-            'cat'     => 'boats',
-            'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-oceano-luxury-yacht-nov2026.jpg',
-            'title'   => [
-                'en' => 'Oceano — Luxury Red Sea Motor Yacht',
-                'ar' => 'يخت أوشيانو (Oceano) الفاخر في البحر الأحمر',
-                'ru' => 'Моторная яхта Oceano — приватный чартер в Шарм-эль-Шейхе',
-                'it' => 'Yacht a motore Oceano — Charter privato nel Mar Rosso',
-                'pl' => 'Jacht motorowy Oceano — Prywatny czarter w Sharm El Sheikh',
-                'de' => 'Motoryacht Oceano — Privatcharter im Roten Meer',
-                'fr' => 'Yacht à moteur Oceano — Croisière privée en mer Rouge',
-                'zh' => 'Oceano 豪华红海游艇 — 沙姆沙伊赫私人包船',
-            ],
-            'caption' => [
-                'en' => 'Multi-deck private & daily yacht with shaded lounge decks, air-conditioned salon & full dive platform (up to 20 guests).',
-                'ar' => 'يخت متعدد الطوابق بصالة مكيفة وسطح تشميس مظلل ومنصة غوص متكاملة لرحلات اليوم الكامل والشارتر الخاص.',
-                'ru' => 'Многопалубная яхта с просторным тенистым лаунджем, кондиционированным салоном и дайв-платформой.',
-                'it' => 'Yacht multipiano con ponte lounge ombreggiato, salone climatizzato e piattaforma subacquea.',
-                'pl' => 'Wielopokładowy jacht z zacienionym pokładem wypoczynkowym, klimatyzowanym salonem i platformą nurkową.',
-                'de' => 'Mehrdeck-Yacht mit schattigem Sonnendeck, klimatisiertem Salon und Tauchplattform.',
-                'fr' => 'Yacht multi-ponts avec salon climatisé, pont ombragé et plateforme de plongée.',
-                'zh' => '多层甲板游艇，配备遮阳休闲甲板、空调沙龙舱及专业潜水平台（最多可容纳20位宾客）。',
-            ],
-            'item_id' => 'private-16-20',
-        ],
-        [
-            'type'    => 'photo',
-            'cat'     => 'boats',
-            'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-nizar-yacht-red-sea-nov2026.jpg',
-            'title'   => [
-                'en' => 'Nizar — Ras Mohammed & White Island Dive Yacht',
-                'ar' => 'يخت نزار (Nizar) — رحلات رأس محمد والجزيرة البيضاء',
-                'ru' => 'Яхта Nizar — круизы в Рас-Мохаммед и к Белому острову',
-                'it' => 'Yacht Nizar — Escursioni a Ras Mohammed e Isola Bianca',
-                'pl' => 'Jacht Nizar — Rejsy do Ras Mohammed i na Białą Wyspę',
-                'de' => 'Yacht Nizar — Tagesfahrten nach Ras Mohammed & White Island',
-                'fr' => 'Yacht Nizar — Croisières Ras Mohammed et Île Blanche',
-                'zh' => 'Nizar 号潜水与浮潜游艇 — 穆罕默德角与白岛巡航',
-            ],
-            'caption' => [
-                'en' => 'Daily diving, family snorkeling & private charters for 6–10 guests with freshly cooked buffet lunch onboard.',
-                'ar' => 'رحلات الغوص والسنوركل العائلية والشارتر الخاص لـ 6–10 ضيوف مع غداء بوفيه طازج على متن اليخت.',
-                'ru' => 'Ежедневный дайвинг, семейный снорклинг и приватная аренда на 6–10 гостей со свежеприготовленным обедом.',
-                'it' => 'Immersioni giornaliere, snorkeling per famiglie e charter privato per 6–10 ospiti con pranzo a bordo.',
-                'pl' => 'Codzienne nurkowanie, rodzinny snorkeling i prywatne rejsy dla 6–10 osób ze świeżym lunchem na pokładzie.',
-                'de' => 'Tägliche Tauch- und Schnorchelausflüge sowie Privatcharter für 6–10 Gäste inklusive frisch gekochtem Mittagessen.',
-                'fr' => 'Plongée quotidienne, snorkeling en famille et privatisation 6–10 personnes avec déjeuner préparé à bord.',
-                'zh' => '提供每日潜水、家庭浮潜及6–10人私人包船，含船上现做自助午餐。',
-            ],
-            'item_id' => 'private-6-10',
-        ],
-        [
-            'type'    => 'photo',
-            'cat'     => 'boats',
-            'src'     => 'images/gallery/sea-college-dive-club-sharm-el-sheikh-omar4-private-yacht-nov2026.jpg',
-            'title'   => [
-                'en' => 'Omar 4 — Private Family & Small-Group Charter Yacht',
-                'ar' => 'يخت عمر 4 (Omar 4) — يخت خاص للعائلات والمجموعات الصغيرة',
-                'ru' => 'Яхта Omar 4 — приватный семейный чартер в Красном море',
-                'it' => 'Yacht Omar 4 — Charter privato per famiglie e piccoli gruppi',
-                'pl' => 'Jacht Omar 4 — Prywatny rejs dla rodzin i małych grup',
-                'de' => 'Yacht Omar 4 — Privatyacht für Familien & kleine Gruppen',
-                'fr' => 'Yacht Omar 4 — Privatisation famille et petits groupes',
-                'zh' => 'Omar 4 号私人游艇 — 家庭与小团体专属包船',
-            ],
-            'caption' => [
-                'en' => 'Full-day private Red Sea yacht ideal for couples & small families exploring Tiran Island & Ras Mohammed.',
-                'ar' => 'يخت خاص ليوم كامل مثالي للأزواج والعائلات لاستكشاف جزيرة تيران ومحمية رأس محمد بخصوصية تامة.',
-                'ru' => 'Приватная яхта на весь день для пар и семей — остров Тиран и заповедник Рас-Мохаммед в вашем ритме.',
-                'it' => 'Yacht privato per l’intera giornata ideale per coppie e famiglie tra l’Isola di Tiran e Ras Mohammed.',
-                'pl' => 'Całodniowy prywatny jacht dla par i rodzin — wyspa Tiran i Ras Mohammed we własnym tempie.',
-                'de' => 'Ganztägige Privatyacht ideal für Paare und Familien rund um die Tiran-Insel und Ras Mohammed.',
-                'fr' => 'Yacht privé à la journée idéal pour les couples et familles vers l’île de Tiran et Ras Mohammed.',
-                'zh' => '全天私人红海游艇，非常适合情侣与家庭自由探索蒂朗岛和穆罕默德角。',
-            ],
-            'item_id' => 'private-1-5',
-        ],
-        [
-            'type'    => 'photo',
-            'cat'     => 'boats',
+            'cat'     => 'guests',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-snorkeling-trip-family-red-sea.jpg',
             'title'   => ['en' => 'Family Snorkeling Cruise to White Island', 'ar' => 'رحلة سنوركل عائلية إلى الجزيرة البيضاء ورأس محمد'],
             'caption' => ['en' => 'Guided surface snorkeling with vests, masks, lunch & hotel transfers included.', 'ar' => 'رحلة سنوركل عائلية آمنة شاملة السترات والأقنعة والغداء والانتقالات.'],
             'item_id' => 'snork-ras-adult',
         ],
-        [
+        19 => [
             'type'    => 'photo',
             'cat'     => 'courses',
             'src'     => 'images/courses/01_padi_bubblemaker.jpg',
@@ -255,7 +660,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Child-proportioned scuba gear under 2 m in our calm training pool.', 'ar' => 'معدات غوص مخصصة للأطفال بأمان تام تحت عمق مترين في حمام السباحة.'],
             'item_id' => 'bubblemaker',
         ],
-        [
+        20 => [
             'type'    => 'photo',
             'cat'     => 'underwater',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-happy-divers.jpg',
@@ -263,7 +668,7 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Why 3,082+ guests rate Sea College Dive Club 4.9★ on Google.', 'ar' => 'سر تقييم 4.9★ من أكثر من 3,082 ضيفًا على مراجعات جوجل.'],
             'item_id' => 'dsd-quick-reef',
         ],
-        [
+        21 => [
             'type'    => 'photo',
             'cat'     => 'wrecks',
             'src'     => 'images/courses/12_padi_wreck_diver.jpg',
@@ -271,9 +676,9 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => 'Line-and-reel techniques and wreck mapping on Dunraven, Million Hope & Thistlegorm.', 'ar' => 'مهارات الملاحة ورسم خرائط الحطام على سفن دنرافين ومليون هوب وثيستلجورم.'],
             'item_id' => 'wreck',
         ],
-        [
+        22 => [
             'type'    => 'photo',
-            'cat'     => 'boats',
+            'cat'     => 'underwater',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-dive-boat-scuba-equipment-tanks.jpg',
             'title'   => ['en' => 'Organised Cylinder Benches & Nitrox Fills', 'ar' => 'منصة تجهيز الأسطوانات وتعبئة النيتروكس على القارب'],
             'caption' => ['en' => '12L & 15L aluminum tanks, Enriched Air Nitrox and serviced rental kits ready daily.', 'ar' => 'أسطوانات 12 و15 لتر هواء ونيتروكس ومعدات مفحوصة جاهزة يوميًا.'],

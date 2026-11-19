@@ -60,7 +60,7 @@ return sc_overlay_dive_sites([
                 'en' => ['Gorgonian sea fans', 'Pufferfish', 'Parrotfish', 'Green turtles', 'Chromis'],
                 'ar' => ['مراوح البحر المرجانية', 'سمك القراض', 'الببغاء', 'السلاحف الخضراء', 'أسماك الكروميس'],
             ],
-            'img'     => 'gallery/sea-college-dive-club-sharm-el-sheikh-al-montazah-speedboat-lagoon.jpg',
+            'img'     => 'gallery/sea-college-dive-club-sharm-el-sheikh-al-montazah-speedboat-lagoon-nov2026.jpg',
             'item_id' => 'dive-2',
         ],
         [
@@ -80,7 +80,7 @@ return sc_overlay_dive_sites([
                 'en' => ['Scalloped hammerheads (Jul–Sep)', 'Hawksbill turtles', 'Jacks & trevally', 'Red Sea bannerfish'],
                 'ar' => ['قرش المطرقة (يوليو–سبتمبر)', 'سلاحف صقرية المنقار', 'أسماك البياض والتريفالي', 'سمكة الراية'],
             ],
-            'img'     => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-rib-speedboat-nov2026.jpg',
+            'img'     => 'sea-college-dive-club-sharm-el-sheikh-tiran-island-suzuki-speedboat-nov2026.jpg',
             'item_id' => 'sup-zodiac-early',
         ],
         [

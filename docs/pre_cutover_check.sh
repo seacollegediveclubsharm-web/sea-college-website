@@ -160,12 +160,34 @@ for needle in "data-dive-map" "TouristAttraction" "conditions-chart"; do
 done
 
 gal_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/gallery")
-for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card"; do
+for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card" "sea-college-oceano-yacht-01-exterior-nov2026.jpg" "sea-college-nizar-yacht-01-cruising-nov2026.jpg" "sea-college-omar4-yacht-01-exterior-nov2026.jpg" "sea-college-speedboat-tiran-island-suzuki-nov2026.jpg" "sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg"; do
   if grep -q "$needle" <<<"$gal_html"; then
-    echo "PASS [gallery & team] $needle"
+    echo "PASS [gallery & grouped fleet/center] $needle"
     pass=$((pass + 1))
   else
-    echo "FAIL [gallery & team] $needle missing"
+    echo "FAIL [gallery & grouped fleet/center] $needle missing"
+    fail=$((fail + 1))
+  fi
+done
+
+about_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/about.php")
+for needle in "sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg" "sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg" "sea-college-dive-club-center-05-branded-wetsuits-nov2026.jpg"; do
+  if grep -q "$needle" <<<"$about_html"; then
+    echo "PASS [about physical center] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [about physical center] $needle missing"
+    fail=$((fail + 1))
+  fi
+done
+
+boats_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/snorkeling-and-boats-sharm-el-sheikh")
+for needle in "sea-college-sharm-private-speedboat-1h-suzuki-rib-nov2026.jpg" "sea-college-sharm-tiran-island-private-speedboat-2h-suzuki-nov2026.jpg" "sea-college-sharm-tiran-island-private-speedboat-3h-suzuki-nov2026.jpg"; do
+  if grep -q "$needle" <<<"$boats_html"; then
+    echo "PASS [speedboats hub] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [speedboats hub] $needle missing"
     fail=$((fail + 1))
   fi
 done

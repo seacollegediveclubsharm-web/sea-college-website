@@ -172,19 +172,40 @@ function sc_overlay_dive_sites(array $siteData): array
 function sc_overlay_gallery_team(array $galData): array
 {
     $lang = defined('LANG') ? LANG : 'en';
-    $file = (defined('ROOT_DIR') ? ROOT_DIR : dirname(__DIR__)) . '/data/i18n/' . $lang . '/gallery_team.php';
+    $baseRoot = defined('ROOT_DIR') ? ROOT_DIR : dirname(__DIR__);
+    if ($lang !== 'en' && $lang !== 'ar' && !empty($galData['collections'])) {
+        $colFile = $baseRoot . '/data/gallery_collections_i18n.php';
+        if (is_file($colFile)) {
+            $colOv = require $colFile;
+            foreach ($galData['collections'] as &$col) {
+                foreach ($col['photos'] as &$ph) {
+                    $pid = $ph['id'] ?? '';
+                    if ($pid !== '' && isset($colOv[$pid])) {
+                        if (!empty($colOv[$pid]['title'][$lang])) {
+                            $ph['title'][$lang] = $colOv[$pid]['title'][$lang];
+                        }
+                        if (!empty($colOv[$pid]['caption'][$lang])) {
+                            $ph['caption'][$lang] = $colOv[$pid]['caption'][$lang];
+                        }
+                    }
+                }
+            }
+            unset($col, $ph);
+        }
+    }
+    $file = $baseRoot . '/data/i18n/' . $lang . '/gallery_team.php';
     if ($lang === 'en' || $lang === 'ar' || !is_file($file)) {
         return $galData;
     }
     $ov = require $file;
     foreach (($ov['filters'] ?? []) as $fKey => $fVal) {
-        if (isset($galData['filters'][$fKey])) {
+        if (isset($galData['filters'][$fKey]) && empty($galData['filters'][$fKey][$lang])) {
             $galData['filters'][$fKey][$lang] = $fVal;
         }
     }
     foreach ($galData['media'] as $idx => &$m) {
-        $key = $m['id'] ?? (string) $idx;
-        $mo = $ov['media'][$key] ?? $ov['media'][$idx] ?? null;
+        $hasExplicitId = isset($m['id']) && is_string($m['id']) && $m['id'] !== '';
+        $mo = $hasExplicitId ? ($ov['media'][$m['id']] ?? null) : ($ov['media'][$idx] ?? null);
         if (is_array($mo)) {
             if (!empty($mo['title'])) {
                 $m['title'][$lang] = $mo['title'];

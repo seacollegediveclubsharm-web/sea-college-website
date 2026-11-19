@@ -51,7 +51,7 @@ function sc_promo_banner_config(string $theme): array
             'cta'   => t('banner_brand_cta'),
             'href'  => whatsapp_link('', 'brand_banner'),
             'ext'   => true,
-            'img'   => 'images/clients/sea-college-real-guests-padi-certificates-sharm.jpg',
+            'img'   => 'images/center/sea-college-dive-club-center-02-frontage-signboard-nov2026.jpg',
             'wa'    => 'Direct Booking Inquiry',
         ],
         default => [
