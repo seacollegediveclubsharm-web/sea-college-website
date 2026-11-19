@@ -209,17 +209,60 @@ function ta_reviews_data(): array
 }
 
 /**
- * Renders the owner's official Tripadvisor Write-a-Review Widget (TA_cdswritereviewlgvi409)
- * inside a high-contrast light surface card so Tripadvisor's official SVG lockup is always crisp.
+ * Localized Tripadvisor listing & write-review URLs (tripadvisor.com.eg for Arabic, etc.).
+ */
+function ta_profile_url(?string $lang = null): string
+{
+    $l = $lang ?? (defined('LANG') ? LANG : 'en');
+    return match ($l) {
+        'ar' => TRIPADVISOR_URL_AR,
+        default => TRIPADVISOR_URL,
+    };
+}
+
+function ta_write_review_url(?string $lang = null): string
+{
+    $l = $lang ?? (defined('LANG') ? LANG : 'en');
+    return match ($l) {
+        'ar' => TRIPADVISOR_WRITE_REVIEW_URL_AR,
+        default => TRIPADVISOR_WRITE_REVIEW_URL,
+    };
+}
+
+/**
+ * Renders the owner's official Tripadvisor Write-a-Review Widget:
+ * - English / international: TA_cdswritereviewlgvi409 (uniq=409, lang=en_US / locale, tripadvisor.com)
+ * - Arabic (ar_EG):          TA_cdswritereviewlgvi969 (uniq=969, lang=ar_EG, tripadvisor.com.eg)
  */
 function ta_official_widget_html(string $placement = 'home'): string
 {
     static $mounted = false;
     $ta = ta_reviews_data();
-    $locale = ta_widget_locale();
-    $uniq = TRIPADVISOR_UNIQ_ID;
+    $lang = defined('LANG') ? LANG : 'en';
+    $locale = ta_widget_locale($lang);
     $locId = TRIPADVISOR_LOCATION_ID;
-    $scriptSrc = 'https://www.jscache.com/wejs?wtype=cdswritereviewlgvi&uniq=' . rawurlencode($uniq)
+
+    if ($lang === 'ar') {
+        $w = [
+            'uniq'     => TRIPADVISOR_UNIQ_ID_AR,
+            'ul_id'    => 'sO1kCs',
+            'ul_class' => 'TA_links Du0OIT',
+            'li_id'    => '74bUilQRR',
+            'li_class' => '9xQVXKp',
+            'home'     => 'https://www.tripadvisor.com.eg/',
+        ];
+    } else {
+        $w = [
+            'uniq'     => TRIPADVISOR_UNIQ_ID,
+            'ul_id'    => 'Awwm6VK9Dau',
+            'ul_class' => 'TA_links BVzU3dd',
+            'li_id'    => 'xugibYoB',
+            'li_class' => 'hYDhTH2cQK',
+            'home'     => 'https://www.tripadvisor.com/',
+        ];
+    }
+
+    $scriptSrc = 'https://www.jscache.com/wejs?wtype=cdswritereviewlgvi&uniq=' . rawurlencode($w['uniq'])
         . '&locationId=' . rawurlencode($locId)
         . '&lang=' . rawurlencode($locale)
         . '&display_version=2';
@@ -236,17 +279,17 @@ function ta_official_widget_html(string $placement = 'home'): string
           <?php if (!empty($ta['ranking'])): ?> · <bdi dir="ltr"><?= e((string) $ta['ranking']) ?></bdi><?php endif; ?>
         </p>
         <div class="ta-widget-box__actions">
-          <a class="btn btn--ta btn--sm" href="<?= e(TRIPADVISOR_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_read_<?= e($placement) ?>"><?= te('ta_read_reviews') ?> ↗</a>
-          <a class="btn btn--detail btn--sm" href="<?= e(TRIPADVISOR_WRITE_REVIEW_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_write_<?= e($placement) ?>">✎ <?= te('ta_write_review') ?> ↗</a>
+          <a class="btn btn--ta btn--sm" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_read_<?= e($placement) ?>"><?= te('ta_read_reviews') ?> ↗</a>
+          <a class="btn btn--detail btn--sm" href="<?= e(ta_write_review_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link" data-placement="ta_write_<?= e($placement) ?>">✎ <?= te('ta_write_review') ?> ↗</a>
         </div>
       </div>
       <?php if (!$mounted): $mounted = true; ?>
       <div class="ta-widget-box__embed">
-        <div id="TA_cdswritereviewlgvi<?= e($uniq) ?>" class="TA_cdswritereviewlgvi">
-          <ul id="Awwm6VK9Dau" class="TA_links BVzU3dd">
-            <li id="xugibYoB" class="hYDhTH2cQK">
-              <a target="_blank" rel="noopener" href="<?= e(TRIPADVISOR_URL) ?>">
-                <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="Tripadvisor — <?= e(SITE_NAME) ?>" width="180" height="38" loading="lazy">
+        <div id="TA_cdswritereviewlgvi<?= e($w['uniq']) ?>" class="TA_cdswritereviewlgvi">
+          <ul id="<?= e($w['ul_id']) ?>" class="<?= e($w['ul_class']) ?>">
+            <li id="<?= e($w['li_id']) ?>" class="<?= e($w['li_class']) ?>">
+              <a target="_blank" rel="noopener" href="<?= e($w['home']) ?>">
+                <img src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_lockup_horizontal_secondary_registered.svg" alt="TripAdvisor" width="180" height="38" loading="lazy">
               </a>
             </li>
           </ul>
@@ -282,7 +325,7 @@ function verified_platforms_hub_html(bool $dark = false): string
             'title' => t('plat_ta_t'),
             'stat'  => number_format((float) $ta['rating'], 1) . ' ●●●●● · ' . number_format((int) $ta['review_count']) . '+ ' . t('plat_reviews_word'),
             'desc'  => t('plat_ta_d'),
-            'href'  => TRIPADVISOR_URL,
+            'href'  => ta_profile_url(),
             'cta'   => t('ta_read_reviews'),
         ],
         [

@@ -88,8 +88,11 @@ define('CDWS_PROFILE_URL', 'https://www.diveoneclub.com/Listing/sea-college-dive
  * ------------------------------------------------------------- */
 define('TRIPADVISOR_LOCATION_ID', sc_env('TRIPADVISOR_LOCATION_ID', '26104236'));
 define('TRIPADVISOR_UNIQ_ID', sc_env('TRIPADVISOR_UNIQ_ID', '409'));
+define('TRIPADVISOR_UNIQ_ID_AR', sc_env('TRIPADVISOR_UNIQ_ID_AR', '969'));
 define('TRIPADVISOR_URL', 'https://www.tripadvisor.com/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
 define('TRIPADVISOR_WRITE_REVIEW_URL', 'https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
+define('TRIPADVISOR_URL_AR', 'https://www.tripadvisor.com.eg/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
+define('TRIPADVISOR_WRITE_REVIEW_URL_AR', 'https://www.tripadvisor.com.eg/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
 define('TRIPADVISOR_API_KEY', sc_env('TRIPADVISOR_API_KEY', '')); // optional Content/Terra API key in config/secrets.php
 define('TRIPADVISOR_CACHE_TTL', 21600); // 6 hours server-side cache
 

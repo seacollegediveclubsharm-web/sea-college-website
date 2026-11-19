@@ -22,7 +22,7 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
       <p class="badge-row">
         <a class="chip chip--light" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🏅 <?= te('padi_badge') ?></a>
         <a class="chip chip--light" href="<?= e(GOOGLE_REVIEWS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">⭐ <?= te('rating_badge', ['rating' => $sc_footer_gbp['rating'], 'count' => number_format((int) $sc_footer_gbp['review_count'])]) ?></a>
-        <a class="chip chip--light" href="<?= e(TRIPADVISOR_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🦉 <?= te('ta_badge', ['rating' => number_format((float) $sc_footer_ta['rating'], 1), 'count' => number_format((int) $sc_footer_ta['review_count'])]) ?></a>
+        <a class="chip chip--light" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener" data-track="outbound_link">🦉 <?= te('ta_badge', ['rating' => number_format((float) $sc_footer_ta['rating'], 1), 'count' => number_format((int) $sc_footer_ta['review_count'])]) ?></a>
         <a class="chip chip--light" href="<?= e(CDWS_PROFILE_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">🛡️ <?= te('cdws_badge') ?></a>
       </p>
     </div>
@@ -52,8 +52,8 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_follow') ?></h2>
       <ul class="social">
-        <?php foreach (SOCIAL as $net => $href): if ($href === '') { continue; } ?>
-          <li><a href="<?= e($href) ?>" target="_blank" rel="noopener" data-track="outbound_link" aria-label="<?= e(ucfirst($net)) ?>"><?= e(ucfirst($net)) ?></a></li>
+        <?php foreach (SOCIAL as $net => $href): if ($href === '') { continue; } $netHref = ($net === 'tripadvisor') ? ta_profile_url() : $href; ?>
+          <li><a href="<?= e($netHref) ?>" target="_blank" rel="noopener" data-track="outbound_link" aria-label="<?= e(ucfirst($net)) ?>"><?= e(ucfirst($net)) ?></a></li>
         <?php endforeach; ?>
       </ul>
       <?php require ROOT_DIR . '/includes/newsletter_form.php'; ?>

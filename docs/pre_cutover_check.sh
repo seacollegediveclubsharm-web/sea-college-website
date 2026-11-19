@@ -68,6 +68,17 @@ for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" 
   fi
 done
 
+ar_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/?lang=ar")
+for needle in "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg"; do
+  if grep -q "$needle" <<<"$ar_html"; then
+    echo "PASS [ar tripadvisor] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [ar tripadvisor missing] $needle"
+    fail=$((fail + 1))
+  fi
+done
+
 echo "=== 3. Item Page, Calculator, Dive Map & Gallery Schema Checks ==="
 course_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/courses/padi-open-water-diver-sharm-el-sheikh")
 for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer'; do

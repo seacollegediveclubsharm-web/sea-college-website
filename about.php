@@ -39,7 +39,7 @@ require ROOT_DIR . '/includes/header.php';
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery')) ?>">🎬 <?= te('nav_gallery') ?></a>
         <a class="btn btn--detail btn--sm" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>">🗺️ <?= te('nav_dive_sites') ?></a>
         <a class="linklike" href="<?= e(PADI_PROFILE_URL) ?>" target="_blank" rel="noopener">PADI ↗</a>
-        <a class="linklike" href="<?= e(TRIPADVISOR_URL) ?>" target="_blank" rel="noopener">Tripadvisor ↗</a>
+        <a class="linklike" href="<?= e(ta_profile_url()) ?>" target="_blank" rel="noopener">Tripadvisor ↗</a>
       </p>
     </div>
     <div class="split__media">
