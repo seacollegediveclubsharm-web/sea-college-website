@@ -7,7 +7,11 @@ AddDefaultCharset UTF-8
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Force HTTPS
+  # Force single-hop canonical non-www HTTPS on production (matches Google Ads Final URL https://seacollegediveclub.com/)
+  RewriteCond %{HTTP_HOST} ^www\.seacollegediveclub\.com$ [NC]
+  RewriteRule ^ https://seacollegediveclub.com%{REQUEST_URI} [L,R=301]
+
+  # Force HTTPS on all other hosts
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -19,6 +23,24 @@ AddDefaultCharset UTF-8
   # Never serve internal folders or dotfiles (backup to per-folder .htaccess)
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]
   RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+  # Legacy WordPress & WooCommerce top-level pages / categories (301 + preserve ?gclid & UTMs via QSA)
+  RewriteRule ^(about|about-us)/?$ /about.php [R=301,L,QSA]
+  RewriteRule ^(contact|contact-us)/?$ /contact.php [R=301,L,QSA]
+  RewriteRule ^(prices|price-list)/?$ /prices.php [R=301,L,QSA]
+  RewriteRule ^(services|shop|store)/?$ /services.php [R=301,L,QSA]
+  RewriteRule ^(cart|checkout)/?$ /prices.php [R=301,L,QSA]
+  RewriteRule ^(terms-and-conditions|terms-conditions)/?$ /terms.php [R=301,L,QSA]
+  RewriteRule ^privacy/?$ /privacy-policy.php [R=301,L,QSA]
+  RewriteRule ^(site-dives|dive-sites)/?$ /dive-sites-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(courses|diving-courses)/?$ /diving-courses-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^product-category/(courses|diving-courses|specialty-courses|learn-to-dive|go-pro|tuchen-kurse)(/.*)?$ /diving-courses-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(packages|packages-offers|offers)/?$ /padi-course-bundles-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^product-category/(packages|offers|bundles)(/.*)?$ /padi-course-bundles-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(one-day-trip|daily-trips|diving-trips)/?$ /diving-trips-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^product-category/(diving-trips|trips|daily-diving)(/.*)?$ /diving-trips-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(boats|snorkeling|private-boat)/?$ /snorkeling-and-boats-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^product-category/(boats|snorkeling|private-boats)(/.*)?$ /snorkeling-and-boats-sharm-el-sheikh [R=301,L,QSA]
 
   # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
@@ -41,10 +63,11 @@ AddDefaultCharset UTF-8
 
   # Legacy WordPress/WooCommerce /product/<slug>/ 301 redirects
   RewriteRule ^product/([a-z0-9-]+)/?$ item.php?legacy=$1 [L,QSA]
+  RewriteRule ^product/?$ /services.php [R=301,L,QSA]
 </IfModule>
 
 # Block source/data files
-<FilesMatch "\.(md|csv|log|sh|py|ini|lock|json|dist)$">
+<FilesMatch "\.(md|csv|log|sh|py|ini|lock|json|dist|gs|ipynb)$">
   Require all denied
 </FilesMatch>
 <FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|README\.md)$">

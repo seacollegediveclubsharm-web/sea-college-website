@@ -60,8 +60,26 @@ for p in \
 done
 
 check_code "/product/open-water-diver/" "301"
+check_code "/product/thistlegorm-wreck/" "301"
+check_code "/product/million-hope-jackson-reef/" "301"
+check_code "/about-us/" "301"
+check_code "/checkout/" "301"
 check_code "/tours/padi-open-water-diver-sharm-el-sheikh" "301"
 check_code "/tours/non-existent-slug-xyz" "404"
+
+# Verify ?gclid= survives 301 redirects (.htaccess + PHP item.php) for active Google Ads continuity
+for legacy_gclid in \
+  "/product/open-water-diver/?gclid=EAIaIQobChMI_test_legacy" \
+  "/about-us/?gclid=EAIaIQobChMI_test_legacy"; do
+  loc_hdr=$(curl "${CURL_ARGS[@]}" -I "${BASE_URL}${legacy_gclid}" | tr -d '\r' | grep -i '^location:' || true)
+  if grep -q "gclid=EAIaIQobChMI_test_legacy" <<<"$loc_hdr"; then
+    echo "PASS [301 gclid preserved] $legacy_gclid -> ${loc_hdr#*: }"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [301 gclid lost] $legacy_gclid -> ${loc_hdr}"
+    fail=$((fail + 1))
+  fi
+done
 
 for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architecture_governance.md"; do
   check_code "$p" "403"
@@ -69,7 +87,7 @@ done
 
 echo "=== 2. Unified Tracking, GBP, Tripadvisor, YouTube, Banners, Dropdown & Home SEO Checks ==="
 html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))

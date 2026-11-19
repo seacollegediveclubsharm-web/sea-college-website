@@ -180,6 +180,22 @@ function canonical_url(?string $lang = null): string
     return SITE_URL . page_link(base_request_path(), '', $targetLang);
 }
 
+/** Preserve Google Ads / Meta / UTM query parameters across PHP 301 redirects so client-side gtag.js sees gclid. */
+function sc_with_campaign_query(string $destUrl): string
+{
+    $keep = [];
+    foreach (UTM_KEYS as $k) {
+        if (isset($_GET[$k]) && $_GET[$k] !== '') {
+            $keep[$k] = (string) $_GET[$k];
+        }
+    }
+    if (!$keep) {
+        return $destUrl;
+    }
+    $sep = str_contains($destUrl, '?') ? '&' : '?';
+    return $destUrl . $sep . http_build_query($keep);
+}
+
 /* ---------------- Money ---------------- */
 function money(float|int|null $eur): string
 {

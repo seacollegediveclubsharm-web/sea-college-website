@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 return [
     // ---------- Meta ----------
-    'meta_home_title' => 'Sea College Dive Club | PADI 5 Star Diving in Sharm El Sheikh',
-    'meta_home_desc' => 'PADI 5 Star dive resort in Sharm El Sheikh. Intro dives, PADI courses, Ras Mohammed & Tiran boat trips, snorkeling and private boats. 4.9★ from 3,082 Google reviews.',
+    'meta_home_title' => 'Sea College Dive Club | PADI 5 Star Dive Center & Scuba Diving in Sharm El Sheikh',
+    'meta_home_desc' => 'PADI 5 Star dive center in Sharm El Sheikh: scuba diving packages, clear 2026 prices from €30, PADI courses & daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm. 4.9★ (3,082 Google reviews).',
     'meta_services_title' => 'Diving, PADI Courses & Boat Trips in Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Dive packages, PADI courses from Bubblemaker to Divemaster, course bundles, snorkeling trips and private boats in Sharm El Sheikh.',
     'meta_prices_title' => 'Diving Prices Sharm El Sheikh 2026 | Packages, Courses & Offers',
@@ -77,9 +77,9 @@ return [
     'consent_policy' => 'Read our policy',
 
     // ---------- Home ----------
-    'hero_eyebrow' => 'PADI 5 Star Dive Resort · Sharm El Sheikh',
-    'hero_title' => 'Dive the Red Sea with people who love teaching it',
-    'hero_sub' => 'Intro dives, PADI courses and daily boat trips to Ras Mohammed, Tiran and the Thistlegorm — from our beachfront base with training pool and house reef.',
+    'hero_eyebrow' => 'PADI 5 Star Dive Center & Resort · Sharm El Sheikh',
+    'hero_title' => 'PADI 5 Star Scuba Diving & Dive Packages in Sharm El Sheikh',
+    'hero_sub' => 'Beginner intro dives from €30, PADI courses, diving packages with transparent prices, and daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm — from our beachfront dive centre with training pool and house reef.',
     'hero_cta_primary' => 'Plan my dive on WhatsApp',
     'hero_cta_secondary' => 'See prices',
     'kpi_rating' => 'Google rating',

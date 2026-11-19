@@ -19,15 +19,15 @@ if ($legacy !== '') {
     $allById = catalog_all_items($catalog);
     $mappedId = $seoAll['legacy_products'][$legacy] ?? null;
     if ($mappedId && isset($allById[$mappedId])) {
-        header('Location: ' . item_url($allById[$mappedId]), true, 301);
+        header('Location: ' . sc_with_campaign_query(item_url($allById[$mappedId])), true, 301);
         exit;
     }
     $byDirectSlug = catalog_find_by_slug($catalog, $legacy);
     if ($byDirectSlug) {
-        header('Location: ' . item_url($byDirectSlug), true, 301);
+        header('Location: ' . sc_with_campaign_query(item_url($byDirectSlug)), true, 301);
         exit;
     }
-    header('Location: ' . page_link('/diving-courses-sharm-el-sheikh'), true, 301);
+    header('Location: ' . sc_with_campaign_query(page_link('/diving-courses-sharm-el-sheikh')), true, 301);
     exit;
 }
 
@@ -43,7 +43,7 @@ if (!$it) {
 
 $expectedSection = ($it['section'] ?? 'tours') === 'courses' ? 'courses' : 'tours';
 if ($reqSection !== '' && $reqSection !== $expectedSection) {
-    header('Location: ' . item_url($it), true, 301);
+    header('Location: ' . sc_with_campaign_query(item_url($it)), true, 301);
     exit;
 }
 

@@ -52,16 +52,44 @@ $sc_json = json_encode($sc_client, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS |
 window.SC = <?= $sc_json ?>;
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
+<?php if ($sc_consent === 'all'): ?>
 gtag('consent', 'default', {
-  ad_storage: '<?= $sc_granted ? 'granted' : 'denied' ?>',
-  ad_user_data: '<?= $sc_granted ? 'granted' : 'denied' ?>',
-  ad_personalization: '<?= $sc_granted ? 'granted' : 'denied' ?>',
-  analytics_storage: '<?= $sc_granted ? 'granted' : 'denied' ?>',
+  ad_storage: 'granted',
+  ad_user_data: 'granted',
+  ad_personalization: 'granted',
+  analytics_storage: 'granted',
   functionality_storage: 'granted',
-  security_storage: 'granted',
-  wait_for_update: 500
+  security_storage: 'granted'
+});
+<?php elseif ($sc_consent === 'essential'): ?>
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  functionality_storage: 'granted',
+  security_storage: 'granted'
 });
 gtag('set', 'ads_data_redaction', true);
+<?php else: ?>
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'],
+  wait_for_update: 500
+});
+gtag('consent', 'default', {
+  ad_storage: 'granted',
+  ad_user_data: 'granted',
+  ad_personalization: 'granted',
+  analytics_storage: 'granted',
+  functionality_storage: 'granted',
+  security_storage: 'granted'
+});
+<?php endif; ?>
+gtag('set', 'url_passthrough', true);
 gtag('js', new Date());
 dataLayer.push({event: 'sc_init', page_type: SC.page, site_language: SC.lang, consent_state: SC.consent});
 </script>

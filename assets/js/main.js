@@ -226,7 +226,16 @@
             }
             if (res.redirect) {
               if (form.querySelector('[data-cart-input]')) { cart = []; store.set('sc_cart', []); }
-              location.href = res.redirect; return;
+              var dest = res.redirect;
+              try {
+                var curParams = new URLSearchParams(location.search);
+                var pass = [];
+                ['gclid', 'gbraid', 'wbraid'].forEach(function (k) {
+                  if (curParams.get(k) && dest.indexOf(k + '=') === -1) { pass.push(k + '=' + encodeURIComponent(curParams.get(k))); }
+                });
+                if (pass.length) { dest += (dest.indexOf('?') === -1 ? '?' : '&') + pass.join('&'); }
+              } catch (err) { /* ignore URLSearchParams issues */ }
+              location.href = dest; return;
             }
             if (status) { status.className = 'form-status is-ok'; status.textContent = res.message || ''; }
             form.reset();
@@ -256,6 +265,7 @@
     var form = btn.closest('form');
     var get = function (n) { var el = form && form.elements[n]; return el && el.value ? String(el.value).trim() : ''; };
     var lines = [T.waGreeting || 'Hello!'];
+    var totalVal = cartTotal();
     if (cart.length) {
       cart.forEach(function (l) { lines.push('• ' + l.name + ' × ' + l.qty + (l.price ? ' (' + fmt(l.price * l.qty) + ')' : '')); });
     }
@@ -265,9 +275,19 @@
       if (v) { lines.push((p[1] || p[0]) + ': ' + v); }
     });
     var msg = get('message'); if (msg) { lines.push('', msg); }
+    var placement = btn.getAttribute('data-placement') || 'form_wa';
     var src = get('utm_source') || 'website';
-    var camp = get('utm_campaign') || (btn.getAttribute('data-placement') || 'form');
+    var camp = get('utm_campaign') || placement;
     lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
+    var convVal = totalVal > 0 ? totalVal : 30;
+    track('begin_checkout', { value: convVal, currency: 'EUR' });
+    track('whatsapp_click', { placement: placement, value: convVal, currency: 'EUR' });
+    track('contact', { method: 'whatsapp', placement: placement });
+    if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
+    }
+    if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
+    if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
     window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
   });
 
