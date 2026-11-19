@@ -22,7 +22,7 @@ function add_button(array $it): string
 {
     $disp = item_name($it);
     return '<button type="button" class="btn btn--add" data-add-to-cart'
-        . ' data-id="' . e($it['id']) . '" data-name="' . e($it['name']) . '"'
+        . ' data-id="' . e($it['id']) . '" data-name="' . e($disp) . '"'
         . ' data-price="' . e($it['price'] === null ? '' : (string) $it['price']) . '"'
         . ' aria-label="' . te('add_to_booking') . ': ' . e($disp) . '">+ ' . te('add_to_booking') . '</button>';
 }
@@ -34,7 +34,8 @@ function product_card(array $it, string $image = 'images/hero.jpg'): string
     $href = !empty($it['slug']) ? item_url($it) : page_link('/prices.php');
     $title = item_name($it);
     $desc = item_desc($it);
-    $searchText = mb_strtolower($it['name'] . ' ' . ($it['name_ar'] ?? '') . ' ' . ($it['desc'] ?? '') . ' ' . ($it['desc_ar'] ?? ''));
+    $dur = item_duration($it);
+    $searchText = mb_strtolower($title . ' ' . $desc . ' ' . $it['name'] . ' ' . ($it['desc'] ?? ''));
     $child = isset($it['child_price']) ? ' <small>· ' . te('child') . ' <bdi dir="ltr">' . e(money($it['child_price'])) . '</bdi></small>' : '';
     $save = !empty($it['save']) ? '<span class="pcard__save">' . te('save') . ' <bdi dir="ltr">' . e(money($it['save'])) . '</bdi></span>' : '';
 
@@ -46,7 +47,7 @@ function product_card(array $it, string $image = 'images/hero.jpg'): string
     }
     $html .= $save . '</a>';
     $html .= '<div class="pcard__body">';
-    $html .= '<p class="pcard__meta">📍 ' . te('location_sharm') . (!empty($it['duration']) ? ' · ⏱ ' . e($it['duration']) : '') . '</p>';
+    $html .= '<p class="pcard__meta">📍 ' . te('location_sharm') . ($dur !== '' ? ' · ⏱ ' . e($dur) : '') . '</p>';
     $html .= '<h3 class="pcard__title" dir="auto"><a class="pcard__link" href="' . e($href) . '">' . e($title) . '</a></h3>';
     if ($desc !== '') {
         $html .= '<p class="pcard__desc" dir="auto">' . e($desc) . '</p>';
@@ -64,7 +65,7 @@ function compact_item_row(array $it): string
     $href = !empty($it['slug']) ? item_url($it) : page_link('/prices.php');
     $title = item_name($it);
     $desc = item_desc($it);
-    $searchText = mb_strtolower($it['name'] . ' ' . ($it['name_ar'] ?? '') . ' ' . ($it['desc'] ?? '') . ' ' . ($it['desc_ar'] ?? ''));
+    $searchText = mb_strtolower($title . ' ' . $desc . ' ' . $it['name'] . ' ' . ($it['desc'] ?? ''));
 
     $html = '<div class="crow" data-filter-item="' . e($searchText) . '">';
     $html .= '<div class="crow__info">';
@@ -112,12 +113,11 @@ function faq_list(array $nums): string
     return $html . '</div>';
 }
 
-function faq_pairs_html(array $faqs): string
+function faq_pairs_html(array $faqs, ?array $i18nMap = null): string
 {
+    $resolved = sc_resolve_faqs($faqs, $i18nMap);
     $html = '<div class="faq">';
-    foreach ($faqs as $idx => $f) {
-        $q = LANG === 'ar' && !empty($f[2]) ? $f[2] : $f[0];
-        $a = LANG === 'ar' && !empty($f[3]) ? $f[3] : $f[1];
+    foreach ($resolved as $idx => [$q, $a]) {
         $open = $idx === 0 ? ' open' : '';
         $html .= '<details class="faq__item"' . $open . '><summary dir="auto">' . e($q) . '</summary><p dir="auto">' . e($a) . '</p></details>';
     }
@@ -182,10 +182,14 @@ function comparison_table_html(string $mode, array $catalog, string $currentId):
             $note = e(mb_substr(item_desc($r), 0, 68));
         }
 
+        $dur = item_duration($r);
+        if ($dur === '') {
+            $dur = (($r['unit'] ?? '') === 'day') ? ltrim(t('per_day'), '/ ') : '—';
+        }
         $html .= '<tr' . ($isCur ? ' class="is-current"' : '') . '>';
         $html .= '<td><a class="cmp-link" href="' . e(item_url($r)) . '">' . e(item_name($r)) . '</a>'
             . ($isCur ? ' <span class="badge">' . te('compare_current') . '</span>' : '') . '</td>';
-        $html .= '<td class="ptable__dur">' . e($r['duration'] ?? (($r['unit'] ?? '') === 'day' ? '1 day' : '—')) . '</td>';
+        $html .= '<td class="ptable__dur">' . e($dur) . '</td>';
         $html .= '<td class="ptable__price">' . price_html($r['price'], $r['unit'] ?? '') . '</td>';
         $html .= '<td>' . $note . '</td>';
         $html .= '</tr>';
@@ -210,7 +214,7 @@ function schema_offer_catalog(string $name, array $cat): array
             if ($it['price'] === null) {
                 continue;
             }
-            $itemUrl = !empty($it['slug']) ? SITE_URL . item_path($it) . (LANG !== DEFAULT_LANG ? '?lang=' . LANG : '') : SITE_URL . '/prices.php';
+            $itemUrl = !empty($it['slug']) ? SITE_URL . item_url($it) : SITE_URL . page_link('/prices.php');
             $offers[] = [
                 '@type' => 'Offer',
                 'url' => $itemUrl,
@@ -231,11 +235,12 @@ function schema_offer_catalog(string $name, array $cat): array
     return ['@type' => 'OfferCatalog', 'name' => $name, 'itemListElement' => $offers];
 }
 
-/** Internal link that keeps the active language (?lang=xx for non-default). */
-function page_link(string $path, string $hash = ''): string
-{
-    $q = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
-    return $path . $q . ($hash !== '' ? '#' . $hash : '');
+if (!function_exists('page_link')) {
+    function page_link(string $path, string $hash = ''): string
+    {
+        $q = LANG !== DEFAULT_LANG ? '/' . LANG . ($path === '/' ? '/' : $path) : $path;
+        return $q . ($hash !== '' ? '#' . $hash : '');
+    }
 }
 
 /** Asset path of a branded, SEO-named photo (see assets/images/). */

@@ -83,7 +83,7 @@ $today = date('Y-m-d');
       <textarea id="<?= e($form_id) ?>-message" name="message" rows="4" maxlength="2000"><?= $val('message') ?></textarea>
     </div>
     <div class="field field--full field--check">
-      <label><input type="checkbox" name="consent" value="1" required> <span><?= te('form_consent') ?> <a href="/privacy-policy.php" target="_blank">↗</a></span></label>
+      <label><input type="checkbox" name="consent" value="1" required> <span><?= te('form_consent') ?> <a href="<?= e(page_link('/privacy-policy.php')) ?>" target="_blank">↗</a></span></label>
       <label><input type="checkbox" name="marketing" value="1"> <span><?= te('form_marketing') ?></span></label>
     </div>
   </div>

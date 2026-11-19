@@ -39,7 +39,7 @@ $h1       = loc($hubSeo['h1'] ?? null) ?: loc($cat['label']);
 $sub      = loc($hubSeo['sub'] ?? null);
 $aeoText  = loc($hubSeo['aeo_answer'] ?? null);
 $hiList   = $hubSeo['highlights'][LANG] ?? $hubSeo['highlights']['en'] ?? [];
-$faqs     = $hubSeo['faqs'] ?? [];
+$faqs     = sc_resolve_faqs($hubSeo['faqs'] ?? [], $hubSeo['faqs_i18n'] ?? null);
 $notes    = $cat['notes'][LANG] ?? $cat['notes']['en'] ?? [];
 
 $page['id']             = 'hub-' . $catKey;

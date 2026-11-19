@@ -106,6 +106,10 @@
     var total = $('[data-cart-total]', box);
     list.innerHTML = '';
     cart.forEach(function (l, i) {
+      var domBtn = document.querySelector('[data-add-to-cart][data-id="' + l.id + '"]');
+      if (domBtn && domBtn.getAttribute('data-name')) {
+        l.name = domBtn.getAttribute('data-name');
+      }
       var li = document.createElement('li');
       li.className = 'cart__item';
       var name = document.createElement('span');
@@ -538,7 +542,7 @@
         var totalEur = 0;
         st.lines.forEach(function (ln) {
           if (!ln.cartable) { return; }
-          cart.push({ id: ln.id, name: ln.rawName, price: ln.price, qty: ln.qty });
+          cart.push({ id: ln.id, name: ln.name, price: ln.price, qty: ln.qty });
           totalEur += ln.price * ln.qty;
           ecomItems.push({ item_id: ln.id, item_name: ln.rawName, price: ln.price, quantity: ln.qty });
         });
@@ -726,7 +730,7 @@
         var foot = '<div class="qres__foot">' + pr +
           '<span class="pcard__actions">' +
           '<a class="btn btn--detail btn--sm" href="' + it.url + '">' + (Q.details || 'Details') + '</a>' +
-          '<button type="button" class="btn btn--add' + (inCart ? ' is-added' : '') + '" data-add-to-cart data-id="' + it.id + '" data-name="' + it.raw_name.replace(/"/g, '&quot;') + '" data-price="' + (it.price || '') + '">' +
+          '<button type="button" class="btn btn--add' + (inCart ? ' is-added' : '') + '" data-add-to-cart data-id="' + it.id + '" data-name="' + it.name.replace(/"/g, '&quot;') + '" data-price="' + (it.price || '') + '">' +
           (inCart ? '✓ ' + (T.added || 'Added') : '+ ' + (T.add || 'Add')) + '</button></span></div>';
         art.innerHTML = '<div>' + tag + title + why + desc + '</div>' + foot;
         cardsEl.appendChild(art);

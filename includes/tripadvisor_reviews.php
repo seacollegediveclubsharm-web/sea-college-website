@@ -24,6 +24,7 @@ function ta_widget_locale(?string $lang = null): string
         'de' => 'de',
         'it' => 'it',
         'fr' => 'fr',
+        'pl' => 'pl',
         default => 'en_US',
     };
 }
@@ -57,6 +58,7 @@ function sc_fetch_ta_api(string $locId, string $apiKey, string $lang): ?array
         'de' => 'de',
         'it' => 'it',
         'fr' => 'fr',
+        'pl' => 'pl',
         default => 'en',
     };
     $base = 'https://api.content.tripadvisor.com/api/v1/location/' . rawurlencode($locId);
@@ -166,6 +168,32 @@ function sc_fetch_ta_widget_feed(string $locId, string $lang): ?array
     ];
 }
 
+function sc_ta_localize_payload(array $data, string $lang): array
+{
+    if ($lang === 'en' || ($data['source'] ?? '') === 'tripadvisor_api') {
+        return $data;
+    }
+    $rk = t('ta_ranking_text');
+    if ($rk !== '' && $rk !== 'ta_ranking_text') {
+        $data['ranking'] = $rk;
+    }
+    $seed = sc_ta_seed_reviews();
+    $baseReviews = !empty($data['reviews']) ? $data['reviews'] : ($seed['reviews'] ?? []);
+    foreach ($baseReviews as $idx => &$r) {
+        $n = $idx + 1;
+        $k = "ta_rev_{$n}_text";
+        $tr = t($k);
+        if ($tr !== '' && $tr !== $k) {
+            $r['text'] = $tr;
+        }
+        $r['author'] = t('ta_traveler_label');
+        $r['time'] = t('ta_verified_label');
+    }
+    unset($r);
+    $data['reviews'] = $baseReviews;
+    return $data;
+}
+
 function ta_reviews_data(): array
 {
     static $memo = null;
@@ -184,7 +212,7 @@ function ta_reviews_data(): array
             if (empty($cached['reviews'])) {
                 $cached['reviews'] = $seed['reviews'];
             }
-            return $memo = $cached;
+            return $memo = sc_ta_localize_payload($cached, $lang);
         }
     }
 
@@ -202,20 +230,26 @@ function ta_reviews_data(): array
         if (is_dir($cacheDir) || @mkdir($cacheDir, 0750, true)) {
             @file_put_contents($cacheFile, json_encode($live, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
         }
-        return $memo = $live;
+        return $memo = sc_ta_localize_payload($live, $lang);
     }
 
-    return $memo = $seed;
+    return $memo = sc_ta_localize_payload($seed, $lang);
 }
 
 /**
- * Localized Tripadvisor listing & write-review URLs (tripadvisor.com.eg for Arabic, etc.).
+ * Localized Tripadvisor listing & write-review URLs across regional Tripadvisor domains.
  */
 function ta_profile_url(?string $lang = null): string
 {
     $l = $lang ?? (defined('LANG') ? LANG : 'en');
+    $path = '/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html';
     return match ($l) {
         'ar' => TRIPADVISOR_URL_AR,
+        'ru' => 'https://www.tripadvisor.ru' . $path,
+        'de' => 'https://www.tripadvisor.de' . $path,
+        'it' => 'https://www.tripadvisor.it' . $path,
+        'fr' => 'https://www.tripadvisor.fr' . $path,
+        'pl' => 'https://pl.tripadvisor.com' . $path,
         default => TRIPADVISOR_URL,
     };
 }
@@ -223,8 +257,14 @@ function ta_profile_url(?string $lang = null): string
 function ta_write_review_url(?string $lang = null): string
 {
     $l = $lang ?? (defined('LANG') ? LANG : 'en');
+    $path = '/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html';
     return match ($l) {
         'ar' => TRIPADVISOR_WRITE_REVIEW_URL_AR,
+        'ru' => 'https://www.tripadvisor.ru' . $path,
+        'de' => 'https://www.tripadvisor.de' . $path,
+        'it' => 'https://www.tripadvisor.it' . $path,
+        'fr' => 'https://www.tripadvisor.fr' . $path,
+        'pl' => 'https://pl.tripadvisor.com' . $path,
         default => TRIPADVISOR_WRITE_REVIEW_URL,
     };
 }

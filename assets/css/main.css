@@ -685,5 +685,15 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
 .platform-card__cta { font-size: .83rem; font-weight: 700; color: var(--ocean-dark); }
 .platforms-hub--dark .platform-card__cta { color: #7fd4f5; }
 
-
-
+.real-guests { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.real-guests--dark { border-top-color: rgba(255, 255, 255, .14); }
+.real-guests__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1.25rem; }
+.real-guests__head h3 { font-size: 1.35rem; margin: .2rem 0 .3rem; }
+.real-guests__head p { font-size: .94rem; color: var(--muted); margin: 0; max-width: 680px; }
+.real-guests--dark .real-guests__head h3 { color: #fff; }
+.real-guests--dark .real-guests__head p { color: #bcd5e3; }
+.real-guests--dark .btn--detail { background: rgba(255, 255, 255, .12); color: #fff; border-color: rgba(255, 255, 255, .24); }
+.real-guests--dark .real-guest-card { background: rgba(255, 255, 255, .07); color: #fff; border-color: rgba(255, 255, 255, .14); box-shadow: none; }
+.real-guests--dark .real-guest-card .pcard__link { color: #fff; }
+.real-guests--dark .real-guest-card .pcard__desc { color: #d5e6f0; }
+.real-guest-card .pcard__media img { aspect-ratio: 4 / 3; object-fit: cover; object-position: center 22%; }

@@ -8,7 +8,9 @@
  */
 declare(strict_types=1);
 
-return [
+require_once dirname(__DIR__) . '/includes/i18n_data.php';
+
+return sc_overlay_catalog([
     /* ============================================================ */
     'dive-packages' => [
         'hub_slug' => 'diving-trips-sharm-el-sheikh',
@@ -896,4 +898,4 @@ return [
             ],
         ],
     ],
-];
+]);

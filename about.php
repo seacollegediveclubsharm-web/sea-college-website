@@ -75,6 +75,7 @@ require ROOT_DIR . '/includes/header.php';
 
 <section class="section section--tint" id="accreditations">
   <div class="container">
+    <?= render_real_guests_showcase(false) ?>
     <?= verified_platforms_hub_html(false) ?>
     <div style="margin-top:1.5rem">
       <?= ta_official_widget_html('about') ?>

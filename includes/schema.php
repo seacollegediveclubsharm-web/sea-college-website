@@ -37,7 +37,7 @@ $sc_business = [
     ],
     'hasMap' => MAPS_URL,
     'award' => BUSINESS['padi_level'],
-    'knowsLanguage' => ['en', 'ar', 'ru', 'de', 'it', 'fr'],
+    'knowsLanguage' => array_keys(SUPPORTED_LANGS),
     'sameAs' => $sc_sameAs,
 ];
 if (BUSINESS['lat'] !== null && BUSINESS['lng'] !== null) {
@@ -86,7 +86,7 @@ if (!empty($page['breadcrumbs'])) {
             '@type'    => 'ListItem',
             'position' => $pos++,
             'name'     => $label,
-            'item'     => SITE_URL . ($path === '/' ? '/' : '/' . ltrim($path, '/')) . (LANG !== DEFAULT_LANG ? '?lang=' . LANG : ''),
+            'item'     => SITE_URL . page_link($path),
         ];
     }
     $sc_graph[] = ['@type' => 'BreadcrumbList', 'itemListElement' => $items];

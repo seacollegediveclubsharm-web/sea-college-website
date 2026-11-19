@@ -5,7 +5,9 @@
  */
 declare(strict_types=1);
 
-return [
+require_once dirname(__DIR__) . '/includes/i18n_data.php';
+
+return sc_overlay_dive_sites([
     'aeo_answer' => [
         'en' => 'Sharm El Sheikh sits at the southern tip of the Sinai Peninsula where the Gulf of Suez and Gulf of Aqaba meet the open Red Sea, creating over 30 world-class coral walls, drift reefs and historic shipwrecks within 5 to 90 minutes of Al Montazah. Water temperatures range from 22 °C in February to 29 °C in August with year-round 20–40 m visibility. Beginners can dive calm sheltered sites like Sea College\'s Al Montazah House Reef (2–14 m) and Ras Mohammed\'s Jackfish Alley, while Open Water and Advanced divers explore Shark & Yolanda Reef, the four reefs of the Straits of Tiran, SS Dunraven, Million Hope and the legendary WWII wreck SS Thistlegorm (16–30 m).',
         'ar' => 'تقع شرم الشيخ عند الطرف الجنوبي لشبه جزيرة سيناء حيث يلتقي خليجا السويس والعقبة بالبحر الأحمر المفتوح، مما يخلق أكثر من 30 موقع غوص عالمي من الجدران المرجانية والشعاب المنجرفة وحطام السفن التاريخية على بُعد 5 إلى 90 دقيقة من المنتزه. تتراوح حرارة المياه بين 22°م في فبراير و29°م في أغسطس مع رؤية مائية 20–40 مترًا طوال العام. يستمتع المبتدئون بمواقع هادئة مثل الشعاب المنزلية بالمنتزه (2–14م)، بينما يستكشف الغواصون المعتمدون شارك ويولاندا ريف برأس محمد، وشعاب مضيق تيران الأربعة، وحطام دنرافين ومليون هوب وسفينة الحرب العالمية الثانية الأسطورية ثيستلجورم (16–30م).',
@@ -270,4 +272,4 @@ return [
             'تشمل باقات المعتمدين المرشد والأسطوانات والأوزان والانتقالات. في أيام القارب تُضاف 10€ يوميًا رسوم القارب (تشمل الغداء والمشروبات في رحلات اليوم الكامل) و5€ رسوم المحمية، بينما الغوص على الشعاب المنزلية معفى تمامًا (0€ قارب و0€ محمية).',
         ],
     ],
-];
+]);

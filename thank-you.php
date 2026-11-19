@@ -80,11 +80,11 @@ window.SC_CONVERSION = <?= $json ?>;
         <div class="field">
           <label for="ci-agency"><?= te('checkin_agency') ?></label>
           <select id="ci-agency" name="cert_agency">
-            <option value="None / Beginner">None / Beginner</option>
+            <option value="None / Beginner"><?= te('checkin_none') ?></option>
             <option value="PADI">PADI</option>
             <option value="SSI">SSI</option>
             <option value="CMAS">CMAS</option>
-            <option value="NAUI / BSAC / Other">NAUI / BSAC / Other</option>
+            <option value="NAUI / BSAC / Other"><?= te('checkin_other') ?></option>
           </select>
         </div>
         <div class="field">
@@ -95,9 +95,10 @@ window.SC_CONVERSION = <?= $json ?>;
           <label for="ci-suit"><?= te('checkin_wetsuit') ?></label>
           <select id="ci-suit" name="wetsuit_size">
             <option value="">—</option>
-            <?php foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Child'] as $sz): ?>
+            <?php foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $sz): ?>
               <option value="<?= e($sz) ?>"><?= e($sz) ?></option>
             <?php endforeach; ?>
+            <option value="Child"><?= te('checkin_child') ?></option>
           </select>
         </div>
         <div class="field field--sm">

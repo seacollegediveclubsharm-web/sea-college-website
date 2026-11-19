@@ -46,6 +46,7 @@ if ($reqSection !== '' && $reqSection !== $expectedSection) {
 }
 
 $seo      = $seoAll['items'][$it['id']] ?? [];
+$resolved = sc_resolve_item_seo($it, $seo);
 $cat      = $it['_cat'];
 $group    = $it['_group'];
 $catLabel = loc($cat['label']);
@@ -54,11 +55,12 @@ $hubPath  = hub_path($cat);
 $itemPath = item_path($it);
 $imgRel   = 'images/' . ($it['img'] ?? 'hero.jpg');
 $gbp      = gbp_reviews_data();
+$itDur    = item_duration($it);
 
-$h1        = loc($seo['h1'] ?? null) ?: item_name($it);
-$metaTitle = loc($seo['meta_title'] ?? null) ?: (item_name($it) . ' | ' . SITE_NAME);
-$metaDesc  = loc($seo['meta_desc'] ?? null) ?: item_desc($it);
-$aeoText   = loc($seo['aeo_answer'] ?? null) ?: item_desc($it);
+$h1        = $resolved['h1'];
+$metaTitle = $resolved['meta_title'];
+$metaDesc  = $resolved['meta_desc'];
+$aeoText   = $resolved['aeo_answer'];
 
 $page['id']             = 'item';
 $page['nav_active']     = 'services';
@@ -74,7 +76,7 @@ $page['breadcrumbs']    = [
     [item_name($it), $itemPath],
 ];
 $page['speakable']      = ['.item-hero__title', '.aeo-box__text'];
-$page['schema']         = schema_item_detail($it, $seo, $catLabel, $gbp);
+$page['schema']         = schema_item_detail($it, $seo, $catLabel, $gbp, $resolved);
 $page['item_track']     = [
     'id'       => $it['id'],
     'name'     => $it['name'],
@@ -82,13 +84,13 @@ $page['item_track']     = [
     'price'    => $it['price'] ?? 0,
 ];
 
-$overview = $seo['overview'][LANG] ?? $seo['overview']['en'] ?? [];
-$specs    = $seo['specs'] ?? [];
-$steps    = $seo['steps'] ?? [];
-$included = $seo['included'][LANG] ?? $seo['included']['en'] ?? [];
-$excluded = $seo['excluded'][LANG] ?? $seo['excluded']['en'] ?? [];
-$idealFor = $seo['ideal_for'][LANG] ?? $seo['ideal_for']['en'] ?? [];
-$faqs     = $seo['faqs'] ?? [];
+$overview = $resolved['overview'];
+$specs    = $resolved['specs'];
+$steps    = $resolved['steps'];
+$included = $resolved['included'];
+$excluded = $resolved['excluded'];
+$idealFor = $resolved['ideal_for'];
+$faqs     = $resolved['faqs'];
 $related  = catalog_related($catalog, $it, $seo['related'] ?? [], 4);
 
 $revList  = $gbp['reviews'] ?? [];
@@ -108,7 +110,7 @@ require ROOT_DIR . '/includes/header.php';
         <ul class="item-badges">
           <li>🏅 <?= te('padi_badge') ?></li>
           <li>⭐ <bdi dir="ltr"><?= e((string) $gbp['rating']) ?>★</bdi> (<?= e(number_format((int) $gbp['review_count'])) ?>)</li>
-          <?php if (!empty($it['duration'])): ?><li>⏱ <?= e($it['duration']) ?></li><?php endif; ?>
+          <?php if ($itDur !== ''): ?><li>⏱ <?= e($itDur) ?></li><?php endif; ?>
           <li>📍 <?= te('location_sharm') ?></li>
         </ul>
       </div>
@@ -143,10 +145,10 @@ require ROOT_DIR . '/includes/header.php';
       <div class="item-block">
         <h2><?= te('specs_title') ?></h2>
         <dl class="spec-grid">
-          <?php foreach ($specs as [$enK, $arK, $enV, $arV]): ?>
+          <?php foreach ($specs as [$spK, $spV]): ?>
             <div class="spec-grid__row">
-              <dt><?= e(LANG === 'ar' ? $arK : $enK) ?></dt>
-              <dd dir="auto"><?= e(LANG === 'ar' ? $arV : $enV) ?></dd>
+              <dt><?= e($spK) ?></dt>
+              <dd dir="auto"><?= e($spV) ?></dd>
             </div>
           <?php endforeach; ?>
         </dl>
@@ -157,12 +159,12 @@ require ROOT_DIR . '/includes/header.php';
       <div class="item-block">
         <h2><?= te($expectedSection === 'courses' ? 'steps_title_course' : 'steps_title_tour') ?></h2>
         <ol class="step-list">
-          <?php foreach ($steps as $idx => [$enT, $arT, $enB, $arB]): ?>
+          <?php foreach ($steps as $idx => [$stT, $stB]): ?>
             <li class="step-list__item">
               <span class="step-list__num" aria-hidden="true"><?= $idx + 1 ?></span>
               <div>
-                <h3 dir="auto"><?= e(LANG === 'ar' ? $arT : $enT) ?></h3>
-                <p dir="auto"><?= e(LANG === 'ar' ? $arB : $enB) ?></p>
+                <h3 dir="auto"><?= e($stT) ?></h3>
+                <p dir="auto"><?= e($stB) ?></p>
               </div>
             </li>
           <?php endforeach; ?>

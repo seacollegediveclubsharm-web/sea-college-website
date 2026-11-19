@@ -32,7 +32,7 @@ foreach ($catalog as $cat) {
     }
 }
 
-$loc = static fn(string $path, string $lang): string => SITE_URL . $path . ($lang !== DEFAULT_LANG ? '?lang=' . $lang : '');
+$loc = static fn(string $path, string $lang): string => SITE_URL . ($lang !== DEFAULT_LANG ? '/' . $lang . ($path === '/' ? '/' : $path) : $path);
 $x = static fn(string $s): string => htmlspecialchars($s, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 $catMod = is_file(__DIR__ . '/data/catalog.php') ? (int) filemtime(__DIR__ . '/data/catalog.php') : time();
 

@@ -11,7 +11,6 @@ $sc_nav = [
     ['about', '/about.php', 'nav_about'],
     ['contact', '/contact.php', 'nav_contact'],
 ];
-$sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
 ?>
 <div class="topbar">
   <div class="container topbar__inner">
@@ -24,7 +23,7 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
 </div>
 <header class="site-header" id="top">
   <div class="container site-header__inner">
-    <a class="brand" href="/<?= e($sc_lq) ?>" aria-label="<?= e(SITE_NAME) ?>">
+    <a class="brand" href="<?= e(page_link('/')) ?>" aria-label="<?= e(SITE_NAME) ?>">
       <img src="<?= e(asset('images/logo.jpg')) ?>" alt="<?= e(SITE_NAME) ?> logo" width="48" height="48">
       <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
     </a>
@@ -37,7 +36,7 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
       <ul class="site-nav__list">
         <?php $sc_active_nav = $page['nav_active'] ?? ($page['id'] ?? ''); ?>
         <?php foreach ($sc_nav as [$id, $href, $key]): ?>
-          <li><a href="<?= e($href . $sc_lq) ?>"<?= ($sc_active_nav === $id) ? ' aria-current="page"' : '' ?>><?= te($key) ?></a></li>
+          <li><a href="<?= e(page_link($href)) ?>"<?= ($sc_active_nav === $id) ? ' aria-current="page"' : '' ?>><?= te($key) ?></a></li>
         <?php endforeach; ?>
       </ul>
       <div class="site-nav__tools">

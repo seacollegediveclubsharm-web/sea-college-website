@@ -27,7 +27,7 @@ function sc_widget_catalog_map(array $catalog, array $ids): array
             'price'    => $it['price'],
             'unit'     => $it['unit'] ?? '',
             'save'     => $it['save'] ?? 0,
-            'duration' => $it['duration'] ?? '',
+            'duration' => item_duration($it),
             'url'      => !empty($it['slug']) ? item_url($it) : page_link('/prices.php'),
         ];
     }
@@ -300,7 +300,10 @@ function render_team_showcase(array $team, int $limit = 0): string
     $list = $limit > 0 ? array_slice($team, 0, $limit) : $team;
     $html = '<div class="team-grid">';
     foreach ($list as $m) {
-        $name = LANG === 'ar' && !empty($m['name_ar']) ? $m['name_ar'] : $m['name'];
+        $nameKey = 'name_' . LANG;
+        $name = (LANG !== 'en' && !empty($m[$nameKey])) ? (string) $m[$nameKey] : (string) $m['name'];
+        $revKey = 'reviewer_' . LANG;
+        $reviewer = (LANG !== 'en' && !empty($m[$revKey])) ? (string) $m[$revKey] : (string) $m['reviewer'];
         $initials = mb_strtoupper(mb_substr($m['name'], 0, 2));
         $html .= '<article class="team-card card">';
         $html .= '<div class="team-card__top">';
@@ -311,9 +314,74 @@ function render_team_showcase(array $team, int $limit = 0): string
         $html .= '</div>';
         $html .= '<p class="team-card__focus" dir="auto">' . e(loc($m['focus'])) . '</p>';
         $html .= '<blockquote class="team-card__quote"><p dir="auto">' . e(loc($m['quote'])) . '</p>';
-        $html .= '<cite><bdi dir="ltr">★★★★★</bdi> · ' . e($m['reviewer']) . '</cite></blockquote>';
+        $html .= '<cite><bdi dir="ltr">★★★★★</bdi> · ' . e($reviewer) . '</cite></blockquote>';
         $html .= '</article>';
     }
     $html .= '</div>';
     return $html;
+}
+
+/**
+ * Real Client Moments & Verified Diver Graduations photo showcase (2026 authentic guest photos).
+ */
+function render_real_guests_showcase(bool $dark = false): string
+{
+    $cards = [
+        [
+            'img'  => 'images/clients/sea-college-real-guests-padi-certificates-sharm.jpg',
+            't'    => t('real_guest_1_t'),
+            'd'    => t('real_guest_1_d'),
+            'href' => page_link('/courses/padi-advanced-open-water-diver-sharm'),
+            'tag'  => 'PADI 5★',
+        ],
+        [
+            'img'  => 'images/clients/sea-college-real-guests-boat-group-red-sea.jpg',
+            't'    => t('real_guest_2_t'),
+            'd'    => t('real_guest_2_d'),
+            'href' => page_link('/diving-trips-sharm-el-sheikh'),
+            'tag'  => '4.9★ Google',
+        ],
+        [
+            'img'  => 'images/clients/sea-college-real-guests-wetsuits-al-montazah-beach.jpg',
+            't'    => t('real_guest_3_t'),
+            'd'    => t('real_guest_3_d'),
+            'href' => page_link('/tours/discover-scuba-diving-2-dives-house-reef'),
+            'tag'  => 'Al Montazah',
+        ],
+        [
+            'img'  => 'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg',
+            't'    => t('real_guest_4_t'),
+            'd'    => t('real_guest_4_d'),
+            'href' => page_link('/tours/private-speedboat-tiran-2-hours'),
+            'tag'  => '4.9 ●●●●● Tripadvisor',
+        ],
+    ];
+
+    ob_start(); ?>
+    <div class="real-guests<?= $dark ? ' real-guests--dark' : '' ?>">
+      <div class="real-guests__head">
+        <div>
+          <span class="eyebrow">📸 <?= te('real_guests_eyebrow') ?></span>
+          <h3><?= te('real_guests_title') ?></h3>
+          <p><?= te('real_guests_sub') ?></p>
+        </div>
+        <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery')) ?>"><?= te('real_guests_cta') ?> →</a>
+      </div>
+      <div class="cards cards--4 real-guests__grid">
+        <?php foreach ($cards as $c): ?>
+          <article class="pcard real-guest-card">
+            <a class="pcard__media" href="<?= e($c['href']) ?>">
+              <img src="<?= e(asset($c['img'])) ?>" alt="<?= e($c['t']) ?> — <?= e(SITE_NAME) ?>" loading="lazy" width="480" height="360">
+              <span class="pcard__badge"><bdi dir="ltr"><?= e($c['tag']) ?></bdi></span>
+            </a>
+            <div class="pcard__body">
+              <h4 class="pcard__title" dir="auto"><a class="pcard__link" href="<?= e($c['href']) ?>"><?= e($c['t']) ?></a></h4>
+              <p class="pcard__desc" dir="auto"><?= e($c['d']) ?></p>
+            </div>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    </div>
+    <?php
+    return (string) ob_get_clean();
 }

@@ -19,7 +19,7 @@ $bcdSize     = clean_line($_POST['bcd_size'] ?? '', 16);
 $waiverAck   = !empty($_POST['medical_waiver']);
 
 if (!$waiverAck) {
-    respond(false, ['message' => t('form_error_validation'), 'errors' => ['medical_waiver' => t('form_required')]], '/thank-you.php');
+    respond(false, ['message' => t('form_error_validation'), 'errors' => ['medical_waiver' => t('form_required')]], page_link('/thank-you.php'));
 }
 
 $_SESSION['last_submit'] = time();
@@ -50,4 +50,4 @@ if (CRM_WEBHOOK_URL !== '') {
     post_json(CRM_WEBHOOK_URL, ['type' => 'checkin'] + $row);
 }
 
-respond(true, ['message' => t('checkin_ok')], '/thank-you.php');
+respond(true, ['message' => t('checkin_ok')], page_link('/thank-you.php'));

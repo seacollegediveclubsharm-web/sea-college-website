@@ -52,25 +52,30 @@ function asset(string $path): string
     return '/assets/' . ltrim($path, '/') . '?v=' . $v;
 }
 
-/* ---------------- i18n ---------------- */
+/* ---------------- i18n & Clean Language Subdirectory Routing ---------------- */
 function sc_detect_lang(): string
 {
     $supported = array_keys(SUPPORTED_LANGS);
-    $q = isset($_GET['lang']) ? strtolower((string) $_GET['lang']) : '';
+    // 1) Explicit ?lang= (populated by .htaccess /ru/... rewrite or legacy ?lang=xx links)
+    $q = isset($_GET['lang']) ? strtolower(trim((string) $_GET['lang'])) : '';
     if ($q !== '' && in_array($q, $supported, true)) {
-        setcookie('sc_lang', $q, ['expires' => time() + 31536000, 'path' => '/', 'samesite' => 'Lax', 'httponly' => true]);
         return $q;
     }
-    $c = strtolower((string) ($_COOKIE['sc_lang'] ?? ''));
-    if (in_array($c, $supported, true)) {
-        return $c;
+    // 2) Explicit POST lang (for /handlers/lead_capture.php, diver_checkin.php, newsletter.php)
+    $p = isset($_POST['lang']) ? strtolower(trim((string) $_POST['lang'])) : '';
+    if ($p !== '' && in_array($p, $supported, true)) {
+        return $p;
     }
-    $al = strtolower((string) ($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? ''));
-    foreach ($supported as $l) {
-        if (str_starts_with($al, $l)) {
-            return $l;
+    // 3) Direct URL path prefix fallback (e.g. ErrorDocument 404 on /ru/missing-page or CLI tests)
+    $reqPath = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
+    $pattern = '#^/(' . implode('|', array_map('preg_quote', $supported)) . ')(?=/|$)#i';
+    if (preg_match($pattern, $reqPath, $m)) {
+        $detected = strtolower($m[1]);
+        if (in_array($detected, $supported, true)) {
+            return $detected;
         }
     }
+    // 4) Unprefixed URLs (/, /prices.php, /tours/...) are deterministically English (DEFAULT_LANG)
     return DEFAULT_LANG;
 }
 
@@ -98,7 +103,7 @@ function te(string $key, array $vars = []): string
     return e(t($key, $vars));
 }
 
-/** Pick localized value from ['en'=>..,'ar'=>..] arrays or return string. */
+/** Pick localized value from ['en'=>..,'ar'=>..,'ru'=>..] arrays or return string. */
 function loc(array|string|null $v): string
 {
     if (is_array($v)) {
@@ -107,28 +112,72 @@ function loc(array|string|null $v): string
     return (string) $v;
 }
 
-/** Current page URL in another language (keeps clean rewritten path, swaps ?lang). */
+/** Strip any leading /{lang} prefix from a path and normalize /index.php -> /. */
+function strip_lang_prefix(string $path): string
+{
+    $p = '/' . ltrim($path, '/');
+    $pattern = '#^/(' . implode('|', array_map('preg_quote', array_keys(SUPPORTED_LANGS))) . ')(?=/|$)#i';
+    $p = (string) preg_replace($pattern, '', $p);
+    if ($p === '' || $p === '/index.php') {
+        return '/';
+    }
+    return str_starts_with($p, '/') ? $p : '/' . $p;
+}
+
+/** Canonical unprefixed path of the current page (e.g. '/', '/prices.php', '/courses/padi-open-water-diver-sharm-el-sheikh'). */
+function base_request_path(): string
+{
+    $raw = (string) ($GLOBALS['page']['canonical_path'] ?? (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/'));
+    return strip_lang_prefix($raw);
+}
+
+/**
+ * Build an internal link in the active (or specified) language using clean Google Ads subdirectories:
+ * - en (default): '/prices.php', '/courses/padi-open-water-diver-sharm-el-sheikh', '/'
+ * - ru/de/it/fr/pl/ar: '/ru/prices.php', '/ru/courses/padi-open-water-diver-sharm-el-sheikh', '/ru/'
+ */
+function page_link(string $path = '/', string $hash = '', ?string $lang = null): string
+{
+    $targetLang = $lang ?? LANG;
+    if (!isset(SUPPORTED_LANGS[$targetLang])) {
+        $targetLang = DEFAULT_LANG;
+    }
+    if ($path !== '' && str_starts_with($path, '#')) {
+        return $path;
+    }
+    $inlineHash = '';
+    if (str_contains($path, '#')) {
+        [$path, $inlineHash] = explode('#', $path, 2);
+    }
+    $query = '';
+    if (str_contains($path, '?')) {
+        [$path, $query] = explode('?', $path, 2);
+        $query = $query !== '' ? '?' . $query : '';
+    }
+    $cleanPath = strip_lang_prefix($path === '' ? '/' : $path);
+    $finalHash = $hash !== '' ? $hash : $inlineHash;
+
+    if ($targetLang === DEFAULT_LANG) {
+        $out = $cleanPath;
+    } else {
+        $out = '/' . $targetLang . ($cleanPath === '/' ? '/' : $cleanPath);
+    }
+    return $out . $query . ($finalHash !== '' ? '#' . $finalHash : '');
+}
+
+/** Current page URL in another language (preserves campaign query params like gclid/utm_*). */
 function lang_url(string $lang): string
 {
-    $path = $GLOBALS['page']['canonical_path'] ?? (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
-    $path = $path === '/index.php' ? '/' : $path;
+    $base = page_link(base_request_path(), '', $lang);
     $params = $_GET;
-    unset($params['section'], $params['slug'], $params['hub'], $params['legacy']);
-    if ($lang === DEFAULT_LANG) {
-        // Explicit ?lang=en is still needed when switching back from an sc_lang=ar cookie!
-        $params['lang'] = $lang;
-    } else {
-        $params['lang'] = $lang;
-    }
-    return $path . ($params ? '?' . http_build_query($params) : '');
+    unset($params['lang'], $params['section'], $params['slug'], $params['hub'], $params['legacy']);
+    return $base . ($params ? '?' . http_build_query($params) : '');
 }
 
 function canonical_url(?string $lang = null): string
 {
-    $path = $GLOBALS['page']['canonical_path'] ?? (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
-    $path = $path === '/index.php' ? '/' : $path;
-    $lang = $lang ?? LANG;
-    return SITE_URL . $path . ($lang !== DEFAULT_LANG ? '?lang=' . $lang : '');
+    $targetLang = $lang ?? LANG;
+    return SITE_URL . page_link(base_request_path(), '', $targetLang);
 }
 
 /* ---------------- Money ---------------- */

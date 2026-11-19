@@ -41,7 +41,15 @@ define('SITE_URL', rtrim(sc_env('SITE_URL', 'https://papayawhip-pheasant-312330.
 define('SITE_ENV', sc_env('SITE_ENV', 'staging')); // staging | production
 define('SITE_NOINDEX', SITE_ENV !== 'production'); // keep staging out of Google
 define('DEFAULT_LANG', 'en');
-define('SUPPORTED_LANGS', ['en' => 'English', 'ar' => 'العربية']);
+define('SUPPORTED_LANGS', [
+    'en' => 'English',
+    'ar' => 'العربية',
+    'ru' => 'Русский',
+    'de' => 'Deutsch',
+    'it' => 'Italiano',
+    'fr' => 'Français',
+    'pl' => 'Polski',
+]);
 define('RTL_LANGS', ['ar']);
 define('PRIMARY_CURRENCY', 'EUR');
 // Indicative conversion rates for the currency switcher (display only).

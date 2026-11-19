@@ -83,7 +83,7 @@ if ($interest === '' && $cart) {
 }
 
 if ($errors) {
-    respond(false, ['message' => t('form_error_validation'), 'errors' => $errors], $_SERVER['HTTP_REFERER'] ?? '/contact.php');
+    respond(false, ['message' => t('form_error_validation'), 'errors' => $errors], $_SERVER['HTTP_REFERER'] ?? page_link('/contact.php'));
 }
 
 $_SESSION['last_submit'] = time();
@@ -148,5 +148,4 @@ $_SESSION['conversion'] = [
 ];
 unset($_SESSION['form_old'], $_SESSION['form_error']);
 
-$lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
-respond(true, ['redirect' => '/thank-you.php' . $lq, 'event_id' => $eventId]);
+respond(true, ['redirect' => page_link('/thank-you.php'), 'event_id' => $eventId]);

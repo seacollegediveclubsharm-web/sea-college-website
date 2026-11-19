@@ -1,14 +1,13 @@
 <?php
 /** Footer, floating WhatsApp button and consent banner. Closes <main>, <body>, <html>. */
 declare(strict_types=1);
-$sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
 ?>
 </main>
 
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-col footer-col--brand">
-      <a class="brand brand--light" href="/<?= e($sc_lq) ?>">
+      <a class="brand brand--light" href="<?= e(page_link('/')) ?>">
         <img src="<?= e(asset('images/logo.jpg')) ?>" alt="" width="48" height="48" loading="lazy">
         <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
       </a>
@@ -29,15 +28,15 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_explore') ?></h2>
       <ul class="footer-links">
-        <li><a href="/diving-trips-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_dives') ?></a></li>
-        <li><a href="/diving-courses-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_courses') ?></a></li>
-        <li><a href="/padi-course-bundles-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_bundles') ?></a></li>
-        <li><a href="/snorkeling-and-boats-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('footer_hub_boats') ?></a></li>
-        <li><a href="/dive-sites-sharm-el-sheikh<?= e($sc_lq) ?>"><?= te('nav_dive_sites') ?></a></li>
-        <li><a href="/gallery<?= e($sc_lq) ?>"><?= te('nav_gallery') ?></a></li>
-        <li><a href="/prices.php<?= e($sc_lq) ?>#dive-calculator"><?= te('calc_jump_chip') ?></a></li>
-        <li><a href="/about.php<?= e($sc_lq) ?>"><?= te('nav_about') ?></a></li>
-        <li><a href="/contact.php<?= e($sc_lq) ?>"><?= te('nav_contact') ?></a></li>
+        <li><a href="<?= e(page_link('/diving-trips-sharm-el-sheikh')) ?>"><?= te('footer_hub_dives') ?></a></li>
+        <li><a href="<?= e(page_link('/diving-courses-sharm-el-sheikh')) ?>"><?= te('footer_hub_courses') ?></a></li>
+        <li><a href="<?= e(page_link('/padi-course-bundles-sharm-el-sheikh')) ?>"><?= te('footer_hub_bundles') ?></a></li>
+        <li><a href="<?= e(page_link('/snorkeling-and-boats-sharm-el-sheikh')) ?>"><?= te('footer_hub_boats') ?></a></li>
+        <li><a href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>"><?= te('nav_dive_sites') ?></a></li>
+        <li><a href="<?= e(page_link('/gallery')) ?>"><?= te('nav_gallery') ?></a></li>
+        <li><a href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>"><?= te('calc_jump_chip') ?></a></li>
+        <li><a href="<?= e(page_link('/about.php')) ?>"><?= te('nav_about') ?></a></li>
+        <li><a href="<?= e(page_link('/contact.php')) ?>"><?= te('nav_contact') ?></a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -62,8 +61,8 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
   <div class="container footer-bottom">
     <span>© <?= e(date('Y')) ?> <?= e(SITE_NAME) ?>. <?= te('footer_rights') ?></span>
     <span class="footer-bottom__links">
-      <a href="/privacy-policy.php<?= e($sc_lq) ?>"><?= te('footer_privacy') ?></a>
-      <a href="/terms.php<?= e($sc_lq) ?>"><?= te('footer_terms') ?></a>
+      <a href="<?= e(page_link('/privacy-policy.php')) ?>"><?= te('footer_privacy') ?></a>
+      <a href="<?= e(page_link('/terms.php')) ?>"><?= te('footer_terms') ?></a>
       <button type="button" class="linklike" data-consent-open><?= te('footer_cookie_settings') ?></button>
     </span>
   </div>
@@ -76,7 +75,7 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
     <span class="minicart__sep">·</span>
     <span class="minicart__sum" data-minicart-total>€0</span>
   </div>
-  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : '/prices.php' . $sc_lq . '#booking') ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
+  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : page_link('/prices.php', 'booking')) ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
 </div>
 <?php endif; ?>
 
@@ -88,7 +87,7 @@ $sc_lq = LANG !== DEFAULT_LANG ? '?lang=' . LANG : '';
   <div class="consent__inner">
     <div>
       <h2 id="consent-title" class="consent__title"><?= te('consent_title') ?></h2>
-      <p><?= te('consent_text') ?> <a href="/privacy-policy.php<?= e($sc_lq) ?>"><?= te('consent_policy') ?></a></p>
+      <p><?= te('consent_text') ?> <a href="<?= e(page_link('/privacy-policy.php')) ?>"><?= te('consent_policy') ?></a></p>
     </div>
     <div class="consent__actions">
       <button type="button" class="btn btn--ghost" data-consent="essential"><?= te('consent_essential') ?></button>

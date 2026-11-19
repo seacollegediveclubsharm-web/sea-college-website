@@ -68,7 +68,8 @@ require ROOT_DIR . '/includes/header.php';
                         <span class="ptable__name" dir="auto"><a class="ptable__link" href="<?= e(item_url($it)) ?>"><?= e(item_name($it)) ?></a><?php if (!empty($it['popular'])): ?> <span class="badge"><?= te('popular') ?></span><?php endif; ?></span>
                         <?php $itDesc = item_desc($it); if ($itDesc !== ''): ?><small class="ptable__desc" dir="auto"><?= e($itDesc) ?></small><?php endif; ?>
                       </th>
-                      <td class="ptable__dur"><?= !empty($it['duration']) ? '⏱ ' . e($it['duration']) : '' ?></td>
+                      <?php $itDur = item_duration($it); ?>
+                      <td class="ptable__dur"><?= $itDur !== '' ? '⏱ ' . e($itDur) : '' ?></td>
                       <td class="ptable__price">
                         <?= price_html($it['price'], $it['unit'] ?? '') ?>
                         <?php if (isset($it['child_price'])): ?><small><?= te('child') ?> <bdi dir="ltr"><?= e(money($it['child_price'])) ?></bdi></small><?php endif; ?>

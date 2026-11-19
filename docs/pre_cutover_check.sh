@@ -42,9 +42,16 @@ for p in \
   "/courses/padi-open-water-diver-sharm-el-sheikh?lang=ar" \
   "/courses/mega-bundle-open-water-advanced-sharm" \
   "/dive-sites-sharm-el-sheikh" \
-  "/dive-sites-sharm-el-sheikh?lang=ar" \
   "/gallery" \
-  "/gallery?lang=ar"; do
+  "/ar/" "/ru/" "/de/" "/it/" "/fr/" "/pl/" \
+  "/ru/courses/padi-open-water-diver-sharm-el-sheikh?gclid=EAIaIQobChMI_test_ru" \
+  "/de/prices.php?gclid=EAIaIQobChMI_test_de" \
+  "/it/diving-trips-sharm-el-sheikh" \
+  "/fr/dive-sites-sharm-el-sheikh" \
+  "/pl/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh" \
+  "/ar/courses/padi-open-water-diver-sharm-el-sheikh" \
+  "/assets/images/clients/sea-college-real-guests-padi-certificates-sharm.jpg" \
+  "/assets/images/clients/sea-college-real-guests-boat-group-red-sea.jpg"; do
   check_code "$p" "200"
 done
 
@@ -56,9 +63,9 @@ for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architect
   check_code "$p" "403"
 done
 
-echo "=== 2. Unified Tracking, GBP, Tripadvisor, Platforms, Quiz & Home SEO Checks ==="
+echo "=== 2. Unified Tracking, GBP, Tripadvisor, Real Guests, Quiz & Home SEO Checks ==="
 html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "diveoneclub.com/Listing/sea-college-dive-club"; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="de"' 'hreflang="it"' 'hreflang="fr"' 'hreflang="pl"' 'hreflang="ar"' 'hreflang="x-default"'; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))
@@ -68,18 +75,32 @@ for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "2980406819004765" 
   fi
 done
 
-ar_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/?lang=ar")
-for needle in "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg"; do
+ar_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/ar/")
+for needle in 'lang="ar" dir="rtl"' "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg" 'href="/ar/prices.php"'; do
   if grep -q "$needle" <<<"$ar_html"; then
-    echo "PASS [ar tripadvisor] $needle"
+    echo "PASS [ar clean URL & tripadvisor] $needle"
     pass=$((pass + 1))
   else
-    echo "FAIL [ar tripadvisor missing] $needle"
+    echo "FAIL [ar clean URL & tripadvisor missing] $needle"
     fail=$((fail + 1))
   fi
 done
 
-echo "=== 3. Item Page, Calculator, Dive Map & Gallery Schema Checks ==="
+echo "=== 3. 7-Language Zero-Drop & Google Ads Subdirectory Checks ==="
+for lg in ru de it fr pl; do
+  lg_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/${lg}/courses/padi-open-water-diver-sharm-el-sheikh")
+  for needle in "lang=\"${lg}\"" "href=\"/${lg}/prices.php\"" "\"inLanguage\":\"${lg}\"" "\"@type\":\"Course\""; do
+    if grep -q "$needle" <<<"$lg_html"; then
+      echo "PASS [${lg} course zero-drop] $needle"
+      pass=$((pass + 1))
+    else
+      echo "FAIL [${lg} course zero-drop] $needle"
+      fail=$((fail + 1))
+    fi
+  done
+done
+
+echo "=== 4. Item Page, Calculator, Dive Map & Gallery Schema Checks ==="
 course_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/courses/padi-open-water-diver-sharm-el-sheikh")
 for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer'; do
   if grep -q "$needle" <<<"$course_html"; then
@@ -123,11 +144,11 @@ for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card"; do
 done
 
 smap_count=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/sitemap.xml" | grep -c "<loc>" || true)
-if [[ "$smap_count" -ge 186 ]]; then
-  echo "PASS [sitemap] $smap_count <loc> URLs"
+if [[ "$smap_count" -ge 651 ]]; then
+  echo "PASS [sitemap] $smap_count <loc> URLs (93 routes x 7 languages)"
   pass=$((pass + 1))
 else
-  echo "FAIL [sitemap] expected >= 186 <loc> URLs, got $smap_count"
+  echo "FAIL [sitemap] expected >= 651 <loc> URLs, got $smap_count"
   fail=$((fail + 1))
 fi
 

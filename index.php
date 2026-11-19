@@ -175,6 +175,8 @@ require ROOT_DIR . '/includes/header.php';
       <?= ta_official_widget_html('home') ?>
     </div>
 
+    <?= render_real_guests_showcase(true) ?>
+
     <?= verified_platforms_hub_html(true) ?>
   </div>
 </section>

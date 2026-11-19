@@ -5,20 +5,33 @@
  */
 declare(strict_types=1);
 
+require_once __DIR__ . '/i18n_data.php';
+
 function item_name(array $it): string
 {
-    if (LANG === 'ar' && !empty($it['name_ar'])) {
-        return (string) $it['name_ar'];
+    $k = 'name_' . LANG;
+    if (LANG !== 'en' && !empty($it[$k])) {
+        return (string) $it[$k];
     }
     return (string) $it['name'];
 }
 
 function item_desc(array $it): string
 {
-    if (LANG === 'ar' && !empty($it['desc_ar'])) {
-        return (string) $it['desc_ar'];
+    $k = 'desc_' . LANG;
+    if (LANG !== 'en' && isset($it[$k]) && $it[$k] !== '') {
+        return (string) $it[$k];
     }
     return (string) ($it['desc'] ?? '');
+}
+
+function item_duration(array $it): string
+{
+    $k = 'duration_' . LANG;
+    if (LANG !== 'en' && !empty($it[$k])) {
+        return (string) $it[$k];
+    }
+    return (string) ($it['duration'] ?? '');
 }
 
 function item_path(array $it): string
@@ -112,14 +125,12 @@ function catalog_related(array $catalog, array $current, array $ids, int $limit 
 }
 
 /**
- * Build Schema.org FAQPage node from [[q_en, a_en, q_ar, a_ar], ...] tuples.
+ * Build Schema.org FAQPage node from normalized or multi-language FAQ tuples.
  */
-function schema_faq_pairs(array $faqs): array
+function schema_faq_pairs(array $faqs, ?array $i18nMap = null): array
 {
     $entities = [];
-    foreach ($faqs as $f) {
-        $q = LANG === 'ar' && !empty($f[2]) ? $f[2] : $f[0];
-        $a = LANG === 'ar' && !empty($f[3]) ? $f[3] : $f[1];
+    foreach (sc_resolve_faqs($faqs, $i18nMap) as [$q, $a]) {
         $entities[] = [
             '@type'          => 'Question',
             'name'           => $q,
@@ -133,13 +144,14 @@ function schema_faq_pairs(array $faqs): array
  * Rich Schema.org entity (Course / TouristTrip / Service) + Product/Offer for an item detail page.
  * @return array<int, array>
  */
-function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp): array
+function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp, ?array $resolved = null): array
 {
+    $res     = $resolved ?? sc_resolve_item_seo($it, $seo);
     $orgRef  = ['@id' => SITE_URL . '/#organization'];
     $fullUrl = canonical_url();
     $imgUrl  = url('assets/images/' . ($it['img'] ?? 'hero.jpg'));
-    $name    = loc($seo['h1'] ?? null) ?: item_name($it);
-    $desc    = loc($seo['aeo_answer'] ?? null) ?: item_desc($it);
+    $name    = $res['h1'] ?: item_name($it);
+    $desc    = $res['aeo_answer'] ?: item_desc($it);
     $type    = $seo['schema_type'] ?? (($it['section'] ?? 'tours') === 'courses' ? 'Course' : 'TouristTrip');
 
     $offer = [
@@ -160,6 +172,7 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp)
         'description' => $desc,
         'url'         => $fullUrl,
         'image'       => $imgUrl,
+        'inLanguage'  => LANG,
         'provider'    => $orgRef,
     ];
     if ($it['price'] !== null) {
@@ -170,7 +183,7 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp)
         $primary['educationalCredentialAwarded'] = str_contains($it['name'], 'PADI') || ($it['section'] ?? '') === 'courses'
             ? 'PADI Certification / Training Credit'
             : 'Diving Training';
-        $primary['availableLanguage'] = ['en', 'ar', 'ru', 'de', 'it', 'fr'];
+        $primary['availableLanguage'] = array_keys(SUPPORTED_LANGS);
         $inst = [
             '@type'      => 'CourseInstance',
             'courseMode' => 'onsite',
@@ -186,15 +199,15 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp)
         $primary['hasCourseInstance'] = $inst;
     } elseif ($type === 'TouristTrip') {
         $primary['touristType'] = ['Scuba Divers', 'Snorkelers', 'Red Sea Travellers'];
-        if (!empty($seo['steps'])) {
+        if (!empty($res['steps'])) {
             $stepList = [];
             $pos = 1;
-            foreach ($seo['steps'] as $st) {
+            foreach ($res['steps'] as [$stName, $stDesc]) {
                 $stepList[] = [
                     '@type'       => 'ListItem',
                     'position'    => $pos++,
-                    'name'        => LANG === 'ar' ? $st[1] : $st[0],
-                    'description' => LANG === 'ar' ? $st[3] : $st[2],
+                    'name'        => $stName,
+                    'description' => $stDesc,
                 ];
             }
             $primary['itinerary'] = ['@type' => 'ItemList', 'itemListElement' => $stepList];
@@ -227,8 +240,8 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp)
         ];
     }
 
-    if (!empty($seo['faqs'])) {
-        $nodes[] = schema_faq_pairs($seo['faqs']);
+    if (!empty($res['faqs'])) {
+        $nodes[] = schema_faq_pairs($res['faqs']);
     }
 
     return $nodes;

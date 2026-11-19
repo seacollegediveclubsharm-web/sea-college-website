@@ -5,9 +5,12 @@
  */
 declare(strict_types=1);
 
-return [
+require_once dirname(__DIR__) . '/includes/i18n_data.php';
+
+return sc_overlay_gallery_team([
     'filters' => [
-        'all'        => ['en' => 'All Media (18)', 'ar' => 'الكل (18)'],
+        'all'        => ['en' => 'All Media (23)', 'ar' => 'الكل (23)'],
+        'guests'     => ['en' => 'Real Guests & PADI Graduates (5)', 'ar' => 'ضيوفنا وخريجو PADI (5)'],
         'videos'     => ['en' => 'Underwater Videos (3)', 'ar' => 'فيديوهات الغوص (3)'],
         'underwater' => ['en' => 'Coral Reefs & Divers', 'ar' => 'الشعاب والغوص'],
         'courses'    => ['en' => 'PADI Courses & Kids', 'ar' => 'الدورات والأطفال'],
@@ -45,6 +48,46 @@ return [
             'title'   => ['en' => 'Giant Stride Off Our Teak Dive Deck', 'ar' => 'قفزة الغواص من منصة قارب سي كوليدج إلى البحر الأحمر'],
             'caption' => ['en' => 'Stepping off the aft dive platform into warm cobalt Red Sea water.', 'ar' => 'الانطلاق من منصة الغوص الخلفية للقارب إلى مياه البحر الأحمر الفيروزية.'],
             'item_id' => 'dive-2',
+        ],
+        [
+            'type'    => 'photo',
+            'cat'     => 'guests',
+            'src'     => 'images/clients/sea-college-real-guests-padi-certificates-sharm.jpg',
+            'title'   => ['en' => 'PADI Advanced Open Water Graduation Day', 'ar' => 'تخرج ضيوفنا بشهادة PADI Advanced Open Water'],
+            'caption' => ['en' => 'Real Sea College guests celebrating their 30 m PADI Advanced Open Water diplomas with their instructor.', 'ar' => 'ضيوف سي كوليدج يحتفلون باستلام شهادات PADI Advanced Open Water الرسمية مع مدربهم.'],
+            'item_id' => 'aowd',
+        ],
+        [
+            'type'    => 'photo',
+            'cat'     => 'guests',
+            'src'     => 'images/clients/sea-college-real-guests-boat-group-red-sea.jpg',
+            'title'   => ['en' => 'Happy International Divers & Families on Our Boat', 'ar' => 'مجموعة من ضيوفنا والعائلات على متن قارب الغوص'],
+            'caption' => ['en' => 'Verified Google & Tripadvisor guests flashing the scuba OK sign between Ras Mohammed & Tiran dives.', 'ar' => 'ضيوفنا من مختلف الجنسيات يرفعون علامة الغوص OK بين غطسات رأس محمد وتيران.'],
+            'item_id' => 'private-11-15',
+        ],
+        [
+            'type'    => 'photo',
+            'cat'     => 'guests',
+            'src'     => 'images/clients/sea-college-real-guests-wetsuits-al-montazah-beach.jpg',
+            'title'   => ['en' => 'Suited Up at Our Al Montazah Beachfront Base', 'ar' => 'الاستعداد للغوص ببدلات سي كوليدج على شاطئ المنتزه'],
+            'caption' => ['en' => 'Guests in Sea College Dive Club wetsuits ready for a calm House Reef dive opposite Tiran Island.', 'ar' => 'ضيوفنا ببدلات سي كوليدج الرسمية قبل النزول مباشرة إلى الشعاب المنزلية بالمنتزه.'],
+            'item_id' => 'dsd-2-reef',
+        ],
+        [
+            'type'    => 'photo',
+            'cat'     => 'guests',
+            'src'     => 'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg',
+            'title'   => ['en' => 'Golden-Hour Return From Tiran Reefs by Speedboat', 'ar' => 'العودة وقت الغروب من شعاب تيران بالقارب السريع'],
+            'caption' => ['en' => 'Smiling divers returning across calm Red Sea waters after an afternoon two-tank speedboat trip.', 'ar' => 'ابتسامات ضيوفنا أثناء العودة عبر مياه البحر الأحمر الهادئة بعد رحلة غوص ممتعة.'],
+            'item_id' => 'speed-2h',
+        ],
+        [
+            'type'    => 'photo',
+            'cat'     => 'guests',
+            'src'     => 'images/clients/sea-college-real-guest-dive-platform-ok-red-sea.jpg',
+            'title'   => ['en' => 'First Boat Dive Confidence on the Aft Platform', 'ar' => 'ثقة وسعادة على منصة الغوص فوق المياه الفيروزية'],
+            'caption' => ['en' => 'Why 3,082 Google & 129 Tripadvisor reviewers praise Sea College’s patient 1-on-1 supervision.', 'ar' => 'تجسيد حقيقي لسبب إشادة أكثر من 3,200 مراجعة على جوجل وتريب أدفايزر بصبر واهتمام مدربينا.'],
+            'item_id' => 'dsd-2-boat',
         ],
         [
             'type'    => 'photo',
@@ -222,7 +265,7 @@ return [
             'name_ar'   => 'مصعب ووسام (Moussab & Wesam)',
             'role'      => ['en' => 'PADI Open Water & Specialty Instructors', 'ar' => 'مدربا دورات PADI Open Water والتخصصات'],
             'focus'     => ['en' => 'Step-by-step pool-to-reef progressions, buoyancy coaching & multi-day certified packages', 'ar' => 'التدرج السلس من المسبح إلى الشعاب وإتقان الطفو وباقات الغوص لعدة أيام'],
-            'langs'     => 'AR · EN · FR · IT',
+            'langs'     => 'AR · EN · FR · IT · PL',
             'quote'     => [
                 'en' => '“Completed the Open Water course and 3 days of boat diving — great atmosphere, attentive instructors and strong safety guidance.”',
                 'ar' => '«أتممت دورة Open Water ثم 3 أيام غوص بالقارب — أجواء رائعة ومدربون يقظون واهتمام صارم بالسلامة.»',
@@ -242,4 +285,4 @@ return [
             'reviewer'  => 'Oliver Finkelde · Google Review 5★',
         ],
     ],
-];
+]);

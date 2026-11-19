@@ -45,7 +45,7 @@ $page['schema'][] = [
     'numberOfItems'   => count($listElements),
     'itemListElement' => $listElements,
 ];
-$page['schema'][] = schema_faq_pairs($siteData['faqs']);
+$page['schema'][] = schema_faq_pairs($siteData['faqs'], $siteData['faqs_i18n'] ?? null);
 
 require ROOT_DIR . '/includes/header.php';
 ?>
@@ -236,7 +236,7 @@ require ROOT_DIR . '/includes/header.php';
 <section class="section" id="faq">
   <div class="container container--narrow">
     <?= section_head('faq_title') ?>
-    <?= faq_pairs_html($siteData['faqs']) ?>
+    <?= faq_pairs_html($siteData['faqs'], $siteData['faqs_i18n'] ?? null) ?>
   </div>
 </section>
 

@@ -4,7 +4,9 @@
  */
 declare(strict_types=1);
 
-return [
+require_once dirname(__DIR__) . '/includes/i18n_data.php';
+
+return sc_overlay_items_seo([
     'items' => array_replace(
         require __DIR__ . '/seo_dives_trips.php',
         require __DIR__ . '/seo_dives_extras.php',
@@ -43,4 +45,4 @@ return [
         'padi-dive-master-course'                        => 'divemaster',
         'padi-divemaster-program'                        => 'divemaster',
     ],
-];
+]);
