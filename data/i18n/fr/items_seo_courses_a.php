@@ -291,7 +291,7 @@ return [
         'faqs' => [
             ['q' => 'Un plongeur Niveau 1 FFESSM / ANMP / CMAS 1* ou SSI peut-il s’inscrire directement ?', 'a' => 'Oui ! Les brevets Niveau 1 CMAS/FFESSM et SSI Open Water sont pleinement reconnus par PADI pour entrer directement en formation Advanced Open Water.'],
             ['q' => 'Y a-t-il un examen écrit difficile dans l’Advanced Open Water ?', 'a' => 'Aucun examen final ! Vous lisez simplement les courts chapitres des 5 thèmes choisis et révisez les questions clés avec votre moniteur avant de plonger.'],
-            ['q' => 'Quelle différence entre AOWD « Green » (380 €) et le Pack Super (400 €) ?', 'a' => 'Pour seulement 20 € d’écart, le Pack « Super » (400 €) inclut l’AOWD + la formation complète Nitrox + l’assurance plongée et les taxes (soit 75 € d’économie) !'],
+            ['q' => 'Quelle différence entre AOWD « Green » (380 €) et le Pack Super (400 €) ?', 'a' => 'Pour seulement 20 € d’écart, le Pack « Super » (400 €) inclut l’AOWD + la formation complète Nitrox + l’assurance plongée et les taxes (soit 145 € d’économie) !'],
         ],
     ],
 ];

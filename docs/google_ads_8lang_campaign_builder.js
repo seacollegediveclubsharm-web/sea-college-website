@@ -44,7 +44,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "PADI 5 Star Resort Sharm",
-      "Open Water Course EUR 380",
+      "Open Water Course EUR 400",
       "4.9 Stars - 3,082+ Reviews",
       "Private Pool & House Reef",
       "Save With Mega Bundle EUR 600",
@@ -54,7 +54,7 @@ var BLUEPRINT = [
     ],
     "descriptions": [
       "Official PADI 5 Star Dive Resort at Al Montazah. Private pool & calm House Reef.",
-      "Book PADI Open Water (EUR 380) or OWD+AOWD Mega Bundle (EUR 600). Pay on arrival!",
+      "Book PADI Open Water (EUR 400) or OWD+AOWD Mega Bundle (EUR 600). Pay on arrival!",
       "Rated 4.9 stars by 3,082+ divers on Google & Tripadvisor. Free hotel pickup.",
       "Use our live Dive Calculator for 100% transparent EUR pricing with zero hidden fees."
     ]
@@ -149,7 +149,7 @@ var BLUEPRINT = [
       "Русские Инструкторы PADI",
       "Рейтинг 4.9 (3082+ Отзыва)",
       "Пробное Погружение от 30 EUR",
-      "Курс PADI Open Water 380 EUR",
+      "Курс PADI Open Water 400 EUR",
       "Рас-Мохаммед, Тиран и Рэки",
       "Бронь Без Предоплаты (0 EUR)",
       "Свой Бассейн и Домашний Риф"
@@ -187,7 +187,7 @@ var BLUEPRINT = [
     ],
     "descriptions": [
       "Resort PADI 5* fronte mare ad Al Montazah con piscina privata e House Reef calmo.",
-      "6 immersioni 210 EUR, 10 immersioni 350 EUR, Open Water 380 EUR. Transfer incluso!"
+      "6 immersioni 210 EUR, 10 immersioni 350 EUR, Open Water 400 EUR. Transfer incluso!"
     ]
   },
   {
@@ -212,7 +212,7 @@ var BLUEPRINT = [
       "4,9 Sterne (3.082+ Bewert.)",
       "Hausriff, Pool & Tiran Boote",
       "10 Tauchgänge Paket 350 EUR",
-      "PADI Open Water Kurs 380 EUR",
+      "PADI Open Water Kurs 400 EUR",
       "Transparente EUR-Preise"
     ],
     "descriptions": [
@@ -241,7 +241,7 @@ var BLUEPRINT = [
       "Ocena 4.9 (3082+ Opinii)",
       "Intronurkowie od 30 EUR",
       "Ras Mohammed, Tiran i Wraki",
-      "Kurs PADI Open Water 380 EUR",
+      "Kurs PADI Open Water 400 EUR",
       "Rezerwacja 0 EUR Zaliczki"
     ],
     "descriptions": [
@@ -275,7 +275,7 @@ var BLUEPRINT = [
     ],
     "descriptions": [
       "Centre PADI 5* en bord de mer à Al Montazah avec piscine privée et récif maison.",
-      "Forfaits plongée, cours PADI Open Water (380 EUR) et yachts privés. Transfert inclus!"
+      "Forfaits plongée, cours PADI Open Water (400 EUR) et yachts privés. Transfert inclus!"
     ]
   },
   {
@@ -331,7 +331,7 @@ var BLUEPRINT = [
       "沙姆沙伊赫PADI五星潜店",
       "谷歌4.9分·3082+真实好评",
       "红海体验潜水30欧元起",
-      "PADI OW考证仅380欧元",
+      "PADI OW考证仅400欧元",
       "穆罕默德角与蒂朗岛船潜",
       "0元预付·含酒店免费接送"
     ],
