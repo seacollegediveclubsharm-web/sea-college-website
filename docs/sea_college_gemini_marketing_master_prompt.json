@@ -75,10 +75,7 @@
     "contacts_and_official_channels": {
       "primary_whatsapp_and_phone": "+201114567886",
       "whatsapp_deep_link": "https://wa.me/201114567886",
-      "backup_phones": [
-        "+201000344544",
-        "+201006145500"
-      ],
+      "backup_phones": [],
       "reservations_email": "info@seacollegediveclub.com",
       "youtube": "https://www.youtube.com/@seacollege.diveclub",
       "instagram": "https://www.instagram.com/seacollege.diveclub/",

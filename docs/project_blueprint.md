@@ -15,7 +15,7 @@
 | Main base | Cyrene Sharm Hotel / Ivy Cyrene Island Aqua Park Resort, Al Montazah, Sharm El Sheikh, South Sinai, Egypt | PADI + GBP + ivy-resorts.com ✅ |
 | Other branches | Jaz Dreams & Jaz Fayrouz (Naama Bay) | ⚠️ Unverified — **not published** until owner confirms |
 | Rating | 4.9 / 5 from 3,082 Google reviews | GBP ✅ (update number periodically in `site_config.php`) |
-| Phone / WhatsApp | +20 111 456 7886 (PADI + GBP) | ✅ used as primary WhatsApp. Alternate numbers (+20 100 034 4544, +20 100 614 5500) held in config |
+| Phone / WhatsApp | +201114567886 (PADI + GBP) | ✅ used as primary WhatsApp. Single unified phone & WhatsApp across entire website |
 | Email | info@seacollegediveclub.com | Website + CDWS ✅ |
 | Hours | Mon–Sun 08:00–18:00 (PADI) vs “Open 24h” (GBP) | ⚠️ Website shows 08:00–18:00; owner to align GBP |
 | Languages spoken | English, Arabic, Russian, German, Italian, French | PADI ✅ |

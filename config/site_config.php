@@ -71,8 +71,8 @@ define('BUSINESS', [
     'lat'          => 27.9805263, // Verified GBP pin latitude
     'lng'          => 34.4239091, // Verified GBP pin longitude
     'phone'        => '+201114567886',
-    'phone_display'=> '+20 111 456 7886',
-    'phone_alt'    => ['+201000344544', '+201006145500'],
+    'phone_display'=> '+201114567886',
+    'phone_alt'    => [],
     'email'        => 'info@seacollegediveclub.com',
     'hours'        => 'Mo-Su 08:00-18:00',
     'hours_display'=> 'Mon–Sun · 08:00–18:00',

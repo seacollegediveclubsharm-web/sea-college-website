@@ -991,4 +991,11 @@
   });
 
   applyCurrency();
+
+  /* Unregister any stale legacy WordPress Service Worker on returning devices */
+  if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      regs.forEach(function (r) { r.unregister(); });
+    }).catch(function () {});
+  }
 })();
