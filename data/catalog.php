@@ -251,7 +251,7 @@ return sc_overlay_catalog([
                         'desc' => 'Fast RIB drop-offs onto Tiran & local drift reefs. Min. 4 divers. Book 48 h ahead.',
                         'desc_ar' => 'وصول سريع بقارب الزودياك لمواقع تيران والشعاب القريبة (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
                         'price' => 50, 'duration' => 'Half day',
-                        'img' => 'items/sea-college-sharm-zodiac-speedboat-dive-sharm-el-sheikh.jpg',
+                        'img' => 'items/sea-college-sharm-zodiac-rib-speedboat-dive-sharm-el-sheikh.jpg',
                     ],
                     [
                         'id' => 'sup-zodiac-early', 'section' => 'tours', 'slug' => 'early-morning-zodiac-dive-hammerheads-sharm',
@@ -260,7 +260,7 @@ return sc_overlay_catalog([
                         'desc' => 'First-in-the-water dawn Zodiac run for pelagics or Million Hope. Min. 4 divers, 48 h ahead.',
                         'desc_ar' => 'انطلاق فجرًا بالزودياك قبل القوارب اليومية لرؤية الكائنات الكبيرة أو مليون هوب (4 غواصين كحد أدنى).',
                         'price' => 70, 'duration' => '3–4h',
-                        'img' => 'items/sea-college-sharm-early-morning-zodiac-dive-hammerheads-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-early-morning-zodiac-rib-dive-hammerheads-sharm.jpg',
                     ],
                     [
                         'id' => 'sup-dahab', 'section' => 'tours', 'slug' => 'dahab-dive-trip-from-sharm-el-sheikh',
@@ -883,7 +883,7 @@ return sc_overlay_catalog([
                         'desc' => 'Spacious private Red Sea motor yacht for medium groups, celebrations & multi-family holidays.',
                         'desc_ar' => 'يخت واسع للمجموعات المتوسطة والمناسبات الخاصة وإجازات العائلات في البحر الأحمر.',
                         'price' => 900, 'unit' => 'boat', 'duration' => '7–8h',
-                        'img' => 'items/sea-college-sharm-private-boat-charter-11-15-guests-sharm.jpg',
+                        'img' => 'items/sea-college-sharm-private-yacht-charter-11-15-guests-sharm.jpg',
                     ],
                     [
                         'id' => 'private-16-20', 'section' => 'tours', 'slug' => 'private-boat-charter-16-20-guests-sharm',
