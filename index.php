@@ -68,9 +68,9 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container">
     <?= section_head('explore_title', 'explore_sub') ?>
     <div class="explore">
-      <?php foreach ($explore as [$key, $href, $img]): ?>
+      <?php foreach ($explore as $eIdx => [$key, $href, $img]): ?>
         <a class="explore__card" href="<?= e($href) ?>" data-track="cta_click" data-placement="explore_<?= e($key) ?>">
-          <?= sc_picture($img, t("exp_{$key}_t") . ' — ' . t('location_sharm'), 400, 300, ['sizes' => '(max-width: 899px) 46vw, 25vw']) ?>
+          <?= sc_picture($img, t("exp_{$key}_t") . ' — ' . t('location_sharm'), 400, 300, ['loading' => $eIdx < 4 ? 'eager' : 'lazy', 'sizes' => '(max-width: 899px) 44vw, 230px']) ?>
           <span class="explore__text"><strong><?= te("exp_{$key}_t") ?></strong><small><?= te("exp_{$key}_d") ?></small></span>
         </a>
       <?php endforeach; ?>
@@ -88,7 +88,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container">
     <?= section_head('popular_title', 'popular_sub') ?>
     <div class="cards cards--4">
-      <?php foreach ($popular as $it): ?><?= product_card($it, seo_img('group-boat-dive-red-sea-divers')) ?><?php endforeach; ?>
+      <?php foreach ($popular as $pIdx => $it): ?><?= product_card($it, seo_img('group-boat-dive-red-sea-divers'), $pIdx < 4) ?><?php endforeach; ?>
     </div>
     <p class="center hero__ctas hero__ctas--center">
       <a class="btn btn--primary" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="popular_calc">🧮 <?= te('calc_jump_chip') ?></a>

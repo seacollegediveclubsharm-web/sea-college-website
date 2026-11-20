@@ -30,7 +30,7 @@ function add_button(array $it): string
 }
 
 /** Experience/product card used on home, services, category hubs & related items. */
-function product_card(array $it, string $image = 'images/hero.jpg'): string
+function product_card(array $it, string $image = 'images/hero.jpg', bool $eager = false): string
 {
     $img = !empty($it['img']) ? 'images/' . $it['img'] : $image;
     $href = !empty($it['slug']) ? item_url($it) : page_link('/prices.php');
@@ -43,7 +43,10 @@ function product_card(array $it, string $image = 'images/hero.jpg'): string
 
     $html = '<article class="pcard" data-filter-item="' . e($searchText) . '">';
     $html .= '<a class="pcard__media" href="' . e($href) . '" tabindex="-1" aria-hidden="true">';
-    $html .= sc_picture($img, $title . ' — ' . t('location_sharm'), 400, 300, ['sizes' => '(max-width: 599px) 92vw, (max-width: 899px) 46vw, 300px']);
+    $html .= sc_picture($img, $title . ' — ' . t('location_sharm'), 400, 300, [
+        'loading' => $eager ? 'eager' : 'lazy',
+        'sizes' => '(max-width: 599px) 78vw, 240px',
+    ]);
     if (!empty($it['popular'])) {
         $html .= '<span class="pcard__badge">' . te('popular') . '</span>';
     }

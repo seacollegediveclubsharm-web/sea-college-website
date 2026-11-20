@@ -63,9 +63,13 @@ function url(string $path = ''): string
 
 function asset(string $path): string
 {
-    $file = ROOT_DIR . '/assets/' . ltrim($path, '/');
+    $clean = ltrim($path, '/');
+    if (str_starts_with($clean, 'images/') || str_starts_with($clean, 'videos/')) {
+        return '/assets/' . $clean;
+    }
+    $file = ROOT_DIR . '/assets/' . $clean;
     $v = is_file($file) ? (string) filemtime($file) : '1';
-    return '/assets/' . ltrim($path, '/') . '?v=' . $v;
+    return '/assets/' . $clean . '?v=' . $v;
 }
 
 /* ---------------- i18n & Clean Language Subdirectory Routing ---------------- */
@@ -234,9 +238,9 @@ function sc_picture(string $relPath, string $alt, int $w, int $h, array $opts = 
     $has480 = is_file(ROOT_DIR . '/assets/' . $webp480Rel);
 
     $loading = $opts['loading'] ?? 'lazy';
-    $decoding = $opts['decoding'] ?? 'async';
+    $decoding = $opts['decoding'] ?? ($loading === 'eager' ? 'sync' : 'async');
     $fetchpriority = $opts['fetchpriority'] ?? '';
-    $sizes = $opts['sizes'] ?? '(max-width: 600px) 92vw, (max-width: 1200px) 46vw, 320px';
+    $sizes = $opts['sizes'] ?? ($w <= 480 ? '(max-width: 599px) 78vw, 240px' : '(max-width: 959px) 92vw, 46vw');
     $class = $opts['class'] ?? '';
     $extra = $opts['extra_attrs'] ?? '';
 

@@ -110,7 +110,7 @@ require ROOT_DIR . '/includes/header.php';
                 data-gal-link="<?= e($itemHref) ?>"
                 data-gal-link-text="<?= e($itemLabel) ?>">
           <button type="button" class="gal-item__btn" data-gal-open="<?= $idx ?>" aria-label="<?= e($pTitle) ?>">
-            <?= sc_picture($ph['src'], $pTitle . ' — ' . SITE_NAME, 480, 360, ['sizes' => '(max-width: 639px) 92vw, (max-width: 1099px) 46vw, 24vw']) ?>
+            <?= sc_picture($ph['src'], $pTitle . ' — ' . SITE_NAME, 480, 360, ['loading' => $idx < 4 ? 'eager' : 'lazy', 'sizes' => '(max-width: 639px) 78vw, 230px']) ?>
             <span class="gal-item__overlay">
               <strong dir="auto"><?= e($pTitle) ?></strong>
               <small dir="auto"><?= e($pCap) ?></small>

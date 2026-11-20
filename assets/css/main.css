@@ -112,7 +112,9 @@ bdi { unicode-bidi: isolate; }
 .switcher { font: inherit; font-size: .9rem; padding: .45rem .6rem; border-radius: var(--radius-sm); border: 1px solid var(--line); background: #fff; color: var(--navy); max-width: 100%; }
 
 /* ---------- Hero ---------- */
-picture { display: contents; }
+.hero__pic { display: contents; }
+.pcard__media picture, .explore__card picture, .item-hero__media picture, .gal-item__btn picture, .site-card__media picture, .promo-banner__media picture, .promo-side__thumb picture, .center-preview-img picture, .split__media picture, .item-thumb picture { display: block; width: 100%; height: 100%; }
+.brand picture, .promo-banner__logo-chip picture, .promo-side__brand picture { display: inline-flex; flex: none; }
 .hero { position: relative; color: #fff; background: linear-gradient(180deg, rgba(11, 29, 44, .55), rgba(11, 29, 44, .82)), var(--hero, none) center/cover no-repeat, var(--navy); padding: clamp(4rem, 12vw, 8rem) 0 clamp(3rem, 8vw, 5rem); }
 .hero--media { overflow: hidden; background: var(--navy); }
 .hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
@@ -164,7 +166,7 @@ picture { display: contents; }
 .cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 .pcard { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: box-shadow .2s, transform .2s; }
 .pcard:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-.pcard__media { position: relative; aspect-ratio: 4/3; background: var(--sand); }
+.pcard__media { position: relative; display: block; overflow: hidden; aspect-ratio: 4/3; background: var(--sand); }
 .pcard__media img { width: 100%; height: 100%; object-fit: cover; }
 .pcard__badge { position: absolute; top: .75rem; inset-inline-start: .75rem; background: var(--orange); color: #fff; font-weight: 700; font-size: .75rem; padding: .25rem .6rem; border-radius: 999px; }
 .pcard__body { display: flex; flex-direction: column; flex: 1; padding: 1rem; }

@@ -41,6 +41,9 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP_REFERER} !^https?://([a-z0-9-]+\.)?(hostingersite\.com|google\.[a-z.]+|bing\.com|yandex\.[a-z.]+|facebook\.com|instagram\.com|tripadvisor\.[a-z.]+|tiktok\.com|youtube\.com) [NC]
   RewriteRule ^assets/(images|videos)/.*\.(jpg|jpeg|png|webp|mp4)$ - [F,L,NC]
 
+  # Fast-path static assets so images/CSS/JS never evaluate page rewrite regexes
+  RewriteRule ^assets/ - [L]
+
   # Legacy WordPress & WooCommerce top-level pages / categories (301 + preserve ?gclid & UTMs via QSA)
   RewriteRule ^about-us/?$ /about.php [R=301,L,QSA]
   RewriteRule ^contact-us/?$ /contact.php [R=301,L,QSA]

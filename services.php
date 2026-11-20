@@ -70,7 +70,7 @@ require ROOT_DIR . '/includes/header.php';
           </div>
         <?php else: ?>
           <div class="cards">
-            <?php foreach ($g['items'] as $it): ?><?= product_card($it, $fallback[$slug]) ?><?php endforeach; ?>
+            <?php $sc_svc_idx = ($sc_svc_idx ?? 0); foreach ($g['items'] as $it): ?><?= product_card($it, $fallback[$slug], ($sc_svc_idx++) < 3) ?><?php endforeach; ?>
           </div>
         <?php endif; ?>
       </div>

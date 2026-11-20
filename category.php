@@ -127,7 +127,7 @@ require ROOT_DIR . '/includes/header.php';
           </div>
         <?php else: ?>
           <div class="cards">
-            <?php foreach ($g['items'] as $it): ?><?= product_card($it, $heroImg) ?><?php endforeach; ?>
+            <?php $sc_cat_idx = ($sc_cat_idx ?? 0); foreach ($g['items'] as $it): ?><?= product_card($it, $heroImg, ($sc_cat_idx++) < 3) ?><?php endforeach; ?>
           </div>
         <?php endif; ?>
       </div>
