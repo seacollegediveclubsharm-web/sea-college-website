@@ -32,17 +32,21 @@ $payload = json_encode([
     'urlList' => $urls,
 ], JSON_UNESCAPED_SLASHES);
 
-$ch = curl_init('https://api.indexnow.org/IndexNow');
-curl_setopt_array($ch, [
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $payload,
-    CURLOPT_HTTPHEADER => ['Content-Type: application/json; charset=utf-8'],
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT => 20,
-]);
-$resp = curl_exec($ch);
-$code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-echo "IndexNow response HTTP {$code}" . ($resp ? ": {$resp}" : " (Accepted!)") . "\n";
-exit(($code >= 200 && $code < 300) ? 0 : 1);
+foreach (['https://yandex.com/indexnow', 'https://api.indexnow.org/IndexNow'] as $endpoint) {
+    $ch = curl_init($endpoint);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json; charset=utf-8'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 20,
+    ]);
+    $resp = curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    echo "{$endpoint} -> HTTP {$code}" . ($resp ? ": {$resp}" : " (Accepted — all 800 URLs queued across IndexNow network!)") . "\n";
+    if ($code >= 200 && $code < 300) {
+        exit(0);
+    }
+}
+exit(1);
