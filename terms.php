@@ -6,6 +6,7 @@ require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
 
 $page['id'] = 'terms';
+$page['canonical_path'] = '/terms.php';
 $page['title'] = t('meta_terms_title');
 $page['description'] = t('meta_terms_desc');
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('footer_terms'), '/terms.php']];

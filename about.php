@@ -19,6 +19,7 @@ foreach ($galData['collections'] as $col) {
 }
 
 $page['id'] = 'about';
+$page['canonical_path'] = '/about.php';
 $page['title'] = t('meta_about_title');
 $page['description'] = t('meta_about_desc');
 $page['image'] = url('assets/images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg');

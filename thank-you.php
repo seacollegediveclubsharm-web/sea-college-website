@@ -63,72 +63,12 @@ window.SC_CONVERSION = <?= $json ?>;
       <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/')) ?>"><?= te('thanks_back') ?></a>
     </p>
   </div>
-  <?php if ($conv !== null): ?>
   <div class="container container--narrow" style="margin-top:2.5rem;text-align:start">
-    <form class="lead-form card" action="/handlers/diver_checkin.php" method="post" data-ajax-form data-event="diver_checkin" novalidate>
-      <?= csrf_field() ?>
-      <input type="hidden" name="lead_event_id" value="<?= e((string) $conv['event_id']) ?>">
-      <input type="hidden" name="lang" value="<?= e(LANG) ?>">
-      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <h2><?= te('checkin_title') ?></h2>
-      <p><?= te('checkin_sub') ?></p>
-      <div class="form-grid">
-        <div class="field">
-          <label for="ci-name"><?= te('form_name') ?></label>
-          <input id="ci-name" name="name" maxlength="100" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="ci-agency"><?= te('checkin_agency') ?></label>
-          <select id="ci-agency" name="cert_agency">
-            <option value="None / Beginner"><?= te('checkin_none') ?></option>
-            <option value="PADI">PADI</option>
-            <option value="SSI">SSI</option>
-            <option value="CMAS">CMAS</option>
-            <option value="NAUI / BSAC / Other"><?= te('checkin_other') ?></option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="ci-cert"><?= te('checkin_cert') ?></label>
-          <input id="ci-cert" name="cert_number" maxlength="50" dir="ltr">
-        </div>
-        <div class="field field--sm">
-          <label for="ci-suit"><?= te('checkin_wetsuit') ?></label>
-          <select id="ci-suit" name="wetsuit_size">
-            <option value="">—</option>
-            <?php foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $sz): ?>
-              <option value="<?= e($sz) ?>"><?= e($sz) ?></option>
-            <?php endforeach; ?>
-            <option value="Child"><?= te('checkin_child') ?></option>
-          </select>
-        </div>
-        <div class="field field--sm">
-          <label for="ci-fin"><?= te('checkin_fin') ?></label>
-          <select id="ci-fin" name="fin_size">
-            <option value="">—</option>
-            <?php foreach (['35-37', '38-39', '40-41', '42-43', '44-45', '46-47'] as $sz): ?>
-              <option value="<?= e($sz) ?>"><?= e($sz) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="field field--sm">
-          <label for="ci-bcd"><?= te('checkin_bcd') ?></label>
-          <select id="ci-bcd" name="bcd_size">
-            <option value="">—</option>
-            <?php foreach (['XS', 'S', 'M', 'L', 'XL'] as $sz): ?>
-              <option value="<?= e($sz) ?>"><?= e($sz) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="field field--full field--check">
-          <label><input type="checkbox" name="medical_waiver" value="1" required> <span><?= te('checkin_waiver') ?></span></label>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button class="btn btn--primary" type="submit"><?= te('checkin_submit') ?></button>
-      </div>
-      <p class="form-status" role="status" aria-live="polite"></p>
-    </form>
+    <?php
+    $checkin_event_id   = $conv !== null ? (string) $conv['event_id'] : '';
+    $checkin_standalone = false;
+    include ROOT_DIR . '/includes/checkin_form.php';
+    ?>
   </div>
-  <?php endif; ?>
 </section>
 <?php require ROOT_DIR . '/includes/footer.php';

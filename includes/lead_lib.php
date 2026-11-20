@@ -88,7 +88,7 @@ function sc_ip_rate_limit_exceeded(int $minIntervalSec = RATE_LIMIT_SECONDS, int
     if (($now - (int) $rec['window']) > 3600) {
         $rec = ['last' => 0, 'count' => 0, 'window' => $now];
     }
-    $blocked = (($now - (int) $rec['last']) < max(3, min($minIntervalSec, 8))) || ((int) $rec['count'] >= $maxPerHour);
+    $blocked = (($now - (int) $rec['last']) < max(1, min($minIntervalSec, 8))) || ((int) $rec['count'] >= $maxPerHour);
     if (!$blocked) {
         $rec['last'] = $now;
         $rec['count'] = (int) $rec['count'] + 1;

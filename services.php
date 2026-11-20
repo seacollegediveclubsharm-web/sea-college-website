@@ -8,6 +8,7 @@ require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'services';
+$page['canonical_path'] = '/services.php';
 $page['title'] = t('meta_services_title');
 $page['description'] = t('meta_services_desc');
 $page['image'] = url('assets/' . seo_img('group-boat-dive-red-sea-divers'));

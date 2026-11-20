@@ -42,10 +42,10 @@ AddDefaultCharset UTF-8
   RewriteRule ^assets/(images|videos)/.*\.(jpg|jpeg|png|webp|mp4)$ - [F,L,NC]
 
   # Legacy WordPress & WooCommerce top-level pages / categories (301 + preserve ?gclid & UTMs via QSA)
-  RewriteRule ^(about|about-us)/?$ /about.php [R=301,L,QSA]
-  RewriteRule ^(contact|contact-us)/?$ /contact.php [R=301,L,QSA]
-  RewriteRule ^(prices|price-list)/?$ /prices.php [R=301,L,QSA]
-  RewriteRule ^(services|shop|store)/?$ /services.php [R=301,L,QSA]
+  RewriteRule ^about-us/?$ /about.php [R=301,L,QSA]
+  RewriteRule ^contact-us/?$ /contact.php [R=301,L,QSA]
+  RewriteRule ^price-list/?$ /prices.php [R=301,L,QSA]
+  RewriteRule ^(shop|store)/?$ /services.php [R=301,L,QSA]
   RewriteRule ^(cart|checkout)/?$ /prices.php [R=301,L,QSA]
   RewriteRule ^(terms-and-conditions|terms-conditions)/?$ /terms.php [R=301,L,QSA]
   RewriteRule ^privacy/?$ /privacy-policy.php [R=301,L,QSA]
@@ -61,14 +61,21 @@ AddDefaultCharset UTF-8
 
   # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)\.php$ $2.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/?$ guides.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/([a-z0-9-]+)/?$ guide.php?lang=$1&slug=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery/?$ gallery.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
-  # Dive Sites Guide & Underwater Gallery SEO URLs (default English)
+  # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Dive Sites & Gallery (default English)
+  RewriteRule ^(services|prices|about|contact|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
+  RewriteRule ^check-in/?$ check-in.php [L,QSA]
+  RewriteRule ^guides/?$ guides.php [L,QSA]
+  RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
   RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]
   RewriteRule ^gallery/?$ gallery.php [L,QSA]
 

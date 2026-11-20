@@ -877,3 +877,103 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
   .gal-grid--4 { grid-template-columns: repeat(4, 1fr); }
 }
 
+/* ==========================================================================
+   Smart Language Pill & Hotel Pickup Zone Checker
+   ========================================================================== */
+.lang-pill { position: fixed; top: calc(var(--header-h) + .6rem); inset-inline-end: .85rem; z-index: 68; display: inline-flex; align-items: center; gap: .5rem; background: rgba(11, 29, 44, .96); color: #fff; padding: .45rem .55rem .45rem .85rem; border-radius: 999px; box-shadow: var(--shadow-lg); border: 1px solid rgba(52, 224, 161, .42); font-size: .84rem; max-width: calc(100vw - 1.7rem); backdrop-filter: blur(8px); }
+.lang-pill__msg { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.lang-pill__go { background: #34e0a1; color: #0b1d2c; font-weight: 800; font-size: .78rem; padding: .28rem .72rem; border-radius: 999px; text-decoration: none; white-space: nowrap; flex: none; }
+.lang-pill__go:hover { background: #fff; color: var(--navy); }
+.lang-pill__x { background: rgba(255, 255, 255, .12); color: #cfe3ee; border: 0; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; font-size: .78rem; line-height: 1; flex: none; }
+.lang-pill__x:hover { background: rgba(255, 255, 255, .25); color: #fff; }
+
+.hcheck { margin-bottom: 1.5rem; background: linear-gradient(180deg, #f5fbfd 0%, #ffffff 100%); border-color: #c7e1ec; }
+.hcheck__head { margin-bottom: .9rem; }
+.hcheck__head .eyebrow { margin-bottom: .35rem; }
+.hcheck__title { font-size: clamp(1.08rem, 2.2vw, 1.3rem); margin: 0 0 .25rem; }
+.hcheck__sub { font-size: .9rem; color: var(--muted); margin: 0; max-width: 68ch; }
+.hcheck__bar { display: flex; gap: .5rem; align-items: center; margin-bottom: .75rem; }
+.hcheck__input { flex: 1; min-width: 0; font: inherit; padding: .68rem .95rem; border-radius: 999px; border: 1px solid #bfd6e2; background: #fff; color: var(--ink); }
+.hcheck__input:focus { border-color: var(--ocean); outline: 2px solid rgba(10, 132, 168, .2); }
+.hcheck__zones { display: flex; flex-wrap: wrap; gap: .42rem; margin-bottom: .75rem; }
+.hcheck__zone { display: inline-flex; align-items: center; gap: .35rem; font: inherit; font-size: .81rem; font-weight: 600; padding: .38rem .72rem; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--navy); cursor: pointer; transition: border-color .15s, background-color .15s, color .15s; }
+.hcheck__zone small { color: var(--muted); font-weight: 500; }
+.hcheck__zone:hover { border-color: var(--ocean); background: #eef7fb; }
+.hcheck__zone.is-active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.hcheck__zone.is-active small { color: #9ec5db; }
+.hcheck__res { padding: .9rem 1rem; border-radius: var(--radius-sm); background: #e8f8ef; border: 1px solid #a8e2bf; margin-bottom: .65rem; }
+.hcheck__res.is-onsite { background: #e7f6fd; border-color: #93d3f0; }
+.hcheck__badge { margin: 0 0 .45rem; font-weight: 800; color: #0f5a2e; font-size: .94rem; }
+.hcheck__res.is-onsite .hcheck__badge { color: #075985; }
+.hcheck__meta { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; font-size: .87rem; color: var(--navy); }
+.hcheck__saved { display: block; margin-top: .4rem; font-size: .78rem; color: #166534; font-weight: 600; }
+.hcheck__res.is-onsite .hcheck__saved { color: #0c4a6e; }
+.hcheck__note { margin: 0; font-size: .8rem; color: var(--muted); }
+
+/* ==========================================================================
+   Item Quick-Book, Mobile Sticky Bar & Guides Article
+   ========================================================================== */
+.qbook { background: var(--sand); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .85rem; margin-bottom: .85rem; }
+.qbook__fields { display: grid; grid-template-columns: 1fr; gap: .65rem; margin-bottom: .65rem; }
+.qbook__field { display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+.qbook__field label { font-size: .78rem; font-weight: 700; color: var(--navy); }
+.qbook__field input[type="date"] { font: inherit; font-size: .88rem; padding: .48rem .6rem; border: 1px solid #cfd6dc; border-radius: var(--radius-sm); background: #fff; color: var(--ink); width: 100%; min-width: 0; }
+.qbook__qty { display: grid; grid-template-columns: 36px minmax(0, 1fr) 36px; align-items: center; border: 1px solid #cfd6dc; border-radius: var(--radius-sm); background: #fff; overflow: hidden; }
+.qbook__step { height: 36px; border: 0; background: #f2f5f7; color: var(--navy); font-weight: 800; font-size: 1.05rem; cursor: pointer; }
+.qbook__step:hover { background: var(--ocean); color: #fff; }
+.qbook__qty input { border: 0; text-align: center; font: inherit; font-weight: 700; font-size: .95rem; width: 100%; padding: .35rem .2rem; background: transparent; color: var(--navy); -moz-appearance: textfield; }
+.qbook__qty input::-webkit-outer-spin-button, .qbook__qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.qbook__hotel { margin: 0 0 .55rem; font-size: .8rem; font-weight: 600; color: #0f5a2e; background: #e8f8ef; padding: .32rem .55rem; border-radius: 6px; }
+.qbook__total { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding-top: .55rem; border-top: 1px dashed #d5d0c5; }
+.qbook__total-lbl { display: block; font-size: .82rem; font-weight: 700; color: var(--navy); }
+.qbook__formula { display: block; font-size: .75rem; color: var(--muted); }
+.qbook__total .price { font-size: 1.35rem; line-height: 1.1; }
+@media (min-width: 420px) and (max-width: 959px) {
+  .qbook__fields { grid-template-columns: 1.15fr 1fr; }
+}
+
+.mobile-item-bar { position: fixed; inset-inline: 0; bottom: 0; z-index: 62; display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .55rem .85rem calc(.55rem + env(safe-area-inset-bottom, 0px)); background: rgba(11, 29, 44, .97); color: #fff; border-top: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 -6px 24px rgba(11, 29, 44, .25); backdrop-filter: blur(8px); }
+.mobile-item-bar__price { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+.mobile-item-bar__lbl { font-size: .7rem; color: #bcd5e3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mobile-item-bar__price .price { color: #ffb38a; font-size: 1.2rem; }
+.mobile-item-bar__price .price small { color: #cfe3ee; font-size: .72rem; }
+.mobile-item-bar__btns { display: flex; align-items: center; gap: .45rem; flex: none; }
+.mobile-item-bar__btns .btn--sm { padding: .5rem .82rem; font-size: .85rem; white-space: nowrap; }
+@media (max-width: 899px) {
+  body.has-mobile-bar .wa-float { display: none; }
+  body.has-mobile-bar .minicart { bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 1.5rem); }
+  body.has-mobile-bar .footer-bottom { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (min-width: 900px) {
+  .mobile-item-bar { display: none; }
+}
+
+.guide-toc { margin-bottom: 1.75rem; background: #fbfaf7; padding: 1rem 1.2rem; }
+.guide-toc__title { display: block; color: var(--navy); font-size: .95rem; margin-bottom: .5rem; }
+.guide-toc__list { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: .32rem; font-size: .92rem; }
+.guide-toc__list a { text-decoration: none; font-weight: 600; }
+.guide-toc__list a:hover { text-decoration: underline; }
+.guide-side-title { font-size: 1.15rem; margin-bottom: .45rem; }
+
+/* ==========================================================================
+   Pre-Arrival Diver Check-In Portal
+   ========================================================================== */
+.checkin-form__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.checkin-form__head h2 { margin-bottom: .25rem; }
+.checkin-form__head p { margin: 0; color: var(--muted); max-width: 58ch; font-size: .94rem; }
+.checkin-share { display: flex; flex-direction: column; align-items: flex-start; gap: .4rem; background: var(--sand); padding: .65rem .85rem; border-radius: var(--radius-sm); border: 1px solid var(--line); max-width: 310px; }
+.checkin-share small { color: var(--muted); font-size: .78rem; line-height: 1.35; }
+.checkin-hint { margin: 0; font-size: .9rem; }
+.med-box { border: 1px solid #cfd6dc; border-radius: var(--radius); padding: 1rem 1.15rem; margin: .25rem 0; background: #fbfcfe; }
+.med-box__title { font-weight: 800; color: var(--navy); padding: 0 .4rem; font-size: .98rem; }
+.med-box__intro { font-size: .86rem; color: var(--muted); margin: 0 0 .75rem; }
+.med-box__row { display: grid; grid-template-columns: 1fr; gap: .4rem; padding: .6rem 0; border-top: 1px dashed var(--line); align-items: center; }
+.med-box__row label { font-weight: 600; font-size: .88rem; color: var(--ink); }
+.med-box__row select { max-width: 140px; padding: .45rem .65rem; }
+.med-box__status { margin: .75rem 0 0; font-size: .88rem; }
+@media (min-width: 640px) {
+  .med-box__row { grid-template-columns: 1fr 125px; gap: 1rem; }
+}
+/* === END === */
+
+

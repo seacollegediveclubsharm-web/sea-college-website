@@ -2,11 +2,11 @@
 """Build AST-minified, route-tailored CSS and JS bundles from main.css, consent.js, and main.js."""
 import gzip
 import os
+import shutil
 import subprocess
-import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ESBUILD = "/tmp/esbuild-tool/node_modules/.bin/esbuild"
+ESBUILD = shutil.which("esbuild") or "/tmp/esbuild-tool/node_modules/.bin/esbuild"
 
 
 def run_esbuild(content: str, loader: str) -> str:
@@ -76,16 +76,26 @@ def build_css() -> None:
         "/* ==========================================================================\n   Grouped Boat Fleet Albums",
         ".center-preview-img {",
     )
+    qbook_sec, work = slice_between(
+        work,
+        "/* ==========================================================================\n   Item Quick-Book, Mobile Sticky Bar & Guides Article",
+        "/* ==========================================================================\n   Pre-Arrival Diver Check-In Portal",
+    )
+    checkin_sec, work = slice_between(
+        work,
+        "/* ==========================================================================\n   Pre-Arrival Diver Check-In Portal",
+        "/* === END === */",
+    )
 
     bundles = {
         "home": work + "\n" + quiz_sec,
         "hub": work + "\n" + quiz_sec + "\n" + prices_sec,
         "prices": work + "\n" + prices_sec + "\n" + calc_sec + "\n" + print_sec,
-        "item": work + "\n" + prices_sec + "\n" + item_sec + "\n" + item_media_sec + "\n" + print_sec,
+        "item": work + "\n" + prices_sec + "\n" + item_sec + "\n" + item_media_sec + "\n" + qbook_sec + "\n" + print_sec,
         "sites": work + "\n" + prices_sec + "\n" + sites_sec,
         "gallery": work + "\n" + gallery_sec + "\n" + fleet_sec,
         "about": work + "\n" + gallery_sec + "\n" + fleet_sec,
-        "base": work + "\n" + prices_sec,
+        "base": work + "\n" + prices_sec + "\n" + checkin_sec,
     }
     print("=== CSS BUNDLES ===")
     for name, src in bundles.items():
@@ -106,6 +116,7 @@ def build_js() -> None:
     f3_marker = "  /* ---------------- Feature 3: Interactive Dive Sites SVG Map & Zone Filter ---------------- */"
     f4_marker = "  /* ---------------- Feature 4: Photo & Video Gallery Filter + Lightbox ---------------- */"
     item_marker = "  /* ---------------- Item Page Multi-Photo & Underwater Video Gallery ---------------- */"
+    checkin_marker = "  /* ---------------- Pre-Arrival Diver Check-In Portal Helpers ---------------- */"
     tail_marker = "  /* Re-sync calculator & quiz numbers whenever currency changes */"
 
     head = main[: main.index(f1_marker)]
@@ -113,7 +124,8 @@ def build_js() -> None:
     f2 = main[main.index(f2_marker) : main.index(f3_marker)]
     f3 = main[main.index(f3_marker) : main.index(f4_marker)]
     f4 = main[main.index(f4_marker) : main.index(item_marker)]
-    f_item = main[main.index(item_marker) : main.index(tail_marker)]
+    f_item = main[main.index(item_marker) : main.index(checkin_marker)]
+    f_checkin = main[main.index(checkin_marker) : main.index(tail_marker)]
     tail = main[main.index(tail_marker) :]
 
     bundles = {
@@ -122,7 +134,7 @@ def build_js() -> None:
         "item": consent + "\n" + head + f_item + tail,
         "sites": consent + "\n" + head + f3 + tail,
         "gallery": consent + "\n" + head + f4 + tail,
-        "base": consent + "\n" + head + tail,
+        "base": consent + "\n" + head + f_checkin + tail,
         "full": consent + "\n" + main,
     }
     print("=== JS BUNDLES ===")

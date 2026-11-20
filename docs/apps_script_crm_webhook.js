@@ -29,18 +29,80 @@ function doPost(e) {
         data.consent_state || ''
       ]);
     } else if (type === 'checkin') {
-      const sh = ss.getSheetByName('Checkins');
+      const sh = ss.getSheetByName('Checkins') || ss.insertSheet('Checkins');
       sh.appendRow([
         data.submitted_at || new Date().toISOString(),
         data.lead_event_id || '',
         data.name || '',
+        data.phone || '',
+        data.arrival_date || '',
+        data.hotel || '',
+        data.room_number || '',
+        data.divers_count || 1,
         data.cert_agency || '',
         data.cert_number || '',
+        data.logged_dives || '',
+        data.last_dive_date || '',
+        data.height_cm || '',
+        data.weight_kg || '',
         data.wetsuit_size || '',
         data.fin_size || '',
         data.bcd_size || '',
-        data.medical_waiver || 'yes'
+        data.nitrox_request || 'no',
+        data.medical_flags || 'all_no',
+        data.medical_waiver || 'yes',
+        data.gear_notes || ''
       ]);
+    } else if (type === 'whatsapp_click') {
+      const waSheet = ss.getSheetByName('WhatsApp_Clicks');
+      if (waSheet) {
+        waSheet.appendRow([
+          data.received_at || new Date().toISOString(),
+          data.event_id || '',
+          data.kind || 'whatsapp_click',
+          data.placement || '',
+          data.lang || 'en',
+          data.interest || '',
+          data.people || 1,
+          data.date || '',
+          data.hotel || '',
+          data.estimated_total_eur || 0,
+          data.gclid || data.gbraid || data.wbraid || '',
+          data.fbclid || '',
+          data.utm_source || '',
+          data.utm_medium || '',
+          data.utm_campaign || '',
+          data.page_url || ''
+        ]);
+      }
+      // Also log attributed / booking-intent WhatsApp clicks into Leads with Status = 'WhatsApp_Clicked'
+      // so staff can match incoming WhatsApp chats to GCLID and trigger Google Ads OCT on 'Paid'!
+      const sh = ss.getSheetByName('Leads');
+      if (sh && (data.gclid || data.gbraid || data.wbraid || data.fbclid || !waSheet)) {
+        sh.appendRow([
+          data.received_at || new Date().toISOString(),
+          data.event_id || '',
+          'WhatsApp_Clicked',
+          '',
+          '(WhatsApp Click — ' + (data.placement || 'site') + ')',
+          '',
+          '',
+          data.interest || '',
+          data.people || 1,
+          data.date || '',
+          data.hotel || '',
+          '',
+          data.lang || 'en',
+          data.estimated_total_eur || 0,
+          JSON.stringify([{ item_id: data.item_id || '', page: data.page_url || '' }]),
+          data.gclid || data.gbraid || data.wbraid || '',
+          data.fbclid || '',
+          data.utm_source || '',
+          data.utm_medium || '',
+          data.utm_campaign || '',
+          ''
+        ]);
+      }
     } else {
       const sh = ss.getSheetByName('Leads');
       sh.appendRow([

@@ -385,3 +385,82 @@ function render_real_guests_showcase(bool $dark = false): string
     <?php
     return (string) ob_get_clean();
 }
+
+/**
+ * Interactive Sharm El Sheikh Hotel Pickup Zone & Transfer Time Checker.
+ * Confirms free air-conditioned resort pickup, displays drive time + morning window,
+ * persists to localStorage (`sc_hotel`), and auto-fills booking/check-in hotel inputs + WhatsApp quotes.
+ */
+function render_hotel_pickup_checker(string $context = 'prices'): string
+{
+    static $seq = 0;
+    $seq++;
+    $hz = require ROOT_DIR . '/data/hotel_zones.php';
+    $zonesJs = [];
+    foreach ($hz['zones'] as $zKey => $z) {
+        $zonesJs[$zKey] = [
+            'label'  => loc($z['label']),
+            'drive'  => loc($z['drive']),
+            'pickup' => (string) $z['pickup'],
+        ];
+    }
+    $hotelsJs = [];
+    foreach ($hz['hotels'] as $h) {
+        $hotelsJs[] = [
+            'n' => (string) $h['name'],
+            'z' => (string) $h['zone'],
+            'o' => !empty($h['onsite']) ? 1 : 0,
+        ];
+    }
+    $cfgJson = e((string) json_encode([
+        'context' => $context,
+        'zones'   => $zonesJs,
+        'hotels'  => $hotelsJs,
+        'i18n'    => [
+            'freeBadge'   => t('hc_free_badge'),
+            'onsiteBadge' => t('hc_onsite_badge'),
+        ],
+    ], JSON_UNESCAPED_UNICODE));
+    $listId = 'sc-hotel-list-' . $seq;
+
+    ob_start();
+    ?>
+    <div class="hcheck card no-print hcheck--<?= e($context) ?>" data-hotel-checker="<?= $cfgJson ?>">
+      <div class="hcheck__head">
+        <span class="eyebrow">🚐 <?= te('hc_eyebrow') ?></span>
+        <h3 class="hcheck__title"><?= te('hc_title') ?></h3>
+        <p class="hcheck__sub"><?= te('hc_sub') ?></p>
+      </div>
+      <div class="hcheck__bar">
+        <input type="search" class="hcheck__input" list="<?= e($listId) ?>" data-hc-input placeholder="<?= te('hc_placeholder') ?>" aria-label="<?= te('hc_title') ?>" autocomplete="off">
+        <button type="button" class="btn btn--ghost btn--sm" data-hc-clear hidden><?= te('hc_clear') ?></button>
+        <datalist id="<?= e($listId) ?>">
+          <?php foreach ($hz['hotels'] as $h): ?>
+            <option value="<?= e($h['name']) ?>"><?= e($zonesJs[$h['zone']]['label'] ?? '') ?> (<?= e($zonesJs[$h['zone']]['drive'] ?? '') ?>)</option>
+          <?php endforeach; ?>
+        </datalist>
+      </div>
+      <div class="hcheck__zones" role="group" aria-label="<?= te('hc_zone_label') ?>">
+        <?php foreach ($zonesJs as $zKey => $zInfo): ?>
+          <button type="button" class="hcheck__zone" data-hc-zone="<?= e($zKey) ?>" aria-pressed="false">
+            <span>📍 <?= e($zInfo['label']) ?></span>
+            <small dir="ltr"><?= e($zInfo['drive']) ?></small>
+          </button>
+        <?php endforeach; ?>
+      </div>
+      <div class="hcheck__res" data-hc-result hidden aria-live="polite">
+        <p class="hcheck__badge" data-hc-badge></p>
+        <div class="hcheck__meta">
+          <span class="hcheck__hotel-chip" data-hc-hotel-wrap hidden>🏨 <strong data-hc-hotel dir="auto"></strong></span>
+          <span>🗺️ <?= te('hc_zone_label') ?>: <strong data-hc-zname dir="auto"></strong></span>
+          <span>🚐 <?= te('hc_drive_label') ?>: <strong data-hc-drive dir="ltr"></strong></span>
+          <span>🕗 <?= te('hc_pickup_label') ?>: <strong data-hc-pickup dir="ltr"></strong></span>
+        </div>
+        <small class="hcheck__saved"><?= te('hc_saved_note') ?></small>
+      </div>
+      <p class="hcheck__note"><?= te('hc_custom_note') ?></p>
+    </div>
+    <?php
+    return (string) ob_get_clean();
+}
+

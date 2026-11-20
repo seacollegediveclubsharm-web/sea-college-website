@@ -2,7 +2,7 @@
 /** English dictionary (default / fallback for every key). */
 declare(strict_types=1);
 
-return [
+return array_replace([
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | PADI 5 Star Dive Center & Scuba Diving in Sharm El Sheikh',
     'meta_home_desc' => 'PADI 5 Star dive center in Sharm El Sheikh: scuba diving packages, clear 2026 prices from €30, PADI courses & daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm. 4.9★ (3,082 Google reviews).',
@@ -525,4 +525,4 @@ return [
     'side_promo_1' => '€0 upfront card charge — pay at the dive center',
     'side_promo_2' => 'Free Sharm El Sheikh hotel pickup on dive packages',
     'side_promo_3' => 'Training pool + beachfront House Reef + dive boats',
-];
+], (require __DIR__ . '/features_v2_i18n.php')['en']);

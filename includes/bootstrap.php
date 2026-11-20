@@ -31,7 +31,7 @@ function sc_ensure_session(): void
         session_start();
     }
 }
-if ((($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') || !empty($_COOKIE['sc_sid'])) {
+if (!defined('SC_NO_SESSION') && ((($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') || !empty($_COOKIE['sc_sid']))) {
     sc_ensure_session();
 }
 

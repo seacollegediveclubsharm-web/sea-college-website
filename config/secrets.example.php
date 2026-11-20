@@ -1,29 +1,36 @@
 <?php
 /**
- * Copy to config/secrets.php (git-ignored) and fill in. Any key here overrides the
- * default in site_config.php. Leave a value '' to keep that integration disabled.
+ * Sea College Dive Club — Production Secrets Template (`config/secrets.example.php`).
+ *
+ * Usage on Hostinger (hPanel):
+ *   1. Copy this file to `config/secrets.php` (git-ignored) via hPanel File Manager or SSH.
+ *   2. Fill in the live tokens/passwords below. Leave any unused key as `''`.
+ *   3. Run `php docs/verify_integrations.php` via SSH to verify live connectivity.
  */
 declare(strict_types=1);
 
 return [
-    // 'SITE_ENV' => 'production',          // switch on at launch (enables indexing)
-    // 'SITE_URL' => 'https://www.seacollegediveclub.com',
-    'GTM_ID' => '',
-    'GA4_ID' => '',
-    'GOOGLE_ADS_ID' => '',
-    'GOOGLE_ADS_LEAD_LABEL' => '',
-    'GSC_VERIFICATION' => '',
-    'META_PIXEL_ID' => '',
-    'META_CAPI_TOKEN' => '',
-    'META_CAPI_TEST_CODE' => '',
-    'TIKTOK_PIXEL_ID' => '',
-    'LINKEDIN_PARTNER_ID' => '',
+    // 1. Environment ('production' on seacollegediveclub.com, 'staging' on preview hosts)
+    'SITE_ENV' => 'production',
+    'SITE_URL' => 'https://seacollegediveclub.com',
+
+    // 2. Google Business Profile (Places API New v1 — live 6h auto-sync of 4.9★ & 3,082+ reviews)
     'GOOGLE_PLACES_API_KEY' => '',
-    'GOOGLE_PLACE_ID' => 'ChIJ75cBQp5LUxQRMjrNYQx93g0',
+
+    // 3. Tripadvisor Content API (optional — falls back to verified #26104236 seed + official widget)
     'TRIPADVISOR_API_KEY' => '',
-    'TRIPADVISOR_LOCATION_ID' => '26104236',
-    'CRM_WEBHOOK_URL' => '',
-    'LEAD_NOTIFY_EMAIL' => '',
-    'SMTP_USER' => '',
+
+    // 4. Meta Conversions API (Server-Side CAPI de-duplicated with Pixel 2980406819004765 via event_id)
+    'META_CAPI_TOKEN'     => '',
+    'META_CAPI_TEST_CODE' => '',
+
+    // 5. Hostinger SMTPS (smtp.hostinger.com:465 implicit TLS — falls back to PHP mail() if empty)
+    'SMTP_HOST' => 'smtp.hostinger.com',
+    'SMTP_PORT' => '465',
+    'SMTP_USER' => 'info@seacollegediveclub.com',
     'SMTP_PASS' => '',
+    'MAIL_FROM' => 'info@seacollegediveclub.com',
+
+    // 6. Google Sheets Leads & Google Ads OCT CRM Webhook (Sheet 1ItvQGWnrHwnSbyGDoGNtV2CkVwNJXIyU_aaIFxIOGbc)
+    'CRM_WEBHOOK_URL' => 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec',
 ];

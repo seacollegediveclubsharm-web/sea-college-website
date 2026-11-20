@@ -5,4 +5,5 @@ declare(strict_types=1);
 return array_replace(
     require __DIR__ . '/zh_part1.php',
     require __DIR__ . '/zh_part2.php',
+    (require __DIR__ . '/features_v2_i18n.php')['zh'],
 );

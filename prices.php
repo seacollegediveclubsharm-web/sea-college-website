@@ -8,6 +8,7 @@ require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'prices';
+$page['canonical_path'] = '/prices.php';
 $page['title'] = t('meta_prices_title');
 $page['description'] = t('meta_prices_desc');
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_prices'), '/prices.php']];
@@ -27,6 +28,7 @@ require ROOT_DIR . '/includes/header.php';
       <a class="chip" href="#dive-calculator">🧮 <?= te('calc_jump_chip') ?></a>
       <a class="chip" href="#price-tables">📋 <?= te('prices_jump_tables') ?></a>
       <a class="chip" href="<?= e(page_link('/#dive-finder-quiz')) ?>">🧭 <?= te('quiz_jump_chip') ?></a>
+      <a class="chip" href="<?= e(page_link('/guides')) ?>">📘 <?= te('nav_guides') ?></a>
     </nav>
     <ol class="stepper" aria-label="Booking steps">
       <?php for ($i = 1; $i <= 4; $i++): ?>
@@ -40,6 +42,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container">
     <?= render_top_promo_banner('dives', 'prices_top_banner') ?>
     <?= render_budget_calculator($catalog, '#booking') ?>
+    <?= render_hotel_pickup_checker('prices') ?>
   </div>
 </section>
 

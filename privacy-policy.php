@@ -9,6 +9,7 @@ require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
 
 $page['id'] = 'privacy';
+$page['canonical_path'] = '/privacy-policy.php';
 $page['title'] = t('meta_privacy_title');
 $page['description'] = t('meta_privacy_desc');
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('footer_privacy'), '/privacy-policy.php']];

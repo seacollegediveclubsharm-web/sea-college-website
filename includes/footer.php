@@ -34,8 +34,10 @@ declare(strict_types=1);
         <li><a href="<?= e(page_link('/padi-course-bundles-sharm-el-sheikh')) ?>"><?= te('footer_hub_bundles') ?></a></li>
         <li><a href="<?= e(page_link('/snorkeling-and-boats-sharm-el-sheikh')) ?>"><?= te('footer_hub_boats') ?></a></li>
         <li><a href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>"><?= te('nav_dive_sites') ?></a></li>
+        <li><a href="<?= e(page_link('/guides')) ?>"><?= te('nav_guides') ?></a></li>
         <li><a href="<?= e(page_link('/gallery')) ?>"><?= te('nav_gallery') ?></a></li>
         <li><a href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>"><?= te('calc_jump_chip') ?></a></li>
+        <li><a href="<?= e(page_link('/check-in')) ?>"><?= te('nav_checkin') ?></a></li>
         <li><a href="<?= e(page_link('/about.php')) ?>"><?= te('nav_about') ?></a></li>
         <li><a href="<?= e(page_link('/contact.php')) ?>"><?= te('nav_contact') ?></a></li>
       </ul>

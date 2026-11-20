@@ -41,6 +41,11 @@ $sc_client = [
         'people' => t('form_people'), 'date' => t('form_date'), 'hotel' => t('form_hotel'),
         'name' => t('form_name'), 'level' => t('form_level'),
         'minicartItems' => t('minicart_items'),
+        'qbTotal' => t('qb_est_total'), 'qbPickupTag' => t('qb_pickup_tag'),
+        'checkinWaHeader' => t('checkin_wa_header'), 'checkinCopied' => t('checkin_copied'),
+        'adviseRecent' => t('checkin_advise_recent'), 'adviseCheck' => t('checkin_advise_check'),
+        'adviseReview' => t('checkin_advise_review'),
+        'medYesNote' => t('checkin_med_yes_note'), 'medAllNo' => t('checkin_med_all_no'),
     ],
 ];
 $sc_json = json_encode($sc_client, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);

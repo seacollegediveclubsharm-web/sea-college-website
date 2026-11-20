@@ -118,7 +118,7 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <?php require ROOT_DIR . '/includes/schema.php'; ?>
 <script src="<?= e(asset('js/dist/' . $sc_js_key . '.min.js')) ?>" defer></script>
 </head>
-<body class="page-<?= e($page['id']) ?>">
+<body class="page-<?= e($page['id']) ?><?= !empty($page['body_class']) ? ' ' . e((string) $page['body_class']) : '' ?>">
 <?php require ROOT_DIR . '/includes/tracking_body.php'; ?>
 <a class="skip-link" href="#main"><?= te('skip_to_content') ?></a>
 <?php require ROOT_DIR . '/includes/navbar.php'; ?>

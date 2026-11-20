@@ -9,6 +9,7 @@ $pages = [
     ['/', '1.0', 'weekly', '/index.php'],
     ['/services.php', '0.9', 'weekly', '/services.php'],
     ['/dive-sites-sharm-el-sheikh', '0.9', 'weekly', '/dive-sites.php'],
+    ['/guides', '0.85', 'weekly', '/guides.php'],
     ['/prices.php', '0.9', 'weekly', '/prices.php'],
     ['/gallery', '0.8', 'weekly', '/gallery.php'],
     ['/about.php', '0.6', 'monthly', '/about.php'],
@@ -16,6 +17,17 @@ $pages = [
     ['/privacy-policy.php', '0.2', 'yearly', '/privacy-policy.php'],
     ['/terms.php', '0.2', 'yearly', '/terms.php'],
 ];
+
+if (is_file(__DIR__ . '/data/guides.php')) {
+    $rawGuides = require __DIR__ . '/data/guides.php';
+    $guideList = isset($rawGuides['guides']) && is_array($rawGuides['guides']) ? $rawGuides['guides'] : (is_array($rawGuides) ? $rawGuides : []);
+    foreach ($guideList as $gKey => $gItem) {
+        $gSlug = is_array($gItem) ? (string) ($gItem['slug'] ?? (is_string($gKey) ? $gKey : '')) : '';
+        if ($gSlug !== '') {
+            $pages[] = ['/guides/' . $gSlug, '0.85', 'monthly', '/data/guides.php'];
+        }
+    }
+}
 
 foreach ($catalog as $cat) {
     if (!empty($cat['hub_slug'])) {

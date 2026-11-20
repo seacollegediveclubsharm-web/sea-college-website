@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
 $catalog       = require ROOT_DIR . '/data/catalog.php';
@@ -68,6 +69,7 @@ $metaDesc  = $resolved['meta_desc'];
 $aeoText   = $resolved['aeo_answer'];
 
 $page['id']             = 'item';
+$page['body_class']     = 'has-mobile-bar';
 $page['nav_active']     = 'services';
 $page['canonical_path'] = $itemPath;
 $page['title']          = $metaTitle;
@@ -254,6 +256,8 @@ require ROOT_DIR . '/includes/header.php';
 
         <?= comparison_table_html((string) ($seo['compare_mode'] ?? 'none'), $catalog, $it['id']) ?>
 
+        <?= render_hotel_pickup_checker('item') ?>
+
         <?php if ($idealFor): ?>
         <div class="item-block">
           <h2><?= te('ideal_for_title') ?></h2>
@@ -297,10 +301,43 @@ require ROOT_DIR . '/includes/header.php';
           </div>
           <p class="book-card__unit"><?= te('indicative_rate') ?></p>
 
+          <?php if ($it['price'] !== null): ?>
+          <div class="qbook no-print"
+               data-quick-book
+               data-qb-id="<?= e($it['id']) ?>"
+               data-qb-name="<?= e(item_name($it)) ?>"
+               data-qb-raw-name="<?= e($it['name']) ?>"
+               data-qb-price="<?= e((string) $it['price']) ?>"
+               data-qb-unit="<?= e((string) ($it['unit'] ?? '')) ?>">
+            <div class="qbook__fields">
+              <div class="qbook__field">
+                <label for="qb-date"><?= te('qb_date_label') ?></label>
+                <input id="qb-date" type="date" min="<?= e(date('Y-m-d')) ?>" data-qb-date>
+              </div>
+              <div class="qbook__field">
+                <label for="qb-qty"><?= te(($it['unit'] ?? '') === 'boat' ? 'qb_boats_label' : 'qb_divers_label') ?></label>
+                <div class="qbook__qty">
+                  <button type="button" class="qbook__step" data-qb-step="-1" aria-label="−">−</button>
+                  <input id="qb-qty" type="number" min="1" max="30" value="1" data-qb-qty>
+                  <button type="button" class="qbook__step" data-qb-step="1" aria-label="+">+</button>
+                </div>
+              </div>
+            </div>
+            <p class="qbook__hotel" data-qb-hotel-badge hidden>🚐 <span data-qb-hotel-text></span></p>
+            <div class="qbook__total">
+              <div>
+                <span class="qbook__total-lbl"><?= te('qb_est_total') ?></span>
+                <small class="qbook__formula" data-qb-formula dir="ltr">1 × <?= e(money($it['price'])) ?> = <?= e(money($it['price'])) ?></small>
+              </div>
+              <strong class="price" data-qb-total data-eur="<?= e((string) $it['price']) ?>"><bdi dir="ltr"><?= e(money($it['price'])) ?></bdi></strong>
+            </div>
+          </div>
+          <?php endif; ?>
+
           <div class="book-card__actions">
             <?= add_button($it) ?>
-            <a class="btn btn--primary btn--block" href="#booking" data-track="cta_click" data-placement="item_book_anchor"><?= te('reserve_online') ?></a>
-            <a class="btn btn--wa btn--block" href="<?= e(whatsapp_link($it['name'], 'item_sidebar')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="item_sidebar">
+            <a class="btn btn--primary btn--block" href="#booking" data-qb-reserve data-track="cta_click" data-placement="item_book_anchor"><?= te('reserve_online') ?></a>
+            <a class="btn btn--wa btn--block" href="<?= e(whatsapp_link($it['name'], 'item_sidebar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_quickbook">
               <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('ask_whatsapp') ?></span>
             </a>
           </div>
@@ -347,4 +384,20 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 <?php endif; ?>
+<div class="mobile-item-bar no-print" role="region" aria-label="<?= e(item_name($it)) ?>">
+  <div class="mobile-item-bar__price">
+    <?php if ($it['price'] !== null): ?>
+      <small class="mobile-item-bar__lbl" data-qb-bar-qty><?= te('from') ?></small>
+      <span class="price" data-qb-bar-total data-eur="<?= e((string) $it['price']) ?>"><bdi dir="ltr"><?= e(money($it['price'])) ?></bdi></span>
+    <?php else: ?>
+      <?= price_html($it['price'], $it['unit'] ?? '') ?>
+    <?php endif; ?>
+  </div>
+  <div class="mobile-item-bar__btns">
+    <a class="btn btn--wa btn--sm" href="<?= e(whatsapp_link($it['name'], 'item_sticky_bar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_sticky_bar">
+      <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('qb_wa_cta') ?></span>
+    </a>
+    <a class="btn btn--primary btn--sm" href="#booking" data-qb-reserve data-track="cta_click" data-placement="item_sticky_reserve"><?= te('qb_reserve_cta') ?></a>
+  </div>
+</div>
 <?php require ROOT_DIR . '/includes/footer.php';

@@ -41,10 +41,122 @@
     });
   }
 
-  /* ---------------- Language switch ---------------- */
+  /* ---------------- Language switch & Smart Browser-Language Suggestion Pill ---------------- */
   $$('[data-lang-switch]').forEach(function (sel) {
-    sel.addEventListener('change', function () { if (sel.value) { location.href = sel.value; } });
+    sel.addEventListener('change', function () {
+      try { localStorage.setItem('sc_lang_dismiss', '1'); } catch (e) { /* ignore */ }
+      if (sel.value) { location.href = sel.value; }
+    });
   });
+
+  (function initLangSuggestPill() {
+    if ((SC.lang || 'en') !== 'en') { return; }
+    var ua = String((navigator && navigator.userAgent) || '');
+    if (/bot|crawl|spider|slurp|lighthouse|pagespeed|gtmetrix|headless/i.test(ua)) { return; }
+    try { if (localStorage.getItem('sc_lang_dismiss') === '1') { return; } } catch (e) { /* ignore */ }
+    var rawLang = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    var code = rawLang.split(/[-_]/)[0];
+    var copy = {
+      ru: { flag: '🇷🇺', msg: 'Открыть сайт на русском?', cta: 'Переключить', dir: 'ltr' },
+      it: { flag: '🇮🇹', msg: 'Vedere il sito in italiano?', cta: 'Cambia', dir: 'ltr' },
+      pl: { flag: '🇵🇱', msg: 'Otworzyć stronę po polsku?', cta: 'Przełącz', dir: 'ltr' },
+      de: { flag: '🇩🇪', msg: 'Seite auf Deutsch anzeigen?', cta: 'Wechseln', dir: 'ltr' },
+      fr: { flag: '🇫🇷', msg: 'Voir le site en français ?', cta: 'Changer', dir: 'ltr' },
+      ar: { flag: '🇪🇬', msg: 'هل تفضل تصفح الموقع بالعربية؟', cta: 'تبديل اللغة', dir: 'rtl' },
+      zh: { flag: '🇨🇳', msg: '切换到中文版网站？', cta: '切换中文', dir: 'ltr' }
+    }[code];
+    if (!copy) { return; }
+    var altLink = document.querySelector('link[rel="alternate"][hreflang="' + code + '"]');
+    if (!altLink || !altLink.href) { return; }
+    var dest = altLink.href;
+    try {
+      var u = new URL(altLink.href, location.origin);
+      dest = u.pathname + (location.search || '') + (location.hash || '');
+    } catch (e) { /* fallback to full href */ }
+    var pill = document.createElement('div');
+    pill.className = 'lang-pill no-print';
+    pill.setAttribute('dir', copy.dir);
+    pill.setAttribute('lang', code);
+    pill.innerHTML = '<span class="lang-pill__msg">' + copy.flag + ' ' + copy.msg + '</span>' +
+      '<a class="lang-pill__go" href=""></a>' +
+      '<button type="button" class="lang-pill__x" aria-label="Close">✕</button>';
+    var goA = pill.querySelector('.lang-pill__go');
+    goA.href = dest;
+    goA.textContent = copy.cta;
+    goA.addEventListener('click', function () {
+      try { localStorage.setItem('sc_lang_dismiss', '1'); } catch (e) { /* ignore */ }
+      track('lang_suggest_accept', { target_lang: code });
+    });
+    pill.querySelector('.lang-pill__x').addEventListener('click', function () {
+      try { localStorage.setItem('sc_lang_dismiss', '1'); } catch (e) { /* ignore */ }
+      pill.remove();
+      track('lang_suggest_dismiss', { target_lang: code });
+    });
+    document.body.appendChild(pill);
+  })();
+
+  /* ---------------- Attribution cache & Server-Side Click Beacon + Saved Hotel ---------------- */
+  var clickAttr = (function () {
+    var keys = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    var cached = {};
+    try { cached = JSON.parse(sessionStorage.getItem('sc_click_attr') || '{}') || {}; } catch (e) { cached = {}; }
+    try {
+      var sp = new URLSearchParams(location.search);
+      var updated = false;
+      keys.forEach(function (k) {
+        var v = sp.get(k);
+        if (v) { cached[k] = v; updated = true; }
+      });
+      if (updated) { sessionStorage.setItem('sc_click_attr', JSON.stringify(cached)); }
+    } catch (e) { /* ignore */ }
+    return cached;
+  })();
+
+  var savedHotel = store.get('sc_hotel', null);
+  var hotelHooks = [];
+  function syncHotelInputs() {
+    var hName = savedHotel && savedHotel.name ? String(savedHotel.name) : '';
+    if (hName) {
+      $$('input[name="hotel"]').forEach(function (inp) {
+        if (!inp.value) { inp.value = hName; }
+      });
+    }
+    hotelHooks.forEach(function (fn) { fn(savedHotel); });
+  }
+  function setSavedHotel(obj, overwriteInputs) {
+    savedHotel = obj;
+    store.set('sc_hotel', obj);
+    if (overwriteInputs && obj && obj.name) {
+      $$('input[name="hotel"]').forEach(function (inp) { inp.value = obj.name; });
+    }
+    syncHotelInputs();
+  }
+
+  function sendClickBeacon(payload) {
+    var p = Object.assign({
+      kind: 'whatsapp_click',
+      placement: 'general',
+      page_url: location.href,
+      lang: SC.lang || 'en',
+      hotel: (savedHotel && savedHotel.name) ? savedHotel.name : ''
+    }, clickAttr, payload || {});
+    var json = JSON.stringify(p);
+    try {
+      if (navigator.sendBeacon) {
+        var blob = new Blob([json], { type: 'application/json' });
+        if (navigator.sendBeacon('/handlers/wa_click_beacon.php', blob)) { return; }
+      }
+    } catch (e) { /* fallback to fetch */ }
+    try {
+      fetch('/handlers/wa_click_beacon.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: json,
+        keepalive: true,
+        credentials: 'same-origin'
+      }).catch(function () {});
+    } catch (e) { /* ignore */ }
+  }
 
   /* ---------------- Currency (display only; bookings are in EUR) ---------------- */
   var rates = SC.currencyRates || { EUR: 1 };
@@ -276,13 +388,22 @@
     });
     var msg = get('message'); if (msg) { lines.push('', msg); }
     var placement = btn.getAttribute('data-placement') || 'form_wa';
-    var src = get('utm_source') || 'website';
-    var camp = get('utm_campaign') || placement;
+    var src = get('utm_source') || clickAttr.utm_source || 'website';
+    var camp = get('utm_campaign') || clickAttr.utm_campaign || placement;
     lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
     var convVal = totalVal > 0 ? totalVal : 30;
     track('begin_checkout', { value: convVal, currency: 'EUR' });
     track('whatsapp_click', { placement: placement, value: convVal, currency: 'EUR' });
     track('contact', { method: 'whatsapp', placement: placement });
+    sendClickBeacon({
+      kind: 'whatsapp_click',
+      placement: placement,
+      item_name: get('interest') || (cart[0] && cart[0].name) || '',
+      value: convVal,
+      date: get('date'),
+      qty: parseInt(get('people'), 10) || 1,
+      hotel: get('hotel') || ((savedHotel && savedHotel.name) || '')
+    });
     if (window.scLoadTags) { window.scLoadTags(); }
     if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
       window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
@@ -296,6 +417,7 @@
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a, [data-track]');
     if (!a) { return; }
+    if (a.hasAttribute('data-wa-from-form') || a.hasAttribute('data-calc-wa') || a.hasAttribute('data-qb-wa') || a.hasAttribute('data-checkin-wa')) { return; }
     var kind = a.getAttribute('data-track');
     var href = a.getAttribute('href') || '';
     if (!kind && a.tagName === 'A') {
@@ -309,6 +431,15 @@
     track(kind, params);
     if (kind === 'cta_click' || kind === 'outbound_link') { return; }
     // whatsapp / phone / email = contact intent
+    if (kind === 'whatsapp_click' || kind === 'phone_click') {
+      sendClickBeacon({
+        kind: kind,
+        placement: params.placement || 'general',
+        item_id: (SC.item && SC.item.id) || '',
+        item_name: (SC.item && SC.item.name) || '',
+        value: (SC.item && parseFloat(SC.item.price)) || 0
+      });
+    }
     if (window.scLoadTags) { window.scLoadTags(); }
     track('contact', { method: kind.replace('_click', ''), placement: params.placement });
     if (SC.adsDirect && SC.adsId && typeof window.gtag === 'function') {
@@ -321,6 +452,120 @@
     if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: kind }); }
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: kind }); }
   });
+
+  /* ---------------- Interactive Sharm Hotel Pickup Zone & Transfer Time Checker ---------------- */
+  $$('[data-hotel-checker]').forEach(function (box) {
+    var cfg = {};
+    try { cfg = JSON.parse(box.getAttribute('data-hotel-checker') || '{}'); } catch (e) { return; }
+    var zones = cfg.zones || {};
+    var hotels = cfg.hotels || [];
+    var H = cfg.i18n || {};
+    var inp = $('[data-hc-input]', box);
+    var clr = $('[data-hc-clear]', box);
+    var zBtns = $$('[data-hc-zone]', box);
+    var res = $('[data-hc-result]', box);
+    var elBadge = $('[data-hc-badge]', box);
+    var elHotelWrap = $('[data-hc-hotel-wrap]', box);
+    var elHotel = $('[data-hc-hotel]', box);
+    var elZName = $('[data-hc-zname]', box);
+    var elDrive = $('[data-hc-drive]', box);
+    var elPickup = $('[data-hc-pickup]', box);
+
+    function showResult(obj, persist) {
+      if (!obj || !zones[obj.zone]) {
+        if (res) { res.hidden = true; }
+        zBtns.forEach(function (b) { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+        return;
+      }
+      var z = zones[obj.zone];
+      zBtns.forEach(function (b) {
+        var on = b.getAttribute('data-hc-zone') === obj.zone;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+      if (res) {
+        res.hidden = false;
+        res.classList.toggle('is-onsite', !!obj.onsite);
+      }
+      if (elBadge) { elBadge.textContent = obj.onsite ? (H.onsiteBadge || '🏖️ On-Site Base') : (H.freeBadge || '✓ Free Transfer'); }
+      if (elHotelWrap && elHotel) {
+        elHotelWrap.hidden = !obj.name;
+        elHotel.textContent = obj.name || '';
+      }
+      if (elZName) { elZName.textContent = z.label || ''; }
+      if (elDrive) { elDrive.textContent = obj.onsite ? '0 min' : (z.drive || ''); }
+      if (elPickup) { elPickup.textContent = obj.onsite ? '08:10' : (z.pickup || ''); }
+      if (clr) { clr.hidden = false; }
+      if (persist) {
+        var record = {
+          name: obj.name || z.label,
+          zone: obj.zone,
+          zoneLabel: z.label,
+          drive: obj.onsite ? '0 min' : z.drive,
+          pickup: obj.onsite ? '08:10' : z.pickup,
+          onsite: !!obj.onsite
+        };
+        setSavedHotel(record, true);
+        track('hotel_pickup_check', { hotel_zone: obj.zone, hotel_name: record.name });
+      }
+    }
+
+    function matchHotel(q) {
+      var clean = String(q || '').trim().toLowerCase();
+      if (clean.length < 2) { return null; }
+      for (var i = 0; i < hotels.length; i++) {
+        if (hotels[i].n.toLowerCase() === clean) { return hotels[i]; }
+      }
+      for (var j = 0; j < hotels.length; j++) {
+        if (hotels[j].n.toLowerCase().indexOf(clean) !== -1) { return hotels[j]; }
+      }
+      return null;
+    }
+
+    if (inp) {
+      inp.addEventListener('input', function () {
+        var raw = String(inp.value || '').trim();
+        if (clr) { clr.hidden = raw === ''; }
+        var m = matchHotel(raw);
+        if (m) {
+          showResult({ name: m.n, zone: m.z, onsite: !!m.o }, true);
+        } else if (raw.length >= 3 && savedHotel && savedHotel.zone) {
+          showResult({ name: raw, zone: savedHotel.zone, onsite: false }, true);
+        }
+      });
+      inp.addEventListener('change', function () {
+        var m = matchHotel(inp.value);
+        if (m) { inp.value = m.n; showResult({ name: m.n, zone: m.z, onsite: !!m.o }, true); }
+      });
+    }
+
+    zBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var zk = btn.getAttribute('data-hc-zone');
+        var typed = inp ? String(inp.value || '').trim() : '';
+        var m = matchHotel(typed);
+        var hLabel = (m && m.z === zk) ? m.n : (typed && !m ? typed : '');
+        showResult({ name: hLabel, zone: zk, onsite: !!(m && m.o && m.z === zk) }, true);
+      });
+    });
+
+    if (clr) {
+      clr.addEventListener('click', function () {
+        if (inp) { inp.value = ''; }
+        clr.hidden = true;
+        setSavedHotel(null, false);
+        showResult(null, false);
+      });
+    }
+
+    if (savedHotel && savedHotel.zone && zones[savedHotel.zone]) {
+      if (inp && savedHotel.name && savedHotel.name !== zones[savedHotel.zone].label) {
+        inp.value = savedHotel.name;
+      }
+      showResult(savedHotel, false);
+    }
+  });
+  syncHotelInputs();
 
   /* ---------------- Click-to-load & scroll-triggered Google Map + Tripadvisor ---------------- */
   function mountMap(box) {
@@ -622,15 +867,26 @@
           grand += sub;
           out.push('• ' + ln.name + ' × ' + ln.qty + ' = ' + fmt(sub));
         });
+        if (savedHotel && savedHotel.name) {
+          out.push((T.hotel || 'Hotel') + ': ' + savedHotel.name + (savedHotel.pickup ? ' (' + savedHotel.pickup + ')' : ''));
+        }
         out.push('', (L.totalLabel || 'Total') + ' (' + st.divers + ' ' + (L.divers || 'divers') + '): ' + fmt(grand));
-        out.push('[ref: website / dive_calculator / ' + (SC.lang || 'en') + ']');
-        track('whatsapp_click', { placement: 'dive_calculator' });
+        out.push('[ref: ' + (clickAttr.utm_source || 'website') + ' / ' + (clickAttr.utm_campaign || 'dive_calculator') + ' / ' + (SC.lang || 'en') + ']');
+        track('whatsapp_click', { placement: 'dive_calculator', value: grand, currency: 'EUR' });
         track('contact', { method: 'whatsapp', placement: 'dive_calculator' });
+        sendClickBeacon({
+          kind: 'whatsapp_click',
+          placement: 'dive_calculator',
+          item_name: st.lines[0] ? st.lines[0].rawName : 'Dive Calculator Bundle',
+          value: grand,
+          qty: st.divers,
+          hotel: (savedHotel && savedHotel.name) || ''
+        });
         if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
-          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: grand, currency: 'EUR', transport_type: 'beacon' });
         }
-        if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'dive_calculator_wa' }); }
+        if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' }); }
         window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
       });
     }
@@ -1020,11 +1276,270 @@
     });
   });
 
+  /* ---------------- Item Page Quick-Book Configurator & Mobile Sticky Bar ---------------- */
+  var qbHooks = [];
+  var qbBox = $('[data-quick-book]');
+  if (qbBox) {
+    var qbId = qbBox.getAttribute('data-qb-id') || '';
+    var qbName = qbBox.getAttribute('data-qb-name') || '';
+    var qbRawName = qbBox.getAttribute('data-qb-raw-name') || qbName;
+    var qbUnitPrice = parseFloat(qbBox.getAttribute('data-qb-price')) || 0;
+    var qbUnit = qbBox.getAttribute('data-qb-unit') || '';
+    var qbDate = $('[data-qb-date]', qbBox);
+    var qbQty = $('[data-qb-qty]', qbBox);
+    var qbTotal = $('[data-qb-total]', qbBox);
+    var qbFormula = $('[data-qb-formula]', qbBox);
+    var qbHotelBadge = $('[data-qb-hotel-badge]', qbBox);
+    var qbHotelText = $('[data-qb-hotel-text]', qbBox);
+    var qbBarTotal = $('[data-qb-bar-total]');
+    var qbBarQty = $('[data-qb-bar-qty]');
+
+    var getQbQty = function () {
+      var n = parseInt(qbQty && qbQty.value, 10);
+      return isNaN(n) ? 1 : Math.max(1, Math.min(30, n));
+    };
+
+    var renderQuickBook = function () {
+      var q = getQbQty();
+      var tot = q * qbUnitPrice;
+      if (qbTotal) {
+        qbTotal.setAttribute('data-eur', String(tot));
+        var bdi = qbTotal.querySelector('bdi') || qbTotal;
+        bdi.textContent = fmt(tot);
+      }
+      if (qbFormula) {
+        qbFormula.textContent = q + ' × ' + fmt(qbUnitPrice) + ' = ' + fmt(tot);
+      }
+      if (qbBarTotal) {
+        qbBarTotal.setAttribute('data-eur', String(tot));
+        var barBdi = qbBarTotal.querySelector('bdi') || qbBarTotal;
+        barBdi.textContent = fmt(tot);
+      }
+      if (qbBarQty && q > 1) {
+        qbBarQty.textContent = q + ' × ' + fmt(qbUnitPrice);
+      }
+      if (qbHotelBadge && qbHotelText) {
+        if (savedHotel && savedHotel.name) {
+          qbHotelBadge.hidden = false;
+          qbHotelText.textContent = (T.qbPickupTag || 'Pickup: {hotel}').replace('{hotel}', savedHotel.name + (savedHotel.pickup ? ' (' + savedHotel.pickup + ')' : ''));
+        } else {
+          qbHotelBadge.hidden = true;
+        }
+      }
+    };
+
+    $$('[data-qb-step]', qbBox).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var delta = parseInt(btn.getAttribute('data-qb-step'), 10) || 0;
+        if (qbQty) { qbQty.value = String(Math.max(1, Math.min(30, getQbQty() + delta))); }
+        renderQuickBook();
+      });
+    });
+    if (qbQty) {
+      qbQty.addEventListener('input', renderQuickBook);
+      qbQty.addEventListener('change', function () { qbQty.value = String(getQbQty()); renderQuickBook(); });
+    }
+    if (qbDate) {
+      qbDate.addEventListener('change', function () {
+        var formDate = document.querySelector('#booking input[name="date"]');
+        if (formDate && qbDate.value) { formDate.value = qbDate.value; }
+      });
+    }
+    qbHooks.push(renderQuickBook);
+    hotelHooks.push(renderQuickBook);
+    renderQuickBook();
+  }
+
+  document.addEventListener('click', function (ev) {
+    var resBtn = ev.target.closest('[data-qb-reserve]');
+    if (resBtn && qbBox) {
+      ev.preventDefault();
+      var q = Math.max(1, Math.min(30, parseInt(($('[data-qb-qty]', qbBox) || {}).value, 10) || 1));
+      var id = qbBox.getAttribute('data-qb-id') || '';
+      var dispName = qbBox.getAttribute('data-qb-name') || '';
+      var unitP = parseFloat(qbBox.getAttribute('data-qb-price'));
+      var unitKind = qbBox.getAttribute('data-qb-unit') || '';
+      if (id) {
+        var ex = cart.filter(function (l) { return l.id === id; })[0];
+        if (ex) { ex.qty = q; }
+        else { cart.push({ id: id, name: dispName, price: isNaN(unitP) ? null : unitP, qty: q }); }
+        saveCart();
+        var totEur = (isNaN(unitP) ? 0 : unitP) * q;
+        track('add_to_cart', { ecommerce: { currency: 'EUR', value: totEur, items: [{ item_id: id, item_name: dispName, price: unitP || 0, quantity: q }] } });
+        track('begin_checkout', { value: totEur, currency: 'EUR' });
+        if (granted() && window.fbq) { window.fbq('track', 'AddToCart', { content_ids: [id], content_name: dispName, content_type: 'product', value: totEur, currency: 'EUR' }); }
+      }
+      var dVal = ($('[data-qb-date]', qbBox) || {}).value || '';
+      var fDate = document.querySelector('#booking input[name="date"]');
+      if (fDate && dVal) { fDate.value = dVal; }
+      var fPeople = document.querySelector('#booking input[name="people"]');
+      if (fPeople && unitKind !== 'boat') { fPeople.value = String(q); }
+      if (savedHotel && savedHotel.name) {
+        var fHotel = document.querySelector('#booking input[name="hotel"]');
+        if (fHotel) { fHotel.value = savedHotel.name; }
+      }
+      var bk = document.getElementById('booking');
+      if (bk) { bk.scrollIntoView({ behavior: 'smooth' }); }
+      return;
+    }
+
+    var waBtn = ev.target.closest('[data-qb-wa]');
+    if (waBtn) {
+      ev.preventDefault();
+      var pl = waBtn.getAttribute('data-placement') || 'item_quickbook';
+      var q2 = qbBox ? Math.max(1, Math.min(30, parseInt(($('[data-qb-qty]', qbBox) || {}).value, 10) || 1)) : 1;
+      var iId = qbBox ? (qbBox.getAttribute('data-qb-id') || '') : ((SC.item && SC.item.id) || '');
+      var iDisp = qbBox ? (qbBox.getAttribute('data-qb-name') || '') : ((SC.item && SC.item.name) || '');
+      var iRaw = qbBox ? (qbBox.getAttribute('data-qb-raw-name') || iDisp) : iDisp;
+      var uPrice = qbBox ? (parseFloat(qbBox.getAttribute('data-qb-price')) || 0) : ((SC.item && parseFloat(SC.item.price)) || 0);
+      var dStr = qbBox ? (($('[data-qb-date]', qbBox) || {}).value || '') : '';
+      var hInput = document.querySelector('#booking input[name="hotel"]');
+      var hStr = (savedHotel && savedHotel.name) ? (savedHotel.name + (savedHotel.pickup ? ' (' + savedHotel.pickup + ')' : '')) : (hInput && hInput.value ? hInput.value.trim() : '');
+      var estEur = uPrice * q2;
+
+      var lines = [T.waGreeting || 'Hello Sea College Dive Club!'];
+      if (iDisp) {
+        lines.push('• ' + iDisp + ' × ' + q2 + (uPrice > 0 ? ' = ' + fmt(estEur) : ''));
+      }
+      if (dStr) { lines.push((T.date || 'Date') + ': ' + dStr); }
+      if (hStr) { lines.push((T.hotel || 'Hotel') + ': ' + hStr); }
+      if (uPrice > 0) { lines.push((T.qbTotal || 'Estimated total') + ': ' + fmt(estEur)); }
+      var src = clickAttr.utm_source || 'website';
+      var camp = clickAttr.utm_campaign || pl;
+      lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
+
+      var convVal = estEur > 0 ? estEur : 35;
+      track('whatsapp_click', { placement: pl, item_id: iId, value: convVal, currency: 'EUR' });
+      track('contact', { method: 'whatsapp', placement: pl });
+      sendClickBeacon({
+        kind: 'whatsapp_click',
+        placement: pl,
+        item_id: iId,
+        item_name: iRaw,
+        value: convVal,
+        date: dStr,
+        qty: q2,
+        hotel: (savedHotel && savedHotel.name) || (hInput && hInput.value ? hInput.value.trim() : '')
+      });
+      if (window.scLoadTags) { window.scLoadTags(); }
+      if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
+      }
+      if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: pl, content_ids: iId ? [iId] : [], value: convVal, currency: 'EUR' }); }
+      if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: pl, value: convVal, currency: 'EUR' }); }
+      window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    }
+  });
+
+  /* ---------------- Pre-Arrival Diver Check-In Portal Helpers ---------------- */
+  $$('[data-checkin-form]').forEach(function (form) {
+    var lastDiveInp = $('[data-last-dive-input]', form);
+    var lastDiveWrap = $('[data-last-dive-wrap]', form);
+    var lastDiveHint = $('[data-last-dive-hint]', form);
+    if (lastDiveInp && lastDiveWrap && lastDiveHint) {
+      var evalLastDive = function () {
+        var v = String(lastDiveInp.value || '').trim();
+        if (!v) { lastDiveWrap.hidden = true; return; }
+        var dt = new Date(v + 'T00:00:00');
+        if (isNaN(dt.getTime())) { lastDiveWrap.hidden = true; return; }
+        var days = Math.floor((Date.now() - dt.getTime()) / 86400000);
+        lastDiveWrap.hidden = false;
+        if (days > 365) {
+          lastDiveHint.className = 'alert alert--error checkin-hint';
+          lastDiveHint.textContent = T.adviseReview || 'Last dive > 12 months ago: Scuba Review (€50) required.';
+        } else if (days > 180) {
+          lastDiveHint.className = 'alert checkin-hint';
+          lastDiveHint.textContent = T.adviseCheck || 'Last dive > 6 months ago: Check Dive (€25) recommended.';
+        } else {
+          lastDiveHint.className = 'alert alert--ok checkin-hint';
+          lastDiveHint.textContent = T.adviseRecent || '✓ Dived within 6 months — ready for boat dives!';
+        }
+      };
+      lastDiveInp.addEventListener('change', evalLastDive);
+      lastDiveInp.addEventListener('input', evalLastDive);
+    }
+
+    var medBox = $('[data-med-check]', form);
+    var medAlert = $('[data-med-alert]', form);
+    if (medBox && medAlert) {
+      var evalMed = function () {
+        var anyYes = $$('[data-med-select]', medBox).some(function (s) { return s.value === 'yes'; });
+        medAlert.className = 'med-box__status alert ' + (anyYes ? '' : 'alert--ok');
+        medAlert.textContent = anyYes ? (T.medYesNote || '') : (T.medAllNo || '');
+      };
+      $$('[data-med-select]', medBox).forEach(function (s) { s.addEventListener('change', evalMed); });
+    }
+
+    var copyBtn = $('[data-copy-checkin]', form);
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var link = copyBtn.getAttribute('data-copy-checkin') || location.href;
+        var span = $('span', copyBtn) || copyBtn;
+        var orig = span.textContent;
+        var done = function () {
+          span.textContent = T.checkinCopied || '✓ Link copied!';
+          setTimeout(function () { span.textContent = orig; }, 2200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link).then(done).catch(done);
+        } else {
+          done();
+        }
+      });
+    }
+
+    var ciWaBtn = $('[data-checkin-wa]', form);
+    if (ciWaBtn) {
+      ciWaBtn.addEventListener('click', function () {
+        var g = function (n) { var el = form.elements[n]; return el && el.value ? String(el.value).trim() : ''; };
+        var out = [T.waGreeting || 'Hello!', T.checkinWaHeader || 'Pre-Arrival Diver Check-In:'];
+        if (g('name')) { out.push('• ' + (T.name || 'Name') + ': ' + g('name')); }
+        if (g('arrival_date')) { out.push('• ' + (T.date || 'Arrival') + ': ' + g('arrival_date')); }
+        if (g('hotel')) { out.push('• ' + (T.hotel || 'Hotel') + ': ' + g('hotel') + (g('room_number') ? ' (#' + g('room_number') + ')' : '')); }
+        if (g('divers_count')) { out.push('• Divers: ' + g('divers_count')); }
+        if (g('cert_agency')) { out.push('• Cert: ' + g('cert_agency') + (g('cert_number') ? ' #' + g('cert_number') : '')); }
+        if (g('logged_dives') || g('last_dive_date')) {
+          out.push('• Logged: ' + (g('logged_dives') || '0') + (g('last_dive_date') ? ' (Last: ' + g('last_dive_date') + ')' : ''));
+        }
+        var gearParts = [];
+        if (g('height_cm')) { gearParts.push(g('height_cm') + 'cm'); }
+        if (g('weight_kg')) { gearParts.push(g('weight_kg') + 'kg'); }
+        if (g('wetsuit_size')) { gearParts.push('Suit ' + g('wetsuit_size')); }
+        if (g('bcd_size')) { gearParts.push('BCD ' + g('bcd_size')); }
+        if (g('fin_size')) { gearParts.push('Fins EU ' + g('fin_size')); }
+        if (gearParts.length) { out.push('• Gear: ' + gearParts.join(' · ')); }
+        if (form.elements.nitrox_request && form.elements.nitrox_request.checked) { out.push('• Nitrox 32%: Yes'); }
+        var medYes = $$('[data-med-select]', form).some(function (s) { return s.value === 'yes'; });
+        out.push('• Medical Pre-Check: ' + (medYes ? 'YES flag (advise form)' : 'All No'));
+        if (g('gear_notes')) { out.push('• Notes: ' + g('gear_notes')); }
+        var pl = ciWaBtn.getAttribute('data-placement') || 'checkin_wa';
+        out.push('', '[ref: ' + (clickAttr.utm_source || 'website') + ' / ' + pl + ' / ' + (SC.lang || 'en') + ']');
+
+        track('whatsapp_click', { placement: pl });
+        track('contact', { method: 'whatsapp', placement: pl });
+        sendClickBeacon({
+          kind: 'whatsapp_click',
+          placement: pl,
+          item_name: 'Pre-Arrival Diver Check-In',
+          date: g('arrival_date'),
+          qty: parseInt(g('divers_count'), 10) || 1,
+          hotel: g('hotel')
+        });
+        if (window.scLoadTags) { window.scLoadTags(); }
+        if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
+          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+        }
+        window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
+      });
+    }
+  });
+
   /* Re-sync calculator & quiz numbers whenever currency changes */
   $$('[data-currency-switch]').forEach(function (sel) {
     sel.addEventListener('change', function () {
       if (typeof calcHooks !== 'undefined') { calcHooks.forEach(function (fn) { fn(); }); }
       if (typeof quizHooks !== 'undefined') { quizHooks.forEach(function (fn) { fn(); }); }
+      if (typeof qbHooks !== 'undefined') { qbHooks.forEach(function (fn) { fn(); }); }
     });
   });
 

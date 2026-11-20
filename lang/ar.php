@@ -493,6 +493,6 @@ return array_replace([
     'checkin_none' => 'بدون شهادة / مبتدئ',
     'checkin_other' => 'NAUI / BSAC / أخرى',
     'checkin_child' => 'طفل',
-], (require __DIR__ . '/extra_banners_i18n.php')['ar']);
+], (require __DIR__ . '/extra_banners_i18n.php')['ar'], (require __DIR__ . '/features_v2_i18n.php')['ar']);
 
 

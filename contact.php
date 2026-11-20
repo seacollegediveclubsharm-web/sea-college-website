@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
+require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
 $page['id'] = 'contact';
+$page['canonical_path'] = '/contact.php';
 $page['title'] = t('meta_contact_title');
 $page['description'] = t('meta_contact_desc');
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_contact'), '/contact.php']];
@@ -27,6 +29,7 @@ require ROOT_DIR . '/includes/header.php';
     <?= render_top_promo_banner('bundles', 'contact_top_banner') ?>
     <div class="contact-layout">
       <div>
+        <?= render_hotel_pickup_checker('contact') ?>
         <?php $form_id = 'contact'; $form_interest_default = (string) ($_GET['interest'] ?? ''); include ROOT_DIR . '/includes/lead_form.php'; ?>
       </div>
       <div class="contact-side">
