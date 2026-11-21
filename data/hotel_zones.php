@@ -220,6 +220,9 @@ return [
         ['name' => 'Ghazala Beach & Ghazala Gardens', 'zone' => 'naama'],
         ['name' => 'Swiss Inn / Xperience Kiroseiz Premier', 'zone' => 'naama'],
         ['name' => 'Lido Sharm Hotel Naama Bay', 'zone' => 'naama'],
+        ['name' => 'Diar El Rabwa Resort & Apartments (Naama Bay)', 'zone' => 'naama'],
+        ['name' => 'Sunny Lakes Resort Naama Bay', 'zone' => 'naama'],
+        ['name' => 'Delta Sharm Resort & Apartments', 'zone' => 'hadaba'],
 
         // Zone 6: Hadaba / Ras Um Sid / Old Market
         ['name' => 'Reef Oasis Beach Resort', 'zone' => 'hadaba'],
