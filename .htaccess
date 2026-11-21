@@ -23,9 +23,12 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Dynamic sitemap & robots
+  # Dynamic sitemap, robots & Meta/Google product catalog feeds
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
   RewriteRule ^robots\.txt$ robots.php [L]
+  RewriteRule ^feeds/meta-catalog\.xml$ feeds/meta_catalog.php [L,QSA]
+  RewriteRule ^feeds/meta-catalog-i18n\.xml$ feeds/meta_catalog.php?mode=i18n [L,QSA]
+  RewriteRule ^feeds/meta-catalog-(en|ru|it|pl|de|fr|ar|zh)\.xml$ feeds/meta_catalog.php?lang=$1 [L,QSA]
 
   # Never serve internal folders or dotfiles (backup to per-folder .htaccess)
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]

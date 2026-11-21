@@ -20,8 +20,9 @@ return [
     // 3. Tripadvisor Content API (optional — falls back to verified #26104236 seed + official widget)
     'TRIPADVISOR_API_KEY' => '',
 
-    // 4. Meta Conversions API (Server-Side CAPI de-duplicated with Pixel 2980406819004765 via event_id)
-    'META_CAPI_TOKEN'     => '',
+    // 4. Meta Business Suite, Marketing API & Server-Side CAPI (Business 660290192579947 · Catalog 555610010235756 · Pixel 2980406819004765)
+    'META_CAPI_TOKEN'     => '', // Meta System User Access Token (powers both Server-Side CAPI & Hossam's Graph API sync)
+    'META_ACCESS_TOKEN'   => '', // Optional separate Marketing/Catalog API token (defaults to META_CAPI_TOKEN if empty)
     'META_CAPI_TEST_CODE' => '',
 
     // 5. Hostinger SMTPS (smtp.hostinger.com:465 implicit TLS — falls back to PHP mail() if empty)

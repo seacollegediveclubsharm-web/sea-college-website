@@ -144,9 +144,12 @@ define('GTG_GA4_PATH', '/s-ga');                              // First-party pat
  * ------------------------------------------------------------- */
 define('META_PIXEL_ID', sc_env('META_PIXEL_ID', '2980406819004765'));
 define('FB_DOMAIN_VERIFICATION', sc_env('FB_DOMAIN_VERIFICATION', 'hgespqg872v6rcmkb8zglk4jx9y61v')); // Meta Business Suite domain verification meta tag
-define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env only
+define('META_BUSINESS_ID', sc_env('META_BUSINESS_ID', '660290192579947'));   // Meta Business Portfolio: seacollegediveclub
+define('META_CATALOG_ID', sc_env('META_CATALOG_ID', '555610010235756'));     // Meta Catalog: SEA COLLEGE TRIPS
+define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env only (System User token)
+define('META_ACCESS_TOKEN', sc_env('META_ACCESS_TOKEN', META_CAPI_TOKEN)); // System User token for Meta Marketing & Catalog Graph API
 define('META_CAPI_TEST_CODE', sc_env('META_CAPI_TEST_CODE', ''));
-define('META_GRAPH_VERSION', 'v19.0');
+define('META_GRAPH_VERSION', 'v21.0');
 define('TIKTOK_PIXEL_ID', sc_env('TIKTOK_PIXEL_ID', ''));
 define('LINKEDIN_PARTNER_ID', sc_env('LINKEDIN_PARTNER_ID', ''));
 
