@@ -123,6 +123,12 @@ if ($cmd === 'setup-catalog') {
         ]);
         $foundPrimaryId = (string) ($fRes['data']['id'] ?? '');
         echo "[2/4] Created Primary Feed -> HTTP {$fRes['status']} " . json_encode($fRes['data']) . "\n";
+        if ($foundPrimaryId !== '') {
+            $uRes = sc_meta_api('POST', $foundPrimaryId . '/uploads', [
+                'url' => SITE_URL . '/feeds/meta-catalog.xml',
+            ]);
+            echo "      Triggered Initial Upload -> HTTP {$uRes['status']} " . json_encode($uRes['data']) . "\n";
+        }
     } else {
         $uRes = sc_meta_api('POST', $foundPrimaryId . '/uploads', [
             'url' => SITE_URL . '/feeds/meta-catalog.xml',
@@ -133,15 +139,22 @@ if ($cmd === 'setup-catalog') {
     // 3. Attach 7-language override feed
     if ($foundI18nId === '') {
         $lRes = sc_meta_api('POST', META_CATALOG_ID . '/product_feeds', [
-            'name'      => $i18nFeedName,
-            'feed_type' => 'LANGUAGE',
-            'schedule'  => json_encode([
+            'name'          => $i18nFeedName,
+            'override_type' => 'language',
+            'schedule'      => json_encode([
                 'interval' => 'DAILY',
                 'url'      => SITE_URL . '/feeds/meta-catalog-i18n.xml',
                 'hour'     => 5,
             ]),
         ]);
+        $foundI18nId = (string) ($lRes['data']['id'] ?? '');
         echo "[3/4] Created 7-Language Override Feed -> HTTP {$lRes['status']} " . json_encode($lRes['data']) . "\n";
+        if ($foundI18nId !== '') {
+            $ulRes = sc_meta_api('POST', $foundI18nId . '/uploads', [
+                'url' => SITE_URL . '/feeds/meta-catalog-i18n.xml',
+            ]);
+            echo "      Triggered 7-Lang Upload -> HTTP {$ulRes['status']} " . json_encode($ulRes['data']) . "\n";
+        }
     } else {
         $ulRes = sc_meta_api('POST', $foundI18nId . '/uploads', [
             'url' => SITE_URL . '/feeds/meta-catalog-i18n.xml',
