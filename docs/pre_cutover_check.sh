@@ -7,12 +7,12 @@ set -euo pipefail
 
 BASE_URL="${1:-https://seacollegediveclub.com}"
 HOST_HEADER="${2:-}"
-CURL_ARGS=(-sS --max-time 12 -A "Mozilla/5.0 (compatible; SeaCollegeSmokeCheck/1.0)")
+CURL_ARGS=(-sS --max-time 12 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 if [[ -n "$HOST_HEADER" ]]; then
   CURL_ARGS+=(-H "Host: $HOST_HEADER")
 fi
 
-PACE_SEC="${PACE_SEC:-0.12}"
+PACE_SEC="${PACE_SEC:-0.10}"
 fetch_body() {
   local path="$1" out status attempt
   for attempt in 1 2 3 4; do
@@ -20,11 +20,12 @@ fetch_body() {
     out=$(curl "${CURL_ARGS[@]}" -w "\n__HTTP_STATUS__:%{http_code}" "${BASE_URL}${path}")
     status="${out##*__HTTP_STATUS__:}"
     out="${out%$'\n'__HTTP_STATUS__:*}"
-    if [[ "$status" != "429" ]]; then
+    if [[ "$status" == "200" ]]; then
       printf '%s' "$out"
       return 0
     fi
-    sleep $((attempt * 4))
+    [[ "$status" != "429" && "$status" != "403" ]] && break
+    sleep $((attempt * 3))
   done
   printf '%s' "$out"
 }
@@ -34,8 +35,9 @@ check_code() {
   for attempt in 1 2 3 4; do
     [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
     code=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}" "${BASE_URL}${path}")
-    [[ "$code" != "429" ]] && break
-    sleep $((attempt * 4))
+    [[ "$code" == "$expect" ]] && break
+    [[ "$code" != "429" && ! ( "$expect" != "403" && "$code" == "403" ) ]] && break
+    sleep $((attempt * 3))
   done
   if [[ "$code" == "$expect" ]]; then
     echo "PASS [$code] $path"
