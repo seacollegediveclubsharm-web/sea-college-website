@@ -57,7 +57,7 @@ require ROOT_DIR . '/includes/header.php';
     <p class="hero__sub" dir="auto"><?= te('guides_sub') ?></p>
     <nav class="chips" aria-label="<?= te('services_jump') ?>">
       <a class="chip" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>">🗺️ <?= te('nav_dive_sites') ?></a>
-      <a class="chip" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>">🧮 <?= te('calc_jump_chip') ?></a>
+      <a class="chip" href="<?= e(page_link('/prices', 'dive-calculator')) ?>">🧮 <?= te('calc_jump_chip') ?></a>
       <a class="chip" href="#dive-finder-quiz">🧭 <?= te('quiz_jump_chip') ?></a>
       <a class="chip" href="<?= e(page_link('/check-in')) ?>">🪪 <?= te('nav_checkin') ?></a>
     </nav>
@@ -108,7 +108,7 @@ require ROOT_DIR . '/includes/header.php';
       <p><?= te('guides_book_box_d') ?></p>
     </div>
     <div class="cta-band__btns">
-      <a class="btn btn--primary btn--lg" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="guides_hub_prices"><?= te('nav_prices') ?></a>
+      <a class="btn btn--primary btn--lg" href="<?= e(page_link('/prices')) ?>" data-track="cta_click" data-placement="guides_hub_prices"><?= te('nav_prices') ?></a>
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link(t('nav_guides'), 'guides_hub')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="guides_hub">
         <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span>
       </a>

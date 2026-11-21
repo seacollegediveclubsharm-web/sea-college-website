@@ -7,15 +7,15 @@ $catalog = require __DIR__ . '/data/catalog.php';
 
 $pages = [
     ['/', '1.0', 'weekly', '/index.php'],
-    ['/services.php', '0.9', 'weekly', '/services.php'],
+    ['/services', '0.9', 'weekly', '/services.php'],
     ['/dive-sites-sharm-el-sheikh', '0.9', 'weekly', '/dive-sites.php'],
     ['/guides', '0.85', 'weekly', '/guides.php'],
-    ['/prices.php', '0.9', 'weekly', '/prices.php'],
+    ['/prices', '0.9', 'weekly', '/prices.php'],
     ['/gallery', '0.8', 'weekly', '/gallery.php'],
-    ['/about.php', '0.6', 'monthly', '/about.php'],
-    ['/contact.php', '0.7', 'monthly', '/contact.php'],
-    ['/privacy-policy.php', '0.2', 'yearly', '/privacy-policy.php'],
-    ['/terms.php', '0.2', 'yearly', '/terms.php'],
+    ['/about', '0.6', 'monthly', '/about.php'],
+    ['/contact', '0.7', 'monthly', '/contact.php'],
+    ['/privacy-policy', '0.2', 'yearly', '/privacy-policy.php'],
+    ['/terms', '0.2', 'yearly', '/terms.php'],
 ];
 
 if (is_file(__DIR__ . '/data/guides.php')) {

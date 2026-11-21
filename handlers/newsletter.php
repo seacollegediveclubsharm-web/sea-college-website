@@ -15,19 +15,33 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $_SESSION['last_submit'] = time();
 $eventId = 'nl_' . bin2hex(random_bytes(8));
+$attr = collect_attribution_from_post();
+$attrBase = $attr;
+$fbcVal = (string) ($attrBase['fbc'] ?? '');
+$fbpVal = (string) ($attrBase['fbp'] ?? '');
+unset($attrBase['fbc'], $attrBase['fbp']);
+
 $row = [
     'subscribed_at' => gmdate('c'),
     'event_id' => $eventId,
     'email' => $email,
     'lang' => LANG,
     'consent_state' => consent_state(),
-] + collect_attribution_from_post();
+] + $attrBase + [
+    'fbc' => $fbcVal,
+    'fbp' => $fbpVal,
+];
 
 store_csv('newsletter.csv', $row);
 
 if (CRM_WEBHOOK_URL !== '') {
-    post_json(CRM_WEBHOOK_URL, ['type' => 'newsletter'] + $row);
+    post_json(CRM_WEBHOOK_URL, ['type' => 'newsletter', 'estimated_eur' => 0.0] + $row);
 }
-meta_capi_event('CompleteRegistration', $eventId, ['email' => $email], ['content_name' => 'newsletter']);
+meta_capi_event('CompleteRegistration', $eventId, [
+    'email' => $email,
+    'fbclid' => $attr['fbclid'] ?? '',
+    'fbc' => $fbcVal,
+    'fbp' => $fbpVal,
+], ['content_name' => 'newsletter']);
 
 respond(true, ['message' => t('newsletter_ok'), 'event_id' => $eventId], $_SERVER['HTTP_REFERER'] ?? '/');

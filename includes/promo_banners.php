@@ -19,7 +19,7 @@ function sc_promo_banner_config(string $theme): array
             'title' => t('banner_dives_title'),
             'desc'  => t('banner_dives_desc'),
             'cta'   => t('banner_dives_cta'),
-            'href'  => page_link('/prices.php', 'dive-calculator'),
+            'href'  => page_link('/prices', 'dive-calculator'),
             'img'   => 'images/sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
             'wa'    => 'Certified Dive Package (€35/dive)',
         ],

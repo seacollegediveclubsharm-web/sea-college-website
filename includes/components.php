@@ -33,7 +33,7 @@ function add_button(array $it): string
 function product_card(array $it, string $image = 'images/hero.jpg', bool $eager = false): string
 {
     $img = !empty($it['img']) ? 'images/' . $it['img'] : $image;
-    $href = !empty($it['slug']) ? item_url($it) : page_link('/prices.php');
+    $href = !empty($it['slug']) ? item_url($it) : page_link('/prices');
     $title = item_name($it);
     $desc = item_desc($it);
     $dur = item_duration($it);
@@ -67,7 +67,7 @@ function product_card(array $it, string $image = 'images/hero.jpg', bool $eager 
 /** Compact row card for add-ons, equipment rentals, daily fees & insurance tiers. */
 function compact_item_row(array $it): string
 {
-    $href = !empty($it['slug']) ? item_url($it) : page_link('/prices.php');
+    $href = !empty($it['slug']) ? item_url($it) : page_link('/prices');
     $title = item_name($it);
     $desc = item_desc($it);
     $searchText = mb_strtolower($title . ' ' . $desc . ' ' . $it['name'] . ' ' . ($it['desc'] ?? ''));
@@ -219,7 +219,7 @@ function schema_offer_catalog(string $name, array $cat): array
             if ($it['price'] === null) {
                 continue;
             }
-            $itemUrl = !empty($it['slug']) ? SITE_URL . item_url($it) : SITE_URL . page_link('/prices.php');
+            $itemUrl = !empty($it['slug']) ? SITE_URL . item_url($it) : SITE_URL . page_link('/prices');
             $offers[] = [
                 '@type' => 'Offer',
                 'url' => $itemUrl,

@@ -28,7 +28,7 @@ function sc_widget_catalog_map(array $catalog, array $ids): array
             'unit'     => $it['unit'] ?? '',
             'save'     => $it['save'] ?? 0,
             'duration' => item_duration($it),
-            'url'      => !empty($it['slug']) ? item_url($it) : page_link('/prices.php'),
+            'url'      => !empty($it['slug']) ? item_url($it) : page_link('/prices'),
         ];
     }
     return $out;
@@ -68,6 +68,7 @@ function render_budget_calculator(array $catalog, string $bookingHref = '#bookin
 
     ob_start();
     ?>
+    <span id="calculator" class="anchor-alias" aria-hidden="true"></span>
     <div class="dcalc card no-print" id="dive-calculator" data-dive-calc="<?= $cfgJson ?>">
       <div class="dcalc__head">
         <div>
@@ -249,6 +250,7 @@ function render_dive_quiz(array $catalog): string
 
     ob_start();
     ?>
+    <span id="quiz" class="anchor-alias" aria-hidden="true"></span>
     <div class="dquiz card no-print" id="dive-finder-quiz" data-dive-quiz="<?= $quizCfg ?>">
       <div class="dquiz__head">
         <div>
@@ -331,7 +333,7 @@ function render_real_guests_showcase(bool $dark = false): string
             'img'  => 'images/clients/sea-college-real-guests-padi-certificates-sharm.jpg',
             't'    => t('real_guest_1_t'),
             'd'    => t('real_guest_1_d'),
-            'href' => page_link('/courses/padi-advanced-open-water-diver-sharm'),
+            'href' => page_link('/courses/padi-advanced-open-water-diver-sharm-el-sheikh'),
             'tag'  => 'PADI 5★',
         ],
         [
@@ -352,7 +354,7 @@ function render_real_guests_showcase(bool $dark = false): string
             'img'  => 'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg',
             't'    => t('real_guest_4_t'),
             'd'    => t('real_guest_4_d'),
-            'href' => page_link('/tours/private-speedboat-tiran-2-hours'),
+            'href' => page_link('/tours/tiran-island-private-speedboat-2-hours'),
             'tag'  => '4.9 ●●●●● Tripadvisor',
         ],
     ];

@@ -20,7 +20,7 @@ require ROOT_DIR . '/includes/header.php';
     <p><?= te('404_text') ?></p>
     <p class="hero__ctas hero__ctas--center">
       <a class="btn btn--primary" href="<?= e(page_link('/')) ?>"><?= te('thanks_back') ?></a>
-      <a class="btn btn--ghost" href="<?= e(page_link('/prices.php')) ?>"><?= te('nav_prices') ?></a>
+      <a class="btn btn--ghost" href="<?= e(page_link('/prices')) ?>"><?= te('nav_prices') ?></a>
     </p>
   </div>
 </section>

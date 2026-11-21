@@ -37,6 +37,17 @@ $reqSection = strtolower(trim((string) ($_GET['section'] ?? '')));
 $reqSlug    = strtolower(trim((string) ($_GET['slug'] ?? ''), '/'));
 $it         = $reqSlug !== '' ? catalog_find_by_slug($catalog, $reqSlug) : null;
 
+if (!$it && $reqSlug !== '') {
+    $mappedSlugId = $seoAll['legacy_slugs'][$reqSlug] ?? ($seoAll['legacy_products'][$reqSlug] ?? null);
+    if ($mappedSlugId) {
+        $allById = catalog_all_items($catalog);
+        if (isset($allById[$mappedSlugId])) {
+            header('Location: ' . sc_with_campaign_query(item_url($allById[$mappedSlugId])), true, 301);
+            exit;
+        }
+    }
+}
+
 if (!$it) {
     require ROOT_DIR . '/404.php';
     exit;
@@ -86,11 +97,12 @@ $page['breadcrumbs']    = [
 $page['speakable']      = ['.item-hero__title', '.aeo-box__text'];
 $page['schema']         = schema_item_detail($it, $seo, $catLabel, $gbp, $resolved, $itGal);
 $page['item_track']     = [
-    'id'       => $it['id'],
-    'group'    => $catKey,
-    'name'     => $it['name'],
-    'category' => $cat['label']['en'] ?? $catLabel,
-    'price'    => $it['price'] ?? 0,
+    'id'         => $it['id'],
+    'group'      => $catKey,
+    'name'       => $it['name'],
+    'category'   => $cat['label']['en'] ?? $catLabel,
+    'price'      => $it['price'] ?? 0,
+    'in_catalog' => sc_is_catalog_item($it),
 ];
 
 $overview = $resolved['overview'];

@@ -55,7 +55,7 @@ $renderGalFigure = static function (array $m) use (&$galIdx, $flat): string {
     $isVid     = ($m['type'] ?? 'photo') === 'video';
     $thumb     = $isVid ? $m['poster'] : $m['src'];
     $linked    = isset($m['item_id'], $flat[$m['item_id']]) ? $flat[$m['item_id']] : null;
-    $itemHref  = $linked ? item_url($linked) : page_link('/prices.php');
+    $itemHref  = $linked ? item_url($linked) : page_link('/prices');
     $itemLabel = $linked ? (item_name($linked) . ' (' . money($linked['price']) . ')') : t('cta_view_prices');
     $title     = loc($m['title']);
     $caption   = loc($m['caption']);
@@ -120,7 +120,7 @@ require ROOT_DIR . '/includes/header.php';
       foreach ($galData['collections'] as $col):
           $isCenter  = $col['cat'] === 'center';
           $colLinked = isset($col['item_id'], $flat[$col['item_id']]) ? $flat[$col['item_id']] : null;
-          $colHref   = $isCenter ? page_link('/about.php', 'dive-center') : ($colLinked ? item_url($colLinked) : page_link('/snorkeling-and-boats-sharm-el-sheikh'));
+          $colHref   = $isCenter ? page_link('/about', 'dive-center') : ($colLinked ? item_url($colLinked) : page_link('/snorkeling-and-boats-sharm-el-sheikh'));
           $colBtnTxt = $isCenter ? t('nav_about') : ($colLinked ? (item_name($colLinked) . ' · ' . money($colLinked['price'])) : t('cta_details'));
           $anchorId  = $isCenter ? 'dive-center' : (!$fleetIntroShown ? 'fleet' : 'boat-' . $col['id']);
           if (!$isCenter) {
@@ -205,7 +205,7 @@ require ROOT_DIR . '/includes/header.php';
     <div><h2><?= te('cta_band_title') ?></h2><p><?= te('cta_band_sub') ?></p></div>
     <div class="cta-band__btns">
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('Dive / Snorkel Booking', 'gallery_cta')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="gallery_cta"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
-      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="gallery_prices"><?= te('cta_view_prices') ?></a>
+      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices')) ?>" data-track="cta_click" data-placement="gallery_prices"><?= te('cta_view_prices') ?></a>
     </div>
   </div>
 </section>

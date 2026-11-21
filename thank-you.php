@@ -22,7 +22,7 @@ if ($conv !== null):
         'currency' => (string) $conv['currency'],
         'form' => (string) $conv['form'],
         'items' => $conv['items'],
-        'user_data' => array_filter([
+        'user_data' => (object) array_filter([
             'sha256_email_address' => (string) $conv['em_sha256'],
             'sha256_phone_number' => (string) $conv['ph_sha256'],
         ]),

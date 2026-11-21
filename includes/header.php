@@ -65,6 +65,8 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <meta name="robots" content="noindex, nofollow">
 <?php else: ?>
 <meta name="robots" content="index, follow, max-image-preview:large">
+<?php endif; ?>
+<?php if (!SITE_NOINDEX && !in_array($sc_pid, ['404', 'thanks'], true)): ?>
 <link rel="canonical" href="<?= e($sc_canonical) ?>">
 <?php foreach (array_keys(SUPPORTED_LANGS) as $sc_l): ?>
 <link rel="alternate" hreflang="<?= e($sc_l) ?>" href="<?= e(canonical_url($sc_l)) ?>">
@@ -93,7 +95,7 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <meta name="twitter:title" content="<?= e($sc_title) ?>">
 <meta name="twitter:description" content="<?= e($sc_desc) ?>">
 <meta name="twitter:image" content="<?= e($page['image']) ?>">
-<?php if (!empty($page['item_track']['id']) && isset($page['item_track']['price']) && is_numeric($page['item_track']['price']) && (float) $page['item_track']['price'] > 0): ?>
+<?php if (!empty($page['item_track']['id']) && !empty($page['item_track']['in_catalog']) && isset($page['item_track']['price']) && is_numeric($page['item_track']['price']) && (float) $page['item_track']['price'] > 0): ?>
 <meta property="product:brand" content="<?= e(SITE_NAME) ?>">
 <meta property="product:availability" content="in stock">
 <meta property="product:condition" content="new">

@@ -57,6 +57,8 @@ p { margin: 0 0 1em; }
 .card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.25rem; }
 .icon { width: 1.2em; height: 1.2em; flex: none; }
 bdi { unicode-bidi: isolate; }
+.anchor-alias { display: block; height: 0; overflow: hidden; pointer-events: none; }
+#dive-calculator, #dive-finder-quiz, #calculator, #quiz, #booking { scroll-margin-top: calc(var(--header-h) + 1rem); }
 
 /* ---------- Buttons ---------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .7rem 1.2rem; border-radius: 999px; border: 2px solid transparent; font: inherit; font-weight: 700; line-height: 1.1; text-decoration: none; cursor: pointer; transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease; white-space: nowrap; }

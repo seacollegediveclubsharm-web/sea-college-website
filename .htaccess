@@ -23,12 +23,17 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Dynamic sitemap, robots & Meta/Google product catalog feeds
+  # Dynamic sitemap, robots, AI/AEO llms.txt & Meta/Google product catalog feeds
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
   RewriteRule ^robots\.txt$ robots.php [L]
+  RewriteRule ^(?:\.well-known/)?llms\.txt$ llms.php [L,QSA]
+  RewriteRule ^(?:\.well-known/)?llms-full\.txt$ llms.php?full=1 [L,QSA]
   RewriteRule ^feeds/meta-catalog\.xml$ feeds/meta_catalog.php [L,QSA]
   RewriteRule ^feeds/meta-catalog-i18n\.xml$ feeds/meta_catalog.php?mode=i18n [L,QSA]
   RewriteRule ^feeds/meta-catalog-(en|ru|it|pl|de|fr|ar|zh)\.xml$ feeds/meta_catalog.php?lang=$1 [L,QSA]
+  RewriteRule ^feeds/google-dsa-page-feed\.csv$ feeds/google_dsa_feed.php [L,QSA]
+  RewriteRule ^feeds/google-ad-customizer\.csv$ feeds/google_ad_customizer.php [L,QSA]
+  RewriteRule ^feeds/google-ad-customizer-(en|ru|it|pl|de|fr|ar|zh)\.csv$ feeds/google_ad_customizer.php?lang=$1 [L,QSA]
 
   # Never serve internal folders or dotfiles (backup to per-folder .htaccess)
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]
@@ -63,13 +68,13 @@ AddDefaultCharset UTF-8
   RewriteRule ^assets/ - [L]
 
   # Legacy WordPress & WooCommerce top-level pages / categories (301 + preserve ?gclid & UTMs via QSA)
-  RewriteRule ^about-us/?$ /about.php [R=301,L,QSA]
-  RewriteRule ^contact-us/?$ /contact.php [R=301,L,QSA]
-  RewriteRule ^price-list/?$ /prices.php [R=301,L,QSA]
-  RewriteRule ^(shop|store)/?$ /services.php [R=301,L,QSA]
-  RewriteRule ^(cart|checkout)/?$ /prices.php [R=301,L,QSA]
-  RewriteRule ^(terms-and-conditions|terms-conditions)/?$ /terms.php [R=301,L,QSA]
-  RewriteRule ^privacy/?$ /privacy-policy.php [R=301,L,QSA]
+  RewriteRule ^about-us/?$ /about [R=301,L,QSA]
+  RewriteRule ^contact-us/?$ /contact [R=301,L,QSA]
+  RewriteRule ^price-list/?$ /prices [R=301,L,QSA]
+  RewriteRule ^(shop|store)/?$ /services [R=301,L,QSA]
+  RewriteRule ^(cart|checkout)/?$ /prices [R=301,L,QSA]
+  RewriteRule ^(terms-and-conditions|terms-conditions)/?$ /terms [R=301,L,QSA]
+  RewriteRule ^privacy/?$ /privacy-policy [R=301,L,QSA]
   RewriteRule ^(site-dives|dive-sites)/?$ /dive-sites-sharm-el-sheikh [R=301,L,QSA]
   RewriteRule ^(courses|diving-courses)/?$ /diving-courses-sharm-el-sheikh [R=301,L,QSA]
   RewriteRule ^product-category/(courses|diving-courses|specialty-courses|learn-to-dive|go-pro|tuchen-kurse)(/.*)?$ /diving-courses-sharm-el-sheikh [R=301,L,QSA]
@@ -80,14 +85,33 @@ AddDefaultCharset UTF-8
   RewriteRule ^(boats|snorkeling|private-boat)/?$ /snorkeling-and-boats-sharm-el-sheikh [R=301,L,QSA]
   RewriteRule ^product-category/(boats|snorkeling|private-boats)(/.*)?$ /snorkeling-and-boats-sharm-el-sheikh [R=301,L,QSA]
 
+  # Draft / non-canonical single-service ad & widget slugs -> canonical catalog slugs (single-hop 301 + full QSA across all 8 langs)
+  RewriteRule ^(?:en/)?courses/(?:padi-advanced-open-water-sharm|padi-advanced-open-water-sharm-el-sheikh|padi-advanced-open-water-diver-sharm)/?$ /courses/padi-advanced-open-water-diver-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/courses/(?:padi-advanced-open-water-sharm|padi-advanced-open-water-sharm-el-sheikh|padi-advanced-open-water-diver-sharm)/?$ /$1/courses/padi-advanced-open-water-diver-sharm-el-sheikh [R=301,L,QSA]
+
+  RewriteRule ^(?:en/)?courses/padi-rescue-diver-sharm-el-sheikh/?$ /courses/padi-rescue-diver-course-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/courses/padi-rescue-diver-sharm-el-sheikh/?$ /$1/courses/padi-rescue-diver-course-sharm-el-sheikh [R=301,L,QSA]
+
+  RewriteRule ^(?:en/)?courses/padi-enriched-air-nitrox-sharm/?$ /courses/padi-enriched-air-nitrox-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/courses/padi-enriched-air-nitrox-sharm/?$ /$1/courses/padi-enriched-air-nitrox-sharm-el-sheikh [R=301,L,QSA]
+
+  RewriteRule ^(?:en/)?courses/padi-divemaster-sharm-el-sheikh/?$ /courses/padi-divemaster-internship-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/courses/padi-divemaster-sharm-el-sheikh/?$ /$1/courses/padi-divemaster-internship-sharm-el-sheikh [R=301,L,QSA]
+
+  RewriteRule ^(?:en/)?courses/heros-bundle-owd-aowd-nitrox-sharm/?$ /courses/heros-bundle-open-water-advanced-nitrox [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/courses/heros-bundle-owd-aowd-nitrox-sharm/?$ /$1/courses/heros-bundle-open-water-advanced-nitrox [R=301,L,QSA]
+
+  RewriteRule ^(?:en/)?tours/(?:private-speed-boat-2-hours-sharm|private-speedboat-tiran-2-hours)/?$ /tours/tiran-island-private-speedboat-2-hours [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/tours/(?:private-speed-boat-2-hours-sharm|private-speedboat-tiran-2-hours)/?$ /$1/tours/tiran-island-private-speedboat-2-hours [R=301,L,QSA]
+
   # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/?$ guides.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides(\.php)?/?$ guides.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/([a-z0-9-]+)/?$ guide.php?lang=$1&slug=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery/?$ gallery.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery(\.php)?/?$ gallery.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
@@ -108,11 +132,11 @@ AddDefaultCharset UTF-8
 
   # Legacy WordPress/WooCommerce /product/<slug>/ 301 redirects
   RewriteRule ^product/([a-z0-9-]+)/?$ item.php?legacy=$1 [L,QSA]
-  RewriteRule ^product/?$ /services.php [R=301,L,QSA]
+  RewriteRule ^product/?$ /services [R=301,L,QSA]
 </IfModule>
 
-# Block source/data/backup/archive files
-<FilesMatch "\.(md|csv|log|sh|py|ini|lock|json|dist|gs|ipynb|sql|bak|old|orig|swp|env|yml|yaml|tar|gz|zip)$">
+# Block source/data/backup/archive files (while allowing dynamic Google CSV ad feeds in /feeds/)
+<FilesMatch "^(?!google-(dsa-page-feed|ad-customizer)(-(en|ru|it|pl|de|fr|ar|zh))?\.csv$).*\.(md|csv|log|sh|py|ini|lock|json|dist|gs|ipynb|sql|bak|old|orig|swp|env|yml|yaml|tar|gz|zip)$">
   Require all denied
 </FilesMatch>
 <FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|README\.md)$">
@@ -121,7 +145,7 @@ AddDefaultCharset UTF-8
 
 # Compression
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/x-javascript text/javascript application/json image/svg+xml application/xml
+  AddOutputFilterByType DEFLATE text/html text/plain text/csv text/css application/javascript application/x-javascript text/javascript application/json image/svg+xml application/xml
 </IfModule>
 
 # Browser & CDN caching (assets are versioned with ?v=filemtime)

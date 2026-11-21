@@ -62,4 +62,15 @@ return sc_overlay_items_seo([
         'snorkeling-from-beach-day-time'                 => 'snork-beach-day',
         'night-snorkeling-from-beach'                    => 'snork-beach-night',
     ],
+    'legacy_slugs' => [
+        'padi-advanced-open-water-sharm'           => 'aowd',
+        'padi-advanced-open-water-sharm-el-sheikh' => 'aowd',
+        'padi-advanced-open-water-diver-sharm'     => 'aowd',
+        'padi-rescue-diver-sharm-el-sheikh'        => 'rescue',
+        'padi-enriched-air-nitrox-sharm'           => 'nitrox',
+        'padi-divemaster-sharm-el-sheikh'          => 'divemaster',
+        'heros-bundle-owd-aowd-nitrox-sharm'       => 'bundle-heros',
+        'private-speed-boat-2-hours-sharm'         => 'speed-2h',
+        'private-speedboat-tiran-2-hours'          => 'speed-2h',
+    ],
 ]);

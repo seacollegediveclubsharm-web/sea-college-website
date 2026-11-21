@@ -51,7 +51,7 @@ $page['description']    = loc($hubSeo['meta_desc'] ?? null) ?: $sub;
 $page['image']          = url('assets/' . $heroImg);
 $page['breadcrumbs']    = [
     [t('breadcrumb_home'), '/'],
-    [t('nav_services'), '/services.php'],
+    [t('nav_services'), '/services'],
     [loc($cat['label']), $hubPath],
 ];
 $page['speakable']      = ['.page-hero h1', '.aeo-box__text'];

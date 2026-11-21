@@ -58,19 +58,10 @@ function sc_meta_segment_label(string $catKey, array $it): string
  */
 function sc_meta_is_advertisable(array $it, bool $includeAddons): bool
 {
-    if (!isset($it['price']) || !is_numeric($it['price']) || (float) $it['price'] <= 0) {
-        return false;
+    if ($includeAddons) {
+        return isset($it['price']) && is_numeric($it['price']) && (float) $it['price'] > 0 && !empty($it['slug']);
     }
-    if (empty($it['slug'])) {
-        return false;
-    }
-    if (!$includeAddons) {
-        $id = (string) ($it['id'] ?? '');
-        if (str_starts_with($id, 'eq-') || str_starts_with($id, 'fee-') || str_starts_with($id, 'ins-') || $id === 'dive-extra') {
-            return false;
-        }
-    }
-    return true;
+    return sc_is_catalog_item($it);
 }
 
 /**

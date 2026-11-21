@@ -81,7 +81,7 @@ $sc_graph = [
         'publisher' => ['@id' => $sc_org_id],
         'copyrightHolder' => ['@id' => $sc_org_id],
         'copyrightYear' => (int) date('Y'),
-        'license' => SITE_URL . '/terms.php#copyright',
+        'license' => SITE_URL . '/terms#copyright',
     ],
 ];
 

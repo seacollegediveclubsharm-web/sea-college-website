@@ -9,10 +9,10 @@ require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/components.php';
 
 $page['id'] = 'privacy';
-$page['canonical_path'] = '/privacy-policy.php';
+$page['canonical_path'] = '/privacy-policy';
 $page['title'] = t('meta_privacy_title');
 $page['description'] = t('meta_privacy_desc');
-$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('footer_privacy'), '/privacy-policy.php']];
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('footer_privacy'), '/privacy-policy']];
 
 $cookies = [
     ['sc_sid', 'Sea College (essential)', 'Session & security token (CSRF) for forms', 'Session'],
@@ -31,6 +31,9 @@ if (META_PIXEL_ID !== '' && ENABLE_META_PIXEL) {
 }
 if (TIKTOK_PIXEL_ID !== '' && ENABLE_TIKTOK_PIXEL) {
     $cookies[] = ['_ttp', 'TikTok (marketing)', 'TikTok ads measurement — only with consent', '13 months'];
+}
+if (defined('MICROSOFT_UET_ID') && MICROSOFT_UET_ID !== '' && defined('ENABLE_MICROSOFT_UET') && ENABLE_MICROSOFT_UET) {
+    $cookies[] = ['_uetvid, _uetsid', 'Microsoft Advertising (marketing)', 'Bing/Microsoft Ads conversion measurement — only with consent', 'Up to 13 months'];
 }
 if (LINKEDIN_PARTNER_ID !== '' && ENABLE_LINKEDIN_TAG) {
     $cookies[] = ['li_*', 'LinkedIn (marketing)', 'LinkedIn ads measurement — only with consent', 'Up to 6 months'];

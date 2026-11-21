@@ -8,11 +8,11 @@ require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'services';
-$page['canonical_path'] = '/services.php';
+$page['canonical_path'] = '/services';
 $page['title'] = t('meta_services_title');
 $page['description'] = t('meta_services_desc');
 $page['image'] = url('assets/' . seo_img('group-boat-dive-red-sea-divers'));
-$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_services'), '/services.php']];
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_services'), '/services']];
 
 $intro = ['dive-packages' => 'svc_dive_d', 'padi-courses' => 'svc_courses_d', 'offers' => 'svc_offers_d', 'snorkeling' => 'svc_snorkel_d'];
 $fallback = [
@@ -86,7 +86,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container cta-band__inner">
     <div><h2><?= te('cta_band_title') ?></h2><p><?= te('prices_disclaimer') ?></p></div>
     <div class="cta-band__btns">
-      <a class="btn btn--primary btn--lg" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="services_prices"><?= te('nav_prices') ?></a>
+      <a class="btn btn--primary btn--lg" href="<?= e(page_link('/prices')) ?>" data-track="cta_click" data-placement="services_prices"><?= te('nav_prices') ?></a>
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('', 'services')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="services"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
     </div>
   </div>

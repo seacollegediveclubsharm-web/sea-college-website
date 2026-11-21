@@ -36,10 +36,10 @@ declare(strict_types=1);
         <li><a href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>"><?= te('nav_dive_sites') ?></a></li>
         <li><a href="<?= e(page_link('/guides')) ?>"><?= te('nav_guides') ?></a></li>
         <li><a href="<?= e(page_link('/gallery')) ?>"><?= te('nav_gallery') ?></a></li>
-        <li><a href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>"><?= te('calc_jump_chip') ?></a></li>
+        <li><a href="<?= e(page_link('/prices', 'dive-calculator')) ?>"><?= te('calc_jump_chip') ?></a></li>
         <li><a href="<?= e(page_link('/check-in')) ?>"><?= te('nav_checkin') ?></a></li>
-        <li><a href="<?= e(page_link('/about.php')) ?>"><?= te('nav_about') ?></a></li>
-        <li><a href="<?= e(page_link('/contact.php')) ?>"><?= te('nav_contact') ?></a></li>
+        <li><a href="<?= e(page_link('/about')) ?>"><?= te('nav_about') ?></a></li>
+        <li><a href="<?= e(page_link('/contact')) ?>"><?= te('nav_contact') ?></a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -65,8 +65,8 @@ declare(strict_types=1);
   <div class="container footer-bottom">
     <span>© <bdi dir="ltr"><?= e(BUSINESS['founded'] . '–' . date('Y')) ?></bdi> <strong><?= e(SITE_NAME) ?></strong> (<?= e(BUSINESS['padi_level']) ?>). <?= te('footer_rights') ?> 🔒</span>
     <span class="footer-bottom__links">
-      <a href="<?= e(page_link('/privacy-policy.php')) ?>"><?= te('footer_privacy') ?></a>
-      <a href="<?= e(page_link('/terms.php', 'copyright')) ?>">© <?= te('footer_terms') ?></a>
+      <a href="<?= e(page_link('/privacy-policy')) ?>"><?= te('footer_privacy') ?></a>
+      <a href="<?= e(page_link('/terms', 'copyright')) ?>">© <?= te('footer_terms') ?></a>
       <button type="button" class="linklike" data-consent-open><?= te('footer_cookie_settings') ?></button>
     </span>
   </div>
@@ -79,7 +79,7 @@ declare(strict_types=1);
     <span class="minicart__sep">·</span>
     <span class="minicart__sum" data-minicart-total>€0</span>
   </div>
-  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : page_link('/prices.php', 'booking')) ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
+  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : page_link('/prices', 'booking')) ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
 </div>
 <?php endif; ?>
 
@@ -91,7 +91,7 @@ declare(strict_types=1);
   <div class="consent__inner">
     <div>
       <h2 id="consent-title" class="consent__title"><?= te('consent_title') ?></h2>
-      <p><?= te('consent_text') ?> <a href="<?= e(page_link('/privacy-policy.php')) ?>"><?= te('consent_policy') ?></a></p>
+      <p><?= te('consent_text') ?> <a href="<?= e(page_link('/privacy-policy')) ?>"><?= te('consent_policy') ?></a></p>
     </div>
     <div class="consent__actions">
       <button type="button" class="btn btn--ghost" data-consent="essential"><?= te('consent_essential') ?></button>

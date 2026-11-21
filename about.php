@@ -19,11 +19,11 @@ foreach ($galData['collections'] as $col) {
 }
 
 $page['id'] = 'about';
-$page['canonical_path'] = '/about.php';
+$page['canonical_path'] = '/about';
 $page['title'] = t('meta_about_title');
 $page['description'] = t('meta_about_desc');
 $page['image'] = url('assets/images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg');
-$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_about'), '/about.php']];
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_about'), '/about']];
 $page['schema'][] = ['@type' => 'AboutPage', 'name' => t('about_title'), 'about' => ['@id' => SITE_URL . '/#organization']];
 
 require ROOT_DIR . '/includes/header.php';
@@ -93,7 +93,7 @@ require ROOT_DIR . '/includes/header.php';
     <div class="gal-grid gal-grid--4">
       <?php foreach ($aboutPhotos as $idx => $ph):
           $linked    = isset($ph['item_id'], $flat[$ph['item_id']]) ? $flat[$ph['item_id']] : null;
-          $itemHref  = $linked ? item_url($linked) : page_link('/prices.php');
+          $itemHref  = $linked ? item_url($linked) : page_link('/prices');
           $itemLabel = $linked ? (item_name($linked) . ' (' . money($linked['price']) . ')') : t('cta_view_prices');
           $pTitle    = loc($ph['title']);
           $pCap      = loc($ph['caption']);

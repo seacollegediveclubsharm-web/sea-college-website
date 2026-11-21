@@ -148,4 +148,60 @@ if (CRM_WEBHOOK_URL !== '' && str_starts_with(CRM_WEBHOOK_URL, 'https://script.g
     $line('WARN', 'CRM Webhook URL', 'CRM_WEBHOOK_URL empty — leads stored locally in storage/*.csv only');
 }
 
+/* 7. Microsoft/Bing UET & TikTok Pixel Tag Readiness */
+$uetStatus = (defined('MICROSOFT_UET_ID') && MICROSOFT_UET_ID !== '') ? ('UET ID: ' . MICROSOFT_UET_ID) : 'UET hook ready (set MICROSOFT_UET_ID when tag created)';
+$ttStatus  = (defined('TIKTOK_PIXEL_ID') && TIKTOK_PIXEL_ID !== '') ? ('TikTok ID: ' . TIKTOK_PIXEL_ID) : 'TikTok hook ready (set TIKTOK_PIXEL_ID when pixel created)';
+$line('OK', 'Microsoft UET & TikTok', $uetStatus . ' | ' . $ttStatus . ' (CSP allowlisted)');
+
+/* 8. Dynamic Ad Feeds & AI/AEO Discovery (/llms.txt) */
+$feedFiles = [
+    'feeds/meta_catalog.php',
+    'feeds/google_dsa_feed.php',
+    'feeds/google_ad_customizer.php',
+    'llms.php',
+];
+$missingFeeds = array_filter($feedFiles, static fn(string $rel): bool => !is_file(dirname(__DIR__) . '/' . $rel));
+if ($missingFeeds === []) {
+    if ($pingNetwork && function_exists('curl_init')) {
+        $probePaths = [
+            '/feeds/meta-catalog.xml',
+            '/feeds/google-dsa-page-feed.csv',
+            '/feeds/google-ad-customizer.csv',
+            '/llms.txt',
+        ];
+        $codes = [];
+        $all200 = true;
+        foreach ($probePaths as $pp) {
+            $ch = curl_init(SITE_URL . $pp);
+            curl_setopt_array($ch, [
+                CURLOPT_NOBODY         => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT        => 6,
+                CURLOPT_USERAGENT      => 'SeaCollegeVerify/1.0',
+            ]);
+            curl_exec($ch);
+            $c = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            $codes[] = basename($pp) . '=' . $c;
+            if ($c !== 200) {
+                $all200 = false;
+            }
+        }
+        $line($all200 ? 'OK' : 'WARN', 'Dynamic Feeds & /llms.txt', implode(', ', $codes));
+    } else {
+        $line('OK', 'Dynamic Feeds & /llms.txt', 'Meta XML + Google DSA CSV + Google Customizer CSV + /llms.txt present');
+    }
+} else {
+    $line('FAIL', 'Dynamic Feeds & /llms.txt', 'Missing: ' . implode(', ', $missingFeeds));
+}
+
+/* 9. Offline Conversion Sync CLIs (Meta CAPI Purchase & Google Ads OCT) */
+$metaOfflineCli = dirname(__DIR__) . '/docs/meta_offline_conversions_sync.php';
+$googleOctCli   = dirname(__DIR__) . '/docs/export_google_oct_csv.php';
+if (is_file($metaOfflineCli) && is_file($googleOctCli)) {
+    $line('OK', 'Offline Conversion CLIs', 'meta_offline_conversions_sync.php & export_google_oct_csv.php ready');
+} else {
+    $line('FAIL', 'Offline Conversion CLIs', 'Missing offline sync CLI script(s)');
+}
+
 echo "\nTip: pass --ping-network to test live TLS/HTTP reachability without writing dummy rows.\n";

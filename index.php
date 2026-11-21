@@ -40,7 +40,7 @@ require ROOT_DIR . '/includes/header.php';
     <div class="hero__ctas">
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('', 'hero')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="hero"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('hero_cta_primary') ?></span></a>
       <a class="btn btn--ghost btn--lg" href="#dive-finder-quiz" data-track="cta_click" data-placement="hero_quiz">🧭 <?= te('quiz_jump_chip') ?></a>
-      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="hero_prices">🧮 <?= te('calc_jump_chip') ?></a>
+      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices', 'dive-calculator')) ?>" data-track="cta_click" data-placement="hero_prices">🧮 <?= te('calc_jump_chip') ?></a>
     </div>
     <ul class="trust">
       <?php for ($i = 1; $i <= 4; $i++): ?><li>✓ <?= te("trust_$i") ?></li><?php endfor; ?>
@@ -91,8 +91,8 @@ require ROOT_DIR . '/includes/header.php';
       <?php foreach ($popular as $pIdx => $it): ?><?= product_card($it, seo_img('group-boat-dive-red-sea-divers'), $pIdx < 4) ?><?php endforeach; ?>
     </div>
     <p class="center hero__ctas hero__ctas--center">
-      <a class="btn btn--primary" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="popular_calc">🧮 <?= te('calc_jump_chip') ?></a>
-      <a class="btn btn--ghost" href="<?= e(page_link('/prices.php')) ?>" data-track="cta_click" data-placement="popular_all"><?= te('cta_view_prices') ?></a>
+      <a class="btn btn--primary" href="<?= e(page_link('/prices', 'dive-calculator')) ?>" data-track="cta_click" data-placement="popular_calc">🧮 <?= te('calc_jump_chip') ?></a>
+      <a class="btn btn--ghost" href="<?= e(page_link('/prices')) ?>" data-track="cta_click" data-placement="popular_all"><?= te('cta_view_prices') ?></a>
     </p>
   </div>
 </section>
@@ -202,7 +202,7 @@ require ROOT_DIR . '/includes/header.php';
 <section class="section section--tint" id="location-map">
   <div class="container split">
     <div>
-      <a class="center-preview-img" href="<?= e(page_link('/about.php', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
+      <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
         <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 45vw']) ?>
       </a>
       <h2><?= te('map_title') ?> — <?= e(BUSINESS['city']) ?></h2>
@@ -210,7 +210,7 @@ require ROOT_DIR . '/includes/header.php';
       <p><strong><?= te('hours') ?>:</strong> <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></p>
       <p class="hero__ctas">
         <a class="btn btn--primary" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
-        <a class="btn btn--detail" href="<?= e(page_link('/about.php', 'dive-center')) ?>">🏛️ <?= e(loc($galData['ui']['jump_center'])) ?> →</a>
+        <a class="btn btn--detail" href="<?= e(page_link('/about', 'dive-center')) ?>">🏛️ <?= e(loc($galData['ui']['jump_center'])) ?> →</a>
         <a class="btn btn--wa" href="<?= e(whatsapp_link('', 'home_map')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="home_map"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
       </p>
     </div>
@@ -225,7 +225,7 @@ require ROOT_DIR . '/includes/header.php';
     <div><h2><?= te('cta_band_title') ?></h2><p><?= te('cta_band_sub') ?></p></div>
     <div class="cta-band__btns">
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('', 'cta_band')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="cta_band"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
-      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/contact.php')) ?>" data-track="cta_click" data-placement="cta_band_contact"><?= te('cta_book') ?></a>
+      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/contact')) ?>" data-track="cta_click" data-placement="cta_band_contact"><?= te('cta_book') ?></a>
     </div>
   </div>
 </section>

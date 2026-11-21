@@ -149,8 +149,8 @@ require ROOT_DIR . '/includes/header.php';
             <a class="btn btn--wa btn--block" href="<?= e(whatsapp_link($g['title'], 'guide_sidebar')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="guide_sidebar">
               <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('ask_whatsapp') ?></span>
             </a>
-            <a class="btn btn--primary btn--block" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="guide_calc"><?= te('calc_jump_chip') ?></a>
-            <a class="btn btn--detail btn--block" href="<?= e(page_link('/services.php')) ?>"><?= te('nav_services') ?></a>
+            <a class="btn btn--primary btn--block" href="<?= e(page_link('/prices', 'dive-calculator')) ?>" data-track="cta_click" data-placement="guide_calc"><?= te('calc_jump_chip') ?></a>
+            <a class="btn btn--detail btn--block" href="<?= e(page_link('/services')) ?>"><?= te('nav_services') ?></a>
           </div>
           <hr class="book-card__hr">
           <a class="book-card__hub" href="<?= e(page_link('/guides')) ?>">← <?= te('guides_all_back') ?></a>

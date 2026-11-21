@@ -70,25 +70,33 @@ if (is_array($rawCart)) {
         }
     }
 }
+$matchedInterestId = '';
 if ($interest === '' && $cart) {
     $interest = implode(', ', array_column($cart, 'name'));
-} elseif ($total <= 0 && $interest !== '') {
+} elseif ($interest !== '') {
     foreach ($idx as $catItem) {
-        if ($catItem['name'] === $interest && $catItem['price'] !== null) {
-            $mult = (($catItem['unit'] ?? '') === 'boat') ? 1 : max(1, $people);
-            $total = (float) $catItem['price'] * $mult;
+        if ($catItem['name'] === $interest) {
+            $matchedInterestId = (string) $catItem['id'];
+            if ($total <= 0 && $catItem['price'] !== null) {
+                $mult = (($catItem['unit'] ?? '') === 'boat') ? 1 : max(1, $people);
+                $total = (float) $catItem['price'] * $mult;
+            }
             break;
         }
     }
 }
 
 if ($errors) {
-    respond(false, ['message' => t('form_error_validation'), 'errors' => $errors], $_SERVER['HTTP_REFERER'] ?? page_link('/contact.php'));
+    respond(false, ['message' => t('form_error_validation'), 'errors' => $errors], $_SERVER['HTTP_REFERER'] ?? page_link('/contact'));
 }
 
 $_SESSION['last_submit'] = time();
 $eventId = 'lead_' . bin2hex(random_bytes(8));
 $attr = collect_attribution_from_post();
+$attrBase = $attr;
+$fbcVal = (string) ($attrBase['fbc'] ?? '');
+$fbpVal = (string) ($attrBase['fbp'] ?? '');
+unset($attrBase['fbc'], $attrBase['fbp']);
 
 $lead = [
     'received_at' => gmdate('c'),
@@ -108,9 +116,12 @@ $lead = [
     'estimated_total_eur' => round($total, 2),
     'marketing_opt_in' => $marketing ? 'yes' : 'no',
     'consent_state' => consent_state(),
-] + $attr + [
+] + $attrBase + [
     'ip_hash' => hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . date('Y-m')),
     'user_agent' => clean_line($_SERVER['HTTP_USER_AGENT'] ?? '', 250),
+    'fbc' => $fbcVal,
+    'fbp' => $fbpVal,
+    'estimated_eur' => round($total, 2),
 ];
 
 /* 1) Persist */
@@ -119,7 +130,7 @@ store_csv('leads.csv', $lead);
 /* 2) Notify team */
 $lines = [];
 foreach ($lead as $k => $v) {
-    if ($v === '' || $v === [] || in_array($k, ['ip_hash', 'user_agent'], true)) {
+    if ($v === '' || $v === [] || in_array($k, ['ip_hash', 'user_agent', 'estimated_eur'], true)) {
         continue;
     }
     $lines[] = str_pad($k, 22) . ': ' . (is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v);
@@ -128,15 +139,34 @@ send_mail(LEAD_NOTIFY_EMAIL, 'New ' . $source_form . ' lead — ' . $name . ' ('
 
 /* 3) CRM / automation webhook */
 if (CRM_WEBHOOK_URL !== '') {
-    post_json(CRM_WEBHOOK_URL, ['type' => 'lead'] + $lead);
+    post_json(CRM_WEBHOOK_URL, ['type' => 'lead', 'estimated_eur' => round($total, 2)] + $lead);
 }
 
-/* 4) Meta Conversions API (server event, same event_id as browser pixel) */
+/* 4) Meta Conversions API (server event, same event_id as browser pixel; catalog-clean content_ids) */
+$capiIds = array_values(array_filter(array_column($cart, 'id'), 'sc_is_catalog_product_id'));
+if ($capiIds === [] && $matchedInterestId !== '' && sc_is_catalog_product_id($matchedInterestId)) {
+    $capiIds = [$matchedInterestId];
+}
+$capiCustom = [
+    'currency' => 'EUR',
+    'value' => round($total, 2),
+    'content_name' => $interest,
+];
+if ($capiIds !== []) {
+    $capiCustom['content_type'] = 'product';
+    $capiCustom['content_ids'] = $capiIds;
+}
 meta_capi_event('Lead', $eventId, [
-    'email' => $email, 'phone' => $phone, 'first_name' => explode(' ', $name)[0] ?? '', 'fbclid' => $attr['fbclid'] ?? '',
-], ['currency' => 'EUR', 'value' => round($total, 2), 'content_name' => $interest, 'content_type' => 'product', 'content_ids' => array_values(array_filter(array_column($cart, 'id')))]);
+    'email' => $email,
+    'phone' => $phone,
+    'first_name' => explode(' ', $name)[0] ?? '',
+    'fbclid' => $attr['fbclid'] ?? '',
+    'fbc' => $fbcVal,
+    'fbp' => $fbpVal,
+], $capiCustom);
 
-/* 5) Hand conversion data to thank-you page (fires GA4 / Ads / Meta / TikTok in browser) */
+/* 5) Hand conversion data to thank-you page (fires GA4 / Ads / Meta / TikTok / UET in browser) */
+$normDigits = preg_replace('/^00/', '', phone_digits($phone)) ?? '';
 $_SESSION['conversion'] = [
     'event_id' => $eventId,
     'value' => round($total, 2),
@@ -144,8 +174,8 @@ $_SESSION['conversion'] = [
     'form' => $source_form,
     'items' => array_map(static fn($c) => ['item_id' => $c['id'], 'item_name' => $c['name'], 'quantity' => $c['qty'], 'price' => $c['unit_price']], $cart),
     'em_sha256' => sha256_norm($email),
-    'ph_sha256' => $phone !== '' ? hash('sha256', '+' . phone_digits($phone)) : '',
+    'ph_sha256' => $normDigits !== '' ? hash('sha256', '+' . $normDigits) : '',
 ];
 unset($_SESSION['form_old'], $_SESSION['form_error']);
 
-respond(true, ['redirect' => page_link('/thank-you.php'), 'event_id' => $eventId]);
+respond(true, ['redirect' => page_link('/thank-you'), 'event_id' => $eventId]);

@@ -13,6 +13,7 @@
 3. **EUR Base Price + Crystal-Clear EGP/USD Rule:** Never reply a vague *"It's okay"* to an EGP/USD number! Always state: **"Our prices are set in EUR (`€...`). You can pay in EUR, USD, GBP, or EGP (cash or card to our team / at the dive center) converted at dive morning's official bank rate."**
 4. **Collect All 5 Coastguard & Gear Items in ONE Message (or via `/check-in`):** Never drip-ask Passport → Cert → Hotel → Suit → Fins across 6 separate messages. Ask once in a clean numbered list + share `https://seacollegediveclub.com/check-in`.
 5. **Pickup Spot Precision:** Resort security gates require vans to wait **"at the main hotel gate by the main road"**; confirm exact morning time (`07:00–07:50 AM` depending on Tiran vs Ras Mohammed jetty) around **`16:30` the afternoon before**.
+6. **100% Policy-Compliant Reviews (Zero Incentives, Zero Gating):** Never offer discounts, free Nitrox (`€8`), free photo/video packages, gifts, or perks in exchange for a Google or Tripadvisor review, and never ask only "happy/5-star" guests to review. Simply share our official links after the trip and invite honest feedback mentioning their instructor's name.
 
 ---
 
@@ -132,11 +133,39 @@
 
 ---
 
-## Template 7 — Native Multilingual Starters (AR · ZH · ES · RU)
+## Template 7 — Native Multilingual Starters (All 8 Site Languages + ES)
+
+### 🇩🇪 German (DACH Guests — Deutsch)
+> Hallo [Name]! Willkommen im **Sea College Dive Club** (PADI 5★ Dive Resort in Sharm El Sheikh, `4,9★` bei 3.082+ Google-Bewertungen) 🤿🪸 Ich bin Lara!
+> ✅ **Kostenloser Hoteltransfer** · **Kleine Gruppen (maximal 4 Taucher pro PADI-Guide)** · **Offizielle EUR-Preise ohne versteckte Hafengebühren**.
+> • Preisrechner & Direktbuchung (€0 Anzahlung): https://seacollegediveclub.com/de/prices#calculator
+> • Vorab-Check-in & Ausrüstungsgrößen: https://seacollegediveclub.com/de/check-in
+> Für welches **Datum**, **wie viele Personen**, welches **Hotel** und **welches Brevet / letzter Tauchgang** darf ich planen?
+
+### 🇫🇷 French (FR / BE / CH Guests — Français)
+> Bonjour [Nom] ! Bienvenue chez **Sea College Dive Club** (Centre PADI 5★ à Charm el-Cheikh, `4,9★` sur 3 082+ avis Google) 🤿🪸 Je suis Lara !
+> ✅ **Transfert hôtel gratuit** · **Petits groupes (maximum 4 plongeurs par guide PADI)** · **Tarifs officiels en EUR sans frais cachés**.
+> • Calculateur de budget & réservation directe (€0 d'acompte) : https://seacollegediveclub.com/fr/prices#calculator
+> • Pré-enregistrement & tailles d'équipement : https://seacollegediveclub.com/fr/check-in
+> Pour quelle(s) **date(s)**, **combien de personnes**, quel **hôtel** et **quel niveau de plongée (date de dernière plongée)** souhaitez-vous réserver ?
+
+### 🇮🇹 Italian (IT Guests — Italiano)
+> Ciao [Nome]! Benvenuto/a al **Sea College Dive Club** (PADI 5★ Dive Resort a Sharm El Sheikh, `4,9★` con 3.082+ recensioni Google) 🤿🪸 Sono Lara!
+> ✅ **Transfer gratuito dall'hotel** · **Piccoli gruppi (massimo 4 sub per guida PADI)** · **Prezzi ufficiali in EUR senza costi nascosti**.
+> • Calcolatore prezzi e prenotazione diretta (€0 acconto): https://seacollegediveclub.com/it/prices#calculator
+> • Check-in rapido e taglie attrezzatura: https://seacollegediveclub.com/it/check-in
+> Per quale **data**, **quante persone**, in quale **hotel** alloggi e **hai già un brevetto sub (data dell'ultima immersione)**?
+
+### 🇵🇱 Polish (PL Guests — Polski)
+> Cześć [Imię]! Witamy w **Sea College Dive Club** (Baza nurkowa PADI 5★ w Sharm El Sheikh, `4,9★` i 3082+ opinii Google) 🤿🪸 Tu Lara!
+> ✅ **Bezpłatny transfer z hotelu** · **Małe grupy (maksymalnie 4 nurków na przewodnika PADI)** · **Oficjalne ceny w EUR bez ukrytych opłat**.
+> • Kalkulator pakietów i rezerwacja online (€0 zaliczki): https://seacollegediveclub.com/pl/prices#calculator
+> • Szybka odprawa i rozmiary sprzętu: https://seacollegediveclub.com/pl/check-in
+> Na jaki **termin**, **ile osób**, z jakiego **hotelu** oraz **czy masz już certyfikat nurkowy (kiedy było ostatnie nurkowanie)**?
 
 ### 🇨🇳 Chinese (`+86` Guests — 中文欢迎与预订引导)
 > 您好！欢迎联系沙姆沙伊赫 **Sea College Dive Club**（PADI 五星潜水度假村，Google `4.9★` / 3,082+ 条好评）🤿🪸 我是客服 Lara！
-> ✅ **免费酒店接送**（市区所有度假村大门口接送）· **小班制（每位潜导最多带 4 名潜水员！）** · **绝无隐形消费**。
+> ✅ **免费酒店接送**（市区所有度假村大门口接送）· **小班制（每位潜导最多带 4 名潜水员！）** · **欧元官方明码标价，绝无隐形消费**。
 > 📌 您可以在我们的中文官网直接查看明码标价并一键预约（免预付定金）：
 > • 中文价格计算器与套餐：https://seacollegediveclub.com/zh/prices#calculator
 > • 潜前尺寸与资料快速登记：https://seacollegediveclub.com/zh/check-in
@@ -150,14 +179,16 @@
 
 ### 🇷🇺 Russian (CIS Guests — Русский)
 > Здравствуйте! Добро пожаловать в **Sea College Dive Club** (PADI 5★ Dive Resort в Шарм-эль-Шейхе, `4.9★` и 3082+ отзывов) 🤿🪸 Меня зовут Лара!
-> ✅ **Бесплатный трансфер** из отелей · **Мини-группы (до 4 дайверов на гида)** · **Никаких скрытых доплат**.
-> 👉 Все цены в евро и онлайн-бронирование на русском языке: https://seacollegediveclub.com/ru/prices#calculator
+> ✅ **Бесплатный трансфер** из отелей · **Мини-группы (до 4 дайверов на гида)** · **Официальные цены в EUR без скрытых доплат**.
+> • Калькулятор пакетов и онлайн-бронирование: https://seacollegediveclub.com/ru/prices#calculator
+> • Предварительная регистрация и размеры снаряжения: https://seacollegediveclub.com/ru/check-in
 > Подскажите, пожалуйста: **дату, количество человек, ваш отель** и **есть ли у вас дайв-сертификат (когда было последнее погружение)**?
 
 ### 🇪🇬🇸🇦 Arabic (العربية)
 > أهلاً وسهلاً بك في **Sea College Dive Club** بشرم الشيخ (منتجع غوص PADI خمس نجوم — تقييم `4.9★` من +3,082 مراجعة)! 🤿🪸 معك لارا.
 > جميع رحلاتنا تشمل **التوصيل المجاني من وإلى الفندق** ومجموعات صغيرة (**بحد أقصى 4 غواصين لكل مرشد**) وبدون أي رسوم خفية. جميع الأسعار الرسمية باليورو (`€`) ويمكن الدفع باليورو أو الدولار أو الجنيه المصري (كاش أو بطاقة بسعر البنك يوم الرحلة).
-> 👉 احسب باقتك واحجز موعدك مباشرة باللغة العربية من هنا: https://seacollegediveclub.com/ar/prices#calculator
+> • احسب باقتك واحجز موعدك مباشرة: https://seacollegediveclub.com/ar/prices#calculator
+> • تسجيل المقاسات والبيانات المسبق: https://seacollegediveclub.com/ar/check-in
 > فضلاً أخبرني **بالتاريخ المطلوب، عدد الأشخاص، اسم الفندق، وهل لديك شهادة غوص أم هذه أول تجربة لك؟**
 
 ---
@@ -169,11 +200,21 @@
 >
 > Everything is set for **Day 2 tomorrow ([Route])** — your pickup will be at **[07:XX AM]** at the **main gate by the main road** of **[Hotel Name]**. Let me know if you need any adjustment to your weights or gear sizes for tomorrow! 🙏
 
-### 8B. Final Day Wrap-Up & Google / Tripadvisor Review Invite
+### 8B. Final Day Wrap-Up & Official Google / Tripadvisor Review Invite (Zero-Incentive Compliant)
 > Thank you so much for diving with **Sea College Dive Club**, [Name]! 🤿💙 It was a pleasure having you onboard with **[Instructor Name / our team]**.
 >
-> Whenever you have 30 seconds, sharing your experience helps fellow divers find us — feel free to mention **[Instructor Name]**! 🌟
-> • **Google Review:** https://g.page/r/CSv3BGP47UMWEBM/review
-> • **Tripadvisor:** https://www.tripadvisor.com/Attraction_Review-g297555-d23163751-Reviews-Sea_College_Dive_Club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+> Whenever you have 30 seconds, sharing your honest experience helps fellow divers plan their Red Sea trip — feel free to mention **[Instructor Name]**! 🌟
+> • **Google Review:** https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0
+> • **Tripadvisor:** https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
 >
 > Safe travels, and you always have a diving home waiting for you in Sharm El Sheikh! 🪸🐠
+
+### 8C. Concise 8-Language Post-Dive Review Invites (Official Place ID `ChIJ75cBQp5LUxQRMjrNYQx93g0` & Tripadvisor `#26104236`)
+- **🇬🇧 EN:** Thank you for diving with **Sea College Dive Club**! If you have a moment, we’d love your honest feedback (feel free to mention **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇩🇪 DE:** Danke fürs Tauchen mit dem **Sea College Dive Club**! Wir freuen uns über dein ehrliches Feedback (gerne mit Name deines Guides **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇫🇷 FR:** Merci d’avoir plongé avec **Sea College Dive Club** ! Votre avis sincère aide les futurs plongeurs (n’hésitez pas à mentionner **[Instructor]**) : Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇮🇹 IT:** Grazie per esserti immerso con **Sea College Dive Club**! Se hai 30 secondi, ci farebbe piacere la tua recensione sincera (puoi citare **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇵🇱 PL:** Dziękujemy za wspólne nurkowanie z **Sea College Dive Club**! Będziemy wdzięczni za szczerą opinię (możesz wspomnieć przewodnika **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇷🇺 RU:** Спасибо за дайвинг с **Sea College Dive Club**! Будем рады вашему честному отзыву (можно упомянуть инструктора **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇪🇬 AR:** شكراً لغوصك مع **Sea College Dive Club**! يسعدنا مشاركة رأيك الصادق عن تجربتك (ويمكنك ذكر اسم الكابتن **[Instructor]**): Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com.eg/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html
+- **🇨🇳 ZH:** 感谢您与 **Sea College Dive Club** 一起在红海潜水！欢迎分享您的真实体验（可提及您的教练 **[Instructor]**）：Google → https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0 | Tripadvisor → https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html

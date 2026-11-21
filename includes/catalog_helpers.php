@@ -47,7 +47,7 @@ function item_url(array $it): string
 
 function hub_path(array $cat): string
 {
-    return '/' . ltrim((string) ($cat['hub_slug'] ?? 'services.php'), '/');
+    return '/' . ltrim((string) ($cat['hub_slug'] ?? 'services'), '/');
 }
 
 function hub_url(array $cat): string

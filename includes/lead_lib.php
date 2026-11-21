@@ -123,7 +123,7 @@ function require_post_and_csrf(): void
     }
     // Honeypot: bots fill hidden "website" field → pretend success, store nothing.
     if (!empty($_POST['website'])) {
-        respond(true, ['redirect' => '/thank-you.php']);
+        respond(true, ['redirect' => page_link('/thank-you')]);
     }
     $last = (int) ($_SESSION['last_submit'] ?? 0);
     if (($last && (time() - $last) < RATE_LIMIT_SECONDS) || sc_ip_rate_limit_exceeded()) {
@@ -150,12 +150,14 @@ function collect_attribution_from_post(): array
     foreach ([...UTM_KEYS, 'landing_page', 'referrer'] as $k) {
         $out[$k] = clean_line($_POST[$k] ?? '', 300);
     }
-    // Server-side session attribution wins if the hidden fields were stripped.
+    // Server-side session/cookie attribution wins if the hidden fields were stripped.
     foreach (attribution() as $k => $v) {
         if (($out[$k] ?? '') === '' && is_string($v)) {
             $out[$k] = $v;
         }
     }
+    $out['fbc'] = sc_resolve_fbc($out, clean_line($_POST['fbc'] ?? '', 300));
+    $out['fbp'] = sc_resolve_fbp($out, clean_line($_POST['fbp'] ?? '', 300));
     return $out;
 }
 
@@ -292,24 +294,179 @@ function phone_digits(string $p): string
     return preg_replace('/\D/', '', $p) ?? '';
 }
 
+if (!defined('SC_EEA_UK_CH_COUNTRIES')) {
+    define('SC_EEA_UK_CH_COUNTRIES', [
+        'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE',
+        'FI', 'FR', 'DE', 'GR', 'HU', 'IS', 'IE', 'IT',
+        'LV', 'LI', 'LT', 'LU', 'MT', 'NL', 'NO', 'PL',
+        'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB', 'CH',
+    ]);
+}
+
+function sc_visitor_ip(): string
+{
+    $candidates = [];
+    foreach (['HTTP_CF_CONNECTING_IP', 'HTTP_TRUE_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'] as $k) {
+        $raw = (string) ($_SERVER[$k] ?? '');
+        if ($raw === '') {
+            continue;
+        }
+        foreach (explode(',', $raw) as $part) {
+            $ip = trim($part);
+            if ($ip !== '') {
+                $candidates[] = $ip;
+            }
+        }
+    }
+    foreach ($candidates as $ip) {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+            return $ip;
+        }
+    }
+    foreach ($candidates as $ip) {
+        if (filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+            return $ip;
+        }
+    }
+    return '';
+}
+
+function sc_lookup_ipv4_country(string $ip, string $binFile): string
+{
+    if (!is_file($binFile) || filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+        return '';
+    }
+    $long = ip2long($ip);
+    if ($long === false) {
+        return '';
+    }
+    $target = (int) sprintf('%u', $long);
+    $size = (int) @filesize($binFile);
+    if ($size < 6 || ($size % 6) !== 0) {
+        return '';
+    }
+    $fh = @fopen($binFile, 'rb');
+    if ($fh === false) {
+        return '';
+    }
+    $lo = 0;
+    $hi = intdiv($size, 6) - 1;
+    $found = '';
+    while ($lo <= $hi) {
+        $mid = ($lo + $hi) >> 1;
+        if (fseek($fh, $mid * 6) !== 0) {
+            break;
+        }
+        $rec = fread($fh, 6);
+        if ($rec === false || strlen($rec) !== 6) {
+            break;
+        }
+        $u = unpack('Nstart', substr($rec, 0, 4));
+        $start = (int) ($u['start'] ?? 0);
+        if ($start <= $target) {
+            $found = substr($rec, 4, 2);
+            $lo = $mid + 1;
+        } else {
+            $hi = $mid - 1;
+        }
+    }
+    fclose($fh);
+    $cc = strtoupper(trim($found));
+    return (preg_match('/^[A-Z]{2}$/', $cc) && !in_array($cc, ['XX', 'ZZ'], true)) ? $cc : '';
+}
+
+function sc_visitor_country(): string
+{
+    $invalid = ['XX', 'ZZ', 'T1', 'A1', 'A2', 'O1'];
+    $headers = [
+        'HTTP_CF_IPCOUNTRY',
+        'HTTP_X_HCDN_COUNTRY',
+        'HTTP_X_COUNTRY_CODE',
+        'HTTP_X_GEO_COUNTRY',
+        'HTTP_X_VIEWER_COUNTRY',
+        'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
+        'GEOIP_COUNTRY_CODE',
+        'REDIRECT_GEOIP_COUNTRY_CODE',
+        'MM_COUNTRY_CODE',
+        'REDIRECT_MM_COUNTRY_CODE',
+    ];
+    foreach ($headers as $k) {
+        $v = strtoupper(trim((string) ($_SERVER[$k] ?? getenv($k) ?: '')));
+        if (preg_match('/^[A-Z]{2}$/', $v) && !in_array($v, $invalid, true)) {
+            return $v;
+        }
+    }
+    $ip = sc_visitor_ip();
+    if ($ip !== '') {
+        $cc = sc_lookup_ipv4_country($ip, ROOT_DIR . '/data/ip2country_v4.bin');
+        if ($cc !== '') {
+            return $cc;
+        }
+    }
+    return '';
+}
+
+/**
+ * Regional Consent Mode v2 parity for Server-Side Meta CAPI:
+ * - 'all' (explicit accept) -> true everywhere
+ * - 'essential' / 'denied' (explicit opt-out) -> false everywhere
+ * - 'unset' -> true ONLY when visitor GeoIP resolves to a valid ISO-2 country outside EEA/UK/CH; fail-closed otherwise
+ */
+function sc_marketing_consent_allowed(?string $countryOverride = null): bool
+{
+    $state = consent_state();
+    if ($state === 'all') {
+        return true;
+    }
+    if ($state !== 'unset') {
+        return false;
+    }
+    $cc = strtoupper(trim($countryOverride ?? sc_visitor_country()));
+    if (!preg_match('/^[A-Z]{2}$/', $cc)) {
+        return false;
+    }
+    if (in_array($cc, [...SC_EEA_UK_CH_COUNTRIES, 'UK', 'EU', 'XX', 'ZZ', 'T1', 'A1', 'A2', 'O1'], true)) {
+        return false;
+    }
+    return true;
+}
+
 /**
  * Meta Conversions API — sends the same event_id as the browser pixel for de-duplication.
- * Fires only when a token + pixel are configured AND the visitor accepted marketing cookies.
+ * Fires when a token + pixel are configured AND sc_marketing_consent_allowed() permits it.
  */
 function meta_capi_event(string $eventName, string $eventId, array $user, array $custom = []): bool
 {
-    if (META_PIXEL_ID === '' || META_CAPI_TOKEN === '' || consent_state() !== 'all') {
+    if (META_PIXEL_ID === '' || META_CAPI_TOKEN === '' || !sc_marketing_consent_allowed()) {
         return false;
     }
+    $normPhone = '';
+    if (isset($user['phone']) && $user['phone'] !== '') {
+        $normPhone = preg_replace('/^00/', '', phone_digits((string) $user['phone'])) ?? '';
+    }
+    $resolvedFbp = sc_resolve_fbp($user, (string) ($user['fbp'] ?? ''));
+    $resolvedFbc = sc_resolve_fbc($user, (string) ($user['fbc'] ?? ''));
+    $clientIp = sc_visitor_ip();
     $ud = array_filter([
-        'em' => isset($user['email']) && $user['email'] !== '' ? [sha256_norm($user['email'])] : null,
-        'ph' => isset($user['phone']) && $user['phone'] !== '' ? [hash('sha256', phone_digits($user['phone']))] : null,
-        'fn' => isset($user['first_name']) && $user['first_name'] !== '' ? [sha256_norm($user['first_name'])] : null,
-        'client_ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+        'em' => isset($user['email']) && $user['email'] !== '' ? [sha256_norm((string) $user['email'])] : null,
+        'ph' => $normPhone !== '' ? [hash('sha256', $normPhone)] : null,
+        'fn' => isset($user['first_name']) && $user['first_name'] !== '' ? [sha256_norm((string) $user['first_name'])] : null,
+        'client_ip_address' => $clientIp !== '' ? $clientIp : ($_SERVER['REMOTE_ADDR'] ?? null),
         'client_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-        'fbp' => $_COOKIE['_fbp'] ?? null,
-        'fbc' => $_COOKIE['_fbc'] ?? (!empty($user['fbclid']) ? 'fb.1.' . (time() * 1000) . '.' . $user['fbclid'] : null),
+        'fbp' => $resolvedFbp !== '' ? $resolvedFbp : null,
+        'fbc' => $resolvedFbc !== '' ? $resolvedFbc : null,
     ]);
+    if (isset($custom['content_ids']) && is_array($custom['content_ids'])) {
+        $filteredIds = array_values(array_filter(
+            array_map('strval', $custom['content_ids']),
+            'sc_is_catalog_product_id'
+        ));
+        if ($filteredIds !== []) {
+            $custom['content_ids'] = $filteredIds;
+        } else {
+            unset($custom['content_ids'], $custom['content_type']);
+        }
+    }
     $payload = ['data' => [[
         'event_name' => $eventName,
         'event_time' => time(),

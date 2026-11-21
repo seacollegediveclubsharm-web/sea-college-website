@@ -32,6 +32,13 @@ if (!function_exists('sc_env')) {
     }
 }
 
+if (!function_exists('sc_secret')) {
+    function sc_secret(string $key, string $default = ''): string
+    {
+        return sc_env($key, $default);
+    }
+}
+
 /* ---------------------------------------------------------------
  * Site basics
  * ------------------------------------------------------------- */
@@ -152,12 +159,14 @@ define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env onl
 define('META_ACCESS_TOKEN', sc_env('META_ACCESS_TOKEN', META_CAPI_TOKEN)); // System User token for Meta Marketing & Catalog Graph API
 define('META_CAPI_TEST_CODE', sc_env('META_CAPI_TEST_CODE', ''));
 define('META_GRAPH_VERSION', 'v21.0');
-define('TIKTOK_PIXEL_ID', sc_env('TIKTOK_PIXEL_ID', ''));
+define('TIKTOK_PIXEL_ID', sc_secret('TIKTOK_PIXEL_ID', ''));
+define('MICROSOFT_UET_ID', sc_secret('MICROSOFT_UET_ID', ''));
 define('LINKEDIN_PARTNER_ID', sc_env('LINKEDIN_PARTNER_ID', ''));
 
 /* Feature flags (allow switching a pixel off without deleting its ID) */
 define('ENABLE_META_PIXEL', true);
 define('ENABLE_TIKTOK_PIXEL', true);
+define('ENABLE_MICROSOFT_UET', true);
 define('ENABLE_LINKEDIN_TAG', false);
 
 /* ---------------------------------------------------------------

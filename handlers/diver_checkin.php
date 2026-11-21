@@ -51,7 +51,7 @@ if (!$waiverAck) {
     $errors['medical_waiver'] = t('form_required');
 }
 
-$fallbackUrl = $leadEventId !== '' ? page_link('/thank-you.php') : page_link('/check-in');
+$fallbackUrl = $leadEventId !== '' ? page_link('/thank-you') : page_link('/check-in');
 if ($errors) {
     respond(false, ['message' => t('form_error_validation'), 'errors' => $errors], $fallbackUrl);
 }
@@ -96,7 +96,8 @@ foreach ($row as $k => $v) {
 send_mail(LEAD_NOTIFY_EMAIL, 'Pre-arrival diver check-in — ' . $name . ($arrivalDate !== '' ? ' (' . $arrivalDate . ')' : ''), implode("\n", $lines));
 
 if (CRM_WEBHOOK_URL !== '') {
-    post_json(CRM_WEBHOOK_URL, ['type' => 'checkin'] + $row);
+    $attr = collect_attribution_from_post();
+    post_json(CRM_WEBHOOK_URL, ['type' => 'checkin', 'event_id' => $checkinId, 'estimated_eur' => 0.0] + $row + $attr);
 }
 
 respond(true, ['message' => t('checkin_ok'), 'event_id' => $checkinId], $fallbackUrl);

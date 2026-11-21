@@ -8,10 +8,10 @@ require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $page['id'] = 'prices';
-$page['canonical_path'] = '/prices.php';
+$page['canonical_path'] = '/prices';
 $page['title'] = t('meta_prices_title');
 $page['description'] = t('meta_prices_desc');
-$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_prices'), '/prices.php']];
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_prices'), '/prices']];
 foreach ($catalog as $cat) {
     $page['schema'][] = schema_offer_catalog(loc($cat['label']), $cat);
 }
@@ -27,7 +27,7 @@ require ROOT_DIR . '/includes/header.php';
     <nav class="chips no-print" aria-label="<?= te('services_jump') ?>">
       <a class="chip" href="#dive-calculator">🧮 <?= te('calc_jump_chip') ?></a>
       <a class="chip" href="#price-tables">📋 <?= te('prices_jump_tables') ?></a>
-      <a class="chip" href="<?= e(page_link('/#dive-finder-quiz')) ?>">🧭 <?= te('quiz_jump_chip') ?></a>
+      <a class="chip" href="#dive-finder-quiz">🧭 <?= te('quiz_jump_chip') ?></a>
       <a class="chip" href="<?= e(page_link('/guides')) ?>">📘 <?= te('nav_guides') ?></a>
     </nav>
     <ol class="stepper" aria-label="Booking steps">
@@ -106,6 +106,12 @@ require ROOT_DIR . '/includes/header.php';
       </aside>
       <?= render_side_promo_banner('bundles', 'prices_side_banner') ?>
     </div>
+  </div>
+</section>
+
+<section class="section no-print">
+  <div class="container">
+    <?= render_dive_quiz($catalog) ?>
   </div>
 </section>
 

@@ -90,7 +90,7 @@ def build_css() -> None:
     bundles = {
         "home": work + "\n" + quiz_sec,
         "hub": work + "\n" + quiz_sec + "\n" + prices_sec,
-        "prices": work + "\n" + prices_sec + "\n" + calc_sec + "\n" + print_sec,
+        "prices": work + "\n" + prices_sec + "\n" + calc_sec + "\n" + quiz_sec + "\n" + print_sec,
         "item": work + "\n" + prices_sec + "\n" + item_sec + "\n" + item_media_sec + "\n" + qbook_sec + "\n" + print_sec,
         "sites": work + "\n" + prices_sec + "\n" + sites_sec,
         "gallery": work + "\n" + gallery_sec + "\n" + fleet_sec,
@@ -130,7 +130,7 @@ def build_js() -> None:
 
     bundles = {
         "home": consent + "\n" + head + f2 + tail,
-        "prices": consent + "\n" + head + f1 + tail,
+        "prices": consent + "\n" + head + f1 + f2 + tail,
         "item": consent + "\n" + head + f_item + tail,
         "sites": consent + "\n" + head + f3 + tail,
         "gallery": consent + "\n" + head + f4 + tail,

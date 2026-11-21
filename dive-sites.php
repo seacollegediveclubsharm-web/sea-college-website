@@ -247,7 +247,7 @@ require ROOT_DIR . '/includes/header.php';
     <div><h2><?= te('sites_cta_title') ?></h2><p><?= te('sites_cta_sub') ?></p></div>
     <div class="cta-band__btns">
       <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('Sharm Dive Sites Plan', 'dive_sites')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="dive_sites"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
-      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices.php', 'dive-calculator')) ?>" data-track="cta_click" data-placement="sites_calc"><?= te('sites_cta_calc') ?></a>
+      <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices', 'dive-calculator')) ?>" data-track="cta_click" data-placement="sites_calc"><?= te('sites_cta_calc') ?></a>
     </div>
   </div>
 </section>

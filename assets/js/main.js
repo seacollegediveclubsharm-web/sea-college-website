@@ -95,9 +95,87 @@
     document.body.appendChild(pill);
   })();
 
+  /* ---------------- CRO Anchor Aliases (#calculator, #quiz, #checkin) ---------------- */
+  function isCatId(id) {
+    return SC.isCatalogId ? SC.isCatalogId(id) : (!!id && id !== 'dive-extra' && id !== 'padi-cert-fee' && !/^(eq|fee|ins)-/.test(String(id)));
+  }
+  function langPrefix() {
+    return (SC.lang && SC.lang !== 'en') ? ('/' + SC.lang) : '';
+  }
+  function resolveCroHash(rawHash, smooth) {
+    var h = String(rawHash || '').replace(/^#/, '').toLowerCase();
+    if (!h) { return false; }
+    if (h === 'checkin' || h === 'check-in') {
+      if (SC.page === 'checkin' || SC.page === 'thanks') {
+        var ciForm = $('[data-checkin-form]');
+        if (ciForm) { ciForm.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' }); }
+        if (history.replaceState) { history.replaceState(null, '', location.pathname + location.search); }
+      } else {
+        location.replace(langPrefix() + '/check-in' + (location.search || ''));
+      }
+      return true;
+    }
+    if (h === 'calculator' || h === 'dive-calculator') {
+      var calcEl = document.getElementById('dive-calculator');
+      if (calcEl) {
+        calcEl.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+        return true;
+      }
+      if (h === 'calculator') {
+        location.replace(langPrefix() + '/prices' + (location.search || '') + '#dive-calculator');
+        return true;
+      }
+    }
+    if (h === 'quiz' || h === 'dive-finder-quiz') {
+      var quizEl = document.getElementById('dive-finder-quiz');
+      if (quizEl) {
+        quizEl.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+        return true;
+      }
+      if (h === 'quiz') {
+        location.replace((langPrefix() || '/') + (location.search || '') + '#dive-finder-quiz');
+        return true;
+      }
+    }
+    return false;
+  }
+  if (location.hash) {
+    resolveCroHash(location.hash, true);
+  }
+  window.addEventListener('hashchange', function () {
+    resolveCroHash(location.hash, true);
+  });
+  document.addEventListener('click', function (ev) {
+    var link = ev.target.closest && ev.target.closest('a[href*="#"]');
+    if (!link) { return; }
+    var href = link.getAttribute('href') || '';
+    try {
+      var u = new URL(href, location.origin);
+      if (u.origin !== location.origin) { return; }
+      var targetHash = (u.hash || '').replace(/^#/, '').toLowerCase();
+      if (targetHash === 'checkin' || targetHash === 'check-in') {
+        ev.preventDefault();
+        location.replace(langPrefix() + '/check-in' + (u.search || location.search || ''));
+        return;
+      }
+      if (u.pathname === location.pathname && (targetHash === 'calculator' || targetHash === 'dive-calculator' || targetHash === 'quiz' || targetHash === 'dive-finder-quiz')) {
+        if (resolveCroHash(targetHash, true)) {
+          ev.preventDefault();
+          var canonHash = (targetHash === 'calculator') ? '#dive-calculator' : (targetHash === 'quiz' ? '#dive-finder-quiz' : '#' + targetHash);
+          if (history.replaceState) { history.replaceState(null, '', location.pathname + location.search + canonHash); }
+        }
+      }
+    } catch (err) { /* ignore malformed href */ }
+  });
+
   /* ---------------- Attribution cache & Server-Side Click Beacon + Saved Hotel ---------------- */
+  function readCookie(name) {
+    var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
   var clickAttr = (function () {
-    var keys = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    var keys = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
     var cached = {};
     try { cached = JSON.parse(sessionStorage.getItem('sc_click_attr') || '{}') || {}; } catch (e) { cached = {}; }
     try {
@@ -107,10 +185,41 @@
         var v = sp.get(k);
         if (v) { cached[k] = v; updated = true; }
       });
+      var urlFbclid = sp.get('fbclid');
+      if (urlFbclid) {
+        var existingFbc = readCookie('_fbc');
+        if (existingFbc && existingFbc.slice(-(urlFbclid.length + 1)) === '.' + urlFbclid) {
+          cached.fbc = existingFbc;
+        } else {
+          cached.fbc = 'fb.1.' + Date.now() + '.' + urlFbclid;
+        }
+        updated = true;
+      }
       if (updated) { sessionStorage.setItem('sc_click_attr', JSON.stringify(cached)); }
     } catch (e) { /* ignore */ }
     return cached;
   })();
+
+  function getMetaCookies() {
+    var cFbc = readCookie('_fbc');
+    var cFbp = readCookie('_fbp');
+    var fbc = cFbc || clickAttr.fbc || (clickAttr.fbclid ? ('fb.1.' + Date.now() + '.' + clickAttr.fbclid) : '');
+    var fbp = cFbp || clickAttr.fbp || '';
+    return { fbc: fbc, fbp: fbp };
+  }
+
+  function syncAttributionInputs(root) {
+    var scope = root || document;
+    var meta = getMetaCookies();
+    var all = Object.assign({}, clickAttr, meta);
+    ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbc', 'fbp'].forEach(function (k) {
+      if (!all[k]) { return; }
+      $$('input[name="' + k + '"]', scope).forEach(function (inp) {
+        if (!inp.value || k === 'fbc' || k === 'fbp') { inp.value = all[k]; }
+      });
+    });
+  }
+  syncAttributionInputs(document);
 
   var savedHotel = store.get('sc_hotel', null);
   var hotelHooks = [];
@@ -133,13 +242,17 @@
   }
 
   function sendClickBeacon(payload) {
+    var meta = getMetaCookies();
     var p = Object.assign({
       kind: 'whatsapp_click',
       placement: 'general',
       page_url: location.href,
       lang: SC.lang || 'en',
       hotel: (savedHotel && savedHotel.name) ? savedHotel.name : ''
-    }, clickAttr, payload || {});
+    }, clickAttr, meta, payload || {});
+    if (typeof p.value === 'number' && p.estimated_eur === undefined) {
+      p.estimated_eur = p.value;
+    }
     var json = JSON.stringify(p);
     try {
       if (navigator.sendBeacon) {
@@ -258,8 +371,15 @@
       var itemPrice = parseFloat(add.getAttribute('data-price')) || 0;
       var itemName = add.getAttribute('data-name') || '';
       track('add_to_cart', { ecommerce: { currency: 'EUR', items: [{ item_id: id, item_name: itemName, price: itemPrice, quantity: 1 }] } });
-      if (granted() && window.fbq) { window.fbq('track', 'AddToCart', { content_ids: [id], content_name: itemName, content_type: 'product', value: itemPrice, currency: 'EUR' }); }
+      if (granted() && window.fbq) {
+        if (isCatId(id) && itemPrice > 0) {
+          window.fbq('track', 'AddToCart', { content_ids: [id], content_name: itemName, content_type: 'product', value: itemPrice, currency: 'EUR' });
+        } else {
+          window.fbq('track', 'AddToCart', { content_name: itemName, content_category: 'addon', value: itemPrice, currency: 'EUR' });
+        }
+      }
       if (granted() && window.ttq) { window.ttq.track('AddToCart', { content_id: id, value: itemPrice, currency: 'EUR' }); }
+      if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'add_to_cart', { event_category: 'ecommerce', revenue_value: itemPrice, currency: 'EUR' }); }
       return;
     }
     var ctrl = e.target.closest('.cart__item-ctrl');
@@ -320,6 +440,7 @@
         return;
       }
       renderCart();
+      syncAttributionInputs(form);
       form.classList.add('is-loading');
       fetch(form.action, {
         method: 'POST',
@@ -342,8 +463,9 @@
               try {
                 var curParams = new URLSearchParams(location.search);
                 var pass = [];
-                ['gclid', 'gbraid', 'wbraid'].forEach(function (k) {
-                  if (curParams.get(k) && dest.indexOf(k + '=') === -1) { pass.push(k + '=' + encodeURIComponent(curParams.get(k))); }
+                ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'].forEach(function (k) {
+                  var kv = curParams.get(k) || clickAttr[k];
+                  if (kv && dest.indexOf(k + '=') === -1) { pass.push(k + '=' + encodeURIComponent(kv)); }
                 });
                 if (pass.length) { dest += (dest.indexOf('?') === -1 ? '?' : '&') + pass.join('&'); }
               } catch (err) { /* ignore URLSearchParams issues */ }
@@ -370,7 +492,37 @@
     });
   });
 
-  /* ---------------- WhatsApp from form + cart ---------------- */
+  /* ---------------- WhatsApp from form + cart & Dynamic Item EUR Resolver ---------------- */
+  function resolveItemContext() {
+    var id = (SC.item && SC.item.id) || '';
+    var name = (SC.item && SC.item.name) || '';
+    var eur = 0;
+    var qbTot = $('[data-qb-total][data-eur]');
+    if (qbTot) {
+      eur = parseFloat(qbTot.getAttribute('data-eur')) || 0;
+    }
+    if (eur <= 0 && SC.item && SC.item.price) {
+      eur = parseFloat(SC.item.price) || 0;
+    }
+    if (eur <= 0) {
+      var qbEl = $('[data-quick-book][data-qb-price]');
+      if (qbEl) {
+        eur = parseFloat(qbEl.getAttribute('data-qb-price')) || 0;
+        if (!id) { id = qbEl.getAttribute('data-qb-id') || ''; }
+        if (!name) { name = qbEl.getAttribute('data-qb-raw-name') || qbEl.getAttribute('data-qb-name') || ''; }
+      }
+    }
+    if (eur <= 0) {
+      var metaPrice = $('meta[property="product:price:amount"]');
+      if (metaPrice) { eur = parseFloat(metaPrice.getAttribute('content')) || 0; }
+    }
+    if (eur <= 0) {
+      var ct = cartTotal();
+      if (ct > 0) { eur = ct; }
+    }
+    return { id: id, name: name, eur: Math.round(eur * 100) / 100 };
+  }
+
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-wa-from-form]');
     if (!btn) { return; }
@@ -391,15 +543,18 @@
     var src = get('utm_source') || clickAttr.utm_source || 'website';
     var camp = get('utm_campaign') || clickAttr.utm_campaign || placement;
     lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
-    var convVal = totalVal > 0 ? totalVal : 30;
+    var itemCtx = resolveItemContext();
+    var convVal = totalVal > 0 ? totalVal : (itemCtx.eur > 0 ? itemCtx.eur : 30);
     track('begin_checkout', { value: convVal, currency: 'EUR' });
     track('whatsapp_click', { placement: placement, value: convVal, currency: 'EUR' });
     track('contact', { method: 'whatsapp', placement: placement });
     sendClickBeacon({
       kind: 'whatsapp_click',
       placement: placement,
-      item_name: get('interest') || (cart[0] && cart[0].name) || '',
+      item_id: itemCtx.id || (cart[0] && cart[0].id) || '',
+      item_name: get('interest') || (cart[0] && cart[0].name) || itemCtx.name || '',
       value: convVal,
+      estimated_eur: convVal,
       date: get('date'),
       qty: parseInt(get('people'), 10) || 1,
       hotel: get('hotel') || ((savedHotel && savedHotel.name) || '')
@@ -408,8 +563,13 @@
     if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
       window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
     }
-    if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
+    var fbFormContact = { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' };
+    var formCatIds = cart.map(function (c) { return c.id; }).filter(isCatId);
+    if (!formCatIds.length && itemCtx.id && isCatId(itemCtx.id)) { formCatIds = [itemCtx.id]; }
+    if (formCatIds.length) { fbFormContact.content_ids = formCatIds; fbFormContact.content_type = 'product'; }
+    if (granted() && window.fbq) { window.fbq('track', 'Contact', fbFormContact); }
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
+    if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
     window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
   });
 
@@ -428,6 +588,12 @@
     }
     if (!kind || kind === 'form_submit_click') { return; }
     var params = { placement: a.getAttribute('data-placement') || '', link_url: href, link_text: (a.textContent || '').trim().slice(0, 80) };
+    var itCtx = resolveItemContext();
+    if (kind === 'whatsapp_click' && itCtx.eur > 0) {
+      params.value = itCtx.eur;
+      params.currency = 'EUR';
+      if (itCtx.id) { params.item_id = itCtx.id; }
+    }
     track(kind, params);
     if (kind === 'cta_click' || kind === 'outbound_link') { return; }
     // whatsapp / phone / email = contact intent
@@ -435,22 +601,32 @@
       sendClickBeacon({
         kind: kind,
         placement: params.placement || 'general',
-        item_id: (SC.item && SC.item.id) || '',
-        item_name: (SC.item && SC.item.name) || '',
-        value: (SC.item && parseFloat(SC.item.price)) || 0
+        item_id: itCtx.id,
+        item_name: itCtx.name,
+        value: itCtx.eur,
+        estimated_eur: itCtx.eur
       });
     }
     if (window.scLoadTags) { window.scLoadTags(); }
     track('contact', { method: kind.replace('_click', ''), placement: params.placement });
     if (SC.adsDirect && SC.adsId && typeof window.gtag === 'function') {
       if (kind === 'whatsapp_click' && SC.adsWhatsappLabel) {
-        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+        var awPayload = { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' };
+        if (itCtx.eur > 0) { awPayload.value = itCtx.eur; awPayload.currency = 'EUR'; }
+        window.gtag('event', 'conversion', awPayload);
       } else if (kind === 'phone_click' && SC.adsCallLabel) {
         window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsCallLabel, transport_type: 'beacon' });
       }
     }
-    if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: kind }); }
-    if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: kind }); }
+    var pxContact = { content_name: kind };
+    if (kind === 'whatsapp_click' && itCtx.eur > 0) {
+      pxContact.value = itCtx.eur;
+      pxContact.currency = 'EUR';
+      if (itCtx.id && isCatId(itCtx.id)) { pxContact.content_ids = [itCtx.id]; pxContact.content_type = 'product'; }
+    }
+    if (granted() && window.fbq) { window.fbq('track', 'Contact', pxContact); }
+    if (granted() && window.ttq) { window.ttq.track('Contact', itCtx.eur > 0 ? { content_name: kind, value: itCtx.eur, currency: 'EUR' } : { content_name: kind }); }
+    if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', kind, itCtx.eur > 0 ? { event_category: 'contact', revenue_value: itCtx.eur, currency: 'EUR' } : { event_category: 'contact' }); }
   });
 
   /* ---------------- Interactive Sharm Hotel Pickup Zone & Transfer Time Checker ---------------- */
@@ -652,15 +828,30 @@
         items: [{ item_id: SC.item.id, item_name: SC.item.name, item_category: SC.item.category || '', price: itPrice, quantity: 1 }]
       }
     });
+    var fbSent = false;
+    var ttSent = false;
+    var uetSent = false;
+    var isCatalogItem = (SC.item.in_catalog !== false) && isCatId(SC.item.id) && itPrice > 0;
     var firePixelView = function () {
-      if (window.fbq) {
-        window.fbq('track', 'ViewContent', { content_ids: [SC.item.id], content_name: SC.item.name, content_category: SC.item.category || '', content_type: 'product', value: itPrice, currency: 'EUR' });
+      if (!fbSent && window.fbq) {
+        fbSent = true;
+        if (isCatalogItem) {
+          window.fbq('track', 'ViewContent', { content_ids: [SC.item.id], content_name: SC.item.name, content_category: SC.item.category || '', content_type: 'product', value: itPrice, currency: 'EUR' });
+        } else if (itPrice > 0) {
+          window.fbq('track', 'ViewContent', { content_name: SC.item.name, content_category: 'addon', value: itPrice, currency: 'EUR' });
+        }
       }
-      if (window.ttq) {
+      if (!ttSent && window.ttq) {
+        ttSent = true;
         window.ttq.track('ViewContent', { content_id: SC.item.id, content_name: SC.item.name, value: itPrice, currency: 'EUR' });
+      }
+      if (!uetSent && SC.uetId && window.uetq) {
+        uetSent = true;
+        window.uetq.push('event', 'view_item', { event_category: 'ecommerce', event_label: SC.item.id, revenue_value: itPrice, currency: 'EUR' });
       }
     };
     if (granted()) { firePixelView(); }
+    document.addEventListener('sc:marketing_loaded', function () { if (granted()) { firePixelView(); } });
     document.addEventListener('sc:consent', function (ev) { if (ev.detail === 'all') { firePixelView(); } });
   }
 
@@ -845,8 +1036,19 @@
         });
         saveCart();
         track('add_to_cart', { ecommerce: { currency: 'EUR', value: totalEur, items: ecomItems } });
+        var catIds = ecomItems.map(function (x) { return x.item_id; }).filter(isCatId);
         if (granted() && window.fbq) {
-          window.fbq('track', 'AddToCart', { content_ids: ecomItems.map(function (x) { return x.item_id; }), content_type: 'product', value: totalEur, currency: 'EUR' });
+          if (catIds.length) {
+            window.fbq('track', 'AddToCart', { content_ids: catIds, content_type: 'product', value: totalEur, currency: 'EUR' });
+          } else {
+            window.fbq('track', 'AddToCart', { content_name: 'Dive Calculator Estimate', value: totalEur, currency: 'EUR' });
+          }
+        }
+        if (granted() && window.ttq) {
+          window.ttq.track('AddToCart', { content_id: catIds[0] || 'dive_calculator', value: totalEur, currency: 'EUR' });
+        }
+        if (granted() && SC.uetId && window.uetq) {
+          window.uetq.push('event', 'add_to_cart', { event_category: 'ecommerce', revenue_value: totalEur, currency: 'EUR' });
         }
         if (elToast) { elToast.textContent = L.pushedToast || 'Added!'; elToast.hidden = false; }
         var peopleInput = document.querySelector('#booking input[name="people"]');
@@ -877,8 +1079,10 @@
         sendClickBeacon({
           kind: 'whatsapp_click',
           placement: 'dive_calculator',
+          item_id: (st.lines[0] && isCatId(st.lines[0].id)) ? st.lines[0].id : '',
           item_name: st.lines[0] ? st.lines[0].rawName : 'Dive Calculator Bundle',
           value: grand,
+          estimated_eur: grand,
           qty: st.divers,
           hotel: (savedHotel && savedHotel.name) || ''
         });
@@ -886,7 +1090,12 @@
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
           window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: grand, currency: 'EUR', transport_type: 'beacon' });
         }
-        if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' }); }
+        var calcCatIds = st.lines.map(function (ln) { return ln.id; }).filter(isCatId);
+        var calcContact = { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' };
+        if (calcCatIds.length) { calcContact.content_ids = calcCatIds; calcContact.content_type = 'product'; }
+        if (granted() && window.fbq) { window.fbq('track', 'Contact', calcContact); }
+        if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' }); }
+        if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: grand, currency: 'EUR' }); }
         window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
       });
     }
@@ -1163,7 +1372,7 @@
       if (lbTitle) { lbTitle.textContent = el.getAttribute('data-gal-title') || ''; }
       if (lbCap) { lbCap.textContent = el.getAttribute('data-gal-caption') || ''; }
       if (lbLink) {
-        lbLink.href = el.getAttribute('data-gal-link') || '/prices.php';
+        lbLink.href = el.getAttribute('data-gal-link') || (langPrefix() + '/prices');
         lbLink.textContent = el.getAttribute('data-gal-link-text') || '';
       }
       if (!dlg.open && typeof dlg.showModal === 'function') { dlg.showModal(); }
@@ -1367,7 +1576,15 @@
         var totEur = (isNaN(unitP) ? 0 : unitP) * q;
         track('add_to_cart', { ecommerce: { currency: 'EUR', value: totEur, items: [{ item_id: id, item_name: dispName, price: unitP || 0, quantity: q }] } });
         track('begin_checkout', { value: totEur, currency: 'EUR' });
-        if (granted() && window.fbq) { window.fbq('track', 'AddToCart', { content_ids: [id], content_name: dispName, content_type: 'product', value: totEur, currency: 'EUR' }); }
+        if (granted() && window.fbq) {
+          if (isCatId(id) && totEur > 0) {
+            window.fbq('track', 'AddToCart', { content_ids: [id], content_name: dispName, content_type: 'product', value: totEur, currency: 'EUR' });
+          } else {
+            window.fbq('track', 'AddToCart', { content_name: dispName, content_category: 'addon', value: totEur, currency: 'EUR' });
+          }
+        }
+        if (granted() && window.ttq) { window.ttq.track('AddToCart', { content_id: id, value: totEur, currency: 'EUR' }); }
+        if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'add_to_cart', { event_category: 'ecommerce', revenue_value: totEur, currency: 'EUR' }); }
       }
       var dVal = ($('[data-qb-date]', qbBox) || {}).value || '';
       var fDate = document.querySelector('#booking input[name="date"]');
@@ -1417,6 +1634,7 @@
         item_id: iId,
         item_name: iRaw,
         value: convVal,
+        estimated_eur: convVal,
         date: dStr,
         qty: q2,
         hotel: (savedHotel && savedHotel.name) || (hInput && hInput.value ? hInput.value.trim() : '')
@@ -1425,8 +1643,11 @@
       if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
       }
-      if (granted() && window.fbq) { window.fbq('track', 'Contact', { content_name: pl, content_ids: iId ? [iId] : [], value: convVal, currency: 'EUR' }); }
+      var qbContact = { content_name: pl, value: convVal, currency: 'EUR' };
+      if (iId && isCatId(iId)) { qbContact.content_ids = [iId]; qbContact.content_type = 'product'; }
+      if (granted() && window.fbq) { window.fbq('track', 'Contact', qbContact); }
       if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: pl, value: convVal, currency: 'EUR' }); }
+      if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
       window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
     }
   });

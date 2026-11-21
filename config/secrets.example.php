@@ -24,6 +24,8 @@ return [
     'META_CAPI_TOKEN'     => '', // Meta System User Access Token (powers both Server-Side CAPI & Hossam's Graph API sync)
     'META_ACCESS_TOKEN'   => '', // Optional separate Marketing/Catalog API token (defaults to META_CAPI_TOKEN if empty)
     'META_CAPI_TEST_CODE' => '',
+    'TIKTOK_PIXEL_ID'     => '', // Optional TikTok Ads Pixel ID
+    'MICROSOFT_UET_ID'    => '', // Optional Microsoft/Bing Ads UET Tag ID
 
     // 5. Hostinger SMTPS (smtp.hostinger.com:465 implicit TLS — falls back to PHP mail() if empty)
     'SMTP_HOST' => 'smtp.hostinger.com',

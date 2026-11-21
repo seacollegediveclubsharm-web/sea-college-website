@@ -44,7 +44,7 @@ if (!headers_sent()) {
     header('X-Permitted-Cross-Domain-Policies: none');
     header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
     header('Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()');
-    header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://connect.facebook.net https://analytics.tiktok.com https://snap.licdn.com https://www.tripadvisor.com https://www.tripadvisor.com.eg https://static.tacdn.com https://www.jscache.com; style-src 'self' 'unsafe-inline' https://static.tacdn.com https://fonts.googleapis.com; img-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://www.tripadvisor.com https://www.tripadvisor.com.eg https://www.facebook.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests");
+    header("Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://connect.facebook.net https://analytics.tiktok.com https://bat.bing.com https://*.bing.com https://*.clarity.ms https://snap.licdn.com https://www.tripadvisor.com https://www.tripadvisor.com.eg https://static.tacdn.com https://www.jscache.com; style-src 'self' 'unsafe-inline' https://static.tacdn.com https://fonts.googleapis.com; img-src 'self' https: data: blob: https://bat.bing.com https://*.bing.com https://*.clarity.ms; font-src 'self' https: data:; connect-src 'self' https: https://bat.bing.com https://*.bing.com https://*.clarity.ms; frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://bat.bing.com https://www.tripadvisor.com https://www.tripadvisor.com.eg https://www.facebook.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests");
     if (SITE_NOINDEX) {
         header('X-Robots-Tag: noindex, nofollow');
     }
@@ -132,7 +132,7 @@ function loc(array|string|null $v): string
     return (string) $v;
 }
 
-/** Strip any leading /{lang} prefix from a path and normalize /index.php -> /. */
+/** Strip any leading /{lang} prefix from a path and normalize /index.php & core .php routes to clean extensionless paths. */
 function strip_lang_prefix(string $path): string
 {
     $p = '/' . ltrim($path, '/');
@@ -141,6 +141,10 @@ function strip_lang_prefix(string $path): string
     if ($p === '' || $p === '/index.php') {
         return '/';
     }
+    if ($p === '/dive-sites.php') {
+        return '/dive-sites-sharm-el-sheikh';
+    }
+    $p = (string) preg_replace('#^/(services|prices|about|contact|privacy-policy|terms|check-in|guides|gallery|thank-you)\.php$#i', '/$1', $p);
     return str_starts_with($p, '/') ? $p : '/' . $p;
 }
 
@@ -200,20 +204,43 @@ function canonical_url(?string $lang = null): string
     return SITE_URL . page_link(base_request_path(), '', $targetLang);
 }
 
-/** Preserve Google Ads / Meta / UTM query parameters across PHP 301 redirects so client-side gtag.js sees gclid. */
+/** Preserve all non-router query parameters (gclid, gbraid, wbraid, fbclid, ttclid, msclkid, utm_*, gad_source, etc.) across PHP 301 redirects. */
 function sc_with_campaign_query(string $destUrl): string
 {
-    $keep = [];
-    foreach (UTM_KEYS as $k) {
-        if (isset($_GET[$k]) && $_GET[$k] !== '') {
-            $keep[$k] = (string) $_GET[$k];
-        }
-    }
+    $keep = $_GET;
+    unset($keep['lang'], $keep['section'], $keep['slug'], $keep['hub'], $keep['legacy']);
+    $keep = array_filter($keep, static fn($v): bool => $v !== '' && $v !== null);
     if (!$keep) {
         return $destUrl;
     }
     $sep = str_contains($destUrl, '?') ? '&' : '?';
     return $destUrl . $sep . http_build_query($keep);
+}
+
+/** True iff catalog ID belongs to the 59 standalone Meta Catalog products (excludes add-ons/fees/rentals/insurance). */
+function sc_is_catalog_product_id(string $id): bool
+{
+    $id = trim($id);
+    if ($id === '' || $id === 'dive-extra' || $id === 'padi-cert-fee') {
+        return false;
+    }
+    foreach (['eq-', 'fee-', 'ins-'] as $prefix) {
+        if (str_starts_with($id, $prefix)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sc_is_catalog_item(array $it): bool
+{
+    if (!isset($it['price']) || !is_numeric($it['price']) || (float) $it['price'] <= 0) {
+        return false;
+    }
+    if (empty($it['slug'])) {
+        return false;
+    }
+    return sc_is_catalog_product_id((string) ($it['id'] ?? ''));
 }
 
 /* ---------------- Money ---------------- */
@@ -327,9 +354,63 @@ function csrf_verify(?string $token): bool
     return !empty($_SESSION['csrf_token']) && hash_equals((string) $_SESSION['csrf_token'], $token);
 }
 
-/* ---------------- UTM / click-ID attribution ---------------- */
+/* ---------------- UTM / click-ID & Meta _fbc/_fbp attribution ---------------- */
 $GLOBALS['SC_ATTR'] = [];
 $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = false;
+
+function attribution(): array
+{
+    return is_array($GLOBALS['SC_ATTR'] ?? null) ? $GLOBALS['SC_ATTR'] : [];
+}
+
+function sc_sanitize_meta_cookie(string $val): string
+{
+    $val = trim((string) preg_replace('/[^\w\-\.]/', '', $val));
+    return (str_starts_with($val, 'fb.') && strlen($val) <= 300) ? $val : '';
+}
+
+function sc_resolve_fbc(?array $attr = null, string $postedFbc = ''): string
+{
+    $cookieFbc = sc_sanitize_meta_cookie((string) ($_COOKIE['_fbc'] ?? ''));
+    $urlFbclid = isset($_GET['fbclid']) ? trim((string) preg_replace('/[^\w\-]/', '', (string) $_GET['fbclid'])) : '';
+    if ($urlFbclid !== '') {
+        if ($cookieFbc !== '' && str_ends_with($cookieFbc, '.' . $urlFbclid)) {
+            return $cookieFbc;
+        }
+        return 'fb.1.' . ((int) round(microtime(true) * 1000)) . '.' . substr($urlFbclid, 0, 220);
+    }
+    if ($cookieFbc !== '') {
+        return $cookieFbc;
+    }
+    $cleanPosted = sc_sanitize_meta_cookie($postedFbc);
+    if ($cleanPosted !== '') {
+        return $cleanPosted;
+    }
+    $a = $attr ?? attribution();
+    $storedFbc = sc_sanitize_meta_cookie((string) ($a['fbc'] ?? ''));
+    if ($storedFbc !== '') {
+        return $storedFbc;
+    }
+    $fbclid = trim((string) preg_replace('/[^\w\-]/', '', (string) ($a['fbclid'] ?? '')));
+    if ($fbclid !== '') {
+        return 'fb.1.' . ((int) round(microtime(true) * 1000)) . '.' . substr($fbclid, 0, 220);
+    }
+    return '';
+}
+
+function sc_resolve_fbp(?array $attr = null, string $postedFbp = ''): string
+{
+    $cookieFbp = sc_sanitize_meta_cookie((string) ($_COOKIE['_fbp'] ?? ''));
+    if ($cookieFbp !== '') {
+        return $cookieFbp;
+    }
+    $cleanPosted = sc_sanitize_meta_cookie($postedFbp);
+    if ($cleanPosted !== '') {
+        return $cleanPosted;
+    }
+    $a = $attr ?? attribution();
+    return sc_sanitize_meta_cookie((string) ($a['fbp'] ?? ''));
+}
 
 function sc_capture_attribution(): void
 {
@@ -341,6 +422,13 @@ function sc_capture_attribution(): void
     }
     if ($found) {
         $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
+        if (!empty($found['fbclid'])) {
+            $found['fbc'] = sc_resolve_fbc($found);
+        }
+        $initFbp = sc_resolve_fbp($found);
+        if ($initFbp !== '') {
+            $found['fbp'] = $initFbp;
+        }
         $found['landing_page'] = substr((string) ($_SERVER['REQUEST_URI'] ?? '/'), 0, 300);
         $found['captured_at'] = gmdate('c');
         $GLOBALS['SC_ATTR'] = $found; // last non-direct click wins
@@ -355,18 +443,13 @@ function sc_capture_attribution(): void
     } elseif (!empty($_COOKIE['sc_attr'])) {
         $d = json_decode((string) base64_decode((string) $_COOKIE['sc_attr'], true), true);
         if (is_array($d)) {
-            $GLOBALS['SC_ATTR'] = array_intersect_key($d, array_flip([...UTM_KEYS, 'landing_page', 'captured_at']));
+            $GLOBALS['SC_ATTR'] = array_intersect_key($d, array_flip([...UTM_KEYS, 'fbc', 'fbp', 'landing_page', 'captured_at']));
         }
     } elseif (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['attribution']) && is_array($_SESSION['attribution'])) {
         $GLOBALS['SC_ATTR'] = $_SESSION['attribution'];
     }
 }
 sc_capture_attribution();
-
-function attribution(): array
-{
-    return is_array($GLOBALS['SC_ATTR'] ?? null) ? $GLOBALS['SC_ATTR'] : [];
-}
 
 /** Hidden inputs carrying attribution into every lead form. */
 function attribution_fields(): string
@@ -377,6 +460,8 @@ function attribution_fields(): string
     foreach (UTM_KEYS as $k) {
         $html .= '<input type="hidden" name="' . e($k) . '" value="' . e($a[$k] ?? '') . '">';
     }
+    $html .= '<input type="hidden" name="fbc" value="' . e(sc_resolve_fbc($a)) . '">';
+    $html .= '<input type="hidden" name="fbp" value="' . e(sc_resolve_fbp($a)) . '">';
     $html .= '<input type="hidden" name="landing_page" value="' . e($a['landing_page'] ?? '') . '">';
     $html .= '<input type="hidden" name="referrer" value="' . e((string) $ref) . '">';
     return $html;
@@ -399,8 +484,14 @@ function whatsapp_link(string $topic = '', string $placement = 'general'): strin
 /* ---------------- Consent ---------------- */
 function consent_state(): string
 {
-    $c = (string) ($_COOKIE[CONSENT_COOKIE] ?? '');
-    return in_array($c, ['all', 'essential'], true) ? $c : 'unset';
+    $c = strtolower(trim((string) ($_COOKIE[CONSENT_COOKIE] ?? '')));
+    if ($c === 'all' || $c === 'granted') {
+        return 'all';
+    }
+    if (in_array($c, ['essential', 'denied', 'reject', 'rejected', 'none', '0', 'false'], true)) {
+        return 'essential';
+    }
+    return 'unset';
 }
 
 /** Helper used by pages: FAQPage node from translation keys faq_N_q / faq_N_a. */

@@ -8,10 +8,10 @@ require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
 $page['id'] = 'contact';
-$page['canonical_path'] = '/contact.php';
+$page['canonical_path'] = '/contact';
 $page['title'] = t('meta_contact_title');
 $page['description'] = t('meta_contact_desc');
-$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_contact'), '/contact.php']];
+$page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_contact'), '/contact']];
 $page['schema'][] = ['@type' => 'ContactPage', 'name' => t('contact_title'), 'about' => ['@id' => SITE_URL . '/#organization']];
 $sc_map_src = 'https://www.google.com/maps?q=' . rawurlencode(MAPS_EMBED_QUERY) . '&output=embed';
 
@@ -34,7 +34,7 @@ require ROOT_DIR . '/includes/header.php';
       </div>
       <div class="contact-side">
         <aside class="card contact-card">
-          <a class="center-preview-img" href="<?= e(page_link('/about.php', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
+          <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
             <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 380px']) ?>
           </a>
           <h2><?= te('contact_details_title') ?></h2>
