@@ -76,7 +76,7 @@ $hotel     = clean_line($data['hotel'] ?? '', 140);
 /* Merge posted attribution with server-side sc_attr cookie attribution */
 $cookieAttr = attribution();
 $attr = [];
-foreach (['gclid', 'gbraid', 'wbraid', 'fbclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as $k) {
+foreach (['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as $k) {
     $val = clean_line($data[$k] ?? '', 240);
     if ($val === '' && !empty($cookieAttr[$k]) && is_string($cookieAttr[$k])) {
         $val = clean_line($cookieAttr[$k], 240);
@@ -103,6 +103,8 @@ $row = [
     'gbraid'       => $attr['gbraid'],
     'wbraid'       => $attr['wbraid'],
     'fbclid'       => $attr['fbclid'],
+    'ttclid'       => $attr['ttclid'],
+    'msclkid'      => $attr['msclkid'],
     'utm_source'   => $attr['utm_source'],
     'utm_medium'   => $attr['utm_medium'],
     'utm_campaign' => $attr['utm_campaign'],
@@ -123,6 +125,8 @@ $shouldSyncCrm = CRM_WEBHOOK_URL !== '' && (
     || $attr['gbraid'] !== ''
     || $attr['wbraid'] !== ''
     || $attr['fbclid'] !== ''
+    || $attr['ttclid'] !== ''
+    || $attr['msclkid'] !== ''
     || $attr['utm_campaign'] !== ''
     || in_array($placement, $keyPlacements, true)
 );
@@ -146,6 +150,8 @@ if ($shouldSyncCrm) {
         'gbraid'              => $attr['gbraid'],
         'wbraid'              => $attr['wbraid'],
         'fbclid'              => $attr['fbclid'],
+        'ttclid'              => $attr['ttclid'],
+        'msclkid'             => $attr['msclkid'],
         'utm_source'          => $attr['utm_source'],
         'utm_medium'          => $attr['utm_medium'],
         'utm_campaign'        => $attr['utm_campaign'],
