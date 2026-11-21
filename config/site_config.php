@@ -143,6 +143,7 @@ define('GTG_GA4_PATH', '/s-ga');                              // First-party pat
  * Paid social pixels
  * ------------------------------------------------------------- */
 define('META_PIXEL_ID', sc_env('META_PIXEL_ID', '2980406819004765'));
+define('FB_DOMAIN_VERIFICATION', sc_env('FB_DOMAIN_VERIFICATION', 'hgespqg872v6rcmkb8zglk4jx9y61v')); // Meta Business Suite domain verification meta tag
 define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env only
 define('META_CAPI_TEST_CODE', sc_env('META_CAPI_TEST_CODE', ''));
 define('META_GRAPH_VERSION', 'v19.0');

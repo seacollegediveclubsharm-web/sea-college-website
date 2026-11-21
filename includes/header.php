@@ -29,7 +29,7 @@ if (!headers_sent() && in_array(($_SERVER['REQUEST_METHOD'] ?? 'GET'), ['GET', '
         && empty($_COOKIE['sc_sid'])
         && empty($_COOKIE['sc_attr']);
     if ($sc_can_edge_cache) {
-        header('Cache-Control: public, max-age=120, s-maxage=3600, stale-while-revalidate=86400');
+        header('Cache-Control: public, max-age=120, s-maxage=300, stale-while-revalidate=86400');
     } elseif (empty($_COOKIE['sc_sid'])) {
         header('Cache-Control: private, no-cache');
     }

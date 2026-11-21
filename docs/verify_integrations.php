@@ -95,11 +95,12 @@ if (GOOGLE_PLACES_API_KEY !== '') {
     $line('WARN', 'GBP Places API', 'GOOGLE_PLACES_API_KEY empty — serving verified seed (' . BUSINESS['rating'] . '★ / ' . BUSINESS['review_count'] . ' reviews' . (is_file($seedFile) ? ', seed JSON present' : '') . ')');
 }
 
-/* 4. Meta Pixel & Server-Side Conversions API (CAPI) */
+/* 4. Meta Pixel, Domain Verification & Server-Side Conversions API (CAPI) */
+$fbDomNote = (defined('FB_DOMAIN_VERIFICATION') && FB_DOMAIN_VERIFICATION !== '') ? '; FB domain meta: ' . FB_DOMAIN_VERIFICATION : '';
 if (META_PIXEL_ID !== '' && META_CAPI_TOKEN !== '') {
-    $line('OK', 'Meta Pixel + CAPI', 'Pixel ' . META_PIXEL_ID . ' + CAPI token configured (' . META_GRAPH_VERSION . ')');
+    $line('OK', 'Meta Pixel + CAPI', 'Pixel ' . META_PIXEL_ID . ' + CAPI token configured (' . META_GRAPH_VERSION . ')' . $fbDomNote);
 } elseif (META_PIXEL_ID !== '') {
-    $line('WARN', 'Meta Pixel + CAPI', 'Browser Pixel ' . META_PIXEL_ID . ' active; META_CAPI_TOKEN empty (set in config/secrets.php for server-side CAPI)');
+    $line('WARN', 'Meta Pixel + CAPI', 'Browser Pixel ' . META_PIXEL_ID . ' active' . $fbDomNote . '; META_CAPI_TOKEN empty (set in config/secrets.php for CAPI)');
 } else {
     $line('WARN', 'Meta Pixel + CAPI', 'Disabled');
 }
