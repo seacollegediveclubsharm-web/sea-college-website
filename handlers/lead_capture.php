@@ -134,7 +134,7 @@ if (CRM_WEBHOOK_URL !== '') {
 /* 4) Meta Conversions API (server event, same event_id as browser pixel) */
 meta_capi_event('Lead', $eventId, [
     'email' => $email, 'phone' => $phone, 'first_name' => explode(' ', $name)[0] ?? '', 'fbclid' => $attr['fbclid'] ?? '',
-], ['currency' => 'EUR', 'value' => round($total, 2), 'content_name' => $interest, 'content_ids' => array_column($cart, 'id')]);
+], ['currency' => 'EUR', 'value' => round($total, 2), 'content_name' => $interest, 'content_type' => 'product', 'content_ids' => array_values(array_filter(array_column($cart, 'id')))]);
 
 /* 5) Hand conversion data to thank-you page (fires GA4 / Ads / Meta / TikTok in browser) */
 $_SESSION['conversion'] = [

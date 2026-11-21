@@ -167,7 +167,7 @@ if ($mode === 'i18n') {
         'it' => 'it_IT',
         'pl' => 'pl_PL',
         'de' => 'de_DE',
-        'fr' => 'fr_FR',
+        'fr' => 'fr_XX',
         'ar' => 'ar_AR',
         'zh' => 'zh_CN',
     ];

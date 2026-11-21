@@ -64,7 +64,10 @@
   function fireConversion() {
     var c = window.SC_CONVERSION;
     if (!c) { return; }
-    if (window.fbq) { window.fbq('track', 'Lead', { value: c.value, currency: c.currency }, { eventID: c.event_id }); }
+    var ids = Array.isArray(c.items) ? c.items.map(function (x) { return x && x.item_id; }).filter(Boolean) : [];
+    var fbData = { value: c.value, currency: c.currency };
+    if (ids.length) { fbData.content_ids = ids; fbData.content_type = 'product'; }
+    if (window.fbq) { window.fbq('track', 'Lead', fbData, { eventID: c.event_id }); }
     if (window.ttq) { window.ttq.track('SubmitForm', { value: c.value, currency: c.currency }, { event_id: c.event_id }); }
   }
 
@@ -88,6 +91,7 @@
     (window.dataLayer = window.dataLayer || []).push({ event: 'consent_update', consent_state: value });
     if (window.scLoadTags) { window.scLoadTags(); }
     if (value === 'all') { loadMarketing(); }
+    try { document.dispatchEvent(new CustomEvent('sc:consent', { detail: value })); } catch (err2) { /* ignore */ }
     var box = document.getElementById('consent');
     if (box) { box.hidden = true; }
   }

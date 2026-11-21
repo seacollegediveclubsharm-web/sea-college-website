@@ -87,6 +87,7 @@ $page['speakable']      = ['.item-hero__title', '.aeo-box__text'];
 $page['schema']         = schema_item_detail($it, $seo, $catLabel, $gbp, $resolved, $itGal);
 $page['item_track']     = [
     'id'       => $it['id'],
+    'group'    => $catKey,
     'name'     => $it['name'],
     'category' => $cat['label']['en'] ?? $catLabel,
     'price'    => $it['price'] ?? 0,

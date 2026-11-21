@@ -93,6 +93,16 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <meta name="twitter:title" content="<?= e($sc_title) ?>">
 <meta name="twitter:description" content="<?= e($sc_desc) ?>">
 <meta name="twitter:image" content="<?= e($page['image']) ?>">
+<?php if (!empty($page['item_track']['id']) && isset($page['item_track']['price']) && is_numeric($page['item_track']['price']) && (float) $page['item_track']['price'] > 0): ?>
+<meta property="product:brand" content="<?= e(SITE_NAME) ?>">
+<meta property="product:availability" content="in stock">
+<meta property="product:condition" content="new">
+<meta property="product:price:amount" content="<?= e(number_format((float) $page['item_track']['price'], 2, '.', '')) ?>">
+<meta property="product:price:currency" content="EUR">
+<meta property="product:retailer_item_id" content="<?= e((string) $page['item_track']['id']) ?>">
+<?php if (!empty($page['item_track']['group'])): ?>
+<meta property="product:item_group_id" content="<?= e((string) $page['item_track']['group']) ?>">
+<?php endif; endif; ?>
 
 <link rel="icon" href="<?= e(asset('images/favicon.png')) ?>" type="image/png">
 <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">
