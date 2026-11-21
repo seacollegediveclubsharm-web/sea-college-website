@@ -276,14 +276,14 @@ for draft_slug in \
   "/tours/private-speed-boat-2-hours-sharm" \
   "/de/courses/padi-advanced-open-water-sharm"; do
   [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
-  hdr=$(curl "${CURL_ARGS[@]}" -I "${BASE_URL}${draft_slug}?gclid=EAIaIQobChMI_m1_draft" | tr -d '\r')
-  st_code=$(awk 'NR==1{print $2}' <<<"$hdr")
-  loc_val=$(grep -i '^location:' <<<"$hdr" || true)
+  probe_out=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}|%{redirect_url}" "${BASE_URL}${draft_slug}?gclid=EAIaIQobChMI_m1_draft")
+  st_code="${probe_out%%|*}"
+  loc_val="${probe_out#*|}"
   if [[ "$st_code" == "301" ]] && grep -q "gclid=EAIaIQobChMI_m1_draft" <<<"$loc_val"; then
-    echo "PASS [301 draft slug + gclid] $draft_slug -> ${loc_val#*: }"
+    echo "PASS [301 draft slug + gclid] $draft_slug -> $loc_val"
     pass=$((pass + 1))
   else
-    echo "FAIL [301 draft slug] $draft_slug (status=$st_code, $loc_val)"
+    echo "FAIL [301 draft slug] $draft_slug (status=$st_code, loc=$loc_val)"
     fail=$((fail + 1))
   fi
 done
