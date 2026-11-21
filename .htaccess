@@ -38,6 +38,11 @@ AddDefaultCharset UTF-8
   # Block legacy WordPress / exploit scanner endpoints (xmlrpc, wp-admin, wp-login, phpmyadmin, shell probes)
   RewriteRule ^(wp-admin|wp-login\.php|wp-config\.php|xmlrpc\.php|wp-cron\.php|wp-json|phpmyadmin|pma|adminer|cgi-bin|vendor|node_modules)(/|$) - [F,L,NC]
 
+  # Return HTTP 410 Gone on dead legacy WordPress paths & query bloat (?p=, ?page_id=, ?add-to-cart=, /wp-content/, /feed/) so Google de-indexes old WP bloat fast
+  RewriteRule ^(wp-content|wp-includes|feed|comments/feed|author|wp-trackback\.php)(/|$) - [G,L,NC]
+  RewriteCond %{QUERY_STRING} (^|&)(p|page_id|attachment_id|post_type|replytocom|add-to-cart|remove_item|wc-ajax)=[0-9a-zA-Z_%-]+ [NC]
+  RewriteRule ^$ - [G,L]
+
   # WAF: Block SQLi, XSS, Directory Traversal, Null-Byte & Remote File Inclusion in query string
   RewriteCond %{QUERY_STRING} (\.\./|\.\.\\|%2e%2e|%00|<script|%3cscript|union.*select|concat\(|benchmark\(|base64_encode|mosConfig|GLOBALS\[|_REQUEST\[|php://|data://|expect://) [NC]
   RewriteRule ^ - [F,L]

@@ -65,12 +65,12 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <meta name="robots" content="noindex, nofollow">
 <?php else: ?>
 <meta name="robots" content="index, follow, max-image-preview:large">
-<?php endif; ?>
 <link rel="canonical" href="<?= e($sc_canonical) ?>">
 <?php foreach (array_keys(SUPPORTED_LANGS) as $sc_l): ?>
 <link rel="alternate" hreflang="<?= e($sc_l) ?>" href="<?= e(canonical_url($sc_l)) ?>">
 <?php endforeach; ?>
 <link rel="alternate" hreflang="x-default" href="<?= e(canonical_url(DEFAULT_LANG)) ?>">
+<?php endif; ?>
 <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= e(SITE_URL . '/sitemap.xml') ?>">
 <meta name="theme-color" content="#0B1D2C">
 <meta name="author" content="<?= e(SITE_NAME) ?>">
