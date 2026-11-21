@@ -84,6 +84,7 @@
 
   function choose(value) {
     SC.consent = value;
+    SC.metaGranted = (value === 'all');
     document.documentElement.setAttribute('data-consent-state', value);
     setCookie(value);
     googleUpdate(value === 'all');
@@ -97,7 +98,7 @@
   }
 
   window.SCConsent = {
-    granted: function () { return SC.consent === 'all'; },
+    granted: function () { return SC.consent === 'all' || !!SC.metaGranted; },
     choose: choose,
     loadMarketing: loadMarketing
   };
@@ -117,5 +118,5 @@
     }
   });
 
-  if (SC.consent === 'all' && (window._scUserInteracted || SC.page === 'thanks')) { loadMarketing(); }
+  if ((SC.consent === 'all' || SC.metaGranted) && (window._scUserInteracted || SC.page === 'thanks')) { loadMarketing(); }
 })();

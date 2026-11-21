@@ -100,9 +100,7 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <meta property="product:price:amount" content="<?= e(number_format((float) $page['item_track']['price'], 2, '.', '')) ?>">
 <meta property="product:price:currency" content="EUR">
 <meta property="product:retailer_item_id" content="<?= e((string) $page['item_track']['id']) ?>">
-<?php if (!empty($page['item_track']['group'])): ?>
-<meta property="product:item_group_id" content="<?= e((string) $page['item_track']['group']) ?>">
-<?php endif; endif; ?>
+<?php endif; ?>
 
 <link rel="icon" href="<?= e(asset('images/favicon.png')) ?>" type="image/png">
 <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">

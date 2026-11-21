@@ -249,7 +249,6 @@ foreach ($catalog as $catKey => $cat) {
 
             echo "    <item>\n";
             echo '      <g:id>' . $xmlEsc($id) . "</g:id>\n";
-            echo '      <g:item_group_id>' . $xmlEsc((string) $catKey) . "</g:item_group_id>\n";
             echo '      <g:title>' . $xmlEsc($locData['title']) . "</g:title>\n";
             echo '      <g:description>' . $xmlEsc($locData['desc']) . "</g:description>\n";
             echo '      <g:link>' . $xmlEsc($locData['link']) . "</g:link>\n";
