@@ -12,17 +12,31 @@ if [[ -n "$HOST_HEADER" ]]; then
   CURL_ARGS+=(-H "Host: $HOST_HEADER")
 fi
 
-PACE_SEC="${PACE_SEC:-0.05}"
+PACE_SEC="${PACE_SEC:-0.08}"
 fetch_body() {
-  [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
-  curl "${CURL_ARGS[@]}" "${BASE_URL}$1"
+  local path="$1" out status attempt
+  for attempt in 1 2 3; do
+    [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
+    out=$(curl "${CURL_ARGS[@]}" -w "\n__HTTP_STATUS__:%{http_code}" "${BASE_URL}${path}")
+    status="${out##*__HTTP_STATUS__:}"
+    out="${out%$'\n'__HTTP_STATUS__:*}"
+    if [[ "$status" != "429" ]]; then
+      printf '%s' "$out"
+      return 0
+    fi
+    sleep $((attempt * 2))
+  done
+  printf '%s' "$out"
 }
 pass=0; fail=0
 check_code() {
-  local path="$1" expect="$2"
-  local code
-  [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
-  code=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}" "${BASE_URL}${path}")
+  local path="$1" expect="$2" code attempt
+  for attempt in 1 2 3; do
+    [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
+    code=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}" "${BASE_URL}${path}")
+    [[ "$code" != "429" ]] && break
+    sleep $((attempt * 2))
+  done
   if [[ "$code" == "$expect" ]]; then
     echo "PASS [$code] $path"
     pass=$((pass + 1))
@@ -89,12 +103,19 @@ check_code "/tours/non-existent-slug-xyz" "404"
 for legacy_gclid in \
   "/product/open-water-diver/?gclid=EAIaIQobChMI_test_legacy" \
   "/about-us/?gclid=EAIaIQobChMI_test_legacy"; do
-  loc_hdr=$(curl "${CURL_ARGS[@]}" -I "${BASE_URL}${legacy_gclid}" | tr -d '\r' | grep -i '^location:' || true)
-  if grep -q "gclid=EAIaIQobChMI_test_legacy" <<<"$loc_hdr"; then
-    echo "PASS [301 gclid preserved] $legacy_gclid -> ${loc_hdr#*: }"
+  for attempt in 1 2 3; do
+    [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
+    probe_out=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}|%{redirect_url}" "${BASE_URL}${legacy_gclid}")
+    st_code="${probe_out%%|*}"
+    loc_hdr="${probe_out#*|}"
+    [[ "$st_code" != "429" ]] && break
+    sleep $((attempt * 2))
+  done
+  if [[ "$st_code" == "301" ]] && grep -q "gclid=EAIaIQobChMI_test_legacy" <<<"$loc_hdr"; then
+    echo "PASS [301 gclid preserved] $legacy_gclid -> ${loc_hdr}"
     pass=$((pass + 1))
   else
-    echo "FAIL [301 gclid lost] $legacy_gclid -> ${loc_hdr}"
+    echo "FAIL [301 gclid lost] $legacy_gclid -> status=${st_code} ${loc_hdr}"
     fail=$((fail + 1))
   fi
 done
@@ -279,10 +300,14 @@ for draft_slug in \
   "/courses/heros-bundle-owd-aowd-nitrox-sharm" \
   "/tours/private-speed-boat-2-hours-sharm" \
   "/de/courses/padi-advanced-open-water-sharm"; do
-  [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
-  probe_out=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}|%{redirect_url}" "${BASE_URL}${draft_slug}?gclid=EAIaIQobChMI_m1_draft")
-  st_code="${probe_out%%|*}"
-  loc_val="${probe_out#*|}"
+  for attempt in 1 2 3; do
+    [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
+    probe_out=$(curl "${CURL_ARGS[@]}" -o /dev/null -w "%{http_code}|%{redirect_url}" "${BASE_URL}${draft_slug}?gclid=EAIaIQobChMI_m1_draft")
+    st_code="${probe_out%%|*}"
+    loc_val="${probe_out#*|}"
+    [[ "$st_code" != "429" ]] && break
+    sleep $((attempt * 2))
+  done
   if [[ "$st_code" == "301" ]] && grep -q "gclid=EAIaIQobChMI_m1_draft" <<<"$loc_val"; then
     echo "PASS [301 draft slug + gclid] $draft_slug -> $loc_val"
     pass=$((pass + 1))
