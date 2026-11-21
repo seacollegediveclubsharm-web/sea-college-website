@@ -46,6 +46,28 @@ if (GTM_ID !== '' && GA4_ID !== '' && GOOGLE_ADS_ID !== '') {
     $line('WARN', 'Google Tag / GA4 / Ads', 'One or more Google tracking IDs are empty');
 }
 
+/* 2b. Google Tag Gateway (First-Party Mode -> *.fps.goog) */
+$gtgProxyFile = dirname(__DIR__) . '/handlers/gtg_proxy.php';
+if (defined('GTG_ENABLED') && GTG_ENABLED && is_file($gtgProxyFile)) {
+    $gtgDetail = sprintf('Active (%s -> %s.fps.goog, %s -> %s.fps.goog)', GTG_GTM_PATH, strtolower(GTM_ID), GTG_ADS_PATH, strtolower(GOOGLE_ADS_ID));
+    if ($pingNetwork && function_exists('curl_init')) {
+        $ch1 = curl_init(SITE_URL . GTG_ADS_PATH . '/healthy');
+        curl_setopt_array($ch1, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5]);
+        $r1 = trim((string) curl_exec($ch1));
+        curl_close($ch1);
+        $ch2 = curl_init(SITE_URL . GTG_ADS_PATH . '/?validate_geo=healthy');
+        curl_setopt_array($ch2, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5]);
+        $r2 = trim((string) curl_exec($ch2));
+        curl_close($ch2);
+        $ok = ($r1 === 'ok' && $r2 === 'ok');
+        $line($ok ? 'OK' : 'WARN', 'Google Tag Gateway (Live)', $gtgDetail . " [healthy={$r1}, geo={$r2}]");
+    } else {
+        $line('OK', 'Google Tag Gateway', $gtgDetail);
+    }
+} else {
+    $line('WARN', 'Google Tag Gateway', 'Disabled or handlers/gtg_proxy.php missing');
+}
+
 /* 3. Google Business Profile Places API */
 $seedFile = dirname(__DIR__) . '/storage/google_reviews_seed.json';
 if (GOOGLE_PLACES_API_KEY !== '') {
