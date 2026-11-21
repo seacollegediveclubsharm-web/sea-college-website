@@ -134,6 +134,10 @@ define('GOOGLE_ADS_WHATSAPP_LABEL', sc_env('GOOGLE_ADS_WHATSAPP_LABEL', 'rh4WCOX
 define('GOOGLE_ADS_CALL_LABEL', sc_env('GOOGLE_ADS_CALL_LABEL', '8hA2CLrgqd4cEJP6-Kg-')); // Click to call
 define('GOOGLE_ADS_VIA_GTM', sc_env('GOOGLE_ADS_VIA_GTM', '') === '1'); // set '1' only if firing Ads conversions inside GTM
 define('GSC_VERIFICATION', sc_env('GSC_VERIFICATION', 'MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k')); // Search Console meta token
+define('GTG_ENABLED', sc_env('GTG_ENABLED', '1') === '1');    // Google Tag Gateway (First-Party Mode via *.fps.goog)
+define('GTG_GTM_PATH', '/s-tm');                              // First-party path for GTM-PBVQ56XC
+define('GTG_ADS_PATH', '/s-aw');                              // First-party path for unified Google Tag (AW-16728866067 + G-99528RZN9Z)
+define('GTG_GA4_PATH', '/s-ga');                              // First-party path for standalone GA4 (G-99528RZN9Z)
 
 /* ---------------------------------------------------------------
  * Paid social pixels

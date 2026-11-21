@@ -4,6 +4,13 @@ Options -Indexes
 ErrorDocument 404 /404.php
 AddDefaultCharset UTF-8
 
+<IfModule LiteSpeed>
+  GeoIPEnable On
+</IfModule>
+<IfModule mod_geoip.c>
+  GeoIPEnable On
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
@@ -40,6 +47,9 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP_REFERER} !^https?://(www\.)?seacollegediveclub\.com [NC]
   RewriteCond %{HTTP_REFERER} !^https?://([a-z0-9-]+\.)?(hostingersite\.com|google\.[a-z.]+|bing\.com|yandex\.[a-z.]+|facebook\.com|instagram\.com|tripadvisor\.[a-z.]+|tiktok\.com|youtube\.com) [NC]
   RewriteRule ^assets/(images|videos)/.*\.(jpg|jpeg|png|webp|mp4)$ - [F,L,NC]
+
+  # Google Tag Gateway (First-Party Mode -> *.fps.goog via allowlisted stateless proxy)
+  RewriteRule ^s-(tm|aw|ga)(/.*)?$ handlers/gtg_proxy.php [E=no-gzip:1,L,QSA]
 
   # Fast-path static assets so images/CSS/JS never evaluate page rewrite regexes
   RewriteRule ^assets/ - [L]
