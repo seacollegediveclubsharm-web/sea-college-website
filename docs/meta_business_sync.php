@@ -74,17 +74,23 @@ if ($cmd === 'status') {
     $biz = sc_meta_api('GET', META_BUSINESS_ID, ['fields' => 'id,name,verification_status']);
     echo "Business    : " . json_encode($biz['data'], JSON_UNESCAPED_UNICODE) . "\n";
 
-    $adAccounts = sc_meta_api('GET', META_BUSINESS_ID . '/owned_ad_accounts', ['fields' => 'id,name,account_status,currency,amount_spent']);
+    $adAccounts = sc_meta_api('GET', 'me/adaccounts', ['fields' => 'id,name,account_status,currency,amount_spent,timezone_name']);
     echo "Ad Accounts : " . json_encode($adAccounts['data'], JSON_UNESCAPED_UNICODE) . "\n";
+
+    $pages = sc_meta_api('GET', 'me/accounts', ['fields' => 'id,name,instagram_business_account{id,username}']);
+    echo "Pages & IG  : " . json_encode($pages['data'], JSON_UNESCAPED_UNICODE) . "\n";
 
     $cat = sc_meta_api('GET', META_CATALOG_ID, ['fields' => 'id,name,product_count,vertical']);
     echo "Catalog     : " . json_encode($cat['data'], JSON_UNESCAPED_UNICODE) . "\n";
 
-    $feeds = sc_meta_api('GET', META_CATALOG_ID . '/product_feeds', ['fields' => 'id,name,product_count,schedule,latest_upload']);
-    echo "Feeds       : " . json_encode($feeds['data'], JSON_UNESCAPED_UNICODE) . "\n";
+    $sets = sc_meta_api('GET', META_CATALOG_ID . '/product_sets', ['fields' => 'id,name,product_count']);
+    echo "ProductSets : " . json_encode($sets['data'], JSON_UNESCAPED_UNICODE) . "\n";
 
     $sources = sc_meta_api('GET', META_CATALOG_ID . '/external_event_sources', ['fields' => 'id,name']);
-    echo "Event Srcs  : " . json_encode($sources['data'], JSON_UNESCAPED_UNICODE) . "\n";
+    echo "CatalogPx   : " . json_encode($sources['data'], JSON_UNESCAPED_UNICODE) . "\n";
+
+    $pxShared = sc_meta_api('GET', META_PIXEL_ID . '/shared_accounts', ['business' => META_BUSINESS_ID, 'fields' => 'id,name']);
+    echo "PixelAdActs : " . json_encode($pxShared['data'], JSON_UNESCAPED_UNICODE) . "\n";
     exit(0);
 }
 
@@ -169,9 +175,12 @@ if ($cmd === 'setup-catalog') {
         'Beginner & Intro Dives'          => ['custom_label_0' => ['eq' => 'Intro Dive']],
         'Certified Dive Packages'         => ['custom_label_0' => ['eq' => 'Certified Dive Package']],
         'Wreck & Specialty Dives'         => ['custom_label_0' => ['eq' => 'Wreck & Specialty Dive']],
-        'Snorkeling & Private Boats'      => ['custom_label_0' => ['eq' => 'Snorkeling & Boat Charter']],
+        'Snorkeling & Private Boats'      => ['custom_label_0' => ['eq' => 'Snorkeling & Private Boat Charter']],
     ];
     foreach ($sets as $setName => $filter) {
+        if ($setName === 'Snorkeling & Private Boats') {
+            $filter = ['custom_label_0' => ['eq' => 'Snorkeling & Boat Charter']];
+        }
         $sRes = sc_meta_api('POST', META_CATALOG_ID . '/product_sets', [
             'name'   => $setName,
             'filter' => json_encode($filter),
@@ -181,8 +190,71 @@ if ($cmd === 'setup-catalog') {
     exit(0);
 }
 
+if ($cmd === 'setup-audiences') {
+    echo "=== Hossam — Creating Retargeting & Exclusion Custom Audiences on " . META_AD_ACCOUNT_ID . " ===\n";
+    $audiences = [
+        'SC - Website All Visitors (30d)' => [
+            'inclusions' => [
+                'operator' => 'or',
+                'rules'    => [[
+                    'event_sources'     => [['id' => META_PIXEL_ID, 'type' => 'pixel']],
+                    'retention_seconds' => 30 * 86400,
+                    'filter'            => ['operator' => 'and', 'filters' => [['field' => 'url', 'operator' => 'i_contains', 'value' => 'seacollegediveclub.com']]],
+                ]],
+            ],
+        ],
+        'SC - Courses, Trips & Prices Viewers (30d)' => [
+            'inclusions' => [
+                'operator' => 'or',
+                'rules'    => [[
+                    'event_sources'     => [['id' => META_PIXEL_ID, 'type' => 'pixel']],
+                    'retention_seconds' => 30 * 86400,
+                    'filter'            => ['operator' => 'or', 'filters' => [
+                        ['field' => 'url', 'operator' => 'i_contains', 'value' => '/courses/'],
+                        ['field' => 'url', 'operator' => 'i_contains', 'value' => '/tours/'],
+                        ['field' => 'url', 'operator' => 'i_contains', 'value' => '/prices'],
+                        ['field' => 'url', 'operator' => 'i_contains', 'value' => 'sharm-el-sheikh'],
+                    ]],
+                ]],
+            ],
+        ],
+        'SC - AddToCart & Quick-Book Intenders (30d)' => [
+            'inclusions' => [
+                'operator' => 'or',
+                'rules'    => [[
+                    'event_sources'     => [['id' => META_PIXEL_ID, 'type' => 'pixel']],
+                    'retention_seconds' => 30 * 86400,
+                    'filter'            => ['operator' => 'and', 'filters' => [['field' => 'event', 'operator' => 'eq', 'value' => 'AddToCart']]],
+                ]],
+            ],
+        ],
+        'SC - Converted Website Leads (180d Exclusion)' => [
+            'inclusions' => [
+                'operator' => 'or',
+                'rules'    => [[
+                    'event_sources'     => [['id' => META_PIXEL_ID, 'type' => 'pixel']],
+                    'retention_seconds' => 180 * 86400,
+                    'filter'            => ['operator' => 'or', 'filters' => [
+                        ['field' => 'event', 'operator' => 'eq', 'value' => 'Lead'],
+                        ['field' => 'url', 'operator' => 'i_contains', 'value' => 'thank-you'],
+                    ]],
+                ]],
+            ],
+        ],
+    ];
+    foreach ($audiences as $aName => $rule) {
+        $res = sc_meta_api('POST', META_AD_ACCOUNT_ID . '/customaudiences', [
+            'name'    => $aName,
+            'rule'    => json_encode($rule),
+            'prefill' => '1',
+        ]);
+        echo "Audience '{$aName}' -> HTTP {$res['status']} " . json_encode($res['data']) . "\n";
+    }
+    exit(0);
+}
+
 if ($cmd === 'campaigns') {
-    $adAccounts = sc_meta_api('GET', META_BUSINESS_ID . '/owned_ad_accounts', ['fields' => 'id,name,currency']);
+    $adAccounts = sc_meta_api('GET', 'me/adaccounts', ['fields' => 'id,name,currency']);
     foreach (($adAccounts['data']['data'] ?? []) as $act) {
         $actId = (string) ($act['id'] ?? '');
         echo "=== Ad Account {$actId} ({$act['name']} · {$act['currency']}) ===\n";
@@ -194,5 +266,5 @@ if ($cmd === 'campaigns') {
     exit(0);
 }
 
-echo "Unknown command '{$cmd}'. Use: status | setup-catalog | campaigns\n";
+echo "Unknown command '{$cmd}'. Use: status | setup-catalog | setup-audiences | campaigns\n";
 exit(1);
