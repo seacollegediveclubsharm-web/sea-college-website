@@ -7,12 +7,16 @@ set -euo pipefail
 
 BASE_URL="${1:-https://seacollegediveclub.com}"
 HOST_HEADER="${2:-}"
-CURL_ARGS=(-sS --max-time 12)
+CURL_ARGS=(-sS --max-time 12 -A "Mozilla/5.0 (compatible; SeaCollegeSmokeCheck/1.0)")
 if [[ -n "$HOST_HEADER" ]]; then
   CURL_ARGS+=(-H "Host: $HOST_HEADER")
 fi
 
-PACE_SEC="${PACE_SEC:-0.04}"
+PACE_SEC="${PACE_SEC:-0.05}"
+fetch_body() {
+  [[ "$PACE_SEC" != "0" ]] && sleep "$PACE_SEC"
+  curl "${CURL_ARGS[@]}" "${BASE_URL}$1"
+}
 pass=0; fail=0
 check_code() {
   local path="$1" expect="$2"
@@ -100,7 +104,7 @@ for p in "/config/site_config.php" "/storage/" "/.env.template" "/docs/architect
 done
 
 echo "=== 2. Unified Tracking, GBP, Tripadvisor, YouTube, Banners, Dropdown & Home SEO Checks ==="
-html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/")
+html=$(fetch_body "/")
 for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
@@ -111,7 +115,7 @@ for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "
   fi
 done
 
-ar_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/ar/")
+ar_html=$(fetch_body "/ar/")
 for needle in 'lang="ar" dir="rtl"' "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg" 'href="/ar/prices"'; do
   if grep -q "$needle" <<<"$ar_html"; then
     echo "PASS [ar clean URL & tripadvisor] $needle"
@@ -124,7 +128,7 @@ done
 
 echo "=== 3. 8-Language Zero-Drop & Google Ads Subdirectory Checks ==="
 for lg in ru it pl de fr zh; do
-  lg_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/${lg}/courses/padi-open-water-diver-sharm-el-sheikh")
+  lg_html=$(fetch_body "/${lg}/courses/padi-open-water-diver-sharm-el-sheikh")
   for needle in "lang=\"${lg}\"" "href=\"/${lg}/prices\"" "\"inLanguage\":\"${lg}\"" "\"@type\":\"Course\""; do
     if grep -q "$needle" <<<"$lg_html"; then
       echo "PASS [${lg} course zero-drop] $needle"
@@ -137,7 +141,7 @@ for lg in ru it pl de fr zh; do
 done
 
 echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Calculator, Dive Map & Gallery Checks ==="
-course_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/courses/padi-open-water-diver-sharm-el-sheikh")
+course_html=$(fetch_body "/courses/padi-open-water-diver-sharm-el-sheikh")
 for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side' 'data-quick-book' 'mobile-item-bar' 'data-hotel-checker'; do
   if grep -q "$needle" <<<"$course_html"; then
     echo "PASS [course AEO/gallery/quick-book] $needle"
@@ -148,7 +152,7 @@ for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@
   fi
 done
 
-prices_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/prices")
+prices_html=$(fetch_body "/prices")
 for needle in "data-dive-calc" "data-dive-quiz" "data-hotel-checker" 'id="calculator"' 'id="quiz"'; do
   if grep -q "$needle" <<<"$prices_html"; then
     echo "PASS [prices widget] $needle"
@@ -159,7 +163,7 @@ for needle in "data-dive-calc" "data-dive-quiz" "data-hotel-checker" 'id="calcul
   fi
 done
 
-guide_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/guides/best-time-to-dive-sharm-el-sheikh")
+guide_html=$(fetch_body "/guides/best-time-to-dive-sharm-el-sheikh")
 for needle in '"@type":"Article"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer'; do
   if grep -q "$needle" <<<"$guide_html"; then
     echo "PASS [guide article AEO] $needle"
@@ -170,7 +174,7 @@ for needle in '"@type":"Article"' '"@type":"FAQPage"' 'SpeakableSpecification' '
   fi
 done
 
-checkin_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/check-in")
+checkin_html=$(fetch_body "/check-in")
 for needle in "data-checkin-form" "data-med-check" "data-checkin-wa"; do
   if grep -q "$needle" <<<"$checkin_html"; then
     echo "PASS [check-in portal] $needle"
@@ -181,7 +185,7 @@ for needle in "data-checkin-form" "data-med-check" "data-checkin-wa"; do
   fi
 done
 
-sites_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/dive-sites-sharm-el-sheikh")
+sites_html=$(fetch_body "/dive-sites-sharm-el-sheikh")
 for needle in "data-dive-map" "TouristAttraction" "conditions-chart"; do
   if grep -q "$needle" <<<"$sites_html"; then
     echo "PASS [dive-sites] $needle"
@@ -192,7 +196,7 @@ for needle in "data-dive-map" "TouristAttraction" "conditions-chart"; do
   fi
 done
 
-gal_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/gallery")
+gal_html=$(fetch_body "/gallery")
 for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card" "sea-college-oceano-yacht-01-exterior-nov2026.jpg" "sea-college-nizar-yacht-01-cruising-nov2026.jpg" "sea-college-omar4-yacht-01-exterior-nov2026.jpg" "sea-college-speedboat-tiran-island-suzuki-nov2026.jpg" "sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg"; do
   if grep -q "$needle" <<<"$gal_html"; then
     echo "PASS [gallery & grouped fleet/center] $needle"
@@ -203,7 +207,7 @@ for needle in "data-gallery" "VideoObject" "ImageGallery" "team-card" "sea-colle
   fi
 done
 
-about_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/about")
+about_html=$(fetch_body "/about")
 for needle in "sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg" "sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg" "sea-college-dive-club-center-05-branded-wetsuits-nov2026.jpg"; do
   if grep -q "$needle" <<<"$about_html"; then
     echo "PASS [about physical center] $needle"
@@ -214,7 +218,7 @@ for needle in "sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg"
   fi
 done
 
-boats_html=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/snorkeling-and-boats-sharm-el-sheikh")
+boats_html=$(fetch_body "/snorkeling-and-boats-sharm-el-sheikh")
 for needle in "sea-college-sharm-private-speedboat-1h-suzuki-rib-nov2026.jpg" "sea-college-sharm-tiran-island-private-speedboat-2h-suzuki-nov2026.jpg" "sea-college-sharm-tiran-island-private-speedboat-3h-suzuki-nov2026.jpg"; do
   if grep -q "$needle" <<<"$boats_html"; then
     echo "PASS [speedboats hub] $needle"
@@ -225,7 +229,7 @@ for needle in "sea-college-sharm-private-speedboat-1h-suzuki-rib-nov2026.jpg" "s
   fi
 done
 
-smap_xml=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/sitemap.xml")
+smap_xml=$(fetch_body "/sitemap.xml")
 smap_count=$(grep -c "<loc>" <<<"$smap_xml" || true)
 smap_php_count=$(grep -c "\.php</loc>" <<<"$smap_xml" || true)
 if [[ "$smap_count" -ge 800 && "$smap_php_count" -eq 0 ]]; then
