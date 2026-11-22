@@ -52,10 +52,108 @@ function sc_erp_pdo(): ?PDO
 
         require_once __DIR__ . '/erp_trial_seed.php';
         sc_erp_seed_trial_if_empty($pdo);
+        sc_erp_ensure_user_profiles($pdo);
         return $pdo;
     } catch (Throwable $e) {
         error_log('SC_ERP DB connection warning: ' . $e->getMessage());
         return null;
+    }
+}
+
+/**
+ * Idempotently add user profile columns (`phone`, `email`, `avatar_url`, `job_title_en`,
+ * `job_title_ar`, `bio_notes`, `updated_at`) to `users` and populate initial profile records
+ * (including Islam Samir & Sayed Elsharqawy photos, phones, and corporate emails) without
+ * overwriting any subsequent live edits made in `/app`.
+ */
+function sc_erp_ensure_user_profiles(PDO $pdo): void
+{
+    $cols = array_column($pdo->query('PRAGMA table_info(users)')->fetchAll(), 'name');
+    $needed = [
+        'job_title_en' => "TEXT NOT NULL DEFAULT ''",
+        'job_title_ar' => "TEXT NOT NULL DEFAULT ''",
+        'phone'        => "TEXT NOT NULL DEFAULT ''",
+        'email'        => "TEXT NOT NULL DEFAULT ''",
+        'avatar_url'   => "TEXT NOT NULL DEFAULT ''",
+        'bio_notes'    => "TEXT NOT NULL DEFAULT ''",
+        'updated_at'   => "TEXT NOT NULL DEFAULT ''",
+    ];
+    foreach ($needed as $col => $ddl) {
+        if (!in_array($col, $cols, true)) {
+            $pdo->exec("ALTER TABLE users ADD COLUMN {$col} {$ddl}");
+        }
+    }
+
+    // Apply direct owner profiles when not yet customized
+    $now = gmdate('Y-m-d\TH:i:s\Z');
+    $owners = [
+        'islam.samir' => [
+            'name_en'  => 'Islam Samir',
+            'name_ar'  => 'إسلام سمير',
+            'title_en' => 'Founder & Managing Owner',
+            'title_ar' => 'المؤسس والشريك المالك',
+            'phone'    => '+20 10 00344544',
+            'email'    => 'islam.samir@seacollegediveclub.com',
+            'avatar'   => '/assets/erp/avatars/islam-samir.jpg',
+        ],
+        'eng.sayed' => [
+            'name_en'  => 'Sayed Elsharqawy',
+            'name_ar'  => 'سيد الشرقاوي',
+            'title_en' => 'Co-Founder & Managing Owner',
+            'title_ar' => 'الشريك المؤسس والمالك',
+            'phone'    => '+20 11 14567886',
+            'email'    => 'sayed.elsharqawy@seacollegediveclub.com',
+            'avatar'   => '/assets/erp/avatars/sayed-elsharqawy.jpg',
+        ],
+    ];
+    $ownChk = $pdo->prepare('SELECT phone, email, avatar_url, updated_at FROM users WHERE username = ?');
+    $ownUpd = $pdo->prepare(
+        'UPDATE users
+         SET display_name_en = CASE WHEN updated_at = "" THEN ? ELSE display_name_en END,
+             display_name_ar = CASE WHEN updated_at = "" THEN ? ELSE display_name_ar END,
+             job_title_en    = CASE WHEN job_title_en = "" THEN ? ELSE job_title_en END,
+             job_title_ar    = CASE WHEN job_title_ar = "" THEN ? ELSE job_title_ar END,
+             phone           = CASE WHEN phone = "" THEN ? ELSE phone END,
+             email           = CASE WHEN email = "" THEN ? ELSE email END,
+             avatar_url      = CASE WHEN avatar_url = "" THEN ? ELSE avatar_url END
+         WHERE username = ?'
+    );
+    foreach ($owners as $uname => $meta) {
+        $ownChk->execute([$uname]);
+        $cur = $ownChk->fetch();
+        if ($cur && ($cur['phone'] === '' || $cur['avatar_url'] === '' || $cur['email'] === '')) {
+            $ownUpd->execute([
+                $meta['name_en'], $meta['name_ar'],
+                $meta['title_en'], $meta['title_ar'],
+                $meta['phone'], $meta['email'], $meta['avatar'],
+                $uname,
+            ]);
+        }
+    }
+
+    // Backfill default corporate email & clean job titles for any remaining users with empty email/job_title
+    $missing = $pdo->query(
+        "SELECT u.id, u.username, u.display_name_en, u.display_name_ar, u.email, u.job_title_en, u.job_title_ar,
+                r.name_en AS role_en, r.name_ar AS role_ar
+         FROM users u JOIN roles r ON r.role_code = u.role_code
+         WHERE u.email = '' OR u.job_title_en = ''"
+    )->fetchAll();
+    if ($missing) {
+        $fillSt = $pdo->prepare(
+            'UPDATE users
+             SET email        = CASE WHEN email = "" THEN ? ELSE email END,
+                 job_title_en = CASE WHEN job_title_en = "" THEN ? ELSE job_title_en END,
+                 job_title_ar = CASE WHEN job_title_ar = "" THEN ? ELSE job_title_ar END
+             WHERE id = ?'
+        );
+        foreach ($missing as $m) {
+            $defEmail = $m['username'] === 'lara.care'
+                ? 'info@seacollegediveclub.com'
+                : ($m['username'] . '@seacollegediveclub.com');
+            $titleEn = preg_match('/\(([^)]+)\)/', (string) $m['display_name_en'], $mtEn) ? trim($mtEn[1]) : (string) $m['role_en'];
+            $titleAr = preg_match('/\(([^)]+)\)/u', (string) $m['display_name_ar'], $mtAr) ? trim($mtAr[1]) : (string) $m['role_ar'];
+            $fillSt->execute([$defEmail, $titleEn, $titleAr, $m['id']]);
+        }
     }
 }
 

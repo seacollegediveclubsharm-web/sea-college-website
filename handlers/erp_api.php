@@ -101,9 +101,33 @@ if ($action === 'logout') {
     exit;
 }
 
+if ($action === 'avatar') {
+    $file = basename((string) ($_GET['file'] ?? ''));
+    if (!preg_match('/^[a-z0-9._-]+\.(jpg|jpeg|png|webp)$/i', $file)) {
+        http_response_code(404);
+        exit;
+    }
+    $path = dirname(SC_ERP_DB_PATH) . '/avatars/' . $file;
+    if (!is_file($path)) {
+        http_response_code(404);
+        exit;
+    }
+    $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    $mime = match ($ext) {
+        'png'  => 'image/png',
+        'webp' => 'image/webp',
+        default => 'image/jpeg',
+    };
+    header('Content-Type: ' . $mime);
+    header('Cache-Control: public, max-age=86400');
+    header('X-Robots-Tag: noindex, noimageindex');
+    readfile($path);
+    exit;
+}
+
 if ($action === 'directory_roles') {
-    // Public metadata of roles & usernames (no passwords/hashes exposed!) for the corporate login selector
-    $rows = $pdo->query('SELECT u.username, u.display_name_en, u.display_name_ar, u.role_code, u.branch_scope, u.vessel_scope, r.name_en AS role_en, r.name_ar AS role_ar, r.department
+    // Public metadata of roles, job titles & avatars (no passwords, phones, or emails exposed pre-login!)
+    $rows = $pdo->query('SELECT u.username, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar, u.avatar_url, u.role_code, u.branch_scope, u.vessel_scope, r.name_en AS role_en, r.name_ar AS role_ar, r.department
                          FROM users u JOIN roles r ON r.role_code = u.role_code
                          WHERE u.is_active = 1 ORDER BY r.hierarchy_level DESC, u.id ASC')->fetchAll();
     echo json_encode(['ok' => true, 'accounts' => $rows, 'csrf_token' => csrf_token()], JSON_UNESCAPED_UNICODE);
@@ -496,6 +520,33 @@ if ($action === 'role_workspace') {
         $out['trial_feedback'] = $fSt->fetchAll();
     }
 
+    // 9) Team User Profiles Directory (Photos, Phones, Emails & Scoped Contacts)
+    if ($user['role_code'] === 'FLEET_PARTNER') {
+        $tpSt = $pdo->prepare(
+            "SELECT u.id, u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
+                    u.phone, u.email, u.avatar_url, u.bio_notes, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope, u.is_active, u.updated_at,
+                    r.name_en AS role_en, r.name_ar AS role_ar, r.department
+             FROM users u JOIN roles r ON r.role_code = u.role_code
+             WHERE u.is_active = 1 AND (u.role_code IN ('OWNER_ADMIN','CHIEF_ACCOUNTANT','OPERATIONS_MANAGER','JETTY_SUPERVISOR') OR u.username = ?)
+             ORDER BY r.hierarchy_level DESC, u.id ASC"
+        );
+        $tpSt->execute([$user['username']]);
+        $out['team_profiles'] = $tpSt->fetchAll();
+    } else {
+        $activeClause = in_array('bi.view_executive', $perms, true) ? '' : 'WHERE u.is_active = 1';
+        $out['team_profiles'] = $pdo->query(
+            "SELECT u.id, u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
+                    u.phone, u.email, u.avatar_url, u.bio_notes, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope, u.is_active, u.updated_at,
+                    r.name_en AS role_en, r.name_ar AS role_ar, r.department
+             FROM users u JOIN roles r ON r.role_code = u.role_code
+             {$activeClause}
+             ORDER BY r.hierarchy_level DESC, u.id ASC"
+        )->fetchAll();
+    }
+    if (in_array('bi.view_executive', $perms, true)) {
+        $out['all_roles'] = $pdo->query('SELECT role_code, name_en, name_ar, department FROM roles ORDER BY hierarchy_level DESC')->fetchAll();
+    }
+
     echo json_encode($out, JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -506,6 +557,178 @@ if ($method === 'POST') {
     if (!csrf_verify($csrfTok)) {
         http_response_code(419);
         echo json_encode(['ok' => false, 'error' => 'CSRF token expired — please refresh']);
+        exit;
+    }
+
+    if ($action === 'save_user_profile') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+            exit;
+        }
+        $meUser  = $ctx['user'];
+        $isAdmin = in_array('bi.view_executive', $ctx['perms'], true);
+        $mode    = strtolower((string) ($rawIn['mode'] ?? 'update')) === 'create' ? 'create' : 'update';
+
+        if ($mode === 'create' && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Only Owners / Admins can create new staff accounts']);
+            exit;
+        }
+
+        $targetUsername = $mode === 'create'
+            ? strtolower(trim((string) ($rawIn['username'] ?? '')))
+            : strtolower(trim((string) ($rawIn['target_username'] ?? $meUser['username'])));
+
+        if ($mode === 'update' && $targetUsername !== strtolower((string) $meUser['username']) && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'You may only edit your own profile']);
+            exit;
+        }
+
+        if (!preg_match('/^[a-z0-9._-]{3,32}$/', $targetUsername)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Username must be 3–32 lowercase letters, numbers, dots, or hyphens']);
+            exit;
+        }
+
+        $nameEn  = clean_line($rawIn['display_name_en'] ?? '', 100);
+        $nameAr  = clean_line($rawIn['display_name_ar'] ?? '', 100);
+        $titleEn = clean_line($rawIn['job_title_en'] ?? '', 100);
+        $titleAr = clean_line($rawIn['job_title_ar'] ?? '', 100);
+        $phone   = clean_line($rawIn['phone'] ?? '', 36);
+        $email   = strtolower(clean_line($rawIn['email'] ?? '', 160));
+        $bio     = clean($rawIn['bio_notes'] ?? '', 500);
+        $newPass = (string) ($rawIn['new_password'] ?? '');
+
+        if (mb_strlen($nameEn) < 2) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'English full name is required']);
+            exit;
+        }
+        if ($nameAr === '') {
+            $nameAr = $nameEn;
+        }
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please enter a valid email address']);
+            exit;
+        }
+        if ($phone !== '' && !preg_match('/^\+?[0-9 ()\-]{6,28}$/', $phone)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please enter a valid phone number (e.g. +20 10 00344544)']);
+            exit;
+        }
+
+        // Optional photo upload (supports resized canvas data URL or multipart file)
+        $savedAvatarUrl = null;
+        $imgBytes = null;
+        $dataUrl  = (string) ($rawIn['avatar_data_url'] ?? '');
+        if ($dataUrl !== '' && preg_match('#^data:image/(jpeg|jpg|png|webp);base64,([A-Za-z0-9+/=\r\n]+)$#i', $dataUrl, $dm)) {
+            $decoded = base64_decode($dm[2], true);
+            if ($decoded !== false && strlen($decoded) > 64 && strlen($decoded) <= 2_500_000) {
+                $imgBytes = $decoded;
+            }
+        } elseif (!empty($_FILES['avatar_file']['tmp_name']) && is_uploaded_file($_FILES['avatar_file']['tmp_name'])) {
+            $fBytes = file_get_contents($_FILES['avatar_file']['tmp_name']);
+            if ($fBytes !== false && strlen($fBytes) > 64 && strlen($fBytes) <= 4_000_000) {
+                $imgBytes = $fBytes;
+            }
+        }
+
+        if ($imgBytes !== null) {
+            $info = @getimagesizefromstring($imgBytes);
+            if (!$info || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Invalid image file (JPEG, PNG, or WebP required)']);
+                exit;
+            }
+            $ext = match ($info[2]) {
+                IMAGETYPE_PNG  => 'png',
+                IMAGETYPE_WEBP => 'webp',
+                default        => 'jpg',
+            };
+            $avDir = dirname(SC_ERP_DB_PATH) . '/avatars';
+            if (!is_dir($avDir)) {
+                @mkdir($avDir, 0750, true);
+                @file_put_contents($avDir . '/.htaccess', "Require all denied\n");
+            }
+            $safeBase = preg_replace('/[^a-z0-9_-]/', '_', $targetUsername);
+            $fname    = $safeBase . '_' . substr(bin2hex(random_bytes(4)), 0, 8) . '.' . $ext;
+            file_put_contents($avDir . '/' . $fname, $imgBytes);
+            $savedAvatarUrl = '/handlers/erp_api.php?action=avatar&file=' . rawurlencode($fname);
+        } elseif (!empty($rawIn['clear_avatar'])) {
+            $savedAvatarUrl = '';
+        }
+
+        $now = gmdate('Y-m-d\TH:i:s\Z');
+
+        if ($mode === 'create') {
+            if (strlen($newPass) < 6) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Initial password must be at least 6 characters']);
+                exit;
+            }
+            $exists = $pdo->prepare('SELECT COUNT(*) FROM users WHERE LOWER(username) = ?');
+            $exists->execute([$targetUsername]);
+            if ((int) $exists->fetchColumn() > 0) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Username already exists']);
+                exit;
+            }
+            $roleCode    = clean_line($rawIn['role_code'] ?? 'SALES_REP', 32);
+            $branchScope = clean_line($rawIn['branch_scope'] ?? 'ALL', 32);
+            $vesselScope = clean_line($rawIn['vessel_scope'] ?? 'ALL', 64);
+            $repScope    = strtoupper(clean_line($rawIn['rep_scope'] ?? '', 32));
+            $empCode     = 'EMP_' . strtoupper(substr(preg_replace('/[^a-z0-9]/', '', $targetUsername), 0, 8));
+
+            $ins = $pdo->prepare(
+                'INSERT INTO users (username, password_hash, pin_hint, emp_code, display_name_en, display_name_ar,
+                                    job_title_en, job_title_ar, phone, email, avatar_url, bio_notes,
+                                    role_code, branch_scope, vessel_scope, rep_scope, is_active, created_at, updated_at)
+                 VALUES (?, ?, "", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)'
+            );
+            $ins->execute([
+                $targetUsername, sc_erp_hash_password($newPass), $empCode,
+                $nameEn, $nameAr, $titleEn, $titleAr, $phone, $email, $savedAvatarUrl ?? '', $bio,
+                $roleCode, $branchScope, $vesselScope, $repScope, $now, $now,
+            ]);
+            sc_erp_audit($pdo, (string) $meUser['username'], (string) $meUser['role_code'], 'CREATE_USER_PROFILE', 'USER', $targetUsername, ['role' => $roleCode, 'phone' => $phone]);
+        } else {
+            $curSt = $pdo->prepare('SELECT * FROM users WHERE LOWER(username) = ?');
+            $curSt->execute([$targetUsername]);
+            $cur = $curSt->fetch();
+            if (!$cur) {
+                http_response_code(404);
+                echo json_encode(['ok' => false, 'error' => 'User account not found']);
+                exit;
+            }
+            $avatarFinal = $savedAvatarUrl !== null ? $savedAvatarUrl : (string) $cur['avatar_url'];
+            $passHash    = strlen($newPass) >= 6 ? sc_erp_hash_password($newPass) : (string) $cur['password_hash'];
+            $roleCode    = $isAdmin && !empty($rawIn['role_code']) ? clean_line($rawIn['role_code'], 32) : (string) $cur['role_code'];
+            $branchScope = $isAdmin && isset($rawIn['branch_scope']) ? clean_line($rawIn['branch_scope'], 32) : (string) $cur['branch_scope'];
+            $vesselScope = $isAdmin && isset($rawIn['vessel_scope']) ? clean_line($rawIn['vessel_scope'], 64) : (string) $cur['vessel_scope'];
+            $repScope    = $isAdmin && isset($rawIn['rep_scope']) ? strtoupper(clean_line($rawIn['rep_scope'], 32)) : (string) $cur['rep_scope'];
+            $isActive    = $isAdmin && isset($rawIn['is_active']) ? ((int) $rawIn['is_active'] ? 1 : 0) : (int) $cur['is_active'];
+
+            $upd = $pdo->prepare(
+                'UPDATE users
+                 SET password_hash = ?, display_name_en = ?, display_name_ar = ?,
+                     job_title_en = ?, job_title_ar = ?, phone = ?, email = ?, avatar_url = ?, bio_notes = ?,
+                     role_code = ?, branch_scope = ?, vessel_scope = ?, rep_scope = ?, is_active = ?, updated_at = ?
+                 WHERE id = ?'
+            );
+            $upd->execute([
+                $passHash, $nameEn, $nameAr,
+                $titleEn, $titleAr, $phone, $email, $avatarFinal, $bio,
+                $roleCode, $branchScope, $vesselScope, $repScope, $isActive, $now,
+                $cur['id'],
+            ]);
+            sc_erp_audit($pdo, (string) $meUser['username'], (string) $meUser['role_code'], 'UPDATE_USER_PROFILE', 'USER', $targetUsername, ['photo_updated' => $savedAvatarUrl !== null, 'phone' => $phone]);
+        }
+
+        $freshCtx = erp_auth_context($pdo);
+        echo json_encode(['ok' => true, 'mode' => $mode, 'username' => $targetUsername, 'me' => $freshCtx ? $freshCtx['user'] : null], JSON_UNESCAPED_UNICODE);
         exit;
     }
 

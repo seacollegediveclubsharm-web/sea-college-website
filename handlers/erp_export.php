@@ -403,5 +403,31 @@ if ($report === 'trial_feedback') {
     ]);
 }
 
+/* ==========================================================================
+   9. TEAM USER PROFILES & CONTACTS DIRECTORY EXPORT
+   ========================================================================== */
+if ($report === 'team_profiles') {
+    if (!$hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'hr.manage_payroll')) {
+        http_response_code(403);
+        exit('Role not authorized.');
+    }
+    $tpRows = $pdo->query(
+        'SELECT u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
+                u.phone, u.email, r.name_en, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope,
+                CASE WHEN u.avatar_url != "" THEN "YES (" || u.avatar_url || ")" ELSE "PENDING PHOTO" END AS photo_status,
+                CASE WHEN u.is_active = 1 THEN "ACTIVE" ELSE "INACTIVE" END AS status_lbl,
+                u.updated_at
+         FROM users u JOIN roles r ON r.role_code = u.role_code
+         ORDER BY r.hierarchy_level DESC, u.id ASC'
+    )->fetchAll(PDO::FETCH_NUM);
+    $tpHeaders = ['Username', 'Employee Code', 'Full Name (EN)', 'Full Name (AR)', 'Job Title (EN)', 'Job Title (AR)', 'Phone / WhatsApp', 'Email', 'Role Title', 'Role Code', 'Branch Scope', 'Vessel Scope', 'Sales Rep Code', 'Profile Photo', 'Status', 'Last Updated'];
+    if ($format === 'csv') {
+        sc_erp_stream_csv('Sea_College_Team_Profiles_Directory.csv', $tpHeaders, $tpRows);
+    }
+    sc_erp_stream_xlsx('Sea_College_Team_Profiles_Directory.xlsx', [
+        'Team_Profiles_24_Users' => ['headers' => $tpHeaders, 'rows' => $tpRows],
+    ]);
+}
+
 http_response_code(400);
 exit('Unknown report type.');

@@ -41,12 +41,19 @@ CREATE TABLE IF NOT EXISTS users (
     emp_code TEXT DEFAULT NULL,
     display_name_en TEXT NOT NULL,
     display_name_ar TEXT NOT NULL,
+    job_title_en TEXT NOT NULL DEFAULT '',
+    job_title_ar TEXT NOT NULL DEFAULT '',
+    phone TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    avatar_url TEXT NOT NULL DEFAULT '',
+    bio_notes TEXT NOT NULL DEFAULT '',
     role_code TEXT NOT NULL,
     branch_scope TEXT NOT NULL DEFAULT 'ALL',   -- ALL, CYRENE, JETTY, JAZ, WEBSITE
     vessel_scope TEXT NOT NULL DEFAULT 'ALL',   -- ALL, or comma-separated e.g. 'OCEANO,OMAR_4' for Fleet Partners
     rep_scope TEXT NOT NULL DEFAULT '',         -- Sales rep filter e.g. 'FADY' so reps only see own vouchers/commissions
     is_active INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT '',
     FOREIGN KEY (role_code) REFERENCES roles(role_code)
 );
 CREATE TABLE IF NOT EXISTS audit_logs (

@@ -134,6 +134,25 @@ $csrf = csrf_token();
       background: #065f46; color: #fff; padding: 11px 16px; border-radius: 10px;
       font-size: 13px; font-weight: 700; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
+    .avatar-circle {
+      border-radius: 50%; object-fit: cover; object-position: center;
+      border: 2px solid rgba(0, 210, 255, 0.45);
+      background: linear-gradient(135deg, #0284c7, #0f172a);
+      color: #f0f9ff; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden; text-transform: uppercase;
+    }
+    .profile-card {
+      background: rgba(11, 34, 57, 0.9); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+      transition: 0.15s;
+    }
+    .profile-card:hover { border-color: rgba(0, 210, 255, 0.45); transform: translateY(-1px); }
+    .contact-chip {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600;
+      padding: 4px 9px; border-radius: 8px; background: rgba(6, 21, 38, 0.78);
+      border: 1px solid var(--border); color: var(--text); text-decoration: none;
+    }
+    .contact-chip:hover { border-color: var(--cyan); color: var(--cyan); }
     @media (max-width: 640px) {
       .kpi-val { font-size: 18px; }
       .container { padding: 10px; }
@@ -151,7 +170,7 @@ $csrf = csrf_token();
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span id="userBadge" class="pill" style="display:none;"></span>
+    <button type="button" id="userBadge" class="btn" style="display:none;padding:5px 11px;border-radius:999px;" onclick="STATE.activeTab='my_profile';renderApp();"></button>
     <button type="button" class="btn btn-emerald" onclick="triggerInstallApp()">📲 Install App</button>
     <button type="button" class="btn" id="langBtn" onclick="toggleLang()">العربية RTL</button>
     <a href="/" class="btn" id="siteBtn">🌐 Website</a>
@@ -169,7 +188,7 @@ $csrf = csrf_token();
     <form onsubmit="doLogin(event)" class="grid" style="gap:12px;">
       <div>
         <label id="lblUser">Username</label>
-        <input type="text" id="inpUser" required autocomplete="username" placeholder="e.g. islam.samir, nadia.acc, fady.sales">
+        <input type="text" id="inpUser" required autocomplete="username" placeholder="e.g. islam.samir, eng.sayed, nadia.acc">
       </div>
       <div>
         <label id="lblPass">Password</label>
@@ -183,29 +202,153 @@ $csrf = csrf_token();
 
     <details style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px;">
       <summary style="cursor:pointer;font-size:12px;color:var(--cyan);font-weight:700;">
-        👥 Quick Role Directory (Select Employee / Owner Account)
+        👥 Quick Role Directory (Select Employee / Owner Profile)
       </summary>
       <p style="font-size:11px;color:var(--muted);margin:6px 0;">
-        Tap any role account below to pre-fill username during onboarding:
+        Tap any profile below to pre-fill username during onboarding:
       </p>
-      <div id="roleDirectoryList" style="display:grid;gap:6px;max-height:260px;overflow-y:auto;margin-top:8px;"></div>
+      <div id="roleDirectoryList" style="display:grid;gap:6px;max-height:280px;overflow-y:auto;margin-top:8px;"></div>
     </details>
   </section>
 
   <!-- ================= AUTHENTICATED APP SHELL ================= -->
   <section id="appView" style="display:none;">
-    <div id="roleBanner" class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:linear-gradient(90deg,rgba(0,210,255,0.12),rgba(16,185,129,0.08));">
-      <div>
-        <div style="font-size:16px;font-weight:800;" id="welcomeName"></div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="welcomeScope"></div>
+    <div id="roleBanner" class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(90deg,rgba(0,210,255,0.12),rgba(16,185,129,0.08));">
+      <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap;">
+        <div id="welcomeAvatar"></div>
+        <div>
+          <div style="font-size:17px;font-weight:800;" id="welcomeName"></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="welcomeScope"></div>
+          <div id="welcomeContacts" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;"></div>
+        </div>
       </div>
-      <div id="permPills" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn" onclick="STATE.activeTab='my_profile';renderApp();">👤 My Profile</button>
+          <button type="button" class="btn" onclick="STATE.activeTab='team_profiles';renderApp();">👥 Team Directory</button>
+        </div>
+        <div id="permPills" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+      </div>
     </div>
 
     <nav id="navTabs" class="tabs"></nav>
     <div id="tabContent"></div>
   </section>
 </main>
+
+<!-- User Profile Edit / Create Modal -->
+<div id="profileEditModal" style="display:none;position:fixed;inset:0;z-index:130;background:rgba(3,12,24,0.85);padding:14px;align-items:center;justify-content:center;overflow-y:auto;">
+  <div class="card" style="width:100%;max-width:540px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="font-size:16px;" id="profModalTitle">👤 Edit User Profile</h3>
+      <button type="button" class="btn" onclick="closeProfileModal()">✕</button>
+    </div>
+    <form onsubmit="submitProfileForm(event)" class="grid" style="gap:10px;">
+      <input type="hidden" id="pfMode" value="update">
+      <input type="hidden" id="pfTargetUser" value="">
+      <input type="hidden" id="pfAvatarDataUrl" value="">
+
+      <div style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:11px;background:rgba(6,21,38,0.65);border:1px solid var(--border);">
+        <div id="pfPreviewBox"></div>
+        <div style="flex:1;">
+          <label style="color:var(--cyan);font-weight:700;">📷 Profile Photo (Camera or Gallery)</label>
+          <input type="file" id="pfPhotoInput" accept="image/*" onchange="previewProfilePhoto(this)" style="font-size:12px;padding:6px;">
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Auto-crops &amp; optimizes square portrait cleanly for mobile speed.</div>
+        </div>
+      </div>
+
+      <div id="pfCreateUsernameRow" style="display:none;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Username (Login ID) *</label>
+          <input type="text" id="pfNewUsername" placeholder="e.g. rami.sales">
+        </div>
+        <div>
+          <label>Initial Password *</label>
+          <input type="text" id="pfInitPass" placeholder="Min 6 chars (e.g. Rami@2026)">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Full Name (English) *</label>
+          <input type="text" id="pfNameEn" required placeholder="e.g. Islam Samir">
+        </div>
+        <div>
+          <label>Full Name (Arabic)</label>
+          <input type="text" id="pfNameAr" dir="rtl" placeholder="مثال: إسلام سمير">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Job Title (English)</label>
+          <input type="text" id="pfTitleEn" placeholder="e.g. Founder & Managing Owner">
+        </div>
+        <div>
+          <label>Job Title (Arabic)</label>
+          <input type="text" id="pfTitleAr" dir="rtl" placeholder="مثال: المؤسس والشريك المالك">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>📞 Phone / WhatsApp Number</label>
+          <input type="tel" id="pfPhone" placeholder="+20 10 00344544">
+        </div>
+        <div>
+          <label>✉️ Email Address</label>
+          <input type="email" id="pfEmail" placeholder="name@seacollegediveclub.com">
+        </div>
+      </div>
+
+      <div id="pfAdminScopeBox" style="display:none;padding:10px;border-radius:10px;background:rgba(0,210,255,0.06);border:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);margin-bottom:8px;">🛡️ ROLE &amp; DATA ACCESS AUTHORITIES (OWNER / ADMIN)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div>
+            <label>Role Authority</label>
+            <select id="pfRoleCode"></select>
+          </div>
+          <div>
+            <label>Branch Scope</label>
+            <select id="pfBranchScope">
+              <option value="ALL">ALL BRANCHES</option>
+              <option value="CYRENE">CYRENE</option>
+              <option value="DREAMS_FAYROUZ">DREAMS_FAYROUZ</option>
+              <option value="JETTY">JETTY</option>
+              <option value="JAZ">JAZ</option>
+              <option value="WEBSITE">WEBSITE</option>
+            </select>
+          </div>
+          <div>
+            <label>Vessel Scope (ALL or CSV)</label>
+            <input type="text" id="pfVesselScope" placeholder="ALL or OCEANO,OMAR_4">
+          </div>
+          <div>
+            <label>Sales Rep Filter Code</label>
+            <input type="text" id="pfRepScope" placeholder="e.g. ADEL, FADY (or empty)">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Bio / Shift / Certification Notes</label>
+          <input type="text" id="pfBio" placeholder="Optional PADI #, shift, or contact note">
+        </div>
+        <div id="pfPassResetCol">
+          <label>Change Password (Optional)</label>
+          <input type="password" id="pfNewPass" autocomplete="new-password" placeholder="Leave blank to keep current">
+        </div>
+      </div>
+
+      <div id="pfErr" style="color:var(--rose);font-size:12px;display:none;"></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+        <button type="button" class="btn" onclick="closeProfileModal()">Cancel</button>
+        <button type="submit" id="pfSaveBtn" class="btn btn-primary">💾 Save User Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- Floating Staff Trial Feedback Button -->
 <button type="button" id="fabFeedback" onclick="openFeedbackModal()" style="display:none;position:fixed;bottom:18px;left:18px;z-index:90;background:linear-gradient(135deg,#6366f1,#0284c7);color:#fff;border:none;padding:11px 16px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.45);">
@@ -365,14 +508,31 @@ async function boot() {
   }
 }
 
+function renderAvatarHtml(u, size = 44) {
+  const name = String((u && (u.display_name_en || u.username)) || 'SC').trim();
+  const initials = name.split(/\s+/).slice(0, 2).map((w) => (w[0] || '')).join('').toUpperCase() || 'SC';
+  const fSize = Math.max(11, Math.round(size * 0.36));
+  if (u && u.avatar_url) {
+    return `<img src="${esc(u.avatar_url)}" alt="${esc(name)}" class="avatar-circle" style="width:${size}px;height:${size}px;" onerror="this.outerHTML='<span class=\\'avatar-circle\\' style=\\'width:${size}px;height:${size}px;font-size:${fSize}px;\\'>${esc(initials)}</span>'">`;
+  }
+  return `<span class="avatar-circle" style="width:${size}px;height:${size}px;font-size:${fSize}px;">${esc(initials)}</span>`;
+}
+
+function waDigits(phone) {
+  return String(phone || '').replace(/[^0-9]/g, '');
+}
+
 function renderDirectory() {
   const box = document.getElementById('roleDirectoryList');
   if (!box) return;
   box.innerHTML = STATE.directory.map((a) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 9px;border-radius:8px;background:rgba(6,21,38,0.7);border:1px solid var(--border);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">${esc(STATE.lang === 'ar' ? a.display_name_ar : a.display_name_en)}</div>
-        <div style="font-size:11px;color:var(--muted);">@${esc(a.username)} • ${esc(a.role_code)} (${esc(a.branch_scope)})</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 9px;border-radius:8px;background:rgba(6,21,38,0.7);border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+        ${renderAvatarHtml(a, 36)}
+        <div style="min-width:0;">
+          <div style="font-size:12px;font-weight:700;">${esc(STATE.lang === 'ar' ? a.display_name_ar : a.display_name_en)}</div>
+          <div style="font-size:11px;color:var(--muted);">@${esc(a.username)} • ${esc(STATE.lang === 'ar' ? (a.job_title_ar || a.role_code) : (a.job_title_en || a.role_code))} (${esc(a.branch_scope)})</div>
+        </div>
       </div>
       <button type="button" class="btn" onclick="fillAccount('${esc(a.username)}')">Select</button>
     </div>
@@ -417,8 +577,8 @@ async function loadUserData() {
   document.getElementById('logoutBtn').style.display = 'inline-flex';
   document.getElementById('fabFeedback').style.display = 'block';
   const ub = document.getElementById('userBadge');
-  ub.style.display = 'inline-block';
-  ub.textContent = (STATE.lang === 'ar' ? STATE.user.display_name_ar : STATE.user.display_name_en) + ' [' + STATE.user.role_code + ']';
+  ub.style.display = 'inline-flex';
+  ub.innerHTML = `${renderAvatarHtml(STATE.user, 24)} <span>${esc(STATE.lang === 'ar' ? STATE.user.display_name_ar : STATE.user.display_name_en)}</span>`;
 
   const promises = [apiGet({ action: 'role_workspace' })];
   if (hasPerm('bi.view_executive')) {
@@ -457,6 +617,7 @@ function buildTabsForUser() {
   const tabs = [];
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'exec_bi', label: ar ? '📊 لوحة الملاك والاتجاهات' : '📊 Owner BI & Trends' });
+    tabs.push({ id: 'team_profiles', label: ar ? '👥 ملفات فريق العمل (24)' : '👥 Team Profiles & Directory' });
     tabs.push({ id: 'trial_pilot', label: ar ? '🧪 إدارة النسخة التجريبية والملاحظات' : '🧪 Trial Launch & Feedback' });
     tabs.push({ id: 'exports_hub', label: ar ? '📥 تصدير الشيتات والتقارير' : '📥 Export Sheets (.xlsx / .csv)' });
     tabs.push({ id: 'profitability', label: ar ? '🏆 الأعلى مبيعاً وربحية الرحلات والمراكب' : '🏆 Best Sellers, Trips & Boats ROI' });
@@ -485,6 +646,10 @@ function buildTabsForUser() {
   if (hasPerm('crm.manage_leads_ads')) {
     tabs.push({ id: 'website_crm', label: ar ? '🌐 حجوزات الموقع والواتساب والإعلانات' : '🌐 Website Leads, Check-In & Ads CRM' });
   }
+  if (!hasPerm('bi.view_executive')) {
+    tabs.push({ id: 'team_profiles', label: ar ? '👥 دليل أرقام وإيميلات الفريق' : '👥 Team Contacts Directory' });
+  }
+  tabs.push({ id: 'my_profile', label: ar ? '👤 ملفي الشخصي وصورتي' : '👤 My Profile' });
   return tabs;
 }
 
@@ -494,11 +659,29 @@ function renderApp() {
     return;
   }
   const ar = STATE.lang === 'ar';
-  document.getElementById('welcomeName').textContent = ar ? STATE.user.display_name_ar : STATE.user.display_name_en;
+  const u = STATE.user;
+  document.getElementById('userBadge').innerHTML = `${renderAvatarHtml(u, 24)} <span>${esc(ar ? u.display_name_ar : u.display_name_en)}</span>`;
+  document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, 62);
+  document.getElementById('welcomeName').textContent = ar ? u.display_name_ar : u.display_name_en;
+  const titleTxt = ar ? (u.job_title_ar || u.role_name_ar) : (u.job_title_en || u.role_name_en);
   document.getElementById('welcomeScope').textContent =
-    `${ar ? STATE.user.role_name_ar : STATE.user.role_name_en} • Branch Scope: ${STATE.user.branch_scope} • Vessel Scope: ${STATE.user.vessel_scope}`;
-  document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 6).map((p) => `<span class="pill">${esc(p)}</span>`).join('')
-    + (STATE.perms.length > 6 ? `<span class="pill">+${STATE.perms.length - 6} more</span>` : '');
+    `${titleTxt} • Role: ${u.role_code} • Branch: ${u.branch_scope} • Vessels: ${u.vessel_scope}`;
+
+  const cChips = [];
+  if (u.phone) {
+    cChips.push(`<a class="contact-chip" href="tel:${esc(u.phone.replace(/\s+/g, ''))}">📞 ${esc(u.phone)}</a>`);
+    const wd = waDigits(u.phone);
+    if (wd.length >= 8) {
+      cChips.push(`<a class="contact-chip" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
+    }
+  }
+  if (u.email) {
+    cChips.push(`<a class="contact-chip" href="mailto:${esc(u.email)}">✉️ ${esc(u.email)}</a>`);
+  }
+  document.getElementById('welcomeContacts').innerHTML = cChips.join('');
+
+  document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('')
+    + (STATE.perms.length > 5 ? `<span class="pill">+${STATE.perms.length - 5} more</span>` : '');
 
   const tabs = buildTabsForUser();
   if (!STATE.activeTab || !tabs.some((t) => t.id === STATE.activeTab)) {
@@ -512,6 +695,10 @@ function renderApp() {
   if (STATE.activeTab === 'exec_bi' && STATE.bi) {
     box.innerHTML = renderExecBi(ar);
     drawTrendChart();
+  } else if (STATE.activeTab === 'team_profiles') {
+    box.innerHTML = renderTeamProfilesTab(ar);
+  } else if (STATE.activeTab === 'my_profile') {
+    box.innerHTML = renderMyProfileTab(ar);
   } else if (STATE.activeTab === 'trial_pilot') {
     box.innerHTML = renderTrialPilotTab(ar);
   } else if (STATE.activeTab === 'exports_hub') {
@@ -709,7 +896,8 @@ function renderExportsHub(ar) {
     { key: 'best_sellers', icon: '🏆', title: ar ? 'الأعلى مبيعاً في الشهر والفترة' : 'Best Sellers of the Month / Period', desc: ar ? 'ترتيب مناديب المبيعات والشركات والجنسيات وأعلى 100 فندق' : 'Top Sales Reps, B2B Agencies, Nationalities & Top 100 Hotels' },
     { key: 'profitable_trips', icon: '🤿', title: ar ? 'أكثر الرحلات والكورسات ربحية' : 'Most Profitable Trips, Tours & Courses', desc: ar ? 'الإيراد الفعلي مقابل التكلفة المباشرة وصافي هامش الربح %' : 'Revenue vs Direct COGS, Net Margin EGP & Margin % per activity' },
     { key: 'profitable_boats', icon: '🛥️', title: ar ? 'ربحية المراكب وعمرة الازق والأصول' : 'Most Profitable Boats, Drydock & Assets', desc: ar ? 'أوشينو، عمر 4، نزار، سحس، الاسبيد + رحلات المراكب حتى نوفمبر 2026' : 'Fleet ROI + daily boat trips through Nov 2026 + Drydock + 119 Gear tags' },
-    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? '15,667 حجز مربوط بالحسابات + 63 عميل ومورد + 758 سجل مرتبات' : '15,667 GL-linked reservations + 63 AR/AP accounts + 758 payroll records' }
+    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? '15,667 حجز مربوط بالحسابات + 63 عميل ومورد + 758 سجل مرتبات' : '15,667 GL-linked reservations + 63 AR/AP accounts + 758 payroll records' },
+    { key: 'team_profiles', icon: '👥', title: ar ? 'دليل ملفات وصور وأرقام وإيميلات فريق العمل' : 'Team User Profiles, Phones & Emails Directory', desc: ar ? 'بيانات وصور وأرقام واتساب وإيميلات وصلاحيات الـ 24 مستخدم' : 'Complete 24-user profile sheet with phones, emails, photos & RBAC scopes' }
   ];
   return `
     ${renderHorizonBar(ar)}
@@ -1473,6 +1661,326 @@ async function uploadWarehouseDump(e) {
   } finally {
     btn.disabled = false;
     btn.textContent = '⬆ Hydrate Full SQL Warehouse';
+  }
+}
+
+/* ================= USER PROFILES & TEAM DIRECTORY ================= */
+let PROFILE_FILTER = { q: '', role: '' };
+
+function renderTeamProfilesTab(ar) {
+  const ws = STATE.ws || {};
+  const list = ws.team_profiles || [];
+  const isAdmin = hasPerm('bi.view_executive');
+  const photosCnt = list.filter((p) => !!p.avatar_url).length;
+  const phonesCnt = list.filter((p) => !!p.phone).length;
+  const emailsCnt = list.filter((p) => !!p.email).length;
+
+  const filtered = list.filter((p) => {
+    if (PROFILE_FILTER.role && p.role_code !== PROFILE_FILTER.role) return false;
+    if (!PROFILE_FILTER.q) return true;
+    const hay = `${p.username} ${p.display_name_en} ${p.display_name_ar} ${p.job_title_en} ${p.job_title_ar} ${p.phone} ${p.email} ${p.branch_scope}`.toLowerCase();
+    return hay.includes(PROFILE_FILTER.q.toLowerCase());
+  });
+
+  const uniqueRoles = [...new Set(list.map((p) => p.role_code))];
+
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">${ar ? 'إجمالي حسابات الفريق' : 'Active Team Profiles'}</div>
+        <div class="kpi-val">${fmt(list.length)}</div>
+        <div class="kpi-sub">${ar ? 'ملفات شخصية بصلاحيات محددة' : 'Role-Scoped Company Accounts'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'صور شخصية مرفوعة' : 'Verified Profile Photos'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(photosCnt)} / ${fmt(list.length)}</div>
+        <div class="kpi-sub">${ar ? 'ارفع صورة أي موظف بضغطة واحدة' : 'Tap Edit on any card to upload photo'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'أرقام الهاتف والواتساب' : 'Direct Phone / WhatsApp'}</div>
+        <div class="kpi-val pos">${fmt(phonesCnt)} / ${fmt(list.length)}</div>
+        <div class="kpi-sub">${ar ? 'اتصال مباشر أو واتساب بضغطة' : '1-Tap Call & WhatsApp Ready'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'البريد الإلكتروني الرسمي' : 'Corporate Emails'}</div>
+        <div class="kpi-val">${fmt(emailsCnt)} / ${fmt(list.length)}</div>
+        <div class="kpi-sub">@seacollegediveclub.com</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <div>
+          <h3 style="font-size:16px;">👥 ${ar ? 'دليل ملفات فريق العمل والملاك والشركاء' : 'Sea College Team Profiles — Photos, Phones & Emails'}</h3>
+          <p style="font-size:12px;color:var(--muted);">
+            ${ar ? 'اضغط للتواصل المباشر عبر الهاتف أو الواتساب أو الإيميل، أو اضغط تعديل لإضافة الصورة والرقم.' : 'Tap Call, WhatsApp, or Email for instant contact — or click Edit Profile to upload a staff photo & phone number.'}
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${isAdmin ? `<button type="button" class="btn btn-primary" onclick="openProfileModal(null, 'create')">➕ ${ar ? 'إضافة مستخدم جديد' : 'Add Staff Profile'}</button>` : ''}
+          ${hasPerm('bi.view_executive', 'gl.view_all_ledgers') ? `<a class="btn btn-emerald" href="/handlers/erp_export.php?report=team_profiles&format=xlsx">⬇ ${ar ? 'تصدير Excel' : 'Export .xlsx'}</a>` : ''}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <input type="text" style="max-width:280px;" placeholder="${ar ? 'بحث بالاسم أو الرقم أو الإيميل...' : 'Search name, phone, email, branch...'}" value="${esc(PROFILE_FILTER.q)}" oninput="PROFILE_FILTER.q=this.value;renderApp();">
+        <select style="max-width:240px;" onchange="PROFILE_FILTER.role=this.value;renderApp();">
+          <option value="">${ar ? 'كل الأدوار الوظيفية' : 'All Roles'}</option>
+          ${uniqueRoles.map((rc) => `<option value="${esc(rc)}" ${PROFILE_FILTER.role === rc ? 'selected' : ''}>${esc(rc)}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="grid grid-3">
+        ${filtered.map((p) => {
+          const canEdit = isAdmin || (STATE.user && STATE.user.username === p.username);
+          const wd = waDigits(p.phone);
+          return `
+            <div class="profile-card">
+              <div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  ${renderAvatarHtml(p, 60)}
+                  <div style="min-width:0;flex:1;">
+                    <div style="font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                      ${esc(ar ? p.display_name_ar : p.display_name_en)}
+                    </div>
+                    <div style="font-size:12px;color:var(--cyan);font-weight:700;margin-top:1px;">
+                      ${esc(ar ? (p.job_title_ar || p.role_ar) : (p.job_title_en || p.role_en))}
+                    </div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">
+                      @${esc(p.username)} • <span class="pill" style="padding:1px 7px;font-size:10px;">${esc(p.branch_scope)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top:11px;display:grid;gap:5px;font-size:12px;">
+                  <div>
+                    <span style="color:var(--muted);">📞 ${ar ? 'الهاتف:' : 'Phone:'}</span>
+                    ${p.phone
+                      ? `<a href="tel:${esc(p.phone.replace(/\s+/g, ''))}" style="color:var(--text);font-weight:700;text-decoration:none;margin-inline-start:4px;">${esc(p.phone)}</a>`
+                      : `<span style="color:#f59e0b;font-size:11px;margin-inline-start:4px;">${ar ? 'بانتظار إضافة الرقم' : 'Pending phone #'}</span>`}
+                  </div>
+                  <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    <span style="color:var(--muted);">✉️ ${ar ? 'الإيميل:' : 'Email:'}</span>
+                    ${p.email
+                      ? `<a href="mailto:${esc(p.email)}" style="color:#93c5fd;text-decoration:none;margin-inline-start:4px;">${esc(p.email)}</a>`
+                      : `<span style="color:var(--muted);margin-inline-start:4px;">—</span>`}
+                  </div>
+                  ${p.bio_notes ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">📝 ${esc(p.bio_notes)}</div>` : ''}
+                </div>
+              </div>
+
+              <div style="display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid rgba(148,163,184,0.12);padding-top:9px;">
+                ${p.phone ? `<a class="btn" style="padding:5px 9px;font-size:11px;" href="tel:${esc(p.phone.replace(/\s+/g, ''))}">📞 Call</a>` : ''}
+                ${wd.length >= 8 ? `<a class="btn btn-emerald" style="padding:5px 9px;font-size:11px;" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
+                ${p.email ? `<a class="btn" style="padding:5px 9px;font-size:11px;" href="mailto:${esc(p.email)}">✉️ Email</a>` : ''}
+                ${canEdit ? `<button type="button" class="btn btn-amber" style="padding:5px 9px;font-size:11px;margin-inline-start:auto;" onclick="openProfileModal('${esc(p.username)}', 'update')">✏️ ${ar ? 'تعديل / صورة' : 'Edit / Photo'}</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderMyProfileTab(ar) {
+  const u = STATE.user || {};
+  const wd = waDigits(u.phone);
+  return `
+    <div class="grid grid-2">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
+          ${renderAvatarHtml(u, 92)}
+          <div>
+            <span class="pill">${esc(u.role_code)}</span>
+            <h2 style="font-size:20px;margin-top:6px;">${esc(ar ? u.display_name_ar : u.display_name_en)}</h2>
+            <div style="font-size:13px;color:var(--cyan);font-weight:700;margin-top:2px;">
+              ${esc(ar ? (u.job_title_ar || u.role_name_ar) : (u.job_title_en || u.role_name_en))}
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">@${esc(u.username)} • Employee ID: ${esc(u.emp_code || 'SC-STAFF')}</div>
+          </div>
+        </div>
+
+        <div class="grid" style="gap:9px;padding:12px;border-radius:11px;background:rgba(6,21,38,0.65);border:1px solid var(--border);margin-bottom:14px;">
+          <div><b>📞 ${ar ? 'رقم الهاتف / واتساب:' : 'Phone / WhatsApp:'}</b> ${u.phone ? `<span class="pos">${esc(u.phone)}</span>` : '<span style="color:#f59e0b;">Not set yet — tap Edit below</span>'}</div>
+          <div><b>✉️ ${ar ? 'البريد الإلكتروني:' : 'Email Address:'}</b> ${esc(u.email || '—')}</div>
+          <div><b>🏢 ${ar ? 'نطاق الفروع والمراكب:' : 'Branch & Vessel Scope:'}</b> Branch: <code>${esc(u.branch_scope)}</code> • Vessels: <code>${esc(u.vessel_scope)}</code> ${u.rep_scope ? `• Sales Code: <code>${esc(u.rep_scope)}</code>` : ''}</div>
+          ${u.bio_notes ? `<div><b>📝 ${ar ? 'ملاحظات:' : 'Notes:'}</b> ${esc(u.bio_notes)}</div>` : ''}
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary" onclick="openProfileModal('${esc(u.username)}', 'update')">📷 ${ar ? 'تعديل بياناتي وصورتي الشخصية' : 'Edit My Profile, Photo & Password'}</button>
+          ${wd.length >= 8 ? `<a class="btn btn-emerald" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 Test My WhatsApp Link</a>` : ''}
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:8px;">🛡️ ${ar ? 'الصلاحيات المفعلة لحسابك' : 'Your Active Role Authorities & Permissions'}</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+          ${ar ? 'تحدد هذه الصلاحيات اللوحات والتقارير والعمليات المتاحة لك داخل تطبيق سي كوليدج:' : 'These RBAC permissions govern which dashboards, sheets, and operational actions your account can access:'}
+        </p>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          ${STATE.perms.map((p) => `<span class="pill" style="padding:5px 10px;">✓ ${esc(p)}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openProfileModal(username, mode = 'update') {
+  const ws = STATE.ws || {};
+  const isAdmin = hasPerm('bi.view_executive');
+  const modal = document.getElementById('profileEditModal');
+  document.getElementById('pfErr').style.display = 'none';
+  document.getElementById('pfMode').value = mode;
+  document.getElementById('pfAvatarDataUrl').value = '';
+  document.getElementById('pfPhotoInput').value = '';
+  document.getElementById('pfNewPass').value = '';
+
+  const rolesList = ws.all_roles || [
+    { role_code: 'OWNER_ADMIN', name_en: 'Owner / Executive & CFO' },
+    { role_code: 'FLEET_PARTNER', name_en: 'Yacht Equity Partner' },
+    { role_code: 'CHIEF_ACCOUNTANT', name_en: 'Chief Accountant & Auditor' },
+    { role_code: 'CASHIER_TREASURY', name_en: 'Cashier & Multi-Currency Safe' },
+    { role_code: 'OPERATIONS_MANAGER', name_en: 'Operations & Boat Dispatch' },
+    { role_code: 'JETTY_SUPERVISOR', name_en: 'Jetty Supervisor, Gear & Photo' },
+    { role_code: 'DIVE_INSTRUCTOR', name_en: 'PADI Instructor / Boat Captain' },
+    { role_code: 'SALES_REP', name_en: 'Hotel Desk Sales Representative' },
+    { role_code: 'CUSTOMER_CARE', name_en: 'Multilingual Concierge & CRM' }
+  ];
+  const roleSel = document.getElementById('pfRoleCode');
+  roleSel.innerHTML = rolesList.map((r) => `<option value="${esc(r.role_code)}">${esc(r.role_code)} — ${esc(r.name_en)}</option>`).join('');
+
+  document.getElementById('pfAdminScopeBox').style.display = isAdmin ? 'block' : 'none';
+
+  if (mode === 'create') {
+    document.getElementById('profModalTitle').textContent = '➕ Create New Staff User Profile';
+    document.getElementById('pfCreateUsernameRow').style.display = 'grid';
+    document.getElementById('pfPassResetCol').style.display = 'none';
+    document.getElementById('pfTargetUser').value = '';
+    document.getElementById('pfNewUsername').value = '';
+    document.getElementById('pfInitPass').value = '';
+    document.getElementById('pfNameEn').value = '';
+    document.getElementById('pfNameAr').value = '';
+    document.getElementById('pfTitleEn').value = '';
+    document.getElementById('pfTitleAr').value = '';
+    document.getElementById('pfPhone').value = '+20 ';
+    document.getElementById('pfEmail').value = '';
+    document.getElementById('pfBio').value = '';
+    roleSel.value = 'SALES_REP';
+    document.getElementById('pfBranchScope').value = 'CYRENE';
+    document.getElementById('pfVesselScope').value = 'ALL';
+    document.getElementById('pfRepScope').value = '';
+    document.getElementById('pfPreviewBox').innerHTML = renderAvatarHtml({ display_name_en: 'New User' }, 64);
+  } else {
+    const target = ((ws.team_profiles || []).find((p) => p.username === username))
+      || (STATE.user && STATE.user.username === username ? STATE.user : null);
+    if (!target) return;
+    document.getElementById('profModalTitle').textContent = `✏️ Edit Profile — @${target.username}`;
+    document.getElementById('pfCreateUsernameRow').style.display = 'none';
+    document.getElementById('pfPassResetCol').style.display = 'block';
+    document.getElementById('pfTargetUser').value = target.username;
+    document.getElementById('pfNameEn').value = target.display_name_en || '';
+    document.getElementById('pfNameAr').value = target.display_name_ar || '';
+    document.getElementById('pfTitleEn').value = target.job_title_en || '';
+    document.getElementById('pfTitleAr').value = target.job_title_ar || '';
+    document.getElementById('pfPhone').value = target.phone || '';
+    document.getElementById('pfEmail').value = target.email || '';
+    document.getElementById('pfBio').value = target.bio_notes || '';
+    if (isAdmin) {
+      roleSel.value = target.role_code || 'SALES_REP';
+      document.getElementById('pfBranchScope').value = target.branch_scope || 'ALL';
+      document.getElementById('pfVesselScope').value = target.vessel_scope || 'ALL';
+      document.getElementById('pfRepScope').value = target.rep_scope || '';
+    }
+    document.getElementById('pfPreviewBox').innerHTML = renderAvatarHtml(target, 64);
+  }
+
+  modal.style.display = 'flex';
+}
+
+function closeProfileModal() {
+  document.getElementById('profileEditModal').style.display = 'none';
+}
+
+function previewProfilePhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const size = 480;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const minSide = Math.min(img.width, img.height);
+      const sx = Math.floor((img.width - minSide) / 2);
+      const sy = Math.floor((img.height - minSide) * 0.25); // bias slightly toward top for portrait faces
+      ctx.drawImage(img, sx, Math.max(0, sy), minSide, minSide, 0, 0, size, size);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      document.getElementById('pfAvatarDataUrl').value = dataUrl;
+      document.getElementById('pfPreviewBox').innerHTML = `<img src="${dataUrl}" class="avatar-circle" style="width:64px;height:64px;" alt="Preview">`;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitProfileForm(e) {
+  e.preventDefault();
+  const errEl = document.getElementById('pfErr');
+  errEl.style.display = 'none';
+  const mode = document.getElementById('pfMode').value;
+  const btn = document.getElementById('pfSaveBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
+  const payload = {
+    action: 'save_user_profile',
+    mode,
+    target_username: document.getElementById('pfTargetUser').value,
+    username: document.getElementById('pfNewUsername').value.trim().toLowerCase(),
+    display_name_en: document.getElementById('pfNameEn').value.trim(),
+    display_name_ar: document.getElementById('pfNameAr').value.trim(),
+    job_title_en: document.getElementById('pfTitleEn').value.trim(),
+    job_title_ar: document.getElementById('pfTitleAr').value.trim(),
+    phone: document.getElementById('pfPhone').value.trim(),
+    email: document.getElementById('pfEmail').value.trim(),
+    bio_notes: document.getElementById('pfBio').value.trim(),
+    avatar_data_url: document.getElementById('pfAvatarDataUrl').value,
+    new_password: mode === 'create'
+      ? document.getElementById('pfInitPass').value
+      : document.getElementById('pfNewPass').value
+  };
+
+  if (hasPerm('bi.view_executive')) {
+    payload.role_code = document.getElementById('pfRoleCode').value;
+    payload.branch_scope = document.getElementById('pfBranchScope').value;
+    payload.vessel_scope = document.getElementById('pfVesselScope').value.trim() || 'ALL';
+    payload.rep_scope = document.getElementById('pfRepScope').value.trim().toUpperCase();
+  }
+
+  try {
+    const res = await apiPost(payload);
+    if (!res.ok) {
+      errEl.textContent = res.error || 'Could not save profile';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (res.me) {
+      STATE.user = res.me;
+    }
+    closeProfileModal();
+    showToast(mode === 'create' ? `Created profile @${res.username}!` : `Saved profile @${res.username}!`);
+    await loadUserData();
+  } catch (err) {
+    errEl.textContent = 'Network error: ' + err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save User Profile';
   }
 }
 
