@@ -45,17 +45,17 @@ var BLUEPRINT = [
     "headlines": [
       "PADI 5 Star Resort Sharm",
       "Open Water Course EUR 400",
-      "4.9 Stars - 3,082+ Reviews",
+      "Max 4 Divers Per PADI Guide",
       "Private Pool & House Reef",
       "Save With Mega Bundle EUR 600",
       "EUR 0 Upfront Booking Fee",
       "Free Sharm Hotel Transfers",
-      "Small Groups & Top Safety"
+      "100% Zero Hidden Marina Fees"
     ],
     "descriptions": [
       "Official PADI 5 Star Dive Resort at Al Montazah. Private pool & calm House Reef.",
       "Book PADI Open Water (EUR 400) or OWD+AOWD Mega Bundle (EUR 600). Pay on arrival!",
-      "Rated 4.9 stars by 3,082+ divers on Google & Tripadvisor. Free hotel pickup.",
+      "Max 4 divers per PADI guide, free hotel pickup & 4.9 stars (3,082+ reviews).",
       "Use our live Dive Calculator for 100% transparent EUR pricing with zero hidden fees."
     ]
   },
@@ -81,18 +81,18 @@ var BLUEPRINT = [
     "headlines": [
       "Sharm El Sheikh Dive Packages",
       "6 Dives EUR 210 | 10 EUR 350",
-      "Ras Mohammed & Tiran Boats",
-      "SS Thistlegorm Wreck Trips",
+      "Max 4 Divers Per PADI Guide",
+      "Couples Same Yacht +EUR 45",
       "4.9 Stars (3,082+ Reviews)",
       "PADI 5 Star Beachfront Base",
       "Live EUR Dive Fee Calculator",
-      "Zodiac RIB & Nitrox Available"
+      "100% Zero Hidden Boat Fees"
     ],
     "descriptions": [
       "Daily boat & House Reef dives to Ras Mohammed, Straits of Tiran & SS Thistlegorm.",
       "6-Dive Pack EUR 210, 10-Dive Pack EUR 350. Build your exact quote in 20 seconds!",
-      "PADI 5 Star Resort facing Tiran Island. Free Sharm hotel transfers & EUR 0 card fee.",
-      "Beginners welcome too: House Reef Intro Dive EUR 30 or 2 Boat Dives all-in EUR 100."
+      "Couples welcome on the same yacht: Certified Diver + Partner Intro Dive +EUR 45.",
+      "Max 4 divers per guide, free Sharm hotel transfers & zero hidden fees onboard."
     ]
   },
   {

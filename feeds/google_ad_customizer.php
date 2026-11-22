@@ -20,7 +20,7 @@ require_once ROOT_DIR . '/includes/catalog_helpers.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 
 $feedLang = LANG;
-$commercialOnly = (($_GET['commercial_only'] ?? '') === '1');
+$commercialOnly = (($_GET['include_addons'] ?? '') !== '1');
 $filename = $feedLang === 'en'
     ? 'google-ad-customizer.csv'
     : ('google-ad-customizer-' . $feedLang . '.csv');

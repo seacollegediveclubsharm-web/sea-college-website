@@ -18,7 +18,6 @@ var CONFIG = {
   LEADS_CRM_ID: '1ItvQGWnrHwnSbyGDoGNtV2CkVwNJXIyU_aaIFxIOGbc',
   ADS_SYNC_ID: '15IkDV14kxGAbr8DSGOB6auNe4paTNOa5UXmw9d5kVtk',
   PROD_DOMAIN: 'https://seacollegediveclub.com',
-  STAGING_DOMAIN: 'https://papayawhip-pheasant-312330.hostingersite.com',
   GOOGLE_REVIEW_URL: 'https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0',
   TRIPADVISOR_REVIEW_URL: 'https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html',
   EUR_TO_EGP: 52.0
@@ -114,10 +113,11 @@ function buildWhatsAppQuickQueue() {
     var status = r[2] || 'New';
     var interest = r[7] || 'Red Sea Dive';
     var estEur = r[13] || '';
+    var langPfx = (lang && lang !== 'en') ? ('/' + lang) : '';
 
     var quoteMsg = getLocalizedQuoteGreeting(lang, name, interest, estEur);
-    var checkinMsg = 'Hi ' + name + '! Your Sea College Dive Club reservation is confirmed. Save 20 mins on morning 1 with our quick Online PADI Check-In: ' + CONFIG.PROD_DOMAIN + '/prices.php#checkin';
-    var reviewMsg = 'Thank you for diving with Sea College Dive Club, ' + name + '! 🤿 A quick 30-sec review helps our team hugely:\nGoogle: ' + CONFIG.GOOGLE_REVIEW_URL + '\nTripadvisor: ' + CONFIG.TRIPADVISOR_REVIEW_URL;
+    var checkinMsg = 'Hi ' + name + '! Your Sea College Dive Club reservation is confirmed. Complete your 60-second Online Diver Check-In before arrival: ' + CONFIG.PROD_DOMAIN + langPfx + '/check-in';
+    var reviewMsg = 'Thank you for diving with Sea College Dive Club, ' + name + '! 🤿 Whenever you have 30 seconds, sharing your honest experience helps fellow divers find us:\nGoogle: ' + CONFIG.GOOGLE_REVIEW_URL + '\nTripadvisor: ' + CONFIG.TRIPADVISOR_REVIEW_URL;
 
     out.push([
       r[0], name, rawPhone, lang, status, interest, estEur,

@@ -32,7 +32,7 @@ function doPost(e) {
       const sh = ss.getSheetByName('Checkins') || ss.insertSheet('Checkins');
       sh.appendRow([
         data.submitted_at || new Date().toISOString(),
-        data.lead_event_id || '',
+        data.lead_event_id || data.checkin_id || '',
         data.name || '',
         data.phone || '',
         data.arrival_date || '',
@@ -51,7 +51,12 @@ function doPost(e) {
         data.nitrox_request || 'no',
         data.medical_flags || 'all_no',
         data.medical_waiver || 'yes',
-        data.gear_notes || ''
+        data.gear_notes || '',
+        data.lang || 'en',
+        data.gclid || data.gbraid || data.wbraid || '',
+        data.fbclid || '',
+        data.ttclid || '',
+        data.msclkid || ''
       ]);
     } else if (type === 'whatsapp_click') {
       const waSheet = ss.getSheetByName('WhatsApp_Clicks');
@@ -69,16 +74,20 @@ function doPost(e) {
           data.estimated_total_eur || 0,
           data.gclid || data.gbraid || data.wbraid || '',
           data.fbclid || '',
+          data.ttclid || '',
+          data.msclkid || '',
+          data.fbc || data._fbc || '',
+          data.fbp || data._fbp || '',
           data.utm_source || '',
           data.utm_medium || '',
           data.utm_campaign || '',
           data.page_url || ''
         ]);
       }
-      // Also log attributed / booking-intent WhatsApp clicks into Leads with Status = 'WhatsApp_Clicked'
-      // so staff can match incoming WhatsApp chats to GCLID and trigger Google Ads OCT on 'Paid'!
+      // Log attributed / booking-intent WhatsApp clicks into Leads with Status = 'WhatsApp_Clicked'
+      // Preserves exact columns A..U (1..21) so existing rows never shift, and appends ttclid, msclkid, _fbc, _fbp in V..Y!
       const sh = ss.getSheetByName('Leads');
-      if (sh && (data.gclid || data.gbraid || data.wbraid || data.fbclid || !waSheet)) {
+      if (sh && (data.gclid || data.gbraid || data.wbraid || data.fbclid || data.ttclid || data.msclkid || !waSheet)) {
         sh.appendRow([
           data.received_at || new Date().toISOString(),
           data.event_id || '',
@@ -100,7 +109,11 @@ function doPost(e) {
           data.utm_source || '',
           data.utm_medium || '',
           data.utm_campaign || '',
-          ''
+          '',
+          data.ttclid || '',
+          data.msclkid || '',
+          data.fbc || data._fbc || '',
+          data.fbp || data._fbp || ''
         ]);
       }
     } else {
@@ -121,12 +134,16 @@ function doPost(e) {
         data.lang || 'en',
         data.estimated_total_eur || 0,
         JSON.stringify(data.cart || []),
-        data.gclid || '',
+        data.gclid || data.gbraid || data.wbraid || '',
         data.fbclid || '',
         data.utm_source || '',
         data.utm_medium || '',
         data.utm_campaign || '',
-        ''
+        '',
+        data.ttclid || '',
+        data.msclkid || '',
+        data.fbc || data._fbc || '',
+        data.fbp || data._fbp || ''
       ]);
     }
 
@@ -149,7 +166,8 @@ function onEdit(e) {
   const row = e.range.getRow();
   if (row < 2) return;
 
-  const vals = sh.getRange(row, 1, 1, 21).getValues()[0];
+  const vals = sh.getRange(row, 1, 1, 25).getValues()[0];
+  const eventId = String(vals[1] || '').trim();
   const status = String(vals[2] || '').trim();
   const paidEur = parseFloat(vals[3] || vals[13] || 0);
   const gclid = String(vals[15] || '').trim();
@@ -158,7 +176,8 @@ function onEdit(e) {
   if (status === 'Paid' && gclid && !exported) {
     const oct = e.source.getSheetByName('Google_Ads_OCT_Export');
     const convTime = Utilities.formatDate(new Date(), 'Africa/Cairo', 'yyyy-MM-dd HH:mm:ss+02:00');
-    oct.appendRow([gclid, 'Reservation Form Submitted', convTime, paidEur > 0 ? paidEur : 50, 'EUR']);
+    const convName = eventId.indexOf('wa_') === 0 ? 'WhatsApp Lead' : 'Reservation Form Submitted';
+    oct.appendRow([gclid, convName, convTime, paidEur > 0 ? paidEur : 50, 'EUR']);
     sh.getRange(row, 21).setValue('QUEUED ' + convTime);
   }
 }

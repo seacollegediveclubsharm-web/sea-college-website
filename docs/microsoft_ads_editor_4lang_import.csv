@@ -1,0 +1,31 @@
+Campaign,Campaign Status,Campaign Type,Networks,Budget,Bid Strategy Type,Ad Group,Ad Group Status,Keyword,Criterion Type,Ad Type,Final URL,Headline 1,Headline 2,Headline 3,Headline 4,Headline 5,Headline 6,Description 1,Description 2
+SC_Bing_EN_Courses_Bundles,Paused,Search,Bing and Yahoo! search,400,Maximize conversions,,,,,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,EN_PADI_Courses_And_Dives,Enabled,,,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,EN_PADI_Courses_And_Dives,,padi open water sharm el sheikh,Exact,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,EN_PADI_Courses_And_Dives,,scuba diving sharm el sheikh,Phrase,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,EN_PADI_Courses_And_Dives,,diving courses sharm el sheikh,Phrase,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,,,hurghada,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,,,free,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_EN_Courses_Bundles,,,,,,EN_PADI_Courses_And_Dives,,,,Responsive search ad,https://seacollegediveclub.com/diving-courses-sharm-el-sheikh?utm_source=bing&utm_medium=cpc&utm_campaign=bing_en_courses,PADI 5 Star Resort Sharm,Open Water Course EUR 400,Max 4 Divers Per PADI Guide,Mega Bundle Save - EUR 600,Couples Same Yacht +EUR 45,Zero Hidden Marina Fees,"Official PADI 5 Star Dive Resort in Sharm El Sheikh. Private pool, House Reef & boats.","Open Water EUR 400, Advanced EUR 350, 10 Dives EUR 350. Free Sharm hotel transfers!"
+SC_Bing_DE_Tauchen_Sharm,Paused,Search,Bing and Yahoo! search,350,Maximize conversions,,,,,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,DE_Tauchen_Und_PADI_Sharm,Enabled,,,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,DE_Tauchen_Und_PADI_Sharm,,tauchen sharm el sheikh,Exact,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,DE_Tauchen_Und_PADI_Sharm,,tauchbasis sharm el sheikh,Phrase,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,DE_Tauchen_Und_PADI_Sharm,,padi tauchkurs sharm,Phrase,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,,,hurghada,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,,,marsa alam,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_DE_Tauchen_Sharm,,,,,,DE_Tauchen_Und_PADI_Sharm,,,,Responsive search ad,https://seacollegediveclub.com/de/diving-trips-sharm-el-sheikh?utm_source=bing&utm_medium=cpc&utm_campaign=bing_de_tauchen,PADI 5* Tauchbasis Sharm,Max 4 Taucher Pro Guide,10 Tauchgänge Paket 350 EUR,PADI Open Water Kurs 400 EUR,"4,9 Sterne (3.082+ Bewert.)",Keine Versteckten Gebühren,PADI 5* Dive Resort direkt am Strand von Al Montazah gegenüber der Straße von Tiran.,"Ras Mohammed, Tiran & SS Thistlegorm. Kostenloser Hoteltransfer & EUR-Kostenrechner!"
+SC_Bing_FR_Plongee_Sharm,Paused,Search,Bing and Yahoo! search,250,Maximize conversions,,,,,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,FR_Plongee_Et_PADI_Sharm,Enabled,,,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,FR_Plongee_Et_PADI_Sharm,,plongée sharm el sheikh,Exact,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,FR_Plongee_Et_PADI_Sharm,,club plongée sharm,Phrase,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,FR_Plongee_Et_PADI_Sharm,,cours padi sharm el sheikh,Phrase,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,,,hurghada,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_FR_Plongee_Sharm,,,,,,FR_Plongee_Et_PADI_Sharm,,,,Responsive search ad,https://seacollegediveclub.com/fr/diving-trips-sharm-el-sheikh?utm_source=bing&utm_medium=cpc&utm_campaign=bing_fr_plongee,Centre Plongée PADI 5* Sharm,Max 4 Plongeurs Par Guide,Baptême Plongée dès 30 EUR,Forfait 10 Plongées 350 EUR,Note 4.9/5 (3 082+ Avis),Zéro Frais Cachés En Bateau,Centre PADI 5* en bord de mer à Al Montazah avec piscine privée et récif maison.,"Forfaits plongée, cours PADI Open Water (400 EUR) et bateaux privés. Transfert inclus!"
+SC_Bing_IT_Immersioni_Sharm,Paused,Search,Bing and Yahoo! search,250,Maximize conversions,,,,,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,IT_Immersioni_E_Corsi_Sharm,Enabled,,,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,IT_Immersioni_E_Corsi_Sharm,,immersioni sharm el sheikh,Exact,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,IT_Immersioni_E_Corsi_Sharm,,centro diving sharm,Phrase,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,IT_Immersioni_E_Corsi_Sharm,,corso padi sharm el sheikh,Phrase,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,,,marsa alam,Campaign Negative Phrase,,,,,,,,,,
+SC_Bing_IT_Immersioni_Sharm,,,,,,IT_Immersioni_E_Corsi_Sharm,,,,Responsive search ad,https://seacollegediveclub.com/it/diving-trips-sharm-el-sheikh?utm_source=bing&utm_medium=cpc&utm_campaign=bing_it_immersioni,Centro Diving PADI 5* Sharm,Max 4 Sub Per Guida PADI,Battesimo del Mare da 30 EUR,"Ras Mohammed, Tiran & Relitti",4.9 Stelle (3.082+ Recensioni),Zero Costi Nascosti Online,Resort PADI 5* fronte mare ad Al Montazah con piscina privata e House Reef calmo.,"6 immersioni 210 EUR, 10 immersioni 350 EUR, Open Water 400 EUR. Transfer incluso!"
