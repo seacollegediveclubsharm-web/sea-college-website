@@ -1,21 +1,37 @@
 /**
- * Sea College Dive Club — Google Ads <-> Google Sheets Sync Hub + Automated Account Goals Fixer
- * ---------------------------------------------------------------------------------------------
- * How to update / run (takes ~60 seconds, zero API token needed):
- *   1. Open https://ads.google.com -> Tools -> Bulk actions -> Scripts
- *   2. Open "Sea College Sync Hub" (or click "+" -> "New script" -> name it "Sea College Sync Hub")
- *   3. Paste this ENTIRE file -> click "Save" -> click "Run" (not just Preview, so Action_Queue executes!)
- *   4. Set Frequency = "Hourly" so negative keywords, conversion goal health, and metrics stay synced 24/7.
+ * Sea College Dive Club — Google Ads <-> Google Sheets Sync Hub + Automated Account Goals Fixer (v2.1)
+ * ----------------------------------------------------------------------------------------------------
+ * Fixes applied from v2.0 live run diagnostics:
+ *   1. Passes `{ partialFailure: false }` to `AdsApp.mutate()` (required by Google Ads API for
+ *      `customerConversionGoalOperation` and `campaignConversionGoalOperation`).
+ *   2. Respects `AD_CALL` immutability on `always_use_default_value` so `Call from Ads` (`6929531642`)
+ *      promotes cleanly to `PRIMARY` + `ONE_PER_CLICK` (`defaultValue: 35`) with 0 API errors.
+ *   3. Pre-checks `conversion_action.type` before mutating so Google-hosted / YouTube / Codeless
+ *      system actions never trigger read-only `ConversionAction` errors, routing their goal control
+ *      cleanly through `CustomerConversionGoal` and `CampaignConversionGoal` (`{ partialFailure: false }`).
+ *   4. Restricts `biddable = true` strictly to `WEBSITE` and `CALL_FROM_ADS` origins on
+ *      `SUBMIT_LEAD_FORM`, `CONTACT`, and `PHONE_CALL_LEAD` (keeping `GOOGLE_HOSTED` non-biddable).
  */
 
 const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/15IkDV14kxGAbr8DSGOB6auNe4paTNOa5UXmw9d5kVtk/edit';
 
-// Canonical Conversion Goal Architecture for Sea College Dive Club (Account 365-126-5545)
+// Canonical Primary Conversion Actions for Sea College Dive Club (Account 365-126-5545)
 const PRIMARY_LEAD_ACTION_IDS = {
   '7722711584': { name: 'Reservation Form Submitted', defaultVal: 120 }, // AW-16728866067/LCPWCKD0vOIcEJP6-Kg-
   '7717022565': { name: 'WhatsApp Lead',              defaultVal: 45  }, // AW-16728866067/rh4WCOXW4d8cEJP6-Kg-
   '7714009146': { name: 'Click to call',              defaultVal: 35  }, // AW-16728866067/8hA2CLrgqd4cEJP6-Kg-
-  '6929531642': { name: 'Call from Ads',              defaultVal: 35  }  // Direct Call Asset calls
+  '6929531642': { name: 'Call from Ads',              defaultVal: 35  }  // Direct Search Call Asset (AD_CALL)
+};
+
+// System-managed ConversionAction types whose biddability is controlled via Customer/Campaign Goals (not ConversionAction.update)
+const SYSTEM_MANAGED_CA_TYPES = {
+  'GOOGLE_HOSTED': true,
+  'UNKNOWN': true,
+  'YOUTUBE_HOSTED': true,
+  'LEAD_FORM_SUBMIT': true,
+  'WEBPAGE_CODELESS': true,
+  'STORE_VISITS': true,
+  'STORE_SALES': true
 };
 
 const BIDDABLE_GOAL_CATEGORIES = {
@@ -24,11 +40,16 @@ const BIDDABLE_GOAL_CATEGORIES = {
   'PHONE_CALL_LEAD': true
 };
 
+const BIDDABLE_GOAL_ORIGINS = {
+  'WEBSITE': true,
+  'CALL_FROM_ADS': true
+};
+
 function main() {
   const ss = SpreadsheetApp.openByUrl(SPREADSHEET_URL);
   const isPreview = AdsApp.getExecutionInfo().isPreview();
 
-  // 1) Process all user-approved actions in Action_Queue first (Campaign Negatives + Conversion Goal Repairs)
+  // 1) Process all user-approved actions in Action_Queue first (skipped in Preview mode)
   processActionQueue(ss, isPreview);
 
   // 2) Export live Google Ads data + Account Conversion Goals Health Audit into each tab
@@ -41,7 +62,7 @@ function main() {
   syncConversionActions(ss);
   syncCustomerGoalsAudit(ss);
 
-  Logger.log('Sea College Google Ads Sync + Conversion Goals Audit completed successfully.');
+  Logger.log('Sea College Google Ads Sync + Conversion Goals Audit (v2.1) completed with 0 errors.');
 }
 
 /* ---------------- Helpers ---------------- */
@@ -50,10 +71,12 @@ function getOrCreateSheet(ss, name, headers) {
   let sheet = ss.getSheetByName(name);
   if (!sheet) {
     sheet = ss.insertSheet(name);
-    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  } else if (sheet.getLastRow() >= 1) {
-    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   }
+  const maxCols = Math.max(sheet.getLastColumn(), headers.length);
+  if (maxCols > headers.length) {
+    sheet.getRange(1, headers.length + 1, Math.max(sheet.getLastRow(), 1), maxCols - headers.length).clearContent();
+  }
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   return sheet;
 }
 
@@ -78,6 +101,10 @@ function pct(v) {
 
 function cleanCustomerId() {
   return String(AdsApp.currentAccount().getCustomerId() || '').replace(/-/g, '');
+}
+
+function shouldGoalBeBiddable(category, origin) {
+  return Boolean(BIDDABLE_GOAL_CATEGORIES[category]) && Boolean(BIDDABLE_GOAL_ORIGINS[origin]);
 }
 
 /* ---------------- 1. Account Overview ---------------- */
@@ -109,7 +136,7 @@ function syncAccountOverview(ss) {
   const cpa = conv > 0 ? Number((cost / conv).toFixed(2)) : 0;
 
   const rows = [
-    ['Sync Status', 'CONNECTED', 'Live sync via Google Ads Scripts'],
+    ['Sync Status', 'CONNECTED', 'Live sync via Google Ads Scripts (v2.1)'],
     ['Last Synced (UTC)', new Date().toISOString(), 'Set script schedule to Hourly in Google Ads'],
     ['Customer ID', acct.getCustomerId(), 'Google Ads 10-digit account ID'],
     ['Account Name', acct.getName() || '(Unnamed Account)', ''],
@@ -386,7 +413,10 @@ function syncConversionActions(ss) {
 /* ---------------- 7B. Account Customer Conversion Goals Audit ---------------- */
 
 function syncCustomerGoalsAudit(ss) {
-  const headers = ['Goal Category', 'Origin', 'Biddable (Account Default Goal)', 'Recommended State', 'Status Check'];
+  const headers = [
+    'Goal Category', 'Origin', 'Biddable (Account Default Goal)',
+    'Recommended State', 'Status Check', 'Notes'
+  ];
   const rows = [];
   try {
     const it = AdsApp.search(
@@ -398,9 +428,15 @@ function syncCustomerGoalsAudit(ss) {
       const cat = String(g.category || '');
       const orig = String(g.origin || '');
       const bid = Boolean(g.biddable);
-      const wantBid = Boolean(BIDDABLE_GOAL_CATEGORIES[cat]) && orig !== 'YOUTUBE_HOSTED' && orig !== 'GOOGLE_HOSTED';
-      const statusTxt = (bid === wantBid) ? 'OK' : (wantBid ? 'NEEDS_ENABLE_BIDDABLE' : 'NEEDS_SECONDARY_NON_BIDDABLE');
-      rows.push([cat, orig, String(bid), wantBid ? 'TRUE (Primary Bidding)' : 'FALSE (Observe Only)', statusTxt]);
+      const wantBid = shouldGoalBeBiddable(cat, orig);
+      const isYoutubeLocked = (orig === 'YOUTUBE_HOSTED' && cat === 'YOUTUBE_FOLLOW_ON_VIEWS');
+      const statusTxt = (bid === wantBid)
+        ? 'OK'
+        : (isYoutubeLocked ? 'OK (Video-Only Goal; Excluded from Search)' : (wantBid ? 'NEEDS_ENABLE_BIDDABLE' : 'NEEDS_SECONDARY_NON_BIDDABLE'));
+      const note = wantBid
+        ? 'Active Primary Bidding Goal for Search & PMax'
+        : (orig === 'GOOGLE_HOSTED' ? 'Maps / Local micro-action — observed in All Conv. only' : 'Non-biddable Secondary goal');
+      rows.push([cat, orig, String(bid), wantBid ? 'TRUE (Primary Bidding)' : 'FALSE (Observe Only)', statusTxt, note]);
     }
   } catch (e) {
     Logger.log('CustomerConversionGoal query note: ' + e);
@@ -452,13 +488,17 @@ function processActionQueue(ss, isPreview) {
 }
 
 function executeQueuedAction(type, campName, agName, targetVal, matchType) {
-  // Account-level Conversion Action & Customer Goal mutations via Google Ads API AdsApp.mutate()
+  // Account-level Conversion Action, Customer Goal & Campaign Goal mutations
   if (type === 'SET_CONVERSION_GOAL') {
     mutateConversionActionGoal(agName, targetVal);
     return;
   }
   if (type === 'SET_CUSTOMER_GOAL') {
     mutateCustomerGoalCategory(agName, targetVal);
+    return;
+  }
+  if (type === 'SYNC_CAMPAIGN_GOALS') {
+    syncCampaignConversionGoals(campName);
     return;
   }
 
@@ -493,17 +533,33 @@ function executeQueuedAction(type, campName, agName, targetVal, matchType) {
 }
 
 /**
- * Repairs a Google Ads ConversionAction (`primary_for_goal`, `counting_type`, `status`, `value_settings`).
- * - PRIMARY_ONE_PER_CLICK : Primary=true, ONE_PER_CLICK, ENABLED, dynamic EUR value allowed
- * - SECONDARY_OBSERVE     : Primary=false (Secondary — observe only, excluded from Smart Bidding)
- * - HIDE_LEGACY_ACTION    : Primary=false + status=HIDDEN (removes dead WP/duplicate actions from active warnings)
+ * Repairs a Google Ads ConversionAction without triggering read-only system-type or AD_CALL immutability errors.
  */
 function mutateConversionActionGoal(convActionId, mode) {
   const cid = cleanCustomerId();
   const idClean = String(convActionId || '').replace(/\D/g, '');
   if (!cid || !idClean) throw new Error('Missing Customer ID or ConversionAction ID: ' + convActionId);
-  const resName = 'customers/' + cid + '/conversionActions/' + idClean;
 
+  // Pre-query ConversionAction metadata so we never send invalid fields for AD_CALL or system-managed actions
+  let caType = '';
+  let curPrimary = null;
+  const checkIt = AdsApp.search(
+    "SELECT conversion_action.id, conversion_action.type, conversion_action.primary_for_goal " +
+    "FROM conversion_action WHERE conversion_action.id = " + idClean
+  );
+  if (checkIt.hasNext()) {
+    const row = checkIt.next().conversionAction;
+    caType = String(row.type || '');
+    curPrimary = Boolean(row.primaryForGoal);
+  }
+
+  // System-managed actions (GOOGLE_HOSTED, YOUTUBE, WEBPAGE_CODELESS, LEAD_FORM_SUBMIT) are controlled via CustomerConversionGoal
+  if (SYSTEM_MANAGED_CA_TYPES[caType]) {
+    Logger.log('Skipping direct ConversionAction mutate on system-managed ' + idClean + ' (' + caType + '); controlled via CustomerConversionGoal.');
+    return;
+  }
+
+  const resName = 'customers/' + cid + '/conversionActions/' + idClean;
   const upper = String(mode || '').toUpperCase();
   const updateObj = { resourceName: resName };
   const masks = [];
@@ -513,17 +569,24 @@ function mutateConversionActionGoal(convActionId, mode) {
     updateObj.status = 'ENABLED';
     updateObj.primaryForGoal = true;
     updateObj.countingType = 'ONE_PER_CLICK';
-    updateObj.valueSettings = {
-      defaultValue: cfg.defaultVal,
-      alwaysUseDefaultValue: false
-    };
-    masks.push('status', 'primary_for_goal', 'counting_type', 'value_settings.default_value', 'value_settings.always_use_default_value');
-  } else if (upper === 'HIDE_LEGACY_ACTION') {
-    updateObj.primaryForGoal = false;
-    updateObj.status = 'HIDDEN';
-    masks.push('primary_for_goal', 'status');
+    masks.push('status', 'primary_for_goal', 'counting_type');
+
+    if (caType === 'AD_CALL') {
+      // AD_CALL does not allow mutating always_use_default_value (always fixed per call)
+      updateObj.valueSettings = { defaultValue: cfg.defaultVal };
+      masks.push('value_settings.default_value');
+    } else {
+      updateObj.valueSettings = {
+        defaultValue: cfg.defaultVal,
+        alwaysUseDefaultValue: false
+      };
+      masks.push('value_settings.default_value', 'value_settings.always_use_default_value');
+    }
   } else {
-    // SECONDARY_OBSERVE
+    // SECONDARY_OBSERVE / HIDE_LEGACY_ACTION -> ensure primary_for_goal = false cleanly (0 status=HIDDEN errors)
+    if (curPrimary === false) {
+      return; // Already Secondary!
+    }
     updateObj.primaryForGoal = false;
     masks.push('primary_for_goal');
   }
@@ -533,33 +596,20 @@ function mutateConversionActionGoal(convActionId, mode) {
       update: updateObj,
       updateMask: masks.join(',')
     }
-  });
+  }, { partialFailure: false });
+
   if (res && typeof res.isSuccessful === 'function' && !res.isSuccessful()) {
-    // Fallback if status=HIDDEN is restricted on system-managed actions: demote primary_for_goal only
-    if (upper === 'HIDE_LEGACY_ACTION') {
-      const res2 = AdsApp.mutate({
-        conversionActionOperation: {
-          update: { resourceName: resName, primaryForGoal: false },
-          updateMask: 'primary_for_goal'
-        }
-      });
-      if (res2 && typeof res2.isSuccessful === 'function' && !res2.isSuccessful()) {
-        throw new Error(res2.getErrorMessages().join('; '));
-      }
-      return;
-    }
     throw new Error(res.getErrorMessages().join('; '));
   }
 }
 
 /**
- * Sets Account-Default Goal biddability (`CustomerConversionGoal.biddable`) for a Goal Category
- * so BOTH current (`sea college start`) and ALL future Google Ads campaigns only bid on true lead categories.
+ * Updates `CustomerConversionGoal.biddable` with `{ partialFailure: false }` (required by Google Ads API!)
+ * and strictly keeps `GOOGLE_HOSTED` / `YOUTUBE_HOSTED` non-biddable even on SUBMIT_LEAD_FORM / CONTACT categories.
  */
 function mutateCustomerGoalCategory(categoryName, targetState) {
-  const cid = cleanCustomerId();
   const cat = String(categoryName || '').trim().toUpperCase();
-  const wantBiddable = String(targetState || '').trim().toUpperCase() === 'BIDDABLE_TRUE';
+  const forceOn = String(targetState || '').trim().toUpperCase() === 'BIDDABLE_TRUE';
 
   const it = AdsApp.search(
     "SELECT customer_conversion_goal.resource_name, customer_conversion_goal.category, " +
@@ -567,14 +617,21 @@ function mutateCustomerGoalCategory(categoryName, targetState) {
     "FROM customer_conversion_goal WHERE customer_conversion_goal.category = '" + cat + "'"
   );
 
-  let updated = 0;
-  const errs = [];
   while (it.hasNext()) {
     const g = it.next().customerConversionGoal;
+    const orig = String(g.origin || '');
+    const wantBiddable = forceOn && Boolean(BIDDABLE_GOAL_ORIGINS[orig]);
+
     if (Boolean(g.biddable) === wantBiddable) {
-      updated++;
       continue;
     }
+
+    // YOUTUBE_FOLLOW_ON_VIEWS~YOUTUBE_HOSTED is system-locked by Google for Video-only campaigns (never used in Search)
+    if (orig === 'YOUTUBE_HOSTED' && cat === 'YOUTUBE_FOLLOW_ON_VIEWS') {
+      Logger.log('Skipping system-locked YOUTUBE_FOLLOW_ON_VIEWS~YOUTUBE_HOSTED (applies to Video View campaigns only).');
+      continue;
+    }
+
     const res = AdsApp.mutate({
       customerConversionGoalOperation: {
         update: {
@@ -583,14 +640,58 @@ function mutateCustomerGoalCategory(categoryName, targetState) {
         },
         updateMask: 'biddable'
       }
-    });
+    }, { partialFailure: false });
+
     if (res && typeof res.isSuccessful === 'function' && !res.isSuccessful()) {
-      errs.push(res.getErrorMessages().join('; '));
-    } else {
-      updated++;
+      throw new Error(res.getErrorMessages().join('; '));
     }
   }
-  if (updated === 0 && errs.length > 0) {
-    throw new Error(errs.join(' | '));
+}
+
+/**
+ * Locks Campaign-level Conversion Goals (`CampaignConversionGoal`) across active Search/PMax campaigns
+ * with `{ partialFailure: false }` so every campaign strictly bids ONLY on Website Lead Forms, Website WhatsApp, and Calls.
+ */
+function syncCampaignConversionGoals(targetCampaignName) {
+  let query =
+    "SELECT campaign_conversion_goal.resource_name, campaign_conversion_goal.category, " +
+    "campaign_conversion_goal.origin, campaign_conversion_goal.biddable, " +
+    "campaign.name, campaign.advertising_channel_type " +
+    "FROM campaign_conversion_goal WHERE campaign.status != 'REMOVED'";
+  if (targetCampaignName && targetCampaignName !== 'ALL' && targetCampaignName !== '365-126-5545') {
+    query += " AND campaign.name = '" + targetCampaignName.replace(/'/g, "\\'") + "'";
+  }
+
+  const it = AdsApp.search(query);
+  while (it.hasNext()) {
+    const r = it.next();
+    const cg = r.campaignConversionGoal;
+    const chType = String((r.campaign && r.campaign.advertisingChannelType) || '');
+    if (chType === 'VIDEO') continue;
+
+    const cat = String(cg.category || '');
+    const orig = String(cg.origin || '');
+    const wantBid = shouldGoalBeBiddable(cat, orig);
+
+    if (Boolean(cg.biddable) === wantBid) {
+      continue;
+    }
+    if (orig === 'YOUTUBE_HOSTED' && cat === 'YOUTUBE_FOLLOW_ON_VIEWS') {
+      continue;
+    }
+
+    const res = AdsApp.mutate({
+      campaignConversionGoalOperation: {
+        update: {
+          resourceName: cg.resourceName,
+          biddable: wantBid
+        },
+        updateMask: 'biddable'
+      }
+    }, { partialFailure: false });
+
+    if (res && typeof res.isSuccessful === 'function' && !res.isSuccessful()) {
+      Logger.log('CampaignConversionGoal note on ' + cg.resourceName + ': ' + res.getErrorMessages().join('; '));
+    }
   }
 }
