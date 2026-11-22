@@ -80,7 +80,7 @@ function sc_erp_seed_trial_if_empty(PDO $pdo): void
 
         $users = [
             ['islam.samir', 'SeaCollege@2026', 'EMP_OWN_01', 'Islam Samir', 'إسلام سمير', 'OWNER_ADMIN', 'ALL', 'ALL', ''],
-            ['eng.sayed', 'Sayed@2026', 'EMP_OWN_02', 'Sayed Elsharqawy', 'سيد الشرقاوي', 'OWNER_ADMIN', 'ALL', 'ALL', ''],
+            ['eng.sayed', 'SayedOwner@2026', 'EMP_OWN_02', 'Sayed Elsharqawy', 'سيد الشرقاوي', 'OWNER_ADMIN', 'ALL', 'ALL', ''],
             ['tarek.cfo', 'TarekCFO@2026', 'EMP_CFO_01', 'Tarek (CFO & Treasury)', 'طارق (المدير المالي CFO)', 'OWNER_ADMIN', 'ALL', 'ALL', ''],
             ['islam.saber', 'SaberGM@2026', 'EMP_GM_01', 'Islam Saber (General Manager)', 'إسلام صابر (المدير العام)', 'OWNER_ADMIN', 'ALL', 'ALL', ''],
             ['nadia.acc', 'NadiaAcc@2026', 'EMP_ACC_01', 'Nadia (Chief Accountant)', 'نادية (رئيس الحسابات)', 'CHIEF_ACCOUNTANT', 'ALL', 'ALL', ''],
