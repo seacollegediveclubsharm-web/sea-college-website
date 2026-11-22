@@ -6,7 +6,8 @@ import shutil
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ESBUILD = shutil.which("esbuild") or "/tmp/esbuild-tool/node_modules/.bin/esbuild"
+_LOCAL_ESB = os.path.expanduser("~/.local/esbuild-tool/node_modules/.bin/esbuild")
+ESBUILD = shutil.which("esbuild") or (_LOCAL_ESB if os.path.isfile(_LOCAL_ESB) else "/tmp/esbuild-tool/node_modules/.bin/esbuild")
 
 
 def run_esbuild(content: str, loader: str) -> str:

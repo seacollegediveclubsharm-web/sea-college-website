@@ -141,7 +141,8 @@ send_mail(LEAD_NOTIFY_EMAIL, 'New ' . $source_form . ' lead — ' . $name . ' ('
 
 /* 3) CRM / automation webhook */
 if (CRM_WEBHOOK_URL !== '') {
-    post_json(CRM_WEBHOOK_URL, ['type' => 'lead', 'estimated_eur' => round($total, 2)] + $lead);
+    $chSummary = sc_resolve_channel_summary($attr);
+    post_json(CRM_WEBHOOK_URL, ['type' => 'lead', 'estimated_eur' => round($total, 2)] + $lead + $chSummary);
 }
 
 /* 4) Meta Conversions API (server event, same event_id as browser pixel; catalog-clean content_ids) */

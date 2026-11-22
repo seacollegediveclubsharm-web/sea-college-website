@@ -414,8 +414,64 @@ function sc_resolve_fbp(?array $attr = null, string $postedFbp = ''): string
     return sc_sanitize_meta_cookie((string) ($a['fbp'] ?? ''));
 }
 
+function sc_infer_channel(array $a): string
+{
+    $src = strtolower(trim((string) ($a['utm_source'] ?? '')));
+    $med = strtolower(trim((string) ($a['utm_medium'] ?? '')));
+    if (!empty($a['gclid']) || !empty($a['gbraid']) || !empty($a['wbraid']) || ($src === 'google' && in_array($med, ['cpc', 'ppc', 'paid', 'pmax'], true))) {
+        return 'Google Ads';
+    }
+    if (!empty($a['fbclid']) || !empty($a['fbc']) || in_array($src, ['meta', 'facebook', 'fb', 'instagram', 'ig'], true)) {
+        return 'Meta Ads';
+    }
+    if (!empty($a['ttclid']) || $src === 'tiktok') {
+        return 'TikTok Ads';
+    }
+    if (!empty($a['msclkid']) || in_array($src, ['bing', 'microsoft'], true)) {
+        return 'Microsoft Ads';
+    }
+    if ($src !== '') {
+        return ucfirst($src) . ($med !== '' ? ' (' . $med . ')' : '');
+    }
+    return 'Organic / Direct';
+}
+
+function sc_resolve_channel_summary(array $a): array
+{
+    $hasGoogle = !empty($a['gclid']) || !empty($a['gbraid']) || !empty($a['wbraid']);
+    $hasMeta   = !empty($a['fbclid']) || !empty($a['fbc']);
+    $last      = !empty($a['last_channel']) ? (string) $a['last_channel'] : sc_infer_channel($a);
+    $first     = !empty($a['first_channel']) ? (string) $a['first_channel'] : $last;
+
+    if ($hasGoogle && $hasMeta) {
+        $primary = ($last === 'Meta Ads') ? 'Meta Ads (Google Assisted)' : 'Google Ads (Meta Assisted)';
+        $path    = ($first === $last) ? ('Meta Ads + Google Ads') : ($first . ' -> ' . $last);
+    } else {
+        $primary = $last;
+        $path    = ($first !== '' && $first !== $last) ? ($first . ' -> ' . $last) : $last;
+    }
+
+    return [
+        'channel_source' => $primary,
+        'first_channel'  => $first,
+        'last_channel'   => $last,
+        'journey_path'   => $path,
+    ];
+}
+
 function sc_capture_attribution(): void
 {
+    $allowedKeys = [...UTM_KEYS, 'fbc', 'fbp', 'landing_page', 'captured_at', 'first_channel', 'last_channel', 'journey_path'];
+    $prev = [];
+    if (!empty($_COOKIE['sc_attr'])) {
+        $d = json_decode((string) base64_decode((string) $_COOKIE['sc_attr'], true), true);
+        if (is_array($d)) {
+            $prev = array_intersect_key($d, array_flip($allowedKeys));
+        }
+    } elseif (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['attribution']) && is_array($_SESSION['attribution'])) {
+        $prev = array_intersect_key($_SESSION['attribution'], array_flip($allowedKeys));
+    }
+
     $found = [];
     foreach (UTM_KEYS as $k) {
         if (isset($_GET[$k]) && $_GET[$k] !== '') {
@@ -424,31 +480,41 @@ function sc_capture_attribution(): void
     }
     if ($found) {
         $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
+        $thisTouchChannel = sc_infer_channel($found);
+        // Merge with $prev so cross-channel click IDs (e.g. Meta fbclid + Google gclid) are BOTH preserved!
+        $merged = array_merge($prev, $found);
         if (!empty($found['fbclid'])) {
-            $found['fbc'] = sc_resolve_fbc($found);
+            $merged['fbc'] = sc_resolve_fbc($found);
+        } elseif (!empty($prev['fbc'])) {
+            $merged['fbc'] = $prev['fbc'];
         }
-        $initFbp = sc_resolve_fbp($found);
+        $initFbp = sc_resolve_fbp($merged);
         if ($initFbp !== '') {
-            $found['fbp'] = $initFbp;
+            $merged['fbp'] = $initFbp;
         }
-        $found['landing_page'] = substr((string) ($_SERVER['REQUEST_URI'] ?? '/'), 0, 300);
-        $found['captured_at'] = gmdate('c');
-        $GLOBALS['SC_ATTR'] = $found; // last non-direct click wins
+        $merged['first_channel'] = !empty($prev['first_channel']) ? (string) $prev['first_channel'] : $thisTouchChannel;
+        $merged['last_channel']  = $thisTouchChannel;
+        $prevPath = !empty($prev['journey_path']) ? (string) $prev['journey_path'] : $merged['first_channel'];
+        if (!str_ends_with($prevPath, $thisTouchChannel)) {
+            $merged['journey_path'] = substr($prevPath . ' -> ' . $thisTouchChannel, 0, 180);
+        } else {
+            $merged['journey_path'] = $prevPath;
+        }
+        if (empty($merged['landing_page'])) {
+            $merged['landing_page'] = substr((string) ($_SERVER['REQUEST_URI'] ?? '/'), 0, 300);
+        }
+        $merged['captured_at'] = gmdate('c');
+        $GLOBALS['SC_ATTR'] = $merged;
         if (session_status() === PHP_SESSION_ACTIVE) {
-            $_SESSION['attribution'] = $found;
+            $_SESSION['attribution'] = $merged;
         }
         if (!headers_sent()) {
-            setcookie('sc_attr', base64_encode((string) json_encode($found)), [
+            setcookie('sc_attr', base64_encode((string) json_encode($merged)), [
                 'expires' => time() + UTM_COOKIE_DAYS * 86400, 'path' => '/', 'samesite' => 'Lax', 'httponly' => true,
             ]);
         }
-    } elseif (!empty($_COOKIE['sc_attr'])) {
-        $d = json_decode((string) base64_decode((string) $_COOKIE['sc_attr'], true), true);
-        if (is_array($d)) {
-            $GLOBALS['SC_ATTR'] = array_intersect_key($d, array_flip([...UTM_KEYS, 'fbc', 'fbp', 'landing_page', 'captured_at']));
-        }
-    } elseif (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['attribution']) && is_array($_SESSION['attribution'])) {
-        $GLOBALS['SC_ATTR'] = $_SESSION['attribution'];
+    } elseif ($prev !== []) {
+        $GLOBALS['SC_ATTR'] = $prev;
     }
 }
 sc_capture_attribution();

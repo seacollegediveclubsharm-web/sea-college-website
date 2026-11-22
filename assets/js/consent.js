@@ -118,6 +118,28 @@
     }
   }
 
+  function fireCrossChannelSignals() {
+    var qs = location.search || '';
+    if (!qs) { return; }
+    var isGoogleClick = /[?&](gclid|gbraid|wbraid)=/i.test(qs) || /[?&]utm_source=google\b/i.test(qs);
+    var isMetaClick = /[?&]fbclid=/i.test(qs) || /[?&]utm_source=(meta|facebook|fb|instagram|ig)\b/i.test(qs);
+    var it = SC.item || {};
+    if (isGoogleClick && window.fbq) {
+      var gPayload = { traffic_channel: 'google_ads', page_type: SC.page || 'page', lang: SC.lang || 'en' };
+      if (it.id && isCatalogId(it.id)) { gPayload.content_ids = [it.id]; gPayload.content_type = 'product'; }
+      if (it.price > 0) { gPayload.value = it.price; gPayload.currency = 'EUR'; }
+      window.fbq('trackCustom', 'GoogleAdsVisitor', gPayload);
+    }
+    if (isMetaClick && typeof window.gtag === 'function') {
+      window.gtag('event', 'meta_ad_landing', {
+        traffic_channel: 'meta_ads',
+        page_type: SC.page || 'page',
+        site_language: SC.lang || 'en',
+        item_id: it.id || ''
+      });
+    }
+  }
+
   function loadMarketing() {
     if (loaded) { return; }
     loaded = true;
@@ -126,6 +148,7 @@
       if (SC.tiktokPixel) { loadTikTok(SC.tiktokPixel); }
       if (SC.uetId) { loadMicrosoftUet(SC.uetId); }
       if (SC.linkedin) { loadLinkedIn(SC.linkedin); }
+      fireCrossChannelSignals();
       fireConversion();
       document.dispatchEvent(new CustomEvent('sc:marketing_loaded'));
     } catch (err) { /* never break the page because of a tag */ }

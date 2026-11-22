@@ -243,7 +243,10 @@
 
   function sendClickBeacon(payload) {
     var meta = getMetaCookies();
+    var evId = 'wa_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    window._scLastWaEventId = evId;
     var p = Object.assign({
+      event_id: evId,
       kind: 'whatsapp_click',
       placement: 'general',
       page_url: location.href,
@@ -257,7 +260,7 @@
     try {
       if (navigator.sendBeacon) {
         var blob = new Blob([json], { type: 'application/json' });
-        if (navigator.sendBeacon('/handlers/wa_click_beacon.php', blob)) { return; }
+        if (navigator.sendBeacon('/handlers/wa_click_beacon.php', blob)) { return evId; }
       }
     } catch (e) { /* fallback to fetch */ }
     try {
@@ -269,6 +272,7 @@
         credentials: 'same-origin'
       }).catch(function () {});
     } catch (e) { /* ignore */ }
+    return evId;
   }
 
   /* ---------------- Currency (display only; bookings are in EUR) ---------------- */
@@ -575,7 +579,7 @@
     var formCatIds = cart.map(function (c) { return c.id; }).filter(isCatId);
     if (!formCatIds.length && itemCtx.id && isCatId(itemCtx.id)) { formCatIds = [itemCtx.id]; }
     if (formCatIds.length) { fbFormContact.content_ids = formCatIds; fbFormContact.content_type = 'product'; }
-    if (granted() && window.fbq) { window.fbq('track', 'Contact', fbFormContact); }
+    if (granted() && window.fbq) { window.fbq('track', 'Contact', fbFormContact, { eventID: window._scLastWaEventId }); }
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
     if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
     window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
@@ -632,7 +636,7 @@
       pxContact.currency = 'EUR';
       if (itCtx.id && isCatId(itCtx.id)) { pxContact.content_ids = [itCtx.id]; pxContact.content_type = 'product'; }
     }
-    if (granted() && window.fbq) { window.fbq('track', 'Contact', pxContact); }
+    if (granted() && window.fbq) { window.fbq('track', 'Contact', pxContact, { eventID: window._scLastWaEventId }); }
     if (granted() && window.ttq) { window.ttq.track('Contact', itCtx.eur > 0 ? { content_name: kind, value: itCtx.eur, currency: 'EUR' } : { content_name: kind }); }
     if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', kind, itCtx.eur > 0 ? { event_category: 'contact', revenue_value: itCtx.eur, currency: 'EUR' } : { event_category: 'contact' }); }
   });
@@ -1101,7 +1105,7 @@
         var calcCatIds = st.lines.map(function (ln) { return ln.id; }).filter(isCatId);
         var calcContact = { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' };
         if (calcCatIds.length) { calcContact.content_ids = calcCatIds; calcContact.content_type = 'product'; }
-        if (granted() && window.fbq) { window.fbq('track', 'Contact', calcContact); }
+        if (granted() && window.fbq) { window.fbq('track', 'Contact', calcContact, { eventID: window._scLastWaEventId }); }
         if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' }); }
         if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: grand, currency: 'EUR' }); }
         window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
@@ -1653,7 +1657,7 @@
       }
       var qbContact = { content_name: pl, value: convVal, currency: 'EUR' };
       if (iId && isCatId(iId)) { qbContact.content_ids = [iId]; qbContact.content_type = 'product'; }
-      if (granted() && window.fbq) { window.fbq('track', 'Contact', qbContact); }
+      if (granted() && window.fbq) { window.fbq('track', 'Contact', qbContact, { eventID: window._scLastWaEventId }); }
       if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: pl, value: convVal, currency: 'EUR' }); }
       if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
       window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');

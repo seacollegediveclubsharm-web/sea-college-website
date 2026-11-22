@@ -29,6 +29,8 @@ const SC_META_RETARGET_AUDIENCES = [
     '120255723868580547', // AddToCart & Quick-Book Intenders (30d)
     '120255723868400547', // Courses, Trips & Prices Viewers (30d)
     '120255723867980547', // Website All Visitors (30d)
+    '120255739311740547', // SC_Google_Ads_Search_Clickers_30d (Google -> Meta Cross-Channel Bridge)
+    '120255739312340547', // SC_High_Intent_Calculator_Checkout_14d (BOF Hot Closers 14d)
 ];
 
 const SC_META_PRODUCT_SETS = [

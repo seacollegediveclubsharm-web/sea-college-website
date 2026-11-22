@@ -87,7 +87,9 @@ foreach (['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_sourc
 $fbc = sc_resolve_fbc($attr, clean_line($data['fbc'] ?? '', 300));
 $fbp = sc_resolve_fbp($attr, clean_line($data['fbp'] ?? '', 300));
 
-$eventId = 'wa_' . bin2hex(random_bytes(8));
+$rawEvId = clean_line($data['event_id'] ?? '', 48);
+$eventId = (preg_match('/^wa_[a-zA-Z0-9_]{8,40}$/', $rawEvId)) ? $rawEvId : ('wa_' . bin2hex(random_bytes(8)));
+$chSummary = sc_resolve_channel_summary($attr + $cookieAttr);
 
 $row = [
     'clicked_at'    => gmdate('c'),
@@ -123,7 +125,23 @@ store_csv('wa_clicks.csv', $row);
 require_once dirname(__DIR__) . '/includes/erp_db.php';
 sc_erp_ingest_wa_beacon($row);
 
-/* 4) Forward attributed or high-intent booking WhatsApp clicks to OCT CRM Sheet (fast 2s timeout) */
+/* 4) Consent-aware Server-Side Meta CAPI Contact event (1:1 deduplicated via $eventId with browser fbq Contact) */
+$waCapiCustom = [
+    'currency'     => 'EUR',
+    'value'        => $value > 0 ? $value : 35.0,
+    'content_name' => $itemName !== '' ? $itemName : ($placement . '_' . $kind),
+];
+if ($itemId !== '' && sc_is_catalog_product_id($itemId)) {
+    $waCapiCustom['content_type'] = 'product';
+    $waCapiCustom['content_ids']  = [$itemId];
+}
+meta_capi_event('Contact', $eventId, [
+    'fbclid' => $attr['fbclid'],
+    'fbc'    => $fbc,
+    'fbp'    => $fbp,
+], $waCapiCustom);
+
+/* 5) Forward attributed or high-intent booking WhatsApp clicks to OCT CRM Sheet (fast 2s timeout) */
 $keyPlacements = [
     'item_quickbook', 'item_sticky_bar', 'item_sidebar', 'item_top_banner_wa',
     'booking_form', 'contact_form', 'form_wa',
@@ -171,6 +189,9 @@ if ($shouldSyncCrm) {
         'utm_campaign'        => $attr['utm_campaign'],
         'utm_term'            => $attr['utm_term'],
         'utm_content'         => $attr['utm_content'],
+        'channel_source'      => $chSummary['channel_source'],
+        'first_channel'       => $chSummary['first_channel'],
+        'journey_path'        => $chSummary['journey_path'],
     ];
     post_json(CRM_WEBHOOK_URL, $crmPayload, 2);
 }
