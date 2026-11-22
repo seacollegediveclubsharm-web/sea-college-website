@@ -666,7 +666,7 @@ if ($method === 'POST') {
             $branch, 'MOBILE_APP', $hotel, '', $room, $nat, $pickup,
             $tripName, 'MOBILE_VOUCHER', $adults, $children, 0, $pax,
             $guest, $repName, 'SEA COLLEGE', 'DIRECT',
-            $restEur, $restEq, $revEgp, $cogsEgp, $profEgp,
+            $restEur, 0.0, $restEq, $revEgp, $cogsEgp, $profEgp,
             '', 'BOOKED', $restEq > 0 ? 'OPEN_REST' : 'PAID', 'LIVE_MOBILE_APP',
         ]);
         sc_erp_audit($pdo, (string) $user['username'], (string) $user['role_code'], 'CREATE_VOUCHER', 'VOUCHER', $voNo, ['pax' => $pax, 'rev_egp' => $revEgp]);
