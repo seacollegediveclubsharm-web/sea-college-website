@@ -136,8 +136,8 @@ AddDefaultCharset UTF-8
   RewriteRule ^product/?$ /services [R=301,L,QSA]
 </IfModule>
 
-# Block source/data/backup/archive files (while allowing dynamic Google CSV ad feeds in /feeds/)
-<FilesMatch "^(?!google-(dsa-page-feed|ad-customizer)(-(en|ru|it|pl|de|fr|ar|zh))?\.csv$).*\.(md|csv|log|sh|py|ini|lock|json|dist|gs|ipynb|sql|bak|old|orig|swp|env|yml|yaml|tar|gz|zip)$">
+# Block source/data/backup/archive files (while allowing dynamic Google CSV ad feeds in /feeds/ and PWA manifest.json)
+<FilesMatch "^(?!manifest\.json$|google-(dsa-page-feed|ad-customizer)(-(en|ru|it|pl|de|fr|ar|zh))?\.csv$).*\.(md|csv|log|sh|py|ini|lock|json|dist|gs|ipynb|sql|bak|old|orig|swp|env|yml|yaml|tar|gz|zip)$">
   Require all denied
 </FilesMatch>
 <FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|README\.md)$">
