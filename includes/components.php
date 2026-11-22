@@ -7,7 +7,7 @@ require_once __DIR__ . '/tripadvisor_reviews.php';
 require_once __DIR__ . '/icons.php';
 require_once __DIR__ . '/catalog_helpers.php';
 
-function price_html(int|float|null $eur, string $unit = ''): string
+function price_html(int|float|null $eur, string $unit = '', int|float|null $regularEur = null): string
 {
     if ($eur === null) {
         return '<span class="price price--req">' . te('price_on_request') . '</span>';
@@ -17,7 +17,28 @@ function price_html(int|float|null $eur, string $unit = ''): string
         'boat' => ' <small>' . te('per_boat') . '</small>',
         default => '',
     };
-    return '<span class="price" data-eur="' . e((string) $eur) . '"><bdi dir="ltr">' . e(money($eur)) . '</bdi></span>' . $suffix;
+    $hasSale = ($regularEur !== null && (float) $regularEur > ((float) $eur + 0.009));
+    $oldHtml = $hasSale
+        ? '<del class="price-old" data-eur="' . e((string) $regularEur) . '"><bdi dir="ltr">' . e(money($regularEur)) . '</bdi></del> '
+        : '';
+    $cls = $hasSale ? 'price price--sale' : 'price';
+    return $oldHtml . '<span class="' . $cls . '" data-eur="' . e((string) $eur) . '"><bdi dir="ltr">' . e(money($eur)) . '</bdi></span>' . $suffix;
+}
+
+function sc_save_badge_text(array $it): string
+{
+    $pct  = !empty($it['discount_pct']) ? (int) $it['discount_pct'] : 0;
+    $save = !empty($it['save']) ? $it['save'] : null;
+    if ($pct > 0 && $save !== null) {
+        return '<bdi dir="ltr">-' . $pct . '%</bdi> · ' . te('save') . ' <bdi dir="ltr" data-eur="' . e((string) $save) . '">' . e(money($save)) . '</bdi>';
+    }
+    if ($pct > 0) {
+        return '<bdi dir="ltr">-' . $pct . '%</bdi>';
+    }
+    if ($save !== null) {
+        return te('save') . ' <bdi dir="ltr" data-eur="' . e((string) $save) . '">' . e(money($save)) . '</bdi>';
+    }
+    return '';
 }
 
 function add_button(array $it): string
@@ -38,8 +59,9 @@ function product_card(array $it, string $image = 'images/hero.jpg', bool $eager 
     $desc = item_desc($it);
     $dur = item_duration($it);
     $searchText = mb_strtolower($title . ' ' . $desc . ' ' . $it['name'] . ' ' . ($it['desc'] ?? ''));
-    $child = isset($it['child_price']) ? ' <small>· ' . te('child') . ' <bdi dir="ltr">' . e(money($it['child_price'])) . '</bdi></small>' : '';
-    $save = !empty($it['save']) ? '<span class="pcard__save">' . te('save') . ' <bdi dir="ltr">' . e(money($it['save'])) . '</bdi></span>' : '';
+    $child = isset($it['child_price']) ? ' <small>· ' . te('child') . ' <bdi dir="ltr" data-eur="' . e((string) $it['child_price']) . '">' . e(money($it['child_price'])) . '</bdi></small>' : '';
+    $saveTxt = sc_save_badge_text($it);
+    $save = $saveTxt !== '' ? '<span class="pcard__save">' . $saveTxt . '</span>' : '';
 
     $html = '<article class="pcard" data-filter-item="' . e($searchText) . '">';
     $html .= '<a class="pcard__media" href="' . e($href) . '" tabindex="-1" aria-hidden="true">';
@@ -58,7 +80,7 @@ function product_card(array $it, string $image = 'images/hero.jpg', bool $eager 
         $html .= '<p class="pcard__desc" dir="auto">' . e($desc) . '</p>';
     }
     $html .= '<div class="pcard__foot">';
-    $html .= '<span class="pcard__price">' . ($it['price'] !== null ? te('from') . ' ' : '') . price_html($it['price'], $it['unit'] ?? '') . $child . '</span>';
+    $html .= '<span class="pcard__price">' . ($it['price'] !== null ? te('from') . ' ' : '') . price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) . $child . '</span>';
     $html .= '<span class="pcard__actions"><a class="btn btn--detail btn--sm" href="' . e($href) . '">' . te('cta_details') . '</a>' . add_button($it) . '</span>';
     $html .= '</div></div></article>';
     return $html;
@@ -80,7 +102,7 @@ function compact_item_row(array $it): string
     }
     $html .= '</div>';
     $html .= '<div class="crow__meta">';
-    $html .= '<span class="crow__price">' . price_html($it['price'], $it['unit'] ?? '') . '</span>';
+    $html .= '<span class="crow__price">' . price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) . '</span>';
     $html .= '<a class="btn btn--detail btn--sm" href="' . e($href) . '">' . te('cta_details') . '</a>';
     $html .= add_button($it);
     $html .= '</div></div>';
@@ -173,9 +195,9 @@ function comparison_table_html(string $mode, array $catalog, string $currentId):
             $fmtPer = ($per == (int) $per) ? (string) (int) $per : number_format($per, 2);
             $note = '<bdi dir="ltr">€' . e($fmtPer) . '</bdi> ' . te('per_dive_unit');
         } elseif ($r['id'] === 'dive-extra') {
-            $note = '<bdi dir="ltr">€30</bdi> ' . te('per_dive_unit') . ' (11+)';
-        } elseif (!empty($r['save'])) {
-            $note = '<span class="save">' . te('save') . ' <bdi dir="ltr">' . e(money($r['save'])) . '</bdi></span>';
+            $note = '<bdi dir="ltr" data-eur="' . e((string) $r['price']) . '">' . e(money($r['price'])) . '</bdi> ' . te('per_dive_unit') . ' (11+)';
+        } elseif (!empty($r['save']) || !empty($r['discount_pct'])) {
+            $note = '<span class="save">' . sc_save_badge_text($r) . '</span>';
         } elseif ($mode === 'charters' && preg_match('/-(\d+)$/', $r['id'], $m)) {
             $maxPax = (int) $m[1];
             $fromPp = (int) ceil($r['price'] / $maxPax);
@@ -195,7 +217,7 @@ function comparison_table_html(string $mode, array $catalog, string $currentId):
         $html .= '<td><a class="cmp-link" href="' . e(item_url($r)) . '">' . e(item_name($r)) . '</a>'
             . ($isCur ? ' <span class="badge">' . te('compare_current') . '</span>' : '') . '</td>';
         $html .= '<td class="ptable__dur">' . e($dur) . '</td>';
-        $html .= '<td class="ptable__price">' . price_html($r['price'], $r['unit'] ?? '') . '</td>';
+        $html .= '<td class="ptable__price">' . price_html($r['price'], $r['unit'] ?? '', $r['regular_price'] ?? null) . '</td>';
         $html .= '<td>' . $note . '</td>';
         $html .= '</tr>';
     }

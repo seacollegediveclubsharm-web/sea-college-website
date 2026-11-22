@@ -25,8 +25,11 @@ function sc_ar_duration_map(): array
     ];
 }
 
+require_once __DIR__ . '/live_prices.php';
+
 function sc_overlay_catalog(array $catalog): array
 {
+    $catalog = sc_apply_live_prices($catalog);
     $lang = defined('LANG') ? LANG : 'en';
     if ($lang === 'ar') {
         $arDur = sc_ar_duration_map();

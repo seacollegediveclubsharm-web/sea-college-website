@@ -193,3 +193,13 @@ define('RATE_LIMIT_SECONDS', 20);                             // min seconds bet
  * ------------------------------------------------------------- */
 define('UTM_KEYS', ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid']);
 define('UTM_COOKIE_DAYS', 90);
+
+/* ---------------------------------------------------------------
+ * Live Google Sheet EUR Price & Instant Discount Sync
+ * Sheet: https://docs.google.com/spreadsheets/d/1qFlbTo8EXccEZOt2zgmAP7bUjMVLJrPbSd9NqaVty4g/edit
+ * ------------------------------------------------------------- */
+define('PRICE_SHEET_ID', sc_env('PRICE_SHEET_ID', '1qFlbTo8EXccEZOt2zgmAP7bUjMVLJrPbSd9NqaVty4g'));
+define('PRICE_SHEET_CSV_URL', sc_env('PRICE_SHEET_CSV_URL', '')); // Optional Published-to-Web CSV URL for pull fallback
+define('PRICE_SHEET_PULL_TTL', (int) sc_env('PRICE_SHEET_PULL_TTL', '5')); // 5s micro-cache when CSV pull is used
+define('PRICE_SYNC_TOKEN_SHA256', sc_env('PRICE_SYNC_TOKEN_SHA256', 'ed545145ecdb0d9996a5202e977dfd49b1a70acb4d049e0131e7473fe9669a76'));
+

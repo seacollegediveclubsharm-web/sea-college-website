@@ -304,12 +304,12 @@ require ROOT_DIR . '/includes/header.php';
         <div class="book-card card">
           <div class="book-card__price">
             <span class="book-card__lbl"><?= $it['price'] !== null ? te('from') : '' ?></span>
-            <?= price_html($it['price'], $it['unit'] ?? '') ?>
+            <?= price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) ?>
             <?php if (isset($it['child_price'])): ?>
-              <span class="book-card__sub"><?= te('child') ?> <bdi dir="ltr"><?= e(money($it['child_price'])) ?></bdi></span>
+              <span class="book-card__sub"><?= te('child') ?> <bdi dir="ltr" data-eur="<?= e((string) $it['child_price']) ?>"><?= e(money($it['child_price'])) ?></bdi></span>
             <?php endif; ?>
-            <?php if (!empty($it['save'])): ?>
-              <span class="book-card__save"><?= te('save') ?> <bdi dir="ltr"><?= e(money($it['save'])) ?></bdi></span>
+            <?php $itSaveTxt = sc_save_badge_text($it); if ($itSaveTxt !== ''): ?>
+              <span class="book-card__save"><?= $itSaveTxt ?></span>
             <?php endif; ?>
           </div>
           <p class="book-card__unit"><?= te('indicative_rate') ?></p>

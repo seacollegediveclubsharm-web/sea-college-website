@@ -20,15 +20,17 @@ function sc_widget_catalog_map(array $catalog, array $ids): array
         }
         $it = $flat[$id];
         $out[$id] = [
-            'id'       => $it['id'],
-            'name'     => item_name($it),
-            'raw_name' => $it['name'],
-            'desc'     => item_desc($it),
-            'price'    => $it['price'],
-            'unit'     => $it['unit'] ?? '',
-            'save'     => $it['save'] ?? 0,
-            'duration' => item_duration($it),
-            'url'      => !empty($it['slug']) ? item_url($it) : page_link('/prices'),
+            'id'            => $it['id'],
+            'name'          => item_name($it),
+            'raw_name'      => $it['name'],
+            'desc'          => item_desc($it),
+            'price'         => $it['price'],
+            'regular_price' => $it['regular_price'] ?? null,
+            'discount_pct'  => $it['discount_pct'] ?? 0,
+            'unit'          => $it['unit'] ?? '',
+            'save'          => $it['save'] ?? 0,
+            'duration'      => item_duration($it),
+            'url'           => !empty($it['slug']) ? item_url($it) : page_link('/prices'),
         ];
     }
     return $out;
@@ -111,8 +113,8 @@ function render_budget_calculator(array $catalog, string $bookingHref = '#bookin
             </div>
             <div class="dcalc__field">
               <span class="dcalc__lbl"><?= te('calc_daily_fees') ?></span>
-              <label class="dcalc__check"><input type="checkbox" data-calc-fee-boat checked> <span><?= e($itemsMap['fee-boat']['name']) ?> (<bdi dir="ltr">€10</bdi><?= te('per_day') ?>)</span></label>
-              <label class="dcalc__check"><input type="checkbox" data-calc-fee-park checked> <span><?= e($itemsMap['fee-park']['name']) ?> (<bdi dir="ltr">€5</bdi><?= te('per_day') ?>)</span></label>
+              <label class="dcalc__check"><input type="checkbox" data-calc-fee-boat checked> <span><?= e($itemsMap['fee-boat']['name']) ?> (<bdi dir="ltr"><?= e(money($itemsMap['fee-boat']['price'])) ?></bdi><?= te('per_day') ?>)</span></label>
+              <label class="dcalc__check"><input type="checkbox" data-calc-fee-park checked> <span><?= e($itemsMap['fee-park']['name']) ?> (<bdi dir="ltr"><?= e(money($itemsMap['fee-park']['price'])) ?></bdi><?= te('per_day') ?>)</span></label>
             </div>
           </div>
 
@@ -121,17 +123,17 @@ function render_budget_calculator(array $catalog, string $bookingHref = '#bookin
               <label for="calc-refresh"><?= te('calc_refresher_label') ?></label>
               <select id="calc-refresh" data-calc-refresh>
                 <option value="none"><?= te('calc_refresher_none') ?> (€0)</option>
-                <option value="check-dive"><?= e($itemsMap['check-dive']['name']) ?> (+€25)</option>
-                <option value="scuba-review"><?= e($itemsMap['scuba-review']['name']) ?> (+€50)</option>
+                <option value="check-dive"><?= e($itemsMap['check-dive']['name']) ?> (+<?= e(money($itemsMap['check-dive']['price'])) ?>)</option>
+                <option value="scuba-review"><?= e($itemsMap['scuba-review']['name']) ?> (+<?= e(money($itemsMap['scuba-review']['price'])) ?>)</option>
               </select>
             </div>
             <div class="dcalc__field">
               <label for="calc-gas"><?= te('calc_gas_label') ?></label>
               <select id="calc-gas" data-calc-gas>
                 <option value="air12"><?= te('calc_gas_12air') ?> (€0)</option>
-                <option value="eq-12nx"><?= e($itemsMap['eq-12nx']['name']) ?> (+€8<?= te('per_day') ?>)</option>
-                <option value="eq-15air"><?= e($itemsMap['eq-15air']['name']) ?> (+€6<?= te('per_day') ?>)</option>
-                <option value="eq-15nx"><?= e($itemsMap['eq-15nx']['name']) ?> (+€10<?= te('per_day') ?>)</option>
+                <option value="eq-12nx"><?= e($itemsMap['eq-12nx']['name']) ?> (+<?= e(money($itemsMap['eq-12nx']['price'])) ?><?= te('per_day') ?>)</option>
+                <option value="eq-15air"><?= e($itemsMap['eq-15air']['name']) ?> (+<?= e(money($itemsMap['eq-15air']['price'])) ?><?= te('per_day') ?>)</option>
+                <option value="eq-15nx"><?= e($itemsMap['eq-15nx']['name']) ?> (+<?= e(money($itemsMap['eq-15nx']['price'])) ?><?= te('per_day') ?>)</option>
               </select>
             </div>
           </div>
@@ -139,9 +141,9 @@ function render_budget_calculator(array $catalog, string $bookingHref = '#bookin
           <div class="dcalc__field" data-calc-only="dives">
             <span class="dcalc__lbl"><?= te('calc_gear_label') ?></span>
             <div class="dcalc__pills">
-              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-full"> <span>🤿 <?= e($itemsMap['eq-full']['name']) ?> (+€25<?= te('per_day') ?>)</span></label>
-              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-computer"> <span>⌚ <?= e($itemsMap['eq-computer']['name']) ?> (+€10<?= te('per_day') ?>)</span></label>
-              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-torch"> <span>🔦 <?= e($itemsMap['eq-torch']['name']) ?> (+€6<?= te('per_day') ?>)</span></label>
+              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-full"> <span>🤿 <?= e($itemsMap['eq-full']['name']) ?> (+<?= e(money($itemsMap['eq-full']['price'])) ?><?= te('per_day') ?>)</span></label>
+              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-computer"> <span>⌚ <?= e($itemsMap['eq-computer']['name']) ?> (+<?= e(money($itemsMap['eq-computer']['price'])) ?><?= te('per_day') ?>)</span></label>
+              <label class="dcalc__pill"><input type="checkbox" data-calc-gear="eq-torch"> <span>🔦 <?= e($itemsMap['eq-torch']['name']) ?> (+<?= e(money($itemsMap['eq-torch']['price'])) ?><?= te('per_day') ?>)</span></label>
             </div>
           </div>
 
@@ -155,9 +157,9 @@ function render_budget_calculator(array $catalog, string $bookingHref = '#bookin
             <span class="dcalc__lbl"><?= te('calc_supplements_label') ?></span>
             <div class="dcalc__pills">
               <?php foreach ($sups as $sid): if (!isset($itemsMap[$sid])) { continue; } $si = $itemsMap[$sid]; ?>
-                <label class="dcalc__pill"><input type="checkbox" data-calc-sup="<?= e($sid) ?>"> <span><?= e($si['name']) ?> (+<bdi dir="ltr">€<?= (int) $si['price'] ?></bdi>)</span></label>
+                <label class="dcalc__pill"><input type="checkbox" data-calc-sup="<?= e($sid) ?>"> <span><?= e($si['name']) ?> (+<bdi dir="ltr"><?= e(money($si['price'])) ?></bdi>)</span></label>
               <?php endforeach; ?>
-              <label class="dcalc__pill"><input type="checkbox" data-calc-private-guide> <span>🧭 <?= e($itemsMap['private-guide']['name']) ?> (+<bdi dir="ltr">€75</bdi><?= te('per_day') ?>)</span></label>
+              <label class="dcalc__pill"><input type="checkbox" data-calc-private-guide> <span>🧭 <?= e($itemsMap['private-guide']['name']) ?> (+<bdi dir="ltr"><?= e(money($itemsMap['private-guide']['price'])) ?></bdi><?= te('per_day') ?>)</span></label>
             </div>
           </div>
         </div>

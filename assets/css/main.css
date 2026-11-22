@@ -180,6 +180,11 @@ bdi { unicode-bidi: isolate; }
 .price { font-weight: 800; color: var(--coral); font-size: 1.2rem; }
 .price small, .pcard__price small { font-weight: 500; color: var(--muted); font-size: .8rem; }
 .price--req { color: var(--muted); font-size: .95rem; }
+.price-old { color: var(--muted); text-decoration: line-through; font-weight: 500; font-size: .92rem; margin-inline-end: .3rem; opacity: .82; }
+.price--sale { color: #0f7a3d; font-weight: 800; }
+.book-card__price .price-old { font-size: 1.15rem; }
+.item-badges .price-old { color: rgba(255, 255, 255, .68); }
+.item-badges .price--sale { color: #6ef2b1; }
 .notes { margin: 1.5rem 0 0; padding: 1rem 1.25rem; padding-inline-start: 2.25rem; background: #fff; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--muted); font-size: .9rem; }
 .notes li + li { margin-top: .35rem; }
 

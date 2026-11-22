@@ -76,9 +76,9 @@ require ROOT_DIR . '/includes/header.php';
                       <?php $itDur = item_duration($it); ?>
                       <td class="ptable__dur"><?= $itDur !== '' ? '⏱ ' . e($itDur) : '' ?></td>
                       <td class="ptable__price">
-                        <?= price_html($it['price'], $it['unit'] ?? '') ?>
-                        <?php if (isset($it['child_price'])): ?><small><?= te('child') ?> <bdi dir="ltr"><?= e(money($it['child_price'])) ?></bdi></small><?php endif; ?>
-                        <?php if (!empty($it['save'])): ?><small class="save"><?= te('save') ?> <bdi dir="ltr"><?= e(money($it['save'])) ?></bdi></small><?php endif; ?>
+                        <?= price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) ?>
+                        <?php if (isset($it['child_price'])): ?><small><?= te('child') ?> <bdi dir="ltr" data-eur="<?= e((string) $it['child_price']) ?>"><?= e(money($it['child_price'])) ?></bdi></small><?php endif; ?>
+                        <?php $svTxt = sc_save_badge_text($it); if ($svTxt !== ''): ?><small class="save"><?= $svTxt ?></small><?php endif; ?>
                       </td>
                       <td class="ptable__act no-print"><a class="btn btn--detail btn--sm" href="<?= e(item_url($it)) ?>"><?= te('cta_details') ?></a> <?= add_button($it) ?></td>
                     </tr>

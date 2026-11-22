@@ -215,7 +215,12 @@ foreach ($catalog as $catKey => $cat) {
 
             $saleEur = (float) $it['price'];
             $saveEur = !empty($it['save']) && is_numeric($it['save']) ? (float) $it['save'] : 0.0;
-            $baseEur = $saveEur > 0 ? ($saleEur + $saveEur) : $saleEur;
+            if (!empty($it['regular_price']) && is_numeric($it['regular_price']) && (float) $it['regular_price'] > $saleEur) {
+                $baseEur = (float) $it['regular_price'];
+                $saveEur = $baseEur - $saleEur;
+            } else {
+                $baseEur = $saveEur > 0 ? ($saleEur + $saveEur) : $saleEur;
+            }
 
             $imgRel = !empty($it['img']) ? ('images/' . ltrim((string) $it['img'], '/')) : 'images/og-default.jpg';
             if (!is_file(ROOT_DIR . '/assets/' . $imgRel)) {
