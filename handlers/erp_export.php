@@ -315,21 +315,71 @@ if ($report === 'full_data_pack') {
         http_response_code(403);
         exit('Role not authorized.');
     }
-    $resSt = $pdo->prepare("SELECT voucher_no, trip_date, period_month, branch_code, hotel_name, room_no, nationality, pickup_time, trip_name, product_category, adults, children, infants, total_pax, sales_rep, executor, client_agency, rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv, estimated_revenue_egp, estimated_profit_egp, source_file FROM reservations_fact {$whereSql} ORDER BY trip_date DESC LIMIT 12000");
+    $resSt = $pdo->prepare("SELECT voucher_no, trip_date, period_month, section_banner, booking_state, branch_code, hotel_name, room_no, nationality, pickup_time, trip_name, product_category, adults, children, infants, total_pax, cancelled_pax, sales_rep, executor, vessel_code, ar_client_code, ap_supplier_code, desk_paid_egp, rest_egp_equiv, rest_visa_egp, estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, accounting_status, journal_entry_no, source_file FROM reservations_fact {$whereSql} ORDER BY trip_date DESC LIMIT 16000");
     $resSt->execute($args);
     $resRows = $resSt->fetchAll(PDO::FETCH_NUM);
 
     $cpRows  = $pdo->query('SELECT code, name_ar, party_type, total_debit_egp, total_credit_egp, current_balance_egp, source_workbook FROM counterparties ORDER BY party_type, ABS(current_balance_egp) DESC')->fetchAll(PDO::FETCH_NUM);
     $payRows = $pdo->query('SELECT period_month, branch_code, emp_name_ar, job_title_ar, base_salary_egp, worked_days, actual_wage_egp, commission_egp, allowances_egp, bonuses_egp, net_pay_egp, source_file FROM payroll_monthly_fact ORDER BY period_month DESC, net_pay_egp DESC')->fetchAll(PDO::FETCH_NUM);
 
-    $resHeaders = ['Voucher No', 'Trip Date', 'Month', 'Branch', 'Hotel', 'Room', 'Nationality', 'Pickup', 'Trip', 'Category', 'Adults', 'Children', 'Infants', 'Total PAX', 'Seller', 'Executor', 'Client Agency', 'REST EGP', 'REST USD', 'REST EUR', 'REST GBP', 'REST Equiv EGP', 'Est. Revenue EGP', 'Est. Margin EGP', 'Source Workbook'];
+    $resHeaders = ['Voucher No', 'Trip Date', 'Month', 'Section', 'Booking State', 'Branch', 'Hotel', 'Room', 'Nationality', 'Pickup', 'Trip', 'Category', 'Adults', 'Children', 'Infants', 'Executed PAX', 'Cancelled PAX', 'Seller', 'Executor', 'Vessel Code', 'AR Client Code', 'AP Supplier Code', 'Desk Paid EGP', 'Jetty REST EGP', 'VISA EGP', 'Total Revenue EGP', 'Direct COGS EGP', 'Net Margin EGP', 'Accounting Link Status', 'GL Journal Entry #', 'Source Workbook'];
     if ($format === 'csv') {
-        sc_erp_stream_csv("Sea_College_Reservations_RowLevel_{$stamp}.csv", $resHeaders, $resRows);
+        sc_erp_stream_csv("Sea_College_Reservations_Accounting_RowLevel_{$stamp}.csv", $resHeaders, $resRows);
     }
     sc_erp_stream_xlsx("Sea_College_Master_Reservations_AR_AP_Payroll_{$stamp}.xlsx", [
-        'Reservations_RowLevel' => ['headers' => $resHeaders, 'rows' => $resRows],
-        'AR_AP_Counterparties'  => ['headers' => ['Account Code', 'Party Name', 'Type', 'Total Debit (EGP)', 'Total Credit (EGP)', 'Closing Balance (EGP)', 'Source Workbook'], 'rows' => $cpRows],
-        'HR_Monthly_Payroll'    => ['headers' => ['Month', 'Branch', 'Employee Name', 'Job Title', 'Base Salary', 'Worked Days', 'Actual Wage', 'Commission', 'Allowances', 'Bonuses', 'Net Cash Pay (EGP)', 'Source Workbook'], 'rows' => $payRows],
+        'Reservations_GL_RowLevel' => ['headers' => $resHeaders, 'rows' => $resRows],
+        'AR_AP_Counterparties'     => ['headers' => ['Account Code', 'Party Name', 'Type', 'Total Debit (EGP)', 'Total Credit (EGP)', 'Closing Balance (EGP)', 'Source Workbook'], 'rows' => $cpRows],
+        'HR_Monthly_Payroll'       => ['headers' => ['Month', 'Branch', 'Employee Name', 'Job Title', 'Base Salary', 'Worked Days', 'Actual Wage', 'Commission', 'Allowances', 'Bonuses', 'Net Cash Pay (EGP)', 'Source Workbook'], 'rows' => $payRows],
+    ]);
+}
+
+/* ==========================================================================
+   7. MAY–NOV 2026 RESERVATIONS-TO-ACCOUNTING & DOUBLE-ENTRY GL AUDIT PACK
+   ========================================================================== */
+if ($report === 'res_accounting_2026') {
+    if (!$hasPerm('gl.view_all_ledgers', 'bi.export_pnl_cashflow')) {
+        http_response_code(403);
+        exit('Role not authorized.');
+    }
+    $audRows = $pdo->query(
+        'SELECT period_month, source_workbook, days_covered, executed_vouchers, cancelled_vouchers,
+                executed_pax, cancelled_pax, cyrene_pax, dreams_fayrouz_pax, outside_b2b_pax, discovery_pax,
+                cash_paid_at_desk_egp, jetty_rest_cash_egp, pos_visa_egp, ar_b2b_credit_egp,
+                total_accrued_rev_egp, direct_trip_cogs_egp, ap_supplier_payable_egp, gross_operating_margin_egp,
+                matched_daily_sales_vouchers, gl_journal_entries_count, accounting_bridge_mode
+         FROM reservation_accounting_audit ORDER BY period_month ASC'
+    )->fetchAll(PDO::FETCH_NUM);
+
+    $r26Rows = $pdo->query(
+        "SELECT voucher_no, trip_date, period_month, section_banner, booking_state, branch_code, hotel_name, room_no,
+                nationality, trip_name, product_category, adults, children, total_pax, cancelled_pax,
+                snork_pax, intro1_pax, intro2_pax, dives_pax, sales_rep, executor, vessel_code,
+                ar_client_code, ap_supplier_code, desk_paid_egp, rest_egp_equiv, rest_visa_egp,
+                estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, accounting_status, journal_entry_no
+         FROM reservations_fact
+         WHERE period_month BETWEEN '2026-05' AND '2026-11'
+         ORDER BY trip_date ASC, id ASC"
+    )->fetchAll(PDO::FETCH_NUM);
+
+    $glRows = $pdo->query(
+        'SELECT je.entry_no, je.entry_date, jl.account_code, c.name_en, c.name_ar, jl.debit_egp, jl.credit_egp, je.description_en
+         FROM journal_entries je
+         JOIN journal_lines jl ON jl.journal_id = je.id
+         LEFT JOIN chart_of_accounts c ON c.code = jl.account_code
+         ORDER BY je.entry_date ASC, jl.id ASC'
+    )->fetchAll(PDO::FETCH_NUM);
+
+    $crewRows = $pdo->query('SELECT crew_role, name_ar, cdws_or_id_masked, vessel_assigned, source_month FROM marine_crew_roster ORDER BY crew_role, name_ar')->fetchAll(PDO::FETCH_NUM);
+
+    $audHeaders = ['Month', 'Workbook', 'Days', 'Executed Vouchers', 'Cancelled Vouchers', 'Executed PAX', 'Cancelled PAX', 'Cyrene PAX', 'Dreams & Fayrouz PAX', 'Out Side B2B PAX', 'Discovery PAX', 'Desk Cash (EGP)', 'Jetty REST Cash (EGP)', 'POS VISA (EGP)', 'AR B2B Credit (EGP)', 'Total Accrued Revenue (EGP)', 'Direct Trip COGS (EGP)', 'AP Supplier Payable (EGP)', 'Gross Operating Margin (EGP)', 'Matched Daily Sales Vouchers', 'GL Journals Posted', 'Accounting Mode'];
+    if ($format === 'csv') {
+        sc_erp_stream_csv('Sea_College_May_Nov_2026_Accounting_Audit.csv', $audHeaders, $audRows);
+    }
+    sc_erp_stream_xlsx('Sea_College_May_to_Nov_2026_Reservations_Accounting_and_GL.xlsx', [
+        'May_Nov_2026_Audit_Summary' => ['headers' => $audHeaders, 'rows' => $audRows],
+        'May_Nov_2026_All_7290_Rows' => ['headers' => ['Voucher', 'Date', 'Month', 'Section', 'State', 'Branch', 'Hotel', 'Room', 'Nat', 'Trip', 'Category', 'Adults', 'Children', 'Executed PAX', 'Cancelled PAX', 'Snk', '1-Intro', '2-Intro', 'Diver', 'Seller', 'Executor', 'Vessel', 'AR Client', 'AP Supplier', 'Desk Cash EGP', 'Jetty REST EGP', 'VISA EGP', 'Revenue EGP', 'Direct COGS EGP', 'Net Margin EGP', 'Accounting Status', 'GL Entry #'], 'rows' => $r26Rows],
+        'Double_Entry_GL_Lines'      => ['headers' => ['Journal Entry #', 'Date', 'Account Code', 'Account Name (EN)', 'Account Name (AR)', 'Debit (EGP)', 'Credit (EGP)', 'Description'], 'rows' => $glRows],
+        'Marine_Crew_Roster_117'     => ['headers' => ['Crew Role', 'Arabic Name', 'CDWS / Masked ID', 'Assigned Vessel', 'Latest Month'], 'rows' => $crewRows],
     ]);
 }
 

@@ -224,14 +224,17 @@ if ($action === 'executive_bi') {
     $kpiStmt->execute($pnlArgs);
     $kpis = $kpiStmt->fetch() ?: ['total_revenue_egp' => 0, 'total_expense_egp' => 0, 'net_profit_egp' => 0];
 
+    $resWhereExec = $wStr !== '' ? ($wStr . " AND booking_state = 'EXECUTED'") : " WHERE booking_state = 'EXECUTED'";
     $resStmt = $pdo->prepare(
-        "SELECT COUNT(*) AS vouchers_count,
-                COALESCE(SUM(total_pax), 0) AS total_pax,
-                ROUND(COALESCE(SUM(rest_egp_equiv), 0), 2) AS total_rest_egp
+        "SELECT SUM(CASE WHEN booking_state='EXECUTED' THEN 1 ELSE 0 END) AS vouchers_count,
+                COALESCE(SUM(CASE WHEN booking_state='EXECUTED' THEN total_pax ELSE 0 END), 0) AS total_pax,
+                SUM(CASE WHEN booking_state='CANCELLED_NOSHOW' THEN 1 ELSE 0 END) AS cancelled_vouchers,
+                COALESCE(SUM(cancelled_pax), 0) AS cancelled_pax,
+                ROUND(COALESCE(SUM(CASE WHEN booking_state='EXECUTED' THEN rest_egp_equiv ELSE 0 END), 0), 2) AS total_rest_egp
          FROM reservations_fact {$wStr}"
     );
     $resStmt->execute($pnlArgs);
-    $resKpis = $resStmt->fetch() ?: ['vouchers_count' => 0, 'total_pax' => 0, 'total_rest_egp' => 0];
+    $resKpis = $resStmt->fetch() ?: ['vouchers_count' => 0, 'total_pax' => 0, 'cancelled_vouchers' => 0, 'cancelled_pax' => 0, 'total_rest_egp' => 0];
 
     // 3) Most Profitable Trips / Tours / Courses (combining P&L actual cash/accrued lines + Reservation PAX)
     $tripPnlStmt = $pdo->prepare(
@@ -277,17 +280,17 @@ if ($action === 'executive_bi') {
     }
     usort($profitableTrips, static fn($a, $b) => $b['net_margin_egp'] <=> $a['net_margin_egp']);
 
-    // 4) Best Sellers (Sales Reps / Agencies & Top Source Nationalities)
+    // 4) Best Sellers (Sales Reps / Agencies & Top Source Nationalities — Executed Bookings Only)
     $repStmt = $pdo->prepare(
         "SELECT CASE WHEN sales_rep != '' THEN sales_rep ELSE 'DIRECT / COUNTER' END AS seller_name,
                 COUNT(*) AS vouchers,
                 SUM(total_pax) AS pax,
                 ROUND(SUM(estimated_revenue_egp), 2) AS est_revenue_egp,
                 ROUND(SUM(estimated_profit_egp), 2) AS est_profit_egp
-         FROM reservations_fact {$wStr}
+         FROM reservations_fact {$resWhereExec}
          GROUP BY seller_name
          ORDER BY pax DESC
-         LIMIT 12"
+         LIMIT 14"
     );
     $repStmt->execute($pnlArgs);
     $bestSellers = $repStmt->fetchAll();
@@ -295,7 +298,7 @@ if ($action === 'executive_bi') {
     $natStmt = $pdo->prepare(
         "SELECT nationality, COUNT(*) AS vouchers, SUM(total_pax) AS pax,
                 ROUND(SUM(estimated_revenue_egp), 2) AS est_revenue_egp
-         FROM reservations_fact {$wStr}
+         FROM reservations_fact {$resWhereExec}
          GROUP BY nationality
          ORDER BY pax DESC
          LIMIT 10"
@@ -341,7 +344,7 @@ if ($action === 'executive_bi') {
     }
     unset($fa);
 
-    // 6) Multi-Currency Treasury Safes & Warehouse Stats
+    // 6) Multi-Currency Treasury Safes, Warehouse Stats & May–Nov 2026 Audit Summary
     $safes = $pdo->query('SELECT * FROM safes_wallets ORDER BY safe_type, code')->fetchAll();
     $whCounts = [
         'workbooks_ingested' => (int) $pdo->query("SELECT COUNT(*) FROM etl_workbooks_catalog WHERE status LIKE 'INGESTED%'")->fetchColumn(),
@@ -351,6 +354,8 @@ if ($action === 'executive_bi') {
         'payroll_records'    => (int) $pdo->query('SELECT COUNT(*) FROM payroll_monthly_fact')->fetchColumn(),
         'gear_assets'        => (int) $pdo->query('SELECT COUNT(*) FROM equipment_assets_master')->fetchColumn(),
         'website_crm_leads'  => (int) $pdo->query('SELECT COUNT(*) FROM website_leads_crm')->fetchColumn(),
+        'journal_entries'    => (int) $pdo->query('SELECT COUNT(*) FROM journal_entries')->fetchColumn(),
+        'gl_balanced_egp'    => (float) $pdo->query('SELECT COALESCE(ROUND(SUM(debit_egp),2),0) FROM journal_lines')->fetchColumn(),
     ];
 
     $availMonths = array_column($pdo->query('SELECT DISTINCT period_month FROM pnl_monthly_lines ORDER BY period_month DESC')->fetchAll(), 'period_month');
@@ -406,11 +411,20 @@ if ($action === 'role_workspace') {
         }
     }
 
-    // 2) Chief Accountant Ledgers, AR/AP, Payroll & ETL Status
+    // 2) Chief Accountant Ledgers, May-Nov 2026 Reservation-to-GL Bridge, AR/AP, Payroll & ETL Status
     if (in_array('gl.view_all_ledgers', $perms, true)) {
         $out['counterparties'] = $pdo->query('SELECT * FROM counterparties ORDER BY ABS(current_balance_egp) DESC LIMIT 50')->fetchAll();
         $out['recent_expenses']= $pdo->query('SELECT * FROM expense_vouchers_fact ORDER BY exp_date DESC, id DESC LIMIT 60')->fetchAll();
         $out['etl_catalog']    = $pdo->query('SELECT rel_path, category, sheet_count, rows_ingested, status FROM etl_workbooks_catalog ORDER BY status DESC, rows_ingested DESC LIMIT 80')->fetchAll();
+        $out['res_acc_audit']  = $pdo->query('SELECT * FROM reservation_accounting_audit ORDER BY period_month ASC')->fetchAll();
+        $out['gl_journals']    = $pdo->query(
+            'SELECT je.entry_no, je.entry_date, je.description_en,
+                    ROUND(SUM(jl.debit_egp), 2) AS total_debit_egp,
+                    ROUND(SUM(jl.credit_egp), 2) AS total_credit_egp,
+                    COUNT(jl.id) AS lines_count
+             FROM journal_entries je JOIN journal_lines jl ON jl.journal_id = je.id
+             GROUP BY je.id ORDER BY je.entry_date DESC LIMIT 60'
+        )->fetchAll();
     }
     if (in_array('hr.manage_payroll', $perms, true)) {
         $out['payroll_recent'] = $pdo->query('SELECT * FROM payroll_monthly_fact ORDER BY period_month DESC, net_pay_egp DESC LIMIT 60')->fetchAll();

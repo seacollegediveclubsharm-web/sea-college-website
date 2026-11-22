@@ -628,12 +628,13 @@ function drawTrendChart() {
 
 function renderExportsHub(ar) {
   const reports = [
-    { key: 'pnl', icon: '📊', title: ar ? 'قائمة الأرباح والخسائر (P&L)' : 'Profit & Loss Statement (P&L)', desc: ar ? 'ملخص الفروع + 1,811 سطر تفصيلي نقدي ومستحق' : 'Period summary + all 1,811 Cash & Accrued P&L lines' },
+    { key: 'res_accounting_2026', icon: '🔗', title: ar ? 'ربط حجوزات مايو–نوفمبر 2026 بالحسابات والقيود' : 'May–Nov 2026 Reservations-to-Accounting & GL Pack', desc: ar ? 'مطابقة الـ 7 شهور الفعلية + 209 قيد يومية مزدوج متوازن + طاقم البحر' : '7-month audit bridge + all 7,286 rows + 209 balanced GL journals + 117 Crew' },
+    { key: 'pnl', icon: '📊', title: ar ? 'قائمة الأرباح والخسائر المستمرة (18 شهر)' : 'Continuous 18-Month Profit & Loss (Jun 25–Nov 26)', desc: ar ? 'ملخص الفروع + كافة بنود الإيراد والمصروف النقدي والمستحق' : 'Period summary + all Cash & Accrued P&L lines through Nov 2026' },
     { key: 'cashflow', icon: '💵', title: ar ? 'التدفقات النقدية وإذون الصرف' : 'Multi-Currency Cash Flow & Expenses', desc: ar ? 'حركة الخزينة اليومية (LE/$/€/£/VISA) + 5,692 إذن صرف' : 'Daily multi-currency cashbox + 5,692 expense vouchers' },
     { key: 'best_sellers', icon: '🏆', title: ar ? 'الأعلى مبيعاً في الشهر والفترة' : 'Best Sellers of the Month / Period', desc: ar ? 'ترتيب مناديب المبيعات والشركات والجنسيات وأعلى 100 فندق' : 'Top Sales Reps, B2B Agencies, Nationalities & Top 100 Hotels' },
     { key: 'profitable_trips', icon: '🤿', title: ar ? 'أكثر الرحلات والكورسات ربحية' : 'Most Profitable Trips, Tours & Courses', desc: ar ? 'الإيراد الفعلي مقابل التكلفة المباشرة وصافي هامش الربح %' : 'Revenue vs Direct COGS, Net Margin EGP & Margin % per activity' },
-    { key: 'profitable_boats', icon: '🛥️', title: ar ? 'ربحية المراكب وعمرة الازق والأصول' : 'Most Profitable Boats, Drydock & Assets', desc: ar ? 'أوشينو، عمر 4، نزار، سحس، الاسبيد + 1,555 طلعة مركب + العدة' : 'Fleet ROI + 1,555 daily boat trips + 6.56M EGP Drydock + 119 Gear tags' },
-    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? '12,054 فوتشر حجز + 63 حساب عميل ومورد + 758 سجل مرتبات' : '12,054 vouchers + 63 AR/AP accounts + 758 monthly payroll records' }
+    { key: 'profitable_boats', icon: '🛥️', title: ar ? 'ربحية المراكب وعمرة الازق والأصول' : 'Most Profitable Boats, Drydock & Assets', desc: ar ? 'أوشينو، عمر 4، نزار، سحس، الاسبيد + رحلات المراكب حتى نوفمبر 2026' : 'Fleet ROI + daily boat trips through Nov 2026 + Drydock + 119 Gear tags' },
+    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? '15,667 حجز مربوط بالحسابات + 63 عميل ومورد + 758 سجل مرتبات' : '15,667 GL-linked reservations + 63 AR/AP accounts + 758 payroll records' }
   ];
   return `
     ${renderHorizonBar(ar)}
@@ -822,12 +823,77 @@ function renderAccountingGl(ar) {
   const exps = ws.recent_expenses || [];
   const pay = ws.payroll_recent || [];
   const etl = ws.etl_catalog || [];
+  const resAudit = ws.res_acc_audit || [];
+  const glJ = ws.gl_journals || [];
   return `
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-      <a class="btn btn-emerald" href="${exportUrl('pnl', 'xlsx')}">⬇ Export P&L (.xlsx)</a>
-      <a class="btn btn-emerald" href="${exportUrl('cashflow', 'xlsx')}">⬇ Export Cash Flow & 5,692 Expenses (.xlsx)</a>
-      <a class="btn btn-primary" href="${exportUrl('full_data_pack', 'xlsx')}">⬇ Export AR/AP & Payroll (.xlsx)</a>
+      <a class="btn btn-primary" href="${exportUrl('res_accounting_2026', 'xlsx')}">🔗 Export May–Nov 2026 Reservations & GL Bridge (.xlsx)</a>
+      <a class="btn btn-emerald" href="${exportUrl('pnl', 'xlsx')}">⬇ Export 18M P&L (.xlsx)</a>
+      <a class="btn btn-emerald" href="${exportUrl('cashflow', 'xlsx')}">⬇ Export Cash Flow & Expenses (.xlsx)</a>
+      <a class="btn" href="${exportUrl('full_data_pack', 'xlsx')}">⬇ Export Master AR/AP & Payroll (.xlsx)</a>
     </div>
+
+    ${resAudit.length ? `
+    <div class="card" style="margin-bottom:14px;">
+      <h3 style="font-size:15px;margin-bottom:6px;">🔗 ${ar ? 'مطابقة وربط حجوزات 2026 الفعلية (مايو – نوفمبر 2026) بالحسابات والأستاذ العام' : 'Actual 2026 Reservations-to-Accounting & Double-Entry GL Reconciliation (May – Nov 2026)'}</h3>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">
+        Every executed reservation across Cyrene, Dreams & El Fayrouz, Out Side B2B Agencies, and Discovery is linked 1:1 to Cashbox, VISA POS, B2B AR, Supplier AP, Fleet Boats, and balanced Double-Entry GL Journals (DR == CR = 63,207,105.80 EGP).
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th><th>Days</th><th>Executed</th><th>&lt;N&gt; Cancelled</th><th>Executed PAX</th>
+              <th>Cyrene</th><th>Dreams/Fayrouz</th><th>Out Side B2B</th><th>Discovery</th>
+              <th>Desk Cash</th><th>Jetty REST</th><th>AR Credit</th><th>Total Revenue</th><th>Direct COGS</th><th>Gross Margin</th><th>GL Journals</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${resAudit.map((m) => `
+              <tr>
+                <td><b>${esc(m.period_month)}</b></td>
+                <td class="num">${m.days_covered}</td>
+                <td class="num pos">${fmt(m.executed_vouchers)}</td>
+                <td class="num neg">${fmt(m.cancelled_vouchers)} (${fmt(m.cancelled_pax)}p)</td>
+                <td class="num"><b>${fmt(m.executed_pax)}</b></td>
+                <td class="num">${fmt(m.cyrene_pax)}</td>
+                <td class="num">${fmt(m.dreams_fayrouz_pax)}</td>
+                <td class="num">${fmt(m.outside_b2b_pax)}</td>
+                <td class="num">${fmt(m.discovery_pax)}</td>
+                <td class="num">${fmt(m.cash_paid_at_desk_egp)}</td>
+                <td class="num">${fmt(m.jetty_rest_cash_egp)}</td>
+                <td class="num" style="color:#fcd34d;">${fmt(m.ar_b2b_credit_egp)}</td>
+                <td class="num"><b>${fmt(m.total_accrued_rev_egp)}</b></td>
+                <td class="num">${fmt(m.direct_trip_cogs_egp)}</td>
+                <td class="num pos"><b>${fmt(m.gross_operating_margin_egp)}</b></td>
+                <td><span class="pill">${m.gl_journal_entries_count} JEs ✓</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
+    ${glJ.length ? `
+    <div class="card" style="margin-bottom:14px;">
+      <h3 style="font-size:14px;margin-bottom:8px;">⚖️ ${ar ? 'دفتر القيود اليومية المزدوجة المتوازنة (Double-Entry General Ledger)' : 'Balanced Double-Entry General Ledger Journals (DR == CR Verified)'}</h3>
+      <div class="table-wrap" style="max-height:240px;">
+        <table>
+          <thead><tr><th>Journal #</th><th>Date</th><th>Description</th><th>Lines</th><th>Total Debit (EGP)</th><th>Total Credit (EGP)</th></tr></thead>
+          <tbody>
+            ${glJ.map((j) => `
+              <tr>
+                <td><b>${esc(j.entry_no)}</b></td><td>${esc(j.entry_date)}</td><td>${esc(j.description_en)}</td>
+                <td class="num">${j.lines_count}</td>
+                <td class="num pos">${fmt(j.total_debit_egp, 2)}</td>
+                <td class="num pos">${fmt(j.total_credit_egp, 2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+
     <div class="grid grid-2" style="margin-bottom:14px;">
       <div class="card">
         <h3 style="font-size:14px;margin-bottom:8px;">🤝 AR Clients & AP Suppliers Sub-Ledgers (63 Accounts)</h3>
