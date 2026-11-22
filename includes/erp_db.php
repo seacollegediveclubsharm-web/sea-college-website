@@ -42,27 +42,12 @@ function sc_erp_pdo(): ?PDO
         $pdo->exec('PRAGMA busy_timeout = 4000;');
         $pdo->exec('PRAGMA foreign_keys = ON;');
 
-        $hasUsersTbl = (int) $pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='users'")->fetchColumn();
-        if ($hasUsersTbl === 0) {
+        $hasFullSchema = (int) $pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('users','branches','reservation_accounting_audit','trial_feedback')")->fetchColumn();
+        if ($hasFullSchema < 4) {
             $schemaFile = ROOT_DIR . '/includes/erp_schema_init.sql';
             if (is_file($schemaFile)) {
                 $pdo->exec((string) file_get_contents($schemaFile));
             }
-        } else {
-            $pdo->exec("CREATE TABLE IF NOT EXISTS trial_feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                created_at TEXT NOT NULL,
-                username TEXT NOT NULL,
-                display_name TEXT NOT NULL DEFAULT '',
-                role_code TEXT NOT NULL,
-                module_tab TEXT NOT NULL DEFAULT '',
-                feedback_type TEXT NOT NULL DEFAULT 'IMPROVEMENT',
-                priority TEXT NOT NULL DEFAULT 'NORMAL',
-                device_info TEXT NOT NULL DEFAULT '',
-                message TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'OPEN',
-                admin_reply TEXT NOT NULL DEFAULT ''
-            );");
         }
 
         require_once __DIR__ . '/erp_trial_seed.php';
