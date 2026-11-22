@@ -561,7 +561,15 @@
     });
     if (window.scLoadTags) { window.scLoadTags(); }
     if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
-      window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
+      var rawEm = get('email').toLowerCase();
+      var rawPh = get('phone').replace(/[^\d+]/g, '').replace(/^00/, '+');
+      if (/^0(1[0125]\d{8})$/.test(rawPh)) { rawPh = '+20' + rawPh.slice(1); }
+      else if (rawPh && rawPh.charAt(0) !== '+' && rawPh.length >= 8) { rawPh = '+' + rawPh.replace(/^0+/, ''); }
+      var ecData = {};
+      if (rawEm && rawEm.indexOf('@') > 0) { ecData.email = rawEm; }
+      if (rawPh && rawPh.length >= 9) { ecData.phone_number = rawPh; }
+      if (ecData.email || ecData.phone_number) { window.gtag('set', 'user_data', ecData); }
+      window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transaction_id: 'wa_form_' + Date.now(), transport_type: 'beacon' });
     }
     var fbFormContact = { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' };
     var formCatIds = cart.map(function (c) { return c.id; }).filter(isCatId);
@@ -610,12 +618,12 @@
     if (window.scLoadTags) { window.scLoadTags(); }
     track('contact', { method: kind.replace('_click', ''), placement: params.placement });
     if (SC.adsDirect && SC.adsId && typeof window.gtag === 'function') {
+      var dynEur = itCtx.eur > 0 ? itCtx.eur : 35;
       if (kind === 'whatsapp_click' && SC.adsWhatsappLabel) {
-        var awPayload = { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' };
-        if (itCtx.eur > 0) { awPayload.value = itCtx.eur; awPayload.currency = 'EUR'; }
+        var awPayload = { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: dynEur, currency: 'EUR', transaction_id: 'wa_' + Date.now(), transport_type: 'beacon' };
         window.gtag('event', 'conversion', awPayload);
       } else if (kind === 'phone_click' && SC.adsCallLabel) {
-        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsCallLabel, transport_type: 'beacon' });
+        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsCallLabel, value: dynEur, currency: 'EUR', transaction_id: 'call_' + Date.now(), transport_type: 'beacon' });
       }
     }
     var pxContact = { content_name: kind };
@@ -1088,7 +1096,7 @@
         });
         if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
-          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: grand, currency: 'EUR', transport_type: 'beacon' });
+          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: grand, currency: 'EUR', transaction_id: 'wa_calc_' + Date.now(), transport_type: 'beacon' });
         }
         var calcCatIds = st.lines.map(function (ln) { return ln.id; }).filter(isCatId);
         var calcContact = { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' };
@@ -1641,7 +1649,7 @@
       });
       if (window.scLoadTags) { window.scLoadTags(); }
       if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
-        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transport_type: 'beacon' });
+        window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: convVal, currency: 'EUR', transaction_id: 'wa_qb_' + Date.now(), transport_type: 'beacon' });
       }
       var qbContact = { content_name: pl, value: convVal, currency: 'EUR' };
       if (iId && isCatId(iId)) { qbContact.content_ids = [iId]; qbContact.content_type = 'product'; }
@@ -1748,7 +1756,11 @@
         });
         if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
-          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, transport_type: 'beacon' });
+          var ciPh = g('phone').replace(/[^\d+]/g, '').replace(/^00/, '+');
+          if (/^0(1[0125]\d{8})$/.test(ciPh)) { ciPh = '+20' + ciPh.slice(1); }
+          else if (ciPh && ciPh.charAt(0) !== '+' && ciPh.length >= 8) { ciPh = '+' + ciPh.replace(/^0+/, ''); }
+          if (ciPh && ciPh.length >= 9) { window.gtag('set', 'user_data', { phone_number: ciPh }); }
+          window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: 35, currency: 'EUR', transaction_id: 'wa_ci_' + Date.now(), transport_type: 'beacon' });
         }
         window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
       });

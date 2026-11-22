@@ -171,8 +171,11 @@ AddDefaultCharset UTF-8
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  SetEnvIf Query_String "(^|&)(gtm_debug|__gsa|tag_assistant)=" SC_TAG_ASSISTANT=1
+  SetEnvIf Referer "^https://(tagassistant\.google\.com|ads\.google\.com|www\.googletagmanager\.com)(/|$)" SC_TAG_ASSISTANT=1
   Header always set X-Permitted-Cross-Domain-Policies "none"
-  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups" env=!SC_TAG_ASSISTANT
+  Header always set Cross-Origin-Opener-Policy "unsafe-none" env=SC_TAG_ASSISTANT
   Header unset X-Powered-By
   Header always unset X-Powered-By
   <FilesMatch "\.(css|js|mjs|jpg|jpeg|png|webp|avif|gif|svg|ico|woff|woff2|mp4)$">

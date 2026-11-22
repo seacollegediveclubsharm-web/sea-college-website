@@ -169,6 +169,11 @@ meta_capi_event('Lead', $eventId, [
 
 /* 5) Hand conversion data to thank-you page (fires GA4 / Ads / Meta / TikTok / UET in browser) */
 $normDigits = preg_replace('/^00/', '', phone_digits($phone)) ?? '';
+if (preg_match('/^0(1[0125]\d{8})$/', $normDigits, $egMatch)) {
+    $normDigits = '20' . $egMatch[1]; // Local Egyptian mobile -> E.164 +201...
+} elseif (str_starts_with($normDigits, '0') && strlen($normDigits) >= 9) {
+    $normDigits = ltrim($normDigits, '0');
+}
 $_SESSION['conversion'] = [
     'event_id' => $eventId,
     'value' => round($total, 2),
@@ -176,7 +181,7 @@ $_SESSION['conversion'] = [
     'form' => $source_form,
     'items' => array_map(static fn($c) => ['item_id' => $c['id'], 'item_name' => $c['name'], 'quantity' => $c['qty'], 'price' => $c['unit_price']], $cart),
     'em_sha256' => sha256_norm($email),
-    'ph_sha256' => $normDigits !== '' ? hash('sha256', '+' . $normDigits) : '',
+    'ph_sha256' => strlen($normDigits) >= 8 ? hash('sha256', '+' . $normDigits) : '',
 ];
 unset($_SESSION['form_old'], $_SESSION['form_error']);
 

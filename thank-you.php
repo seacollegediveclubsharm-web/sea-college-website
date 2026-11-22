@@ -47,10 +47,20 @@ window.SC_CONVERSION = <?= $json ?>;
 <?php endif; ?>
 <?php if (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== ''): ?>
   // Direct Google Ads conversion (set GOOGLE_ADS_VIA_GTM=1 if firing via GTM tag instead).
-  gtag('event', 'conversion', { send_to: <?= json_encode(GOOGLE_ADS_ID . '/' . GOOGLE_ADS_LEAD_LABEL, JSON_HEX_TAG) ?>, value: c.value, currency: c.currency, transaction_id: c.event_id });
+  gtag('event', 'conversion', { send_to: <?= json_encode(GOOGLE_ADS_ID . '/' . GOOGLE_ADS_LEAD_LABEL, JSON_HEX_TAG) ?>, value: (c.value > 0 ? c.value : 45), currency: (c.currency || 'EUR'), transaction_id: c.event_id });
 <?php endif; ?>
   // Meta "Lead" / TikTok "SubmitForm" are fired by consent.js after the pixels load (consent required).
 })(window.SC_CONVERSION);
+</script>
+<?php elseif (!GOOGLE_ADS_VIA_GTM && GOOGLE_ADS_ID !== '' && GOOGLE_ADS_LEAD_LABEL !== '' && (isset($_GET['gtm_debug']) || isset($_GET['verify_tag']) || isset($_GET['__gsa']))): ?>
+<script>
+// Google Ads Tag Assistant / Troubleshoot verification ping (non-biddable without gclid)
+gtag('event', 'conversion', {
+  send_to: <?= json_encode(GOOGLE_ADS_ID . '/' . GOOGLE_ADS_LEAD_LABEL, JSON_HEX_TAG) ?>,
+  value: 45,
+  currency: 'EUR',
+  transaction_id: 'sc_tag_verify_' + Date.now()
+});
 </script>
 <?php endif; ?>
 <section class="section section--center">
