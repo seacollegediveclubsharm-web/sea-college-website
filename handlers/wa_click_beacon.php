@@ -120,6 +120,8 @@ $row = [
 ];
 
 store_csv('wa_clicks.csv', $row);
+require_once dirname(__DIR__) . '/includes/erp_db.php';
+sc_erp_ingest_wa_beacon($row);
 
 /* 4) Forward attributed or high-intent booking WhatsApp clicks to OCT CRM Sheet (fast 2s timeout) */
 $keyPlacements = [

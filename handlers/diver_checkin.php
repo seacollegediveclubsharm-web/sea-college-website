@@ -86,6 +86,9 @@ $row = [
 ];
 
 store_csv('diver_checkins.csv', $row);
+$attr = collect_attribution_from_post();
+require_once dirname(__DIR__) . '/includes/erp_db.php';
+sc_erp_ingest_diver_checkin($row, $attr);
 
 $lines = [];
 foreach ($row as $k => $v) {
@@ -96,7 +99,6 @@ foreach ($row as $k => $v) {
 send_mail(LEAD_NOTIFY_EMAIL, 'Pre-arrival diver check-in — ' . $name . ($arrivalDate !== '' ? ' (' . $arrivalDate . ')' : ''), implode("\n", $lines));
 
 if (CRM_WEBHOOK_URL !== '') {
-    $attr = collect_attribution_from_post();
     post_json(CRM_WEBHOOK_URL, ['type' => 'checkin', 'event_id' => $checkinId, 'estimated_eur' => 0.0] + $row + $attr);
 }
 

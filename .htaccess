@@ -116,9 +116,10 @@ AddDefaultCharset UTF-8
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
-  # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Dive Sites & Gallery (default English)
+  # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Internal ERP Mobile App, Dive Sites & Gallery (default English)
   RewriteRule ^(services|prices|about|contact|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
   RewriteRule ^check-in/?$ check-in.php [L,QSA]
+  RewriteRule ^app/?$ erp-app.php [L,QSA]
   RewriteRule ^guides/?$ guides.php [L,QSA]
   RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
   RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]

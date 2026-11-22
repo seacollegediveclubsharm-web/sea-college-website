@@ -124,8 +124,10 @@ $lead = [
     'estimated_eur' => round($total, 2),
 ];
 
-/* 1) Persist */
+/* 1) Persist CSV + Unified SQL Warehouse */
 store_csv('leads.csv', $lead);
+require_once dirname(__DIR__) . '/includes/erp_db.php';
+sc_erp_ingest_website_lead($lead);
 
 /* 2) Notify team */
 $lines = [];
