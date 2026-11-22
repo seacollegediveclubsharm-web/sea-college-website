@@ -48,4 +48,4 @@
 3. **Daily Offline ROAS Ritual (Lara + Sales Desk):** Whenever a WhatsApp or form guest pays at the dive center, set `Leads!C` (`Status`) = `Paid` and enter `Leads!D` (`Final_Paid_EUR`). Run:
    - `php docs/meta_offline_conversions_sync.php --dry-run` (then `--execute` to push `Purchase` events to Meta Dataset `2980406819004765`)
    - Link `Google_Ads_OCT_Export` in Google Ads → **Goals → Conversions → Uploads → Schedules** (Daily at `23:00`).
-4. **Strict Review Compliance Rule:** Print the 300-DPI QR cards from Google Drive `Creatives/Website` (`Ivy Cyrene Pool`, `Hotel Concierge`, and `Official Google + Tripadvisor #26104236 Review Card`). Never offer gifts, discounts, or free Nitrox in exchange for Google or Tripadvisor reviews.
+4. **Strict Review Compliance Rule:** Print the 300-DPI QR cards from Google Drive `Creatives/Website` (`Ivy Cyrene Pool`, `Hotel Concierge`, and `Official Google + Tripadvisor #26104236 Review Card`). Never offer gifts, discounts, or tank upgrades in exchange for Google or Tripadvisor reviews.
