@@ -109,6 +109,7 @@ if (!sc_save_live_prices($normalized)) {
 if (function_exists('opcache_invalidate')) {
     @opcache_invalidate(dirname(__DIR__) . '/data/catalog.php', true);
 }
+header('X-LiteSpeed-Purge: *');
 
 echo json_encode([
     'ok'                  => true,
