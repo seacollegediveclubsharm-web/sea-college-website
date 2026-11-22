@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/bootstrap.php';
+require_once dirname(__DIR__) . '/includes/lead_lib.php';
 require_once dirname(__DIR__) . '/includes/erp_db.php';
 
 sc_ensure_session();
