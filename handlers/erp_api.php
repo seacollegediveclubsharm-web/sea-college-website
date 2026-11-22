@@ -477,16 +477,147 @@ if ($action === 'role_workspace') {
         $out['hotels']  = $pdo->query('SELECT code, name_en, zone_label_en, zone_label_ar, pickup_window FROM hotels_directory ORDER BY zone_code, name_en')->fetchAll();
     }
 
+    // 8) Trial v1.0 Pilot Feedback & Sandbox Status
+    if (in_array('bi.view_executive', $perms, true) || in_array('gl.view_all_ledgers', $perms, true)) {
+        $out['trial_feedback'] = $pdo->query('SELECT * FROM trial_feedback ORDER BY id DESC LIMIT 100')->fetchAll();
+        $out['recent_audits']  = $pdo->query('SELECT * FROM audit_logs ORDER BY id DESC LIMIT 40')->fetchAll();
+        $rawCnt = (int) $pdo->query('SELECT COUNT(*) FROM raw_sheet_rows')->fetchColumn();
+        $out['trial_stats']    = [
+            'full_warehouse_loaded' => $rawCnt > 1000,
+            'raw_rows_count'        => $rawCnt,
+            'logins_count'          => (int) $pdo->query("SELECT COUNT(*) FROM audit_logs WHERE action_type='USER_LOGIN'")->fetchColumn(),
+            'trial_vouchers_count'  => (int) $pdo->query("SELECT COUNT(*) FROM reservations_fact WHERE source_file='LIVE_MOBILE_APP'")->fetchColumn(),
+            'open_feedback_count'   => (int) $pdo->query("SELECT COUNT(*) FROM trial_feedback WHERE status != 'RESOLVED'")->fetchColumn(),
+        ];
+    } else {
+        $fSt = $pdo->prepare('SELECT * FROM trial_feedback WHERE username = ? ORDER BY id DESC LIMIT 20');
+        $fSt->execute([$user['username']]);
+        $out['trial_feedback'] = $fSt->fetchAll();
+    }
+
     echo json_encode($out, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-/* ---------------- MUTATING OPERATIONAL ACTIONS (POST + CSRF + RBAC) ---------------- */
+/* ---------------- MUTATING OPERATIONAL & TRIAL ACTIONS (POST + CSRF + RBAC) ---------------- */
 if ($method === 'POST') {
-    $csrfTok = (string) ($rawIn['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    $csrfTok = (string) ($rawIn['csrf_token'] ?? $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     if (!csrf_verify($csrfTok)) {
         http_response_code(419);
         echo json_encode(['ok' => false, 'error' => 'CSRF token expired — please refresh']);
+        exit;
+    }
+
+    if ($action === 'submit_trial_feedback') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+            exit;
+        }
+        $u       = $ctx['user'];
+        $fType   = in_array($rawIn['feedback_type'] ?? '', ['BUG', 'IMPROVEMENT', 'ACCOUNTING_RULE', 'UX_SPEED'], true) ? (string) $rawIn['feedback_type'] : 'IMPROVEMENT';
+        $prio    = ($rawIn['priority'] ?? 'NORMAL') === 'HIGH' ? 'HIGH' : 'NORMAL';
+        $tab     = clean_line($rawIn['module_tab'] ?? 'general', 40);
+        $device  = clean_line($rawIn['device_info'] ?? ($_SERVER['HTTP_USER_AGENT'] ?? ''), 120);
+        $msg     = clean($rawIn['message'] ?? '', 1500);
+        if (mb_strlen($msg) < 3) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please enter a short description']);
+            exit;
+        }
+        $ins = $pdo->prepare('INSERT INTO trial_feedback (created_at, username, display_name, role_code, module_tab, feedback_type, priority, device_info, message, status, admin_reply) VALUES (?,?,?,?,?,?,?,?,?, "OPEN", "")');
+        $ins->execute([gmdate('Y-m-d H:i'), $u['username'], $u['display_name_en'], $u['role_code'], $tab, $fType, $prio, $device, $msg]);
+        sc_erp_audit($pdo, (string) $u['username'], (string) $u['role_code'], 'SUBMIT_TRIAL_FEEDBACK', 'FEEDBACK', (string) $pdo->lastInsertId(), ['type' => $fType, 'priority' => $prio]);
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($action === 'update_feedback_status') {
+        erp_require_perm($ctx, 'bi.view_executive', 'gl.view_all_ledgers');
+        $fid    = (int) ($rawIn['id'] ?? 0);
+        $status = in_array($rawIn['status'] ?? '', ['OPEN', 'IN_PROGRESS', 'RESOLVED'], true) ? (string) $rawIn['status'] : 'RESOLVED';
+        $reply  = clean_line($rawIn['admin_reply'] ?? '', 400);
+        $pdo->prepare('UPDATE trial_feedback SET status = ?, admin_reply = CASE WHEN ? != "" THEN ? ELSE admin_reply END WHERE id = ?')->execute([$status, $reply, $reply, $fid]);
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($action === 'reset_trial_sandbox') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        $delV = $pdo->exec("DELETE FROM reservations_fact WHERE source_file = 'LIVE_MOBILE_APP'");
+        $delE = $pdo->exec("DELETE FROM expense_vouchers_fact WHERE source_file = 'LIVE_MOBILE_SAFE'");
+        sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'RESET_TRIAL_SANDBOX', 'SANDBOX', 'ALL', ['deleted_vouchers' => $delV, 'deleted_expenses' => $delE]);
+        echo json_encode(['ok' => true, 'deleted_vouchers' => (int) $delV, 'deleted_expenses' => (int) $delE]);
+        exit;
+    }
+
+    if ($action === 'upload_warehouse_gz') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        if (empty($_FILES['warehouse_file']['tmp_name']) || !is_uploaded_file($_FILES['warehouse_file']['tmp_name'])) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'No file received (check file size vs PHP upload_max_filesize)']);
+            exit;
+        }
+        $origName = strtolower((string) ($_FILES['warehouse_file']['name'] ?? ''));
+        $tmpUp    = $_FILES['warehouse_file']['tmp_name'];
+
+        @set_time_limit(180);
+        if (str_ends_with($origName, '.sqlite3') || str_ends_with($origName, '.sqlite') || str_ends_with($origName, '.db')) {
+            $hdr = (string) file_get_contents($tmpUp, false, null, 0, 16);
+            if (!str_starts_with($hdr, 'SQLite format 3')) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Invalid SQLite3 binary header']);
+                exit;
+            }
+            $pdo = null;
+            @unlink(SC_ERP_DB_PATH . '-wal');
+            @unlink(SC_ERP_DB_PATH . '-shm');
+            move_uploaded_file($tmpUp, SC_ERP_DB_PATH);
+            echo json_encode(['ok' => true, 'mode' => 'SQLITE_REPLACED']);
+            exit;
+        }
+
+        if (str_ends_with($origName, '.sql.gz') || str_ends_with($origName, '.gz')) {
+            $newDbPath = SC_ERP_DB_PATH . '.importing_' . bin2hex(random_bytes(4));
+            $impPdo = new PDO('sqlite:' . $newDbPath, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            $impPdo->exec('PRAGMA synchronous = OFF; PRAGMA journal_mode = MEMORY;');
+            $gz = gzopen($tmpUp, 'rb');
+            if (!$gz) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Unable to gunzip .sql.gz file']);
+                exit;
+            }
+            $buf = '';
+            $impPdo->beginTransaction();
+            while (!gzeof($gz)) {
+                $line = gzgets($gz, 65536);
+                if ($line === false) {
+                    break;
+                }
+                $trim = trim($line);
+                if ($trim === '' || str_starts_with($trim, '--') || in_array(strtoupper($trim), ['BEGIN TRANSACTION;', 'COMMIT;'], true) || str_contains($trim, 'sqlite_sequence')) {
+                    continue;
+                }
+                $buf .= $line;
+                if (str_ends_with($trim, ';')) {
+                    $impPdo->exec($buf);
+                    $buf = '';
+                }
+            }
+            $impPdo->commit();
+            gzclose($gz);
+            $impPdo->exec("CREATE TABLE IF NOT EXISTS trial_feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, username TEXT NOT NULL, display_name TEXT NOT NULL DEFAULT '', role_code TEXT NOT NULL, module_tab TEXT NOT NULL DEFAULT '', feedback_type TEXT NOT NULL DEFAULT 'IMPROVEMENT', priority TEXT NOT NULL DEFAULT 'NORMAL', device_info TEXT NOT NULL DEFAULT '', message TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'OPEN', admin_reply TEXT NOT NULL DEFAULT '');");
+            $impPdo = null;
+            $pdo    = null;
+            @unlink(SC_ERP_DB_PATH . '-wal');
+            @unlink(SC_ERP_DB_PATH . '-shm');
+            rename($newDbPath, SC_ERP_DB_PATH);
+            echo json_encode(['ok' => true, 'mode' => 'SQL_GZ_IMPORTED']);
+            exit;
+        }
+
+        http_response_code(422);
+        echo json_encode(['ok' => false, 'error' => 'Upload sea_college_bigdata_dump.sql.gz or sea_college_bigdata.sqlite3']);
         exit;
     }
 
@@ -495,7 +626,7 @@ if ($method === 'POST') {
         $user     = $ctx['user'];
         $tripDt   = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($rawIn['trip_date'] ?? '')) ? (string) $rawIn['trip_date'] : gmdate('Y-m-d');
         [$wk, $mo, $qr, $yr] = sc_erp_period_parts($tripDt);
-        $voNo     = 'VO-' . random_int(70000, 99999);
+        $voNo     = 'TRIAL-' . random_int(1000, 9999);
         $qrTok    = 'QR-' . strtoupper(bin2hex(random_bytes(6)));
         $guest    = clean_line($rawIn['guest_name'] ?? 'Resort Guest', 100);
         $hotel    = clean_line($rawIn['hotel_name'] ?? 'Cyrene Sharm Hotel', 100);
@@ -595,7 +726,7 @@ if ($method === 'POST') {
             $totEgp = round($amt * ($fxMap[$curr] ?? 1.0), 2);
             $pdo->prepare('INSERT INTO expense_vouchers_fact (exp_date, period_week, period_month, period_quarter, period_year, voucher_seq, description, cost_center, amount_le, amount_usd, amount_eur, amount_gbp, total_egp, source_file)
                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')->execute([
-                $today, $wk, $mo, $qr, $yr, 'APP-' . random_int(1000, 9999), $desc, 'TREASURY_APP',
+                $today, $wk, $mo, $qr, $yr, 'TRIAL-' . random_int(1000, 9999), $desc, 'TREASURY_APP',
                 $curr === 'EGP' ? $amt : 0, $curr === 'USD' ? $amt : 0, $curr === 'EUR' ? $amt : 0, $curr === 'GBP' ? $amt : 0,
                 $totEgp, 'LIVE_MOBILE_SAFE',
             ]);

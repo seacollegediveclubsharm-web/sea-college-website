@@ -146,12 +146,13 @@ $csrf = csrf_token();
   <div class="brand">
     <div class="brand-badge">SC</div>
     <div>
-      <h1 id="appTitle">Sea College Dive Club — Unified Ecosystem App</h1>
-      <p id="appSub">Big-Data SQL Warehouse • Role-Based Employee & Owner Command Center</p>
+      <h1 id="appTitle">Sea College Dive Club — Unified Ecosystem App <span class="pill" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">🧪 TRIAL v1.0</span></h1>
+      <p id="appSub">Big-Data SQL Warehouse • Role-Based Employee & Owner Pilot Edition</p>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
     <span id="userBadge" class="pill" style="display:none;"></span>
+    <button type="button" class="btn btn-emerald" onclick="triggerInstallApp()">📲 Install App</button>
     <button type="button" class="btn" id="langBtn" onclick="toggleLang()">العربية RTL</button>
     <a href="/" class="btn" id="siteBtn">🌐 Website</a>
     <button type="button" class="btn btn-amber" id="logoutBtn" style="display:none;" onclick="doLogout()">Logout</button>
@@ -161,9 +162,9 @@ $csrf = csrf_token();
 <main class="container">
   <!-- ================= LOGIN VIEW ================= -->
   <section id="loginView" class="login-box card" style="display:none;">
-    <h2 style="font-size:18px;margin-bottom:6px;" id="loginHeading">Employee & Owner Sign In</h2>
+    <h2 style="font-size:18px;margin-bottom:6px;" id="loginHeading">Employee & Owner Sign In (Trial Pilot v1.0)</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:14px;" id="loginDesc">
-      Sign in with your assigned Sea College role account. Every user sees only the dashboards, boats, branches, and permissions authorized for their job.
+      Sign in with your assigned Sea College role account. Test vouchers & safe entries are prefixed with <b>TRIAL-</b> so your team can test freely without affecting closed accounting ledgers!
     </p>
     <form onsubmit="doLogin(event)" class="grid" style="gap:12px;">
       <div>
@@ -185,7 +186,7 @@ $csrf = csrf_token();
         👥 Quick Role Directory (Select Employee / Owner Account)
       </summary>
       <p style="font-size:11px;color:var(--muted);margin:6px 0;">
-        Tap any role account below to pre-fill username during onboarding (admin can rotate passwords anytime):
+        Tap any role account below to pre-fill username during onboarding:
       </p>
       <div id="roleDirectoryList" style="display:grid;gap:6px;max-height:260px;overflow-y:auto;margin-top:8px;"></div>
     </details>
@@ -205,6 +206,72 @@ $csrf = csrf_token();
     <div id="tabContent"></div>
   </section>
 </main>
+
+<!-- Floating Staff Trial Feedback Button -->
+<button type="button" id="fabFeedback" onclick="openFeedbackModal()" style="display:none;position:fixed;bottom:18px;left:18px;z-index:90;background:linear-gradient(135deg,#6366f1,#0284c7);color:#fff;border:none;padding:11px 16px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.45);">
+  🧪 Send Trial Note / Improve
+</button>
+
+<!-- Trial Feedback Modal -->
+<div id="feedbackModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(3,12,24,0.82);padding:16px;align-items:center;justify-content:center;">
+  <div class="card" style="width:100%;max-width:460px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;">🧪 Pilot Trial Feedback & Improvement</h3>
+      <button type="button" class="btn" onclick="document.getElementById('feedbackModal').style.display='none'">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+      Spotted an issue, missing price/hotel rule, or idea to make your daily work faster? Send it directly to Management & the AI Engineering Team!
+    </p>
+    <form onsubmit="submitTrialFeedback(event)" class="grid" style="gap:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Feedback Type</label>
+          <select id="fbType">
+            <option value="IMPROVEMENT">💡 Feature / Workflow Idea</option>
+            <option value="BUG">🐞 Bug / Error</option>
+            <option value="ACCOUNTING_RULE">⚖️ Accounting / Price Rule</option>
+            <option value="UX_SPEED">📱 Mobile Screen / Speed</option>
+          </select>
+        </div>
+        <div>
+          <label>Priority</label>
+          <select id="fbPrio">
+            <option value="NORMAL">Normal</option>
+            <option value="HIGH">🔥 Urgent / Blocker</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>Your Note (Arabic or English)</label>
+        <input type="text" id="fbMsg" required placeholder="اكتب ملاحظتك أو اقتراحك هنا / Describe what to improve...">
+      </div>
+      <button type="submit" class="btn btn-primary" style="justify-content:center;padding:10px;">🚀 Submit Feedback to Pilot Log</button>
+    </form>
+  </div>
+</div>
+
+<!-- Install to Phone Guide Modal -->
+<div id="installModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(3,12,24,0.82);padding:16px;align-items:center;justify-content:center;">
+  <div class="card" style="width:100%;max-width:440px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;">📲 Install Sea College App on Your Phone</h3>
+      <button type="button" class="btn" onclick="document.getElementById('installModal').style.display='none'">✕</button>
+    </div>
+    <div style="font-size:13px;line-height:1.6;display:grid;gap:10px;">
+      <div style="padding:10px;border-radius:9px;background:rgba(0,210,255,0.08);border:1px solid var(--border);">
+        <b>🍎 iPhone / iPad (Safari):</b><br>
+        1. Tap the <b>Share</b> icon (⬆️) at the bottom of Safari.<br>
+        2. Scroll down and tap <b>"Add to Home Screen" (إضافة إلى الشاشة الرئيسية)</b>.<br>
+        3. Tap <b>Add</b> — the <b>SeaCollege ERP</b> icon launches full-screen like a native app!
+      </div>
+      <div style="padding:10px;border-radius:9px;background:rgba(16,185,129,0.08);border:1px solid var(--border);">
+        <b>🤖 Android (Chrome):</b><br>
+        1. Tap the <b>⋮ Menu</b> at the top-right of Chrome.<br>
+        2. Tap <b>"Install App"</b> or <b>"Add to Home screen" (تثبيت التطبيق)</b>.
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="toast" class="toast"></div>
 
@@ -339,6 +406,7 @@ async function doLogout() {
   STATE.ws = null;
   document.getElementById('userBadge').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('fabFeedback').style.display = 'none';
   document.getElementById('appView').style.display = 'none';
   document.getElementById('loginView').style.display = 'block';
 }
@@ -347,6 +415,7 @@ async function loadUserData() {
   document.getElementById('loginView').style.display = 'none';
   document.getElementById('appView').style.display = 'block';
   document.getElementById('logoutBtn').style.display = 'inline-flex';
+  document.getElementById('fabFeedback').style.display = 'block';
   const ub = document.getElementById('userBadge');
   ub.style.display = 'inline-block';
   ub.textContent = (STATE.lang === 'ar' ? STATE.user.display_name_ar : STATE.user.display_name_en) + ' [' + STATE.user.role_code + ']';
@@ -388,6 +457,7 @@ function buildTabsForUser() {
   const tabs = [];
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'exec_bi', label: ar ? '📊 لوحة الملاك والاتجاهات' : '📊 Owner BI & Trends' });
+    tabs.push({ id: 'trial_pilot', label: ar ? '🧪 إدارة النسخة التجريبية والملاحظات' : '🧪 Trial Launch & Feedback' });
     tabs.push({ id: 'exports_hub', label: ar ? '📥 تصدير الشيتات والتقارير' : '📥 Export Sheets (.xlsx / .csv)' });
     tabs.push({ id: 'profitability', label: ar ? '🏆 الأعلى مبيعاً وربحية الرحلات والمراكب' : '🏆 Best Sellers, Trips & Boats ROI' });
   }
@@ -396,6 +466,9 @@ function buildTabsForUser() {
   }
   if (hasPerm('gl.view_all_ledgers')) {
     tabs.push({ id: 'accounting_gl', label: ar ? '📚 الحسابات والعملاء والمرتبات' : '📚 Ledgers, AR/AP & Payroll' });
+    if (!hasPerm('bi.view_executive')) {
+      tabs.push({ id: 'trial_pilot', label: ar ? '🧪 ملاحظات النسخة التجريبية' : '🧪 Trial Feedback Inbox' });
+    }
   }
   if (hasPerm('safe.view_balances')) {
     tabs.push({ id: 'treasury_safe', label: ar ? '💵 الخزينة والعهد متعددة العملات' : '💵 Multi-Currency Safe & Cashbox' });
@@ -439,6 +512,8 @@ function renderApp() {
   if (STATE.activeTab === 'exec_bi' && STATE.bi) {
     box.innerHTML = renderExecBi(ar);
     drawTrendChart();
+  } else if (STATE.activeTab === 'trial_pilot') {
+    box.innerHTML = renderTrialPilotTab(ar);
   } else if (STATE.activeTab === 'exports_hub') {
     box.innerHTML = renderExportsHub(ar);
   } else if (STATE.activeTab === 'profitability' && STATE.bi) {
@@ -1210,6 +1285,195 @@ function renderWebsiteCrm(ar) {
       </div>
     </div>
   `;
+}
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+});
+
+function triggerInstallApp() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(() => { deferredInstallPrompt = null; });
+  } else {
+    document.getElementById('installModal').style.display = 'flex';
+  }
+}
+
+function openFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'flex';
+  document.getElementById('fbMsg').focus();
+}
+
+async function submitTrialFeedback(e) {
+  e.preventDefault();
+  const res = await apiPost({
+    action: 'submit_trial_feedback',
+    feedback_type: document.getElementById('fbType').value,
+    priority: document.getElementById('fbPrio').value,
+    module_tab: STATE.activeTab || 'general',
+    device_info: navigator.userAgent.slice(0, 100),
+    message: document.getElementById('fbMsg').value
+  });
+  if (res.ok) {
+    document.getElementById('fbMsg').value = '';
+    document.getElementById('feedbackModal').style.display = 'none';
+    showToast('Thank you! Trial feedback logged for Management & AI Team.');
+    await loadUserData();
+  }
+}
+
+function renderTrialPilotTab(ar) {
+  const ws = STATE.ws || {};
+  const st = ws.trial_stats || {};
+  const fbList = ws.trial_feedback || [];
+  const audits = ws.recent_audits || [];
+  const whReady = !!st.full_warehouse_loaded;
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">${ar ? 'حالة مستودع البيانات الكامل' : 'Warehouse Sync State'}</div>
+        <div class="kpi-val ${whReady ? 'pos' : ''}" style="font-size:17px;">${whReady ? '✅ Full 165K+ Rows Active' : '⚡ Summary Seed Active'}</div>
+        <div class="kpi-sub">${fmt(st.raw_rows_count)} Raw Sheet Rows Loaded</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'دخول الموظفين في التجربة' : 'Staff Pilot Logins'}</div>
+        <div class="kpi-val">${fmt(st.logins_count)}</div>
+        <div class="kpi-sub">Across 24 Role Accounts</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'فوتشرات التدريب التجريبية' : 'Practice TRIAL- Vouchers'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(st.trial_vouchers_count)}</div>
+        <div class="kpi-sub">Isolated from Historical GL</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'ملاحظات واقتراحات الفريق' : 'Open Staff Feedback'}</div>
+        <div class="kpi-val" style="color:#fcd34d;">${fmt(st.open_feedback_count)}</div>
+        <div class="kpi-sub"><a href="/handlers/erp_export.php?report=trial_feedback&format=xlsx" style="color:var(--cyan);">⬇ Export Feedback .xlsx</a></div>
+      </div>
+    </div>
+
+    ${hasPerm('bi.view_executive') ? `
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:6px;">📦 ${ar ? 'رفع قاعدة البيانات التاريخية الكاملة بضغطة واحدة (بدون cPanel)' : '1-Click Full Historical Warehouse Hydrator (No cPanel Needed!)'}</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+          Select <b>sea_college_bigdata_dump.sql.gz</b> (5.4 MB from your Google Drive AI Outputs folder) to hydrate all 160,163 raw rows, 15,667 vouchers, 5,692 expense vouchers & 209 GL journals directly through your browser!
+        </p>
+        <form onsubmit="uploadWarehouseDump(event)" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="file" id="whFile" accept=".gz,.sqlite3,.sqlite,.db" required style="flex:1;">
+          <button type="submit" id="btnWhUp" class="btn btn-primary">⬆ Hydrate Full SQL Warehouse</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:6px;">🧹 ${ar ? 'تصفير حركات التدريب التجريبية (Sandbox Reset)' : 'Trial Practice Sandbox Reset (Safe Go-Live Clean)'}</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+          During the trial week, let Fady, Adel, Ahmed Nasr, Talal & Cashiers create practice <b>TRIAL-*</b> vouchers freely. Click below anytime to wipe only practice entries while keeping 100% of historical accounting intact!
+        </p>
+        <button type="button" class="btn btn-amber" onclick="resetSandbox()">🧹 Clear Practice TRIAL-* Entries Only</button>
+      </div>
+    </div>` : ''}
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h3 style="font-size:14px;">🧪 ${ar ? 'صندوق ملاحظات واقتراحات الموظفين أثناء التجربة' : 'Live Staff Trial Feedback & Improvement Queue'}</h3>
+          <a class="btn btn-emerald" href="/handlers/erp_export.php?report=trial_feedback&format=xlsx">⬇ .xlsx</a>
+        </div>
+        <div class="table-wrap" style="max-height:320px;">
+          <table>
+            <thead><tr><th>Time</th><th>Staff / Role</th><th>Type</th><th>Tab</th><th>Note / Request</th><th>Status</th></tr></thead>
+            <tbody>
+              ${fbList.map((f) => `
+                <tr>
+                  <td>${esc(f.created_at)}</td>
+                  <td><b>${esc(f.username)}</b><br><span style="font-size:10px;color:var(--muted);">${esc(f.role_code)}</span></td>
+                  <td><span class="pill" style="${f.priority === 'HIGH' ? 'color:#fb7185;border-color:#f43f5e;' : ''}">${esc(f.feedback_type)}</span></td>
+                  <td>${esc(f.module_tab)}</td>
+                  <td style="white-space:normal;min-width:200px;">${esc(f.message)}</td>
+                  <td>
+                    ${f.status === 'RESOLVED'
+                      ? '<span class="pos">✓ RESOLVED</span>'
+                      : `<button class="btn" onclick="markFeedbackResolved(${f.id})">✓ Resolve</button>`}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">🛡️ ${ar ? 'سجل نشاط الموظفين المباشر (Audit Trail)' : 'Live Pilot Activity & Role Audit Log'}</h3>
+        <div class="table-wrap" style="max-height:320px;">
+          <table>
+            <thead><tr><th>UTC Time</th><th>User</th><th>Role</th><th>Action</th><th>Ref</th></tr></thead>
+            <tbody>
+              ${audits.map((a) => `
+                <tr>
+                  <td>${esc(String(a.created_at).slice(0, 19).replace('T', ' '))}</td>
+                  <td><b>${esc(a.username)}</b></td>
+                  <td><span class="pill">${esc(a.role_code)}</span></td>
+                  <td>${esc(a.action_type)}</td>
+                  <td>${esc(a.entity_id)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function markFeedbackResolved(id) {
+  const res = await apiPost({ action: 'update_feedback_status', id, status: 'RESOLVED' });
+  if (res.ok) { showToast('Feedback marked resolved!'); await loadUserData(); }
+}
+
+async function resetSandbox() {
+  if (!confirm('Clear all TRIAL-* practice vouchers & safe entries created during mobile testing? (Historical 2024–2026 accounting stays 100% untouched)')) return;
+  const res = await apiPost({ action: 'reset_trial_sandbox' });
+  if (res.ok) {
+    showToast(`Cleared ${res.deleted_vouchers} practice vouchers & ${res.deleted_expenses} practice safe entries!`);
+    await loadUserData();
+  }
+}
+
+async function uploadWarehouseDump(e) {
+  e.preventDefault();
+  const fInput = document.getElementById('whFile');
+  if (!fInput.files || !fInput.files[0]) return;
+  const btn = document.getElementById('btnWhUp');
+  btn.disabled = true;
+  btn.textContent = '⏳ Importing SQL Warehouse...';
+  const fd = new FormData();
+  fd.append('action', 'upload_warehouse_gz');
+  fd.append('csrf_token', STATE.csrf);
+  fd.append('warehouse_file', fInput.files[0]);
+  try {
+    const r = await fetch('/handlers/erp_api.php?action=upload_warehouse_gz', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'X-CSRF-Token': STATE.csrf },
+      body: fd
+    });
+    const res = await r.json();
+    if (res.ok) {
+      showToast('Full 2-Year SQL Warehouse imported successfully!');
+      await loadUserData();
+    } else {
+      alert(res.error || 'Import failed');
+    }
+  } catch (err) {
+    alert('Upload error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬆ Hydrate Full SQL Warehouse';
+  }
 }
 
 boot();

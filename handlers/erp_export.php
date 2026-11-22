@@ -383,5 +383,25 @@ if ($report === 'res_accounting_2026') {
     ]);
 }
 
+/* ==========================================================================
+   8. STAFF TRIAL FEEDBACK & PILOT ACTIVITY LOG EXPORT
+   ========================================================================== */
+if ($report === 'trial_feedback') {
+    if (!$hasPerm('bi.view_executive', 'gl.view_all_ledgers')) {
+        http_response_code(403);
+        exit('Role not authorized.');
+    }
+    $fbRows = $pdo->query('SELECT id, created_at, username, display_name, role_code, module_tab, feedback_type, priority, status, message, admin_reply, device_info FROM trial_feedback ORDER BY id DESC')->fetchAll(PDO::FETCH_NUM);
+    $auRows = $pdo->query('SELECT id, created_at, username, role_code, action_type, entity_type, entity_id, details_json FROM audit_logs ORDER BY id DESC LIMIT 500')->fetchAll(PDO::FETCH_NUM);
+    $fbHeaders = ['ID', 'Timestamp', 'Username', 'Employee Name', 'Role', 'Module Tab', 'Feedback Type', 'Priority', 'Status', 'Feedback / Issue Description', 'Admin / AI Team Reply', 'Device'];
+    if ($format === 'csv') {
+        sc_erp_stream_csv('Sea_College_Trial_Pilot_Feedback.csv', $fbHeaders, $fbRows);
+    }
+    sc_erp_stream_xlsx('Sea_College_Trial_Pilot_Feedback_and_Audit_Log.xlsx', [
+        'Staff_Trial_Feedback' => ['headers' => $fbHeaders, 'rows' => $fbRows],
+        'Pilot_Audit_Trail'    => ['headers' => ['ID', 'UTC Time', 'User', 'Role', 'Action', 'Entity', 'Ref ID', 'Details JSON'], 'rows' => $auRows],
+    ]);
+}
+
 http_response_code(400);
 exit('Unknown report type.');

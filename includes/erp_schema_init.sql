@@ -1,4 +1,4 @@
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
     role_code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL,
@@ -8,20 +8,20 @@ CREATE TABLE roles (
     description_en TEXT NOT NULL,
     description_ar TEXT NOT NULL
 );
-CREATE TABLE permissions (
+CREATE TABLE IF NOT EXISTS permissions (
     perm_code TEXT PRIMARY KEY,
     module TEXT NOT NULL,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL
 );
-CREATE TABLE role_permissions (
+CREATE TABLE IF NOT EXISTS role_permissions (
     role_code TEXT NOT NULL,
     perm_code TEXT NOT NULL,
     PRIMARY KEY (role_code, perm_code),
     FOREIGN KEY (role_code) REFERENCES roles(role_code) ON DELETE CASCADE,
     FOREIGN KEY (perm_code) REFERENCES permissions(perm_code) ON DELETE CASCADE
 );
-CREATE TABLE employees_master (
+CREATE TABLE IF NOT EXISTS employees_master (
     emp_code TEXT PRIMARY KEY,
     full_name_ar TEXT NOT NULL,
     full_name_en TEXT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE employees_master (
     is_active INTEGER NOT NULL DEFAULT 1,
     latest_month TEXT NOT NULL DEFAULT ''
 );
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -49,8 +49,7 @@ CREATE TABLE users (
     created_at TEXT NOT NULL,
     FOREIGN KEY (role_code) REFERENCES roles(role_code)
 );
-CREATE TABLE sqlite_sequence(name,seq);
-CREATE TABLE audit_logs (
+CREATE TABLE IF NOT EXISTS audit_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at TEXT NOT NULL,
     username TEXT NOT NULL,
@@ -60,28 +59,28 @@ CREATE TABLE audit_logs (
     entity_id TEXT NOT NULL DEFAULT '',
     details_json TEXT NOT NULL DEFAULT '{}'
 );
-CREATE TABLE branches (
+CREATE TABLE IF NOT EXISTS branches (
     code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL,
     location TEXT NOT NULL,
     is_active INTEGER NOT NULL DEFAULT 1
 );
-CREATE TABLE currencies_fx (
+CREATE TABLE IF NOT EXISTS currencies_fx (
     currency TEXT PRIMARY KEY,
     symbol TEXT NOT NULL,
     rate_to_egp REAL NOT NULL,
     rate_to_eur REAL NOT NULL,
     updated_at TEXT NOT NULL
 );
-CREATE TABLE chart_of_accounts (
+CREATE TABLE IF NOT EXISTS chart_of_accounts (
     code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL,
     account_type TEXT NOT NULL, -- Asset, Liability, Equity, Revenue, COGS, OpEx, Other
     legacy_sheet_map TEXT NOT NULL DEFAULT ''
 );
-CREATE TABLE counterparties (
+CREATE TABLE IF NOT EXISTS counterparties (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     code TEXT UNIQUE NOT NULL,
     name_en TEXT NOT NULL,
@@ -93,7 +92,7 @@ CREATE TABLE counterparties (
     current_balance_egp REAL NOT NULL DEFAULT 0,
     source_workbook TEXT NOT NULL DEFAULT ''
 );
-CREATE TABLE vessels (
+CREATE TABLE IF NOT EXISTS vessels (
     code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL,
@@ -109,7 +108,7 @@ CREATE TABLE vessels (
     drydock_partner_share_egp REAL NOT NULL DEFAULT 0,
     status TEXT NOT NULL DEFAULT 'ACTIVE'
 );
-CREATE TABLE hotels_directory (
+CREATE TABLE IF NOT EXISTS hotels_directory (
     code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     zone_code TEXT NOT NULL,
@@ -119,7 +118,7 @@ CREATE TABLE hotels_directory (
     drive_duration_en TEXT NOT NULL DEFAULT '',
     is_onsite INTEGER NOT NULL DEFAULT 0
 );
-CREATE TABLE products_catalog (
+CREATE TABLE IF NOT EXISTS products_catalog (
     code TEXT PRIMARY KEY,
     section TEXT NOT NULL,
     slug TEXT NOT NULL DEFAULT '',
@@ -134,7 +133,7 @@ CREATE TABLE products_catalog (
     is_popular INTEGER NOT NULL DEFAULT 0,
     requires_padi_pic INTEGER NOT NULL DEFAULT 0
 );
-CREATE TABLE equipment_assets_master (
+CREATE TABLE IF NOT EXISTS equipment_assets_master (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sc_tag TEXT NOT NULL,
     location_branch TEXT NOT NULL,
@@ -145,7 +144,7 @@ CREATE TABLE equipment_assets_master (
     status TEXT NOT NULL DEFAULT 'AVAILABLE',
     assigned_to TEXT NOT NULL DEFAULT ''
 );
-CREATE TABLE safes_wallets (
+CREATE TABLE IF NOT EXISTS safes_wallets (
     code TEXT PRIMARY KEY,
     name_en TEXT NOT NULL,
     name_ar TEXT NOT NULL,
@@ -157,7 +156,7 @@ CREATE TABLE safes_wallets (
     bal_gbp REAL NOT NULL DEFAULT 0,
     updated_at TEXT NOT NULL
 );
-CREATE TABLE etl_workbooks_catalog (
+CREATE TABLE IF NOT EXISTS etl_workbooks_catalog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     rel_path TEXT UNIQUE NOT NULL,
     category TEXT NOT NULL,
@@ -167,7 +166,7 @@ CREATE TABLE etl_workbooks_catalog (
     status TEXT NOT NULL, -- INGESTED, RESTRICTED_PENDING_ACCESS, SKIPPED
     ingested_at TEXT NOT NULL
 );
-CREATE TABLE raw_sheet_rows (
+CREATE TABLE IF NOT EXISTS raw_sheet_rows (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     workbook_rel_path TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -175,8 +174,8 @@ CREATE TABLE raw_sheet_rows (
     row_number INTEGER NOT NULL,
     row_json TEXT NOT NULL
 );
-CREATE INDEX idx_raw_sheet_cat ON raw_sheet_rows(category, sheet_name);
-CREATE TABLE pnl_monthly_lines (
+CREATE INDEX IF NOT EXISTS idx_raw_sheet_cat ON raw_sheet_rows(category, sheet_name);
+CREATE TABLE IF NOT EXISTS pnl_monthly_lines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     period_month TEXT NOT NULL,    -- YYYY-MM
     period_quarter TEXT NOT NULL,  -- YYYY-Qn
@@ -190,8 +189,8 @@ CREATE TABLE pnl_monthly_lines (
     cost_ratio REAL DEFAULT NULL,
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_pnl_period ON pnl_monthly_lines(period_year, period_quarter, period_month, branch_code);
-CREATE TABLE daily_revenue_fact (
+CREATE INDEX IF NOT EXISTS idx_pnl_period ON pnl_monthly_lines(period_year, period_quarter, period_month, branch_code);
+CREATE TABLE IF NOT EXISTS daily_revenue_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     rev_date TEXT NOT NULL,        -- YYYY-MM-DD
     period_week TEXT NOT NULL,     -- YYYY-Www
@@ -218,8 +217,8 @@ CREATE TABLE daily_revenue_fact (
     source_file TEXT NOT NULL,
     UNIQUE(rev_date, source_file)
 );
-CREATE INDEX idx_daily_rev_dates ON daily_revenue_fact(rev_date, period_month, period_quarter, period_year);
-CREATE TABLE expense_vouchers_fact (
+CREATE INDEX IF NOT EXISTS idx_daily_rev_dates ON daily_revenue_fact(rev_date, period_month, period_quarter, period_year);
+CREATE TABLE IF NOT EXISTS expense_vouchers_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     exp_date TEXT NOT NULL,
     period_week TEXT NOT NULL,
@@ -236,8 +235,8 @@ CREATE TABLE expense_vouchers_fact (
     total_egp REAL NOT NULL DEFAULT 0,
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_exp_dates ON expense_vouchers_fact(exp_date, period_month, period_quarter, period_year);
-CREATE TABLE cashbox_daily_fact (
+CREATE INDEX IF NOT EXISTS idx_exp_dates ON expense_vouchers_fact(exp_date, period_month, period_quarter, period_year);
+CREATE TABLE IF NOT EXISTS cashbox_daily_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tx_date TEXT NOT NULL,
     period_week TEXT NOT NULL,
@@ -260,8 +259,8 @@ CREATE TABLE cashbox_daily_fact (
     net_flow_egp_equiv REAL NOT NULL DEFAULT 0,
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_cashbox_dates ON cashbox_daily_fact(tx_date, period_month, period_quarter, period_year);
-CREATE TABLE reservations_fact (
+CREATE INDEX IF NOT EXISTS idx_cashbox_dates ON cashbox_daily_fact(tx_date, period_month, period_quarter, period_year);
+CREATE TABLE IF NOT EXISTS reservations_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     voucher_no TEXT NOT NULL,
     qr_token TEXT NOT NULL DEFAULT '',
@@ -304,10 +303,10 @@ CREATE TABLE reservations_fact (
     payment_status TEXT NOT NULL DEFAULT 'SETTLED',
     source_file TEXT NOT NULL DEFAULT ''
 , section_banner TEXT NOT NULL DEFAULT '', booking_state TEXT NOT NULL DEFAULT 'EXECUTED', cancelled_pax INTEGER NOT NULL DEFAULT 0, rest_visa_egp REAL NOT NULL DEFAULT 0, desk_paid_egp REAL NOT NULL DEFAULT 0, ar_client_code TEXT NOT NULL DEFAULT '', ap_supplier_code TEXT NOT NULL DEFAULT '', accounting_status TEXT NOT NULL DEFAULT 'POSTED_TO_GL', journal_entry_no TEXT NOT NULL DEFAULT '');
-CREATE INDEX idx_res_dates ON reservations_fact(trip_date, period_month, period_quarter, period_year);
-CREATE INDEX idx_res_rep ON reservations_fact(sales_rep, client_agency, product_category);
-CREATE INDEX idx_res_vo ON reservations_fact(voucher_no);
-CREATE TABLE vessel_trips_fact (
+CREATE INDEX IF NOT EXISTS idx_res_dates ON reservations_fact(trip_date, period_month, period_quarter, period_year);
+CREATE INDEX IF NOT EXISTS idx_res_rep ON reservations_fact(sales_rep, client_agency, product_category);
+CREATE INDEX IF NOT EXISTS idx_res_vo ON reservations_fact(voucher_no);
+CREATE TABLE IF NOT EXISTS vessel_trips_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     trip_date TEXT NOT NULL,
     period_week TEXT NOT NULL,
@@ -330,8 +329,8 @@ CREATE TABLE vessel_trips_fact (
     notes TEXT NOT NULL DEFAULT '',
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_vessel_dates ON vessel_trips_fact(vessel_code, trip_date, period_month, period_year);
-CREATE TABLE speedboat_trips_fact (
+CREATE INDEX IF NOT EXISTS idx_vessel_dates ON vessel_trips_fact(vessel_code, trip_date, period_month, period_year);
+CREATE TABLE IF NOT EXISTS speedboat_trips_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     trip_date TEXT NOT NULL,
     period_week TEXT NOT NULL,
@@ -350,7 +349,7 @@ CREATE TABLE speedboat_trips_fact (
     notes TEXT NOT NULL DEFAULT '',
     source_file TEXT NOT NULL
 );
-CREATE TABLE drydock_capex_lines (
+CREATE TABLE IF NOT EXISTS drydock_capex_lines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tx_date TEXT NOT NULL DEFAULT '',
     period_year TEXT NOT NULL,
@@ -363,7 +362,7 @@ CREATE TABLE drydock_capex_lines (
     partner_share_egp REAL NOT NULL DEFAULT 0,
     source_file TEXT NOT NULL
 );
-CREATE TABLE subledger_lines (
+CREATE TABLE IF NOT EXISTS subledger_lines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ledger_type TEXT NOT NULL, -- AR_CLIENT, AP_SUPPLIER, PARTNER_EQUITY, VESSEL_RENT, HOTEL_RENT, PADI_PIC, POS_VISA
     party_code TEXT NOT NULL,
@@ -379,8 +378,8 @@ CREATE TABLE subledger_lines (
     notes TEXT NOT NULL DEFAULT '',
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_subledger_party ON subledger_lines(ledger_type, party_code, period_year);
-CREATE TABLE payroll_monthly_fact (
+CREATE INDEX IF NOT EXISTS idx_subledger_party ON subledger_lines(ledger_type, party_code, period_year);
+CREATE TABLE IF NOT EXISTS payroll_monthly_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     period_month TEXT NOT NULL,
     period_quarter TEXT NOT NULL,
@@ -398,8 +397,8 @@ CREATE TABLE payroll_monthly_fact (
     net_pay_egp REAL NOT NULL DEFAULT 0,
     source_file TEXT NOT NULL
 );
-CREATE INDEX idx_payroll_period ON payroll_monthly_fact(period_year, period_month, emp_name_ar);
-CREATE TABLE website_leads_crm (
+CREATE INDEX IF NOT EXISTS idx_payroll_period ON payroll_monthly_fact(period_year, period_month, emp_name_ar);
+CREATE TABLE IF NOT EXISTS website_leads_crm (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id TEXT UNIQUE NOT NULL,
     received_at TEXT NOT NULL,
@@ -425,7 +424,7 @@ CREATE TABLE website_leads_crm (
     assigned_to TEXT NOT NULL DEFAULT 'LARA',
     linked_voucher_no TEXT NOT NULL DEFAULT ''
 );
-CREATE TABLE journal_entries (
+CREATE TABLE IF NOT EXISTS journal_entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     entry_no TEXT UNIQUE NOT NULL,
     entry_date TEXT NOT NULL,
@@ -437,7 +436,7 @@ CREATE TABLE journal_entries (
     description_ar TEXT NOT NULL,
     created_at TEXT NOT NULL
 );
-CREATE TABLE journal_lines (
+CREATE TABLE IF NOT EXISTS journal_lines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     journal_id INTEGER NOT NULL,
     account_code TEXT NOT NULL,
@@ -448,7 +447,7 @@ CREATE TABLE journal_lines (
     vessel_code TEXT DEFAULT NULL,
     FOREIGN KEY (journal_id) REFERENCES journal_entries(id) ON DELETE CASCADE
 );
-CREATE TABLE marine_crew_roster (
+CREATE TABLE IF NOT EXISTS marine_crew_roster (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             crew_role TEXT NOT NULL, -- DIVE_GUIDE, SNORKEL_GUIDE, HELPER, PHOTO_SURFACE, PHOTO_UNDERWATER, YACHT_SAILOR
             name_ar TEXT NOT NULL,
@@ -457,7 +456,7 @@ CREATE TABLE marine_crew_roster (
             source_month TEXT NOT NULL,
             UNIQUE(crew_role, name_ar)
         );
-CREATE TABLE reservation_accounting_audit (
+CREATE TABLE IF NOT EXISTS reservation_accounting_audit (
             period_month TEXT PRIMARY KEY,
             source_workbook TEXT NOT NULL,
             days_covered INTEGER NOT NULL,
@@ -481,3 +480,19 @@ CREATE TABLE reservation_accounting_audit (
             gl_journal_entries_count INTEGER NOT NULL,
             accounting_bridge_mode TEXT NOT NULL
         );
+
+
+CREATE TABLE IF NOT EXISTS trial_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    username TEXT NOT NULL,
+    display_name TEXT NOT NULL DEFAULT '',
+    role_code TEXT NOT NULL,
+    module_tab TEXT NOT NULL DEFAULT '',
+    feedback_type TEXT NOT NULL DEFAULT 'IMPROVEMENT', -- BUG, IMPROVEMENT, ACCOUNTING_RULE, UX_SPEED
+    priority TEXT NOT NULL DEFAULT 'NORMAL',           -- NORMAL, HIGH
+    device_info TEXT NOT NULL DEFAULT '',
+    message TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'OPEN',               -- OPEN, IN_PROGRESS, RESOLVED
+    admin_reply TEXT NOT NULL DEFAULT ''
+);
