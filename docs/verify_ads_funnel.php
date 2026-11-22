@@ -45,10 +45,13 @@ function http_get_live(string $path): array
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 15,
+        CURLOPT_USERAGENT      => 'SeaCollege-FunnelVerifier/1.0',
         CURLOPT_HEADERFUNCTION => static function ($c, string $line) use (&$hdrs): int {
             $p = strpos($line, ':');
             if ($p !== false) {
-                $hdrs[strtolower(trim(substr($line, 0, $p)))] = trim(substr($line, $p + 1));
+                $k = strtolower(trim(substr($line, 0, $p)));
+                $v = trim(substr($line, $p + 1));
+                $hdrs[$k] = isset($hdrs[$k]) ? ($hdrs[$k] . '; ' . $v) : $v;
             }
             return strlen($line);
         },
