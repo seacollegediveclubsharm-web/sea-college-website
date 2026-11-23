@@ -684,6 +684,17 @@ return sc_overlay_gallery_team([
             'caption' => ['en' => '12L & 15L aluminum tanks, Enriched Air Nitrox and serviced rental kits ready daily.', 'ar' => 'أسطوانات 12 و15 لتر هواء ونيتروكس ومعدات مفحوصة جاهزة يوميًا.'],
             'item_id' => 'eq-12nx',
         ],
+        23 => [
+            'id'      => 'tiran-briefing-video',
+            'type'    => 'video',
+            'cat'     => 'videos',
+            'src'     => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+            'poster'  => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+            'dur'     => '0:54',
+            'title'   => ['en' => 'Straits of Tiran Reef Briefing — Thomas & Jackson Reef', 'ar' => 'شرح خريطة مضيق تيران — شعاب توماس وجاكسون'],
+            'caption' => ['en' => 'Onboard PADI instructor reef map briefing covering wall drop-offs, sandy lagoons & drift currents at Tiran Island.', 'ar' => 'شرح تفصيلي لخريطة شعاب مضيق تيران والجدران المرجانية والتيارات البحرية قبل النزول.'],
+            'item_id' => 'speed-2h',
+        ],
     ],
 
     'team' => [

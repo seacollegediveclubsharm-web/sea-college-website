@@ -182,19 +182,19 @@ return [
     // ---------- Short-Term Diving Insurance ----------
     'ins-3' => [
         'name' => 'Ubezpieczenie nurkowe — 3 dni',
-        'desc' => '3-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh. Cena potwierdzana przy rezerwacji.',
+        'desc' => '3-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh (15 € / os.).',
     ],
     'ins-7' => [
         'name' => 'Ubezpieczenie nurkowe — 7 dni',
-        'desc' => '7-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh. Cena potwierdzana przy rezerwacji.',
+        'desc' => '7-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh (25 € / os.).',
     ],
     'ins-10' => [
         'name' => 'Ubezpieczenie nurkowe — 10 dni',
-        'desc' => '10-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh. Cena potwierdzana przy rezerwacji.',
+        'desc' => '10-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh (35 € / os.).',
     ],
     'ins-14' => [
         'name' => 'Ubezpieczenie nurkowe — 14 dni',
-        'desc' => '14-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh. Cena potwierdzana przy rezerwacji.',
+        'desc' => '14-dniowe ubezpieczenie medyczne i komory dekompresyjnej w Sharm El Sheikh (45 € / os.).',
     ],
 
     // ---------- Snorkeling Trips ----------

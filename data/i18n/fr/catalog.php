@@ -151,10 +151,10 @@ return [
         'eq-sm-full'  => ['name' => 'Équipement Sidemount Complet', 'desc' => 'Harnais/wing Sidemount complet, double détendeurs et kit de gréement à la journée.'],
 
         // Short-Term Diving Insurance
-        'ins-3'  => ['name' => 'Assurance Plongée — 3 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 3 jours à Charm el-Cheikh. Tarif confirmé à la réservation.'],
-        'ins-7'  => ['name' => 'Assurance Plongée — 7 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 7 jours à Charm el-Cheikh. Tarif confirmé à la réservation.'],
-        'ins-10' => ['name' => 'Assurance Plongée — 10 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 10 jours à Charm el-Cheikh. Tarif confirmé à la réservation.'],
-        'ins-14' => ['name' => 'Assurance Plongée — 14 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 14 jours à Charm el-Cheikh. Tarif confirmé à la réservation.'],
+        'ins-3'  => ['name' => 'Assurance Plongée — 3 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 3 jours à Charm el-Cheikh (15 € par personne).'],
+        'ins-7'  => ['name' => 'Assurance Plongée — 7 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 7 jours à Charm el-Cheikh (25 € par personne).'],
+        'ins-10' => ['name' => 'Assurance Plongée — 10 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 10 jours à Charm el-Cheikh (35 € par personne).'],
+        'ins-14' => ['name' => 'Assurance Plongée — 14 jours', 'desc' => 'Couverture caisson hyperbare et frais médicaux de plongée 14 jours à Charm el-Cheikh (45 € par personne).'],
 
         // Courses for Children
         'bubblemaker' => ['name' => 'PADI Bubblemaker (Enfants)', 'desc' => 'Dès 8 ans. 2 à 3 h en piscine peu profonde (< 2 m) avec un instructeur PADI. Équipement enfant inclus.'],

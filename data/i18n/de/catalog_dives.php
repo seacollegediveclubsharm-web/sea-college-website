@@ -182,18 +182,18 @@ return [
     // ---------- diving-insurance ----------
     'ins-3' => [
         'name' => 'Kurzzeit-Tauchversicherung — 3 Tage',
-        'desc' => '3 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh. Tagesaktueller Tarif bei Buchung.',
+        'desc' => '3 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh (15 € pro Person).',
     ],
     'ins-7' => [
         'name' => 'Kurzzeit-Tauchversicherung — 7 Tage',
-        'desc' => '7 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh. Tagesaktueller Tarif bei Buchung.',
+        'desc' => '7 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh (25 € pro Person).',
     ],
     'ins-10' => [
         'name' => 'Kurzzeit-Tauchversicherung — 10 Tage',
-        'desc' => '10 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh. Tagesaktueller Tarif bei Buchung.',
+        'desc' => '10 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh (35 € pro Person).',
     ],
     'ins-14' => [
         'name' => 'Kurzzeit-Tauchversicherung — 14 Tage',
-        'desc' => '14 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh. Tagesaktueller Tarif bei Buchung.',
+        'desc' => '14 Tage Druckkammer- & Tauchunfallschutz in Sharm El Sheikh (45 € pro Person).',
     ],
 ];

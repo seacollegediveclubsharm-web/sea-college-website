@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/i18n_data.php';
 
-return sc_overlay_catalog([
+$scCatalog = sc_overlay_catalog([
     /* ============================================================ */
     'dive-packages' => [
         'hub_slug' => 'diving-trips-sharm-el-sheikh',
@@ -449,36 +449,36 @@ return sc_overlay_catalog([
                         'id' => 'ins-3', 'section' => 'tours', 'slug' => 'diving-insurance-3-days-sharm',
                         'name' => 'Diving Insurance — 3 days',
                         'name_ar' => 'تأمين الغوص — 3 أيام',
-                        'desc' => '3-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
-                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 3 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
-                        'price' => null, 'duration' => '3 days',
+                        'desc' => '3-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh (€15 per person).',
+                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 3 أيام في شرم الشيخ (15€ للفرد).',
+                        'price' => 15, 'duration' => '3 days',
                         'img' => 'items/sea-college-sharm-diving-insurance-3-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-7', 'section' => 'tours', 'slug' => 'diving-insurance-7-days-sharm',
                         'name' => 'Diving Insurance — 7 days',
                         'name_ar' => 'تأمين الغوص — 7 أيام',
-                        'desc' => '7-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
-                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 7 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
-                        'price' => null, 'duration' => '7 days',
+                        'desc' => '7-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh (€25 per person).',
+                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 7 أيام في شرم الشيخ (25€ للفرد).',
+                        'price' => 25, 'duration' => '7 days',
                         'img' => 'items/sea-college-sharm-diving-insurance-7-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-10', 'section' => 'tours', 'slug' => 'diving-insurance-10-days-sharm',
                         'name' => 'Diving Insurance — 10 days',
                         'name_ar' => 'تأمين الغوص — 10 أيام',
-                        'desc' => '10-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
-                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 10 أيام في شرم الشيخ. يُؤكد السعر عند الحجز.',
-                        'price' => null, 'duration' => '10 days',
+                        'desc' => '10-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh (€35 per person).',
+                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 10 أيام في شرم الشيخ (35€ للفرد).',
+                        'price' => 35, 'duration' => '10 days',
                         'img' => 'items/sea-college-sharm-diving-insurance-10-days-sharm.jpg',
                     ],
                     [
                         'id' => 'ins-14', 'section' => 'tours', 'slug' => 'diving-insurance-14-days-sharm',
                         'name' => 'Diving Insurance — 14 days',
                         'name_ar' => 'تأمين الغوص — 14 يومًا',
-                        'desc' => '14-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh. Price confirmed at booking.',
-                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 14 يومًا في شرم الشيخ. يُؤكد السعر عند الحجز.',
-                        'price' => null, 'duration' => '14 days',
+                        'desc' => '14-day hyperbaric chamber & diving medical coverage in Sharm El Sheikh (€45 per person).',
+                        'desc_ar' => 'تغطية تأمين الغوص وغرفة الضغط لمدة 14 يومًا في شرم الشيخ (45€ للفرد).',
+                        'price' => 45, 'duration' => '14 days',
                         'img' => 'items/sea-college-sharm-diving-insurance-14-days-sharm.jpg',
                     ],
                 ],
@@ -899,3 +899,22 @@ return sc_overlay_catalog([
         ],
     ],
 ]);
+
+$scInsFallback = ['ins-3' => 15, 'ins-7' => 25, 'ins-10' => 35, 'ins-14' => 45];
+if (!empty($scCatalog['dive-packages']['groups']) && is_array($scCatalog['dive-packages']['groups'])) {
+    foreach ($scCatalog['dive-packages']['groups'] as &$scGrp) {
+        if (($scGrp['id'] ?? '') !== 'diving-insurance' || empty($scGrp['items'])) {
+            continue;
+        }
+        foreach ($scGrp['items'] as &$scIt) {
+            $scId = (string) ($scIt['id'] ?? '');
+            if (($scIt['price'] ?? null) === null && isset($scInsFallback[$scId])) {
+                $scIt['price'] = $scInsFallback[$scId];
+            }
+        }
+    }
+    unset($scGrp, $scIt);
+}
+
+return $scCatalog;
+

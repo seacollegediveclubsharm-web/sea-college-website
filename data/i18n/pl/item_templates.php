@@ -242,14 +242,14 @@ return static function (array $it, array $seo): array {
             'h1'         => "{$name} w Sharm El Sheikh — Ochrona Komory Dekompresyjnej",
             'meta_title' => "{$name} Sharm El Sheikh | Ubezpieczenie Nurkowe | Sea College",
             'meta_desc'  => "Wykup krótkoterminowe {$name} w Sharm El Sheikh (Szarm el-Szejk). Obejmuje leczenie w komorze hiperbarycznej i ratownictwo medyczne nad Morzem Czerwonym.",
-            'aeo_answer' => "Krótkoterminowe {$name} w Sea College Dive Club w Sharm El Sheikh zapewnia pełną ochronę kosztów leczenia nurkowego oraz komory dekompresyjnej (hiperbarycznej) przez okres {$dur}. Dokładną stawkę operatora ubezpieczeniowego potwierdzamy przy rezerwacji, a aktywacja polisy trwa zaledwie 2 minuty w naszej bazie przed pierwszym zejściem pod wodę.",
+            'aeo_answer' => "Krótkoterminowe {$name} w Sea College Dive Club w Sharm El Sheikh kosztuje {$priceLabel} za osobę i zapewnia pełną ochronę kosztów leczenia nurkowego oraz komory dekompresyjnej (hiperbarycznej) przez okres {$dur}. Aktywacja polisy trwa zaledwie 2 minuty w naszej bazie przed pierwszym zejściem pod wodę.",
             'overview'   => [
                 'Standardowe turystyczne ubezpieczenie podróżne z biura podróży zazwyczaj wyłącza nurkowanie z akwalungiem lub ogranicza je do 10–18 metrów bez pokrycia specjalistycznego leczenia w komorze hiperbarycznej w Sharm El Sheikh.',
-                "Jeśli nie posiadasz rocznej karty DAN (Divers Alert Network), krótkoterminowa polisa na {$dur} zdejmuje z Ciebie wszelkie ryzyko finansowe na czas pakietu nurkowego (uwaga: w kursie OWD oraz we wszystkich 4 Pakietach Kursów ubezpieczenie jest już u nas wliczone w cenę!).",
+                "Jeśli nie posiadasz rocznej karty DAN (Divers Alert Network), krótkoterminowa polisa na {$dur} ({$priceLabel}) zdejmuje z Ciebie wszelkie ryzyko finansowe na czas pakietu nurkowego (uwaga: w kursie OWD oraz we wszystkich 4 Pakietach Kursów ubezpieczenie jest już u nas wliczone w cenę!).",
             ],
             'specs' => [
                 ['Okres ochrony', $dur],
-                ['Cena', 'Potwierdzana przy rezerwacji (aktualna taryfa ubezpieczyciela CDWS/DAN)'],
+                ['Cena', "{$priceLabel} / os. ({$dur})"],
                 ['Zakres ochrony', 'Komora dekompresyjna w Sharm El Sheikh i nagła pomoc medyczna nurkowa'],
                 ['Aktywacja', 'Natychmiastowa na miejscu przed pierwszym nurkowaniem'],
                 ['Wliczone gratis w', 'Kursach OWD, Scuba Diver, Divemaster oraz Pakietach Stars, Super, Mega i Heros!'],

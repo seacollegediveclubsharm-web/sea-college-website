@@ -93,10 +93,17 @@ if ($errors) {
 $_SESSION['last_submit'] = time();
 $eventId = 'lead_' . bin2hex(random_bytes(8));
 $attr = collect_attribution_from_post();
+$sellerInfo = [
+    'seller'          => (string) ($attr['seller'] ?? ''),
+    'seller_username' => (string) ($attr['seller_username'] ?? ''),
+    'sales_rep'       => (string) ($attr['sales_rep'] ?? ''),
+    'seller_branch'   => (string) ($attr['seller_branch'] ?? ''),
+];
+$repRaw = (string) ($attr['rep'] ?? '');
 $attrBase = $attr;
 $fbcVal = (string) ($attrBase['fbc'] ?? '');
 $fbpVal = (string) ($attrBase['fbp'] ?? '');
-unset($attrBase['fbc'], $attrBase['fbp']);
+unset($attrBase['fbc'], $attrBase['fbp'], $attrBase['seller'], $attrBase['rep'], $attrBase['seller_username'], $attrBase['sales_rep'], $attrBase['seller_branch']);
 
 $lead = [
     'received_at' => gmdate('c'),
@@ -122,6 +129,11 @@ $lead = [
     'fbc' => $fbcVal,
     'fbp' => $fbpVal,
     'estimated_eur' => round($total, 2),
+    'seller' => $sellerInfo['seller'],
+    'rep' => $repRaw,
+    'seller_username' => $sellerInfo['seller_username'],
+    'sales_rep' => $sellerInfo['sales_rep'],
+    'seller_branch' => $sellerInfo['seller_branch'],
 ];
 
 /* 1) Persist CSV + Unified SQL Warehouse */
@@ -137,7 +149,8 @@ foreach ($lead as $k => $v) {
     }
     $lines[] = str_pad($k, 22) . ': ' . (is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v);
 }
-send_mail(LEAD_NOTIFY_EMAIL, 'New ' . $source_form . ' lead — ' . $name . ' (' . ($interest ?: 'general') . ')', implode("\n", $lines), $email);
+$sellerTag = $sellerInfo['sales_rep'] !== '' ? (' [Seller: ' . $sellerInfo['sales_rep'] . ']') : ($sellerInfo['seller'] !== '' ? (' [Seller: ' . $sellerInfo['seller'] . ']') : '');
+send_mail(LEAD_NOTIFY_EMAIL, 'New ' . $source_form . ' lead — ' . $name . ' (' . ($interest ?: 'general') . ')' . $sellerTag, implode("\n", $lines), $email);
 
 /* 3) CRM / automation webhook */
 if (CRM_WEBHOOK_URL !== '') {
@@ -186,4 +199,5 @@ $_SESSION['conversion'] = [
 ];
 unset($_SESSION['form_old'], $_SESSION['form_error']);
 
-respond(true, ['redirect' => page_link('/thank-you'), 'event_id' => $eventId]);
+$tyUrl = page_link('/thank-you') . ($sellerInfo['seller'] !== '' ? '?seller=' . rawurlencode($sellerInfo['seller']) : '');
+respond(true, ['redirect' => $tyUrl, 'event_id' => $eventId]);

@@ -144,6 +144,38 @@ function clean_line(mixed $v, int $max = 200): string
     return str_replace(["\r", "\n"], ' ', clean($v, $max));
 }
 
+/**
+ * Normalize & resolve raw seller token against SC_SELLERS_DIRECTORY (via sc_resolve_seller_public)
+ * while preserving sanitized custom slugs for dynamic DB sellers in M3.
+ *
+ * @return array{seller:string, seller_username:string, sales_rep:string, seller_branch:string}
+ */
+function sc_resolve_seller_attribution(?string $raw): array
+{
+    $clean = trim((string) preg_replace('/[^a-zA-Z0-9._\- ]/', '', (string) $raw));
+    $clean = substr($clean, 0, 64);
+    if ($clean === '') {
+        return ['seller' => '', 'seller_username' => '', 'sales_rep' => '', 'seller_branch' => ''];
+    }
+    if (function_exists('sc_resolve_seller_public')) {
+        $resolved = sc_resolve_seller_public($clean);
+        if (is_array($resolved)) {
+            return [
+                'seller'          => (string) ($resolved['referral_code'] ?? strtolower($clean)),
+                'seller_username' => (string) ($resolved['username'] ?? ''),
+                'sales_rep'       => (string) ($resolved['rep_scope'] ?? ''),
+                'seller_branch'   => (string) ($resolved['branch_scope'] ?? ''),
+            ];
+        }
+    }
+    return [
+        'seller'          => strtolower(str_replace(' ', '', $clean)),
+        'seller_username' => '',
+        'sales_rep'       => '',
+        'seller_branch'   => '',
+    ];
+}
+
 function collect_attribution_from_post(): array
 {
     $out = [];
@@ -156,6 +188,18 @@ function collect_attribution_from_post(): array
             $out[$k] = $v;
         }
     }
+    $rawSeller = (string) ($out['seller'] ?? '');
+    if ($rawSeller === '') {
+        $rawSeller = (string) ($out['rep'] ?? '');
+    }
+    if ($rawSeller === '') {
+        $rawSeller = clean_line($_COOKIE['sc_seller'] ?? '', 64);
+    }
+    if ($rawSeller === '') {
+        $a = attribution();
+        $rawSeller = (string) ($a['seller'] ?? $a['rep'] ?? '');
+    }
+    $out = array_merge($out, sc_resolve_seller_attribution($rawSeller));
     $out['fbc'] = sc_resolve_fbc($out, clean_line($_POST['fbc'] ?? '', 300));
     $out['fbp'] = sc_resolve_fbp($out, clean_line($_POST['fbp'] ?? '', 300));
     return $out;

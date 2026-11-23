@@ -197,7 +197,7 @@ return static function (array $it, array $seo): array {
                 ],
                 'faqs' => [
                     ['q' => 'Ho già l’assicurazione viaggio del tour operator: basta per fare immersioni?', 'a' => 'Controlla bene le condizioni: la maggior parte delle polizze viaggio standard esclude le immersioni oltre i 10–18 metri o non anticipa i costi della camera iperbarica. In dubbio, con pochi euro sei coperto al 100%!'],
-                    ['q' => 'Quale taglio conviene scegliere per una settimana a Sharm?', 'a' => 'Se ti immergi 3 giorni conviene la polizza 3 Giorni (€20 invece di €21); per 4 o più giorni conviene decisamente la 7 Giorni (€32)!'],
+                    ['q' => 'Quale taglio conviene scegliere per una settimana a Sharm?', 'a' => 'Se ti immergi fino a 3 giorni conviene la polizza 3 Giorni (€15); per una settimana conviene la 7 Giorni (€25), mentre per soggiorni più lunghi sono disponibili i tagli da 10 Giorni (€35) e 14 Giorni (€45)!'],
                     ['q' => 'Se ho la tessera annuale DAN Europe devo comprarla?', 'a' => 'Assolutamente no! Ti basterà mostrarci il numero di polizza DAN in corso di validità al momento del check-in.'],
                 ],
             ];

@@ -6,9 +6,9 @@ declare(strict_types=1);
 
 return [
     'filters' => [
-        'all'        => 'Tous les médias (23)',
+        'all'        => 'Tous les médias (24)',
         'guests'     => 'Nos Plongeurs & Diplômés PADI (5)',
-        'videos'     => 'Vidéos Sous-Marines (3)',
+        'videos'     => 'Vidéos Sous-Marines (4)',
         'underwater' => 'Récifs Coralliens & Plongeurs',
         'courses'    => 'Cours PADI & Enfants',
         'boats'      => 'Yachts & Speedboats',
@@ -39,6 +39,7 @@ return [
         20 => ['title' => 'Sourires d’après-plongée en Mer Rouge', 'caption' => 'Pourquoi plus de 3 082 voyageurs attribuent la note de 4.9★ à Sea College Dive Club sur Google.'],
         21 => ['title' => 'Formation Spécialité Épaves PADI Wreck Diver', 'caption' => 'Techniques de dévidoir, fil d’Ariane et cartographie sur le Dunraven, le Million Hope et le Thistlegorm.'],
         22 => ['title' => 'Bancs de blocs organisés & gonflage Air Enrichi Nitrox', 'caption' => 'Bouteilles aluminium 12L et 15L, Nitrox analysé et équipements révisés prêts chaque matin.'],
+        23 => ['title' => 'Briefing Récifs du Détroit de Tiran — Thomas & Jackson Reef', 'caption' => 'Briefing carte détaillé par notre instructeur PADI à bord : tombants coralliens, lagons sablonneux et courants de Tiran.'],
     ],
 
     'team' => [

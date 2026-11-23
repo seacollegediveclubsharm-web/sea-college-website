@@ -59,34 +59,39 @@ if ($errors) {
 $_SESSION['last_submit'] = time();
 $checkinId = 'ci_' . bin2hex(random_bytes(6));
 
+$attr = collect_attribution_from_post();
+
 $row = [
-    'submitted_at'   => gmdate('c'),
-    'checkin_id'     => $checkinId,
-    'lead_event_id'  => $leadEventId,
-    'lang'           => LANG,
-    'name'           => $name,
-    'phone'          => $phone,
-    'arrival_date'   => $arrivalDate,
-    'hotel'          => $hotel,
-    'room_number'    => $roomNo,
-    'divers_count'   => $diversCount,
-    'cert_agency'    => $agency,
-    'cert_number'    => $certNo,
-    'logged_dives'   => $loggedDives,
-    'last_dive_date' => $lastDiveDate,
-    'height_cm'      => $heightCm,
-    'weight_kg'      => $weightKg,
-    'wetsuit_size'   => $wetsuit,
-    'fin_size'       => $finSize,
-    'bcd_size'       => $bcdSize,
-    'nitrox_request' => $nitroxReq,
-    'medical_flags'  => $medSummary,
-    'medical_waiver' => 'yes',
-    'gear_notes'     => $gearNotes,
+    'submitted_at'    => gmdate('c'),
+    'checkin_id'      => $checkinId,
+    'lead_event_id'   => $leadEventId,
+    'lang'            => LANG,
+    'name'            => $name,
+    'phone'           => $phone,
+    'arrival_date'    => $arrivalDate,
+    'hotel'           => $hotel,
+    'room_number'     => $roomNo,
+    'divers_count'    => $diversCount,
+    'cert_agency'     => $agency,
+    'cert_number'     => $certNo,
+    'logged_dives'    => $loggedDives,
+    'last_dive_date'  => $lastDiveDate,
+    'height_cm'       => $heightCm,
+    'weight_kg'       => $weightKg,
+    'wetsuit_size'    => $wetsuit,
+    'fin_size'        => $finSize,
+    'bcd_size'        => $bcdSize,
+    'nitrox_request'  => $nitroxReq,
+    'medical_flags'   => $medSummary,
+    'medical_waiver'  => 'yes',
+    'gear_notes'      => $gearNotes,
+    'seller'          => (string) ($attr['seller'] ?? ''),
+    'seller_username' => (string) ($attr['seller_username'] ?? ''),
+    'sales_rep'       => (string) ($attr['sales_rep'] ?? ''),
+    'seller_branch'   => (string) ($attr['seller_branch'] ?? ''),
 ];
 
 store_csv('diver_checkins.csv', $row);
-$attr = collect_attribution_from_post();
 require_once dirname(__DIR__) . '/includes/erp_db.php';
 sc_erp_ingest_diver_checkin($row, $attr);
 

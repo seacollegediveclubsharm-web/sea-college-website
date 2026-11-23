@@ -106,6 +106,7 @@ AddDefaultCharset UTF-8
 
   # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/r/([a-zA-Z0-9._-]+)/?$ index.php?lang=$1&seller=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides(\.php)?/?$ guides.php?lang=$1 [L,QSA]
@@ -120,6 +121,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^(services|prices|about|contact|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
   RewriteRule ^check-in/?$ check-in.php [L,QSA]
   RewriteRule ^app/?$ erp-app.php [L,QSA]
+  RewriteRule ^r/([a-zA-Z0-9._-]+)/?$ index.php?seller=$1 [L,QSA]
   RewriteRule ^guides/?$ guides.php [L,QSA]
   RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
   RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]

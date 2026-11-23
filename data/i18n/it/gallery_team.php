@@ -6,9 +6,9 @@ declare(strict_types=1);
 
 return [
     'filters' => [
-        'all'        => 'Tutti i Contenuti (23)',
+        'all'        => 'Tutti i Contenuti (24)',
         'guests'     => 'Ospiti Reali & Brevettati PADI (5)',
-        'videos'     => 'Video Subacquei (3)',
+        'videos'     => 'Video Subacquei (4)',
         'underwater' => 'Barriera Corallina & Sub',
         'courses'    => 'Corsi PADI & Bambini',
         'boats'      => 'Yacht & Motoscafi',
@@ -107,6 +107,10 @@ return [
         22 => [
             'title'   => 'Rastrelliere Bombole Ordinate & Ricariche Nitrox',
             'caption' => 'Bombole in alluminio da 12L e 15L, ricariche Aria Arricchita Nitrox e attrezzature revisionate ogni giorno.',
+        ],
+        23 => [
+            'title'   => 'Briefing Reef Stretto di Tiran — Thomas & Jackson Reef',
+            'caption' => 'Briefing dettagliato su mappa del nostro istruttore PADI su pareti verticali, lagune sabbiose e correnti a Tiran.',
         ],
     ],
 

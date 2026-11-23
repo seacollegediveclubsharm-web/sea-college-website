@@ -9,6 +9,7 @@ $catalog = require ROOT_DIR . '/data/catalog.php';
 $galData = require ROOT_DIR . '/data/gallery_team.php';
 
 $page['id'] = 'home';
+$page['canonical_path'] = '/';
 $page['title'] = t('meta_home_title');
 $page['description'] = t('meta_home_desc');
 $page['schema'] = [schema_faq([1, 2, 3, 4, 5, 6])];
@@ -34,6 +35,7 @@ require ROOT_DIR . '/includes/header.php';
     <img class="hero__bg" src="<?= e(asset('images/hero.jpg')) ?>" alt="" width="1600" height="960" fetchpriority="high" loading="eager" decoding="async">
   </picture>
   <div class="container hero__inner">
+    <?= sc_render_seller_referral_pill() ?>
     <p class="eyebrow"><?= te('hero_eyebrow') ?></p>
     <h1><?= te('hero_title') ?></h1>
     <p class="hero__sub"><?= te('hero_sub') ?></p>

@@ -75,23 +75,23 @@ $buildRental = static function (
     ];
 };
 
-$buildInsurance = static function (int $days, string $tripFitEn, string $tripFitAr): array {
+$buildInsurance = static function (int $days, int $price, string $tripFitEn, string $tripFitAr): array {
     return [
         'h1' => [
-            'en' => "Short-Term Diving Insurance ({$days} Days) in Sharm El Sheikh — Hyperbaric Coverage",
-            'ar' => "تأمين الغوص قصير المدة ({$days} أيام) في شرم الشيخ — تغطية غرفة الضغط",
+            'en' => "Short-Term Diving Insurance ({$days} Days) in Sharm El Sheikh — Hyperbaric Coverage (€{$price})",
+            'ar' => "تأمين الغوص قصير المدة ({$days} أيام) في شرم الشيخ — تغطية غرفة الضغط ({$price}€)",
         ],
         'meta_title' => [
-            'en' => "{$days}-Day Scuba Diving Insurance Sharm El Sheikh | Sea College",
-            'ar' => "تأمين الغوص لمدة {$days} أيام في شرم الشيخ | سي كوليدج دايف كلوب",
+            'en' => "{$days}-Day Scuba Diving Insurance Sharm El Sheikh | €{$price} | Sea College",
+            'ar' => "تأمين الغوص لمدة {$days} أيام في شرم الشيخ ({$price}€) | سي كوليدج دايف كلوب",
         ],
         'meta_desc' => [
-            'en' => "Arrange {$days}-day short-term scuba diving & hyperbaric chamber insurance at Sea College Dive Club in Sharm El Sheikh. Instant on-site activation.",
-            'ar' => "احصل على تأمين الغوص وتغطية غرفة الضغط لمدة {$days} أيام في شرم الشيخ عبر سي كوليدج دايف كلوب بتفعيل فوري قبل الغوص.",
+            'en' => "Arrange {$days}-day short-term scuba diving & hyperbaric chamber insurance (€{$price}) at Sea College Dive Club in Sharm El Sheikh. Instant on-site activation.",
+            'ar' => "احصل على تأمين الغوص وتغطية غرفة الضغط لمدة {$days} أيام ({$price}€) في شرم الشيخ عبر سي كوليدج دايف كلوب بتفعيل فوري قبل الغوص.",
         ],
         'aeo_answer' => [
-            'en' => "Sea College Dive Club offers {$days}-day Short-Term Scuba Diving Insurance in Sharm El Sheikh (current underwriter tariff confirmed at booking/check-in). Standard travel policies frequently exclude scuba depth or hyperbaric oxygen therapy; this {$days}-day plan provides dedicated Red Sea decompression chamber and diving medical emergency coverage across your dive days.",
-            'ar' => "يوفر مركز سي كوليدج دايف كلوب تأمين غوص قصير المدة لمدة {$days} أيام في شرم الشيخ (يُؤكد السعر الرسمي لجهة التأمين عند الحجز أو تسجيل الوصول). تغطي هذه الوثيقة نفقات الطوارئ الطبية الخاصة بالغوص وعلاج غرفة إعادة الضغط طوال {$days} أيام.",
+            'en' => "Sea College Dive Club offers {$days}-day Short-Term Scuba Diving Insurance in Sharm El Sheikh for €{$price} per person. Standard travel policies frequently exclude scuba depth or hyperbaric oxygen therapy; this {$days}-day plan provides dedicated Red Sea decompression chamber and diving medical emergency coverage across your dive days.",
+            'ar' => "يوفر مركز سي كوليدج دايف كلوب تأمين غوص قصير المدة لمدة {$days} أيام في شرم الشيخ بتكلفة {$price}€ للفرد. تغطي هذه الوثيقة نفقات الطوارئ الطبية الخاصة بالغوص وعلاج غرفة إعادة الضغط طوال {$days} أيام.",
         ],
         'overview' => [
             'en' => [
@@ -105,7 +105,7 @@ $buildInsurance = static function (int $days, string $tripFitEn, string $tripFit
         ],
         'specs' => [
             ['Coverage Window', 'مدة التغطية', "{$days} consecutive days", "{$days} أيام متتالية"],
-            ['Price', 'السعر', 'On request (official Egyptian/DAN short-term tariff at check-in)', 'عند الطلب (بسعر الوثيقة الرسمي عند الحجز)'],
+            ['Price', 'السعر', "€{$price} per person ({$days} days)", "{$price}€ للفرد ({$days} أيام)"],
             ['Covered Scope', 'نطاق التغطية', 'Hyperbaric chamber & acute diving medical emergencies in Egypt', 'غرفة إعادة الضغط والطوارئ الطبية المرتبطة بالغوص'],
             ['Bundle Note', 'ملاحظة العروض', 'Already INCLUDED free inside our 4 PADI Course Bundles!', 'مشمول مجانًا بالفعل ضمن باقات عروض الدورات الأربع!'],
         ],
@@ -603,21 +603,25 @@ return [
     /* ==================== SHORT-TERM DIVING INSURANCE ==================== */
     'ins-3' => $buildInsurance(
         3,
+        15,
         'Tailored for weekend breaks, 1- to 3-day certified dive packages (`2 Dives` up to `6 Dives`) or short PADI Specialty courses in Sharm El Sheikh.',
         'مصمم لعطلات نهاية الأسبوع وباقات الغوص القصيرة من يوم إلى 3 أيام (من غطستين حتى 6 غطسات) أو دورات التخصص السريعة.'
     ),
     'ins-7' => $buildInsurance(
         7,
+        25,
         'Our most popular short-term policy — covers a full 1-week Sharm El Sheikh diving holiday (such as an 8- or 10-Dive Package or Open Water + fun dives).',
         'الوثيقة الأكثر طلبًا لدينا — تغطي أسبوع إجازة كاملًا في شرم الشيخ (مثل باقة 8 أو 10 غطسات أو دورة Open Water متبوعة بغطسات ترفيهية).'
     ),
     'ins-10' => $buildInsurance(
         10,
+        35,
         'Built for 10-night Red Sea holidays combining multi-day Ras Mohammed, Tiran, SS Thistlegorm and Dahab excursions.',
         'مناسبة لإجازات الـ10 ليالٍ في شرم الشيخ التي تجمع بين باقات الغوص المتعددة ورحلات ثيستلجورم ودهب.'
     ),
     'ins-14' => $buildInsurance(
         14,
+        45,
         'Covers a full two-week Red Sea stay or back-to-back PADI courses plus 10+ fun dives in Sharm El Sheikh.',
         'تغطي إقامة أسبوعين كاملين في البحر الأحمر للغواصين المكثفين أو الجمع بين عدة دورات وباقات غوص.'
     ),

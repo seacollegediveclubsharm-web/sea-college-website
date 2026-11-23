@@ -185,14 +185,182 @@ define('SMTP_USER', sc_env('SMTP_USER', ''));
 define('SMTP_PASS', sc_env('SMTP_PASS', ''));                // secret: env only
 define('MAIL_FROM', sc_env('MAIL_FROM', SMTP_USER !== '' ? SMTP_USER : 'no-reply@seacollegediveclub.com'));
 define('CRM_WEBHOOK_URL', sc_env('CRM_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec')); // Leads & OCT CRM Sheet webhook
-define('LEADS_STORAGE_DIR', dirname(__DIR__) . '/storage');
+define('LEADS_STORAGE_DIR', sc_env('LEADS_STORAGE_DIR', dirname(__DIR__) . '/storage'));
 define('RATE_LIMIT_SECONDS', 20);                             // min seconds between submissions per session
 
 /* ---------------------------------------------------------------
- * Attribution
+ * Attribution & Canonical 18-Seller Directory (Zero-DB Public Resolver)
  * ------------------------------------------------------------- */
-define('UTM_KEYS', ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid']);
+define('UTM_KEYS', ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'seller', 'rep']);
 define('UTM_COOKIE_DAYS', 90);
+
+define('SC_SELLERS_DIRECTORY', [
+    'fady' => [
+        'username' => 'fady.sales', 'referral_code' => 'fady', 'rep_scope' => 'FADY', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Fady', 'name_ar' => 'فادي',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['fady', 'fadysales', 'فادى', 'فادي'],
+    ],
+    'adel' => [
+        'username' => 'adel.sales', 'referral_code' => 'adel', 'rep_scope' => 'ADEL', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Adel', 'name_ar' => 'عادل',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['adel', 'adelsales', 'عادل'],
+    ],
+    'moali' => [
+        'username' => 'moali.sales', 'referral_code' => 'moali', 'rep_scope' => 'MO.ALI', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Mohamed Ali', 'name_ar' => 'محمد علي',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['moali', 'moalisales', 'mali', 'mohamedali', 'mohammedali', 'محمدعلى', 'محمدعلي'],
+    ],
+    'sqran' => [
+        'username' => 'sqran.sales', 'referral_code' => 'sqran', 'rep_scope' => 'SQRAN', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Ahmed El-Sakran', 'name_ar' => 'أحمد السكران',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['sqran', 'sqransales', 'saqran', 'sakran', 'ssqran', 'elsakran', 'سكران', 'السكران'],
+    ],
+    'zola' => [
+        'username' => 'zola.sales', 'referral_code' => 'zola', 'rep_scope' => 'ZOLA', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Zola', 'name_ar' => 'زولا',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['zola', 'zolasales', 'zonfol', 'زولا', 'زنفل'],
+    ],
+    'edy' => [
+        'username' => 'edy.sales', 'referral_code' => 'edy', 'rep_scope' => 'EDY', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Edy', 'name_ar' => 'إيدي',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['edy', 'edysales', 'edward', 'ادي', 'إيدي', 'ادوارد', 'إدوارد'],
+    ],
+    'yassin' => [
+        'username' => 'yassin.sales', 'referral_code' => 'yassin', 'rep_scope' => 'YASSIN', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Yassin', 'name_ar' => 'ياسين',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['yassin', 'yassinsales', 'yassen', 'yaseen', 'ياسين', 'يس'],
+    ],
+    'alishawky' => [
+        'username' => 'alishawky.sales', 'referral_code' => 'alishawky', 'rep_scope' => 'ALI SHAWKY', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Ali Shawky', 'name_ar' => 'علي شوقي',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['alishawky', 'alishawkysales', 'علىشوقى', 'عليشوقي'],
+    ],
+    'ammar' => [
+        'username' => 'ammar.sales', 'referral_code' => 'ammar', 'rep_scope' => 'AMMAR', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Ammar', 'name_ar' => 'عمار',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['ammar', 'ammarsales', 'amar', 'عمار'],
+    ],
+    'moabdo' => [
+        'username' => 'moabdo.sales', 'referral_code' => 'moabdo', 'rep_scope' => 'MO.ABDO', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Mohamed Abdo', 'name_ar' => 'محمد عبده',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['moabdo', 'moabdosales', 'mabdo', 'abdo', 'mohamedabdo', 'محمدعبده', 'محمدعبدالرحمن'],
+    ],
+    'mando' => [
+        'username' => 'mando.sales', 'referral_code' => 'mando', 'rep_scope' => 'MANDO', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Mando', 'name_ar' => 'ماندو',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['mando', 'mandosales', 'ماندو'],
+    ],
+    'chicago' => [
+        'username' => 'chicago.sales', 'referral_code' => 'chicago', 'rep_scope' => 'CHICAGO', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Ali Chicago', 'name_ar' => 'علي شيكاغو',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['chicago', 'chicagosales', 'chacago', 'chikago', 'alichicago', 'alichacago', 'شيكاغو', 'شيكاجو'],
+    ],
+    'khairy' => [
+        'username' => 'khairy.sales', 'referral_code' => 'khairy', 'rep_scope' => 'KHAIRY', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Khairy', 'name_ar' => 'خيري',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['khairy', 'khairysales', 'khiry', 'خيرى', 'خيري'],
+    ],
+    'eldeeb' => [
+        'username' => 'eldeeb.sales', 'referral_code' => 'eldeeb', 'rep_scope' => 'ELDEEB', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Eldeeb', 'name_ar' => 'الديب',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['eldeeb', 'eldeebsales', 'eldib', 'deeb', 'الديب'],
+    ],
+    'fawzy' => [
+        'username' => 'fawzy.sales', 'referral_code' => 'fawzy', 'rep_scope' => 'FAWZY', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Fawzy', 'name_ar' => 'فوزي',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['fawzy', 'fawzysales', 'fawzi', 'فوزى', 'فوزي'],
+    ],
+    'lemo' => [
+        'username' => 'lemo.sales', 'referral_code' => 'lemo', 'rep_scope' => 'LEMO', 'branch_scope' => 'DREAMS_FAYROUZ',
+        'name_en' => 'Lemo', 'name_ar' => 'ليمو',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['lemo', 'lemosales', 'limo', 'ليمو'],
+    ],
+    'shaldm' => [
+        'username' => 'shaldm.sales', 'referral_code' => 'shaldm', 'rep_scope' => 'SHALDM', 'branch_scope' => 'CYRENE',
+        'name_en' => 'Ahmed Shaldm', 'name_ar' => 'أحمد شلضم',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['shaldm', 'shaldmsales', 'shaldam', 'shaltam', 'شلضم', 'شلطم'],
+    ],
+    'amrhesham' => [
+        'username' => 'amrhesham.sales', 'referral_code' => 'amrhesham', 'rep_scope' => 'AMR HESHAM', 'branch_scope' => 'JETTY',
+        'name_en' => 'Amr Hesham', 'name_ar' => 'عمرو هشام',
+        'default_comm_insheet_pct' => 0.10, 'default_comm_outside_pct' => 0.25,
+        'aliases' => ['amrhesham', 'amrheshamsales', 'amr', 'عمروهشام'],
+    ],
+]);
+
+if (!function_exists('sc_resolve_seller_public')) {
+    function sc_resolve_seller_public(?string $raw): ?array
+    {
+        if ($raw === null) {
+            return null;
+        }
+        $s = trim($raw);
+        if ($s === '') {
+            return null;
+        }
+        static $lookup = null;
+        if ($lookup === null) {
+            $lookup = [];
+            foreach (SC_SELLERS_DIRECTORY as $code => $info) {
+                $lookup[$code] = $info;
+                $lookup[strtolower($info['username'])] = $info;
+                $lookup[preg_replace('/[\s._\-]+/u', '', strtolower($info['rep_scope']))] = $info;
+                foreach ($info['aliases'] as $al) {
+                    $lookup[preg_replace('/[\s._\-]+/u', '', mb_strtolower($al, 'UTF-8'))] = $info;
+                }
+            }
+        }
+        $clean = preg_replace('/^(?:out|os|rep|seller)[\s._\-:]+/iu', '', $s) ?? $s;
+        $clean = preg_replace('/\.sales$/i', '', trim($clean)) ?? trim($clean);
+        $candidates = [$clean];
+        if (preg_match('/[\-\/]/', $clean)) {
+            foreach (preg_split('/[\-\/]+/', $clean) ?: [] as $part) {
+                if (trim($part) !== '') {
+                    $candidates[] = trim($part);
+                }
+            }
+        }
+        foreach ($candidates as $cand) {
+            $key = preg_replace('/[\s._\-]+/u', '', mb_strtolower($cand, 'UTF-8')) ?? '';
+            if ($key !== '' && isset($lookup[$key])) {
+                return $lookup[$key];
+            }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('sc_normalize_seller_token')) {
+    function sc_normalize_seller_token(?string $raw): string
+    {
+        if ($raw === null) {
+            return '';
+        }
+        $resolved = sc_resolve_seller_public($raw);
+        if ($resolved !== null) {
+            return (string) $resolved['referral_code'];
+        }
+        $fallback = strtolower(trim((string) preg_replace('/[^a-zA-Z0-9._\-]/', '', $raw), '._-'));
+        return substr($fallback, 0, 64);
+    }
+}
 
 /* ---------------------------------------------------------------
  * Live Google Sheet EUR Price & Instant Discount Sync

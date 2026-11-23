@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 return [
     'filters' => [
-        'all'        => 'Alle Aufnahmen (23)',
+        'all'        => 'Alle Aufnahmen (24)',
         'guests'     => 'Echte Gäste & PADI Absolventen (5)',
-        'videos'     => 'Unterwasservideos (3)',
+        'videos'     => 'Unterwasservideos (4)',
         'underwater' => 'Korallenriffe & Taucher',
         'courses'    => 'PADI Kurse & Kinder',
         'boats'      => 'Tauchboote & Schnellboote',
@@ -105,6 +105,10 @@ return [
         22 => [
             'title'   => 'Aufgeräumte Flaschenbänke & Nitrox-Füllstation',
             'caption' => '12L- & 15L-Aluflaschen, Enriched Air Nitrox und frisch gewartete Leihausrüstung täglich einsatzbereit.',
+        ],
+        23 => [
+            'title'   => 'Riff-Briefing Straße von Tiran — Thomas & Jackson Reef',
+            'caption' => 'Detailliertes PADI-Kartenbriefing an Bord zu Steilwänden, Sandlagunen und Strömungen vor der Insel Tiran.',
         ],
     ],
 

@@ -86,6 +86,9 @@ return [
         'checkin_advise_review' => '⚠️ Last dive > 12 months ago: per PADI & CDWS safety rules, a Scuba Review refresher (€50) is required before boat dives.',
         'checkin_wa_btn' => 'Send Check-In Summary via WhatsApp',
         'checkin_wa_header' => 'Pre-Arrival Diver Check-In Summary:',
+        'seller_ref_badge' => 'Verified Concierge',
+        'seller_ref_text' => 'Referred by {name} · Sea College Dive Team',
+        'seller_ref_note' => 'Official direct EUR rates',
     ],
 
     'ar' => [
@@ -161,6 +164,9 @@ return [
         'checkin_advise_review' => '⚠️ آخر غطسة قبل أكثر من 12 شهرًا: وفق قواعد السلامة في PADI وCDWS يلزم برنامج Scuba Review (50€) قبل غطسات القارب.',
         'checkin_wa_btn' => 'إرسال ملخص التسجيل عبر واتساب',
         'checkin_wa_header' => 'ملخص تسجيل الوصول المسبق للغواص:',
+        'seller_ref_badge' => 'مستشار معتمد',
+        'seller_ref_text' => 'بإشراف {name} · فريق سي كوليدج للغوص',
+        'seller_ref_note' => 'الأسعار الرسمية المباشرة',
     ],
 
     'ru' => [
@@ -236,6 +242,9 @@ return [
         'checkin_advise_review' => '⚠️ Перерыв > 12 месяцев: по правилам безопасности PADI и CDWS перед яхтой требуется программа Scuba Review (€50).',
         'checkin_wa_btn' => 'Отправить чек-ин в WhatsApp',
         'checkin_wa_header' => 'Данные онлайн чек-ина дайвера:',
+        'seller_ref_badge' => 'Личный консультант',
+        'seller_ref_text' => 'Ваш гид-консультант: {name} · Sea College',
+        'seller_ref_note' => 'Официальные прямые цены в EUR',
     ],
 
     'it' => [
@@ -311,6 +320,9 @@ return [
         'checkin_advise_review' => '⚠️ Ultima immersione > 12 mesi fa: per sicurezza PADI e CDWS è richiesto lo Scuba Review (€50) prima della barca.',
         'checkin_wa_btn' => 'Invia Riepilogo Check-In su WhatsApp',
         'checkin_wa_header' => 'Riepilogo Check-In Sub Pre-Arrivo:',
+        'seller_ref_badge' => 'Consulente Ufficiale',
+        'seller_ref_text' => 'Assistenza dedicata: {name} · Team Sea College',
+        'seller_ref_note' => 'Tariffe ufficiali dirette in EUR',
     ],
 
     'pl' => [
@@ -386,6 +398,9 @@ return [
         'checkin_advise_review' => '⚠️ Przerwa > 12 miesięcy: zgodnie z zasadami PADI i CDWS przed łodzią wymagane jest odświeżenie Scuba Review (50 €).',
         'checkin_wa_btn' => 'Wyślij Odprawę przez WhatsApp',
         'checkin_wa_header' => 'Podsumowanie Odprawy Nurkowej Online:',
+        'seller_ref_badge' => 'Oficjalny Doradca',
+        'seller_ref_text' => 'Twój opiekun: {name} · Zespół Sea College',
+        'seller_ref_note' => 'Oficjalne ceny bezpośrednie w EUR',
     ],
 
     'de' => [
@@ -461,6 +476,9 @@ return [
         'checkin_advise_review' => '⚠️ Letzter Tauchgang > 12 Monate her: gemäß PADI- & CDWS-Regeln ist vor Bootstauchgängen ein Scuba Review (50 €) erforderlich.',
         'checkin_wa_btn' => 'Check-In per WhatsApp senden',
         'checkin_wa_header' => 'Vorab-Taucher-Check-In Zusammenfassung:',
+        'seller_ref_badge' => 'Verifizierter Berater',
+        'seller_ref_text' => 'Persönliche Betreuung: {name} · Sea College Team',
+        'seller_ref_note' => 'Offizielle Direktpreise in EUR',
     ],
 
     'fr' => [
@@ -536,6 +554,9 @@ return [
         'checkin_advise_review' => '⚠️ Dernière plongée > 12 mois : selon les règles PADI et CDWS, un Scuba Review (50 €) est requis avant le bateau.',
         'checkin_wa_btn' => 'Envoyer le Check-In sur WhatsApp',
         'checkin_wa_header' => 'Récapitulatif Check-In Plongeur Pré-Arrivée :',
+        'seller_ref_badge' => 'Conseiller Vérifié',
+        'seller_ref_text' => 'Votre conseiller dédié : {name} · Équipe Sea College',
+        'seller_ref_note' => 'Tarifs officiels directs en EUR',
     ],
 
     'zh' => [
@@ -611,5 +632,8 @@ return [
         'checkin_advise_review' => '⚠️ 距上次潜水超过 12 个月：根据 PADI 与红海 CDWS 安全规定，船潜前需完成水肺复习 Scuba Review（€50）。',
         'checkin_wa_btn' => '通过 WhatsApp 发送登记摘要',
         'checkin_wa_header' => '潜水员行前登记摘要：',
+        'seller_ref_badge' => '官方认证顾问',
+        'seller_ref_text' => '专属潜水顾问：{name} · Sea College 官方团队',
+        'seller_ref_note' => '官方直订欧元透明价',
     ],
 ];

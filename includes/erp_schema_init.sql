@@ -48,14 +48,18 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_url TEXT NOT NULL DEFAULT '',
     bio_notes TEXT NOT NULL DEFAULT '',
     role_code TEXT NOT NULL,
-    branch_scope TEXT NOT NULL DEFAULT 'ALL',   -- ALL, CYRENE, JETTY, JAZ, WEBSITE
+    branch_scope TEXT NOT NULL DEFAULT 'ALL',   -- ALL, CYRENE, DREAMS_FAYROUZ, JETTY, JAZ, WEBSITE
     vessel_scope TEXT NOT NULL DEFAULT 'ALL',   -- ALL, or comma-separated e.g. 'OCEANO,OMAR_4' for Fleet Partners
     rep_scope TEXT NOT NULL DEFAULT '',         -- Sales rep filter e.g. 'FADY' so reps only see own vouchers/commissions
+    referral_code TEXT NOT NULL DEFAULT '',     -- Lowercase QR slug e.g. 'fady' -> /r/fady
+    default_comm_insheet_pct REAL NOT NULL DEFAULT 0.10,
+    default_comm_outside_pct REAL NOT NULL DEFAULT 0.25,
     is_active INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL DEFAULT '',
     FOREIGN KEY (role_code) REFERENCES roles(role_code)
 );
+CREATE INDEX IF NOT EXISTS idx_users_referral ON users(referral_code);
 CREATE TABLE IF NOT EXISTS audit_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at TEXT NOT NULL,
@@ -187,14 +191,16 @@ CREATE TABLE IF NOT EXISTS pnl_monthly_lines (
     period_month TEXT NOT NULL,    -- YYYY-MM
     period_quarter TEXT NOT NULL,  -- YYYY-Qn
     period_year TEXT NOT NULL,     -- YYYY
-    branch_code TEXT NOT NULL,     -- CYRENE, JETTY
+    branch_code TEXT NOT NULL,     -- CYRENE, JETTY, JAZ, ELIMINATION
     section_type TEXT NOT NULL,    -- CASH_REV, ACCRUED_REV, TOTAL_REV, CASH_EXP, ACCRUED_EXP, TOTAL_EXP, NET_PROFIT
     line_name_ar TEXT NOT NULL,
     line_name_en TEXT NOT NULL,
     trip_or_cost_group TEXT NOT NULL,
     amount_egp REAL NOT NULL DEFAULT 0,
     cost_ratio REAL DEFAULT NULL,
-    source_file TEXT NOT NULL
+    source_file TEXT NOT NULL,
+    is_interbranch INTEGER NOT NULL DEFAULT 0,
+    cost_pct_of_rev REAL DEFAULT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_pnl_period ON pnl_monthly_lines(period_year, period_quarter, period_month, branch_code);
 CREATE TABLE IF NOT EXISTS daily_revenue_fact (
@@ -308,11 +314,29 @@ CREATE TABLE IF NOT EXISTS reservations_fact (
     vessel_code TEXT NOT NULL DEFAULT '',
     boarding_status TEXT NOT NULL DEFAULT 'COMPLETED',
     payment_status TEXT NOT NULL DEFAULT 'SETTLED',
-    source_file TEXT NOT NULL DEFAULT ''
-, section_banner TEXT NOT NULL DEFAULT '', booking_state TEXT NOT NULL DEFAULT 'EXECUTED', cancelled_pax INTEGER NOT NULL DEFAULT 0, rest_visa_egp REAL NOT NULL DEFAULT 0, desk_paid_egp REAL NOT NULL DEFAULT 0, ar_client_code TEXT NOT NULL DEFAULT '', ap_supplier_code TEXT NOT NULL DEFAULT '', accounting_status TEXT NOT NULL DEFAULT 'POSTED_TO_GL', journal_entry_no TEXT NOT NULL DEFAULT '');
+    source_file TEXT NOT NULL DEFAULT '',
+    section_banner TEXT NOT NULL DEFAULT '',
+    booking_state TEXT NOT NULL DEFAULT 'EXECUTED',
+    cancelled_pax INTEGER NOT NULL DEFAULT 0,
+    rest_visa_egp REAL NOT NULL DEFAULT 0,
+    desk_paid_egp REAL NOT NULL DEFAULT 0,
+    ar_client_code TEXT NOT NULL DEFAULT '',
+    ap_supplier_code TEXT NOT NULL DEFAULT '',
+    accounting_status TEXT NOT NULL DEFAULT 'POSTED_TO_GL',
+    journal_entry_no TEXT NOT NULL DEFAULT '',
+    seller_type TEXT NOT NULL DEFAULT 'HOTEL_SELLER',
+    seller_username TEXT NOT NULL DEFAULT '',
+    deposit_egp_equiv REAL NOT NULL DEFAULT 0,
+    supplier_cost_egp REAL NOT NULL DEFAULT 0,
+    supplier_offset_egp REAL NOT NULL DEFAULT 0,
+    seller_commission_egp REAL NOT NULL DEFAULT 0,
+    commission_type TEXT NOT NULL DEFAULT 'NONE',
+    commission_status TEXT NOT NULL DEFAULT 'NONE'
+);
 CREATE INDEX IF NOT EXISTS idx_res_dates ON reservations_fact(trip_date, period_month, period_quarter, period_year);
 CREATE INDEX IF NOT EXISTS idx_res_rep ON reservations_fact(sales_rep, client_agency, product_category);
 CREATE INDEX IF NOT EXISTS idx_res_vo ON reservations_fact(voucher_no);
+CREATE INDEX IF NOT EXISTS idx_res_seller_user ON reservations_fact(seller_username, period_month, booking_state);
 CREATE TABLE IF NOT EXISTS vessel_trips_fact (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     trip_date TEXT NOT NULL,
@@ -429,8 +453,11 @@ CREATE TABLE IF NOT EXISTS website_leads_crm (
     utm_source TEXT NOT NULL DEFAULT '',
     utm_campaign TEXT NOT NULL DEFAULT '',
     assigned_to TEXT NOT NULL DEFAULT 'LARA',
-    linked_voucher_no TEXT NOT NULL DEFAULT ''
+    linked_voucher_no TEXT NOT NULL DEFAULT '',
+    seller_username TEXT NOT NULL DEFAULT '',
+    sales_rep_code TEXT NOT NULL DEFAULT ''
 );
+CREATE INDEX IF NOT EXISTS idx_leads_seller ON website_leads_crm(seller_username, received_at);
 CREATE TABLE IF NOT EXISTS journal_entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     entry_no TEXT UNIQUE NOT NULL,
@@ -503,3 +530,131 @@ CREATE TABLE IF NOT EXISTS trial_feedback (
     status TEXT NOT NULL DEFAULT 'OPEN',               -- OPEN, IN_PROGRESS, RESOLVED
     admin_reply TEXT NOT NULL DEFAULT ''
 );
+
+CREATE TABLE IF NOT EXISTS seller_commissions_ledger (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL DEFAULT '',
+    period_month TEXT NOT NULL DEFAULT '',
+    tx_date TEXT NOT NULL DEFAULT '',
+    seller_username TEXT NOT NULL DEFAULT '',
+    rep_scope TEXT NOT NULL DEFAULT '',
+    branch_code TEXT NOT NULL DEFAULT 'CYRENE',
+    source_channel TEXT NOT NULL DEFAULT '',
+    commission_type TEXT NOT NULL DEFAULT 'INSHEET_10',
+    voucher_no TEXT NOT NULL DEFAULT '',
+    lead_event_id TEXT NOT NULL DEFAULT '',
+    guest_name TEXT NOT NULL DEFAULT '',
+    product_name TEXT NOT NULL DEFAULT '',
+    pax INTEGER NOT NULL DEFAULT 0,
+    gross_amount_egp REAL NOT NULL DEFAULT 0,
+    supplier_cost_egp REAL NOT NULL DEFAULT 0,
+    commissionable_base_egp REAL NOT NULL DEFAULT 0,
+    commission_rate REAL NOT NULL DEFAULT 0,
+    commission_egp REAL NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'PENDING_EXECUTION',
+    journal_entry_no TEXT NOT NULL DEFAULT '',
+    notes TEXT NOT NULL DEFAULT '',
+    UNIQUE(voucher_no, seller_username, source_channel)
+);
+CREATE INDEX IF NOT EXISTS idx_scl_seller_month ON seller_commissions_ledger(seller_username, period_month, status);
+CREATE INDEX IF NOT EXISTS idx_scl_branch_month ON seller_commissions_ledger(branch_code, period_month);
+
+CREATE TABLE IF NOT EXISTS reservation_payment_legs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    voucher_no TEXT NOT NULL DEFAULT '',
+    trip_date TEXT NOT NULL DEFAULT '',
+    period_month TEXT NOT NULL DEFAULT '',
+    leg_source TEXT NOT NULL DEFAULT 'REST',
+    payment_method TEXT NOT NULL DEFAULT 'CASH',
+    currency TEXT NOT NULL DEFAULT 'EGP',
+    orig_amount REAL NOT NULL DEFAULT 0,
+    fx_rate REAL NOT NULL DEFAULT 1,
+    egp_equiv REAL NOT NULL DEFAULT 0,
+    collector_party TEXT NOT NULL DEFAULT 'SEA_COLLEGE',
+    raw_token TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_rpl_month_vo ON reservation_payment_legs(period_month, voucher_no);
+
+CREATE TABLE IF NOT EXISTS bank_balances_monthly (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    period_month TEXT NOT NULL,
+    bank_code TEXT NOT NULL,
+    bank_name_ar TEXT NOT NULL,
+    bank_name_en TEXT NOT NULL,
+    account_masked TEXT NOT NULL,
+    is_operating_bank INTEGER NOT NULL DEFAULT 1,
+    bal_egp REAL NOT NULL DEFAULT 0,
+    bal_usd REAL NOT NULL DEFAULT 0,
+    bal_eur REAL NOT NULL DEFAULT 0,
+    bal_gbp REAL NOT NULL DEFAULT 0,
+    fx_usd REAL NOT NULL DEFAULT 50,
+    fx_eur REAL NOT NULL DEFAULT 57,
+    fx_gbp REAL NOT NULL DEFAULT 65,
+    total_egp_equiv REAL NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_bank_bal_month ON bank_balances_monthly(period_month, bank_code);
+
+CREATE TABLE IF NOT EXISTS open_balances_monthly (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    period_month TEXT NOT NULL,
+    side TEXT NOT NULL,
+    category TEXT NOT NULL,
+    party_name_ar TEXT NOT NULL,
+    party_name_en TEXT NOT NULL,
+    party_code TEXT NOT NULL DEFAULT '',
+    amount_egp REAL NOT NULL DEFAULT 0,
+    orig_currency_note TEXT NOT NULL DEFAULT '',
+    sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_open_bal_month ON open_balances_monthly(period_month, side, sort_order);
+
+CREATE TABLE IF NOT EXISTS charter_trips_monthly (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    period_month TEXT NOT NULL,
+    direction TEXT NOT NULL,
+    trip_date TEXT NOT NULL,
+    boat_name TEXT NOT NULL,
+    counterparty_name TEXT NOT NULL,
+    adults INTEGER NOT NULL DEFAULT 0,
+    children INTEGER NOT NULL DEFAULT 0,
+    infants INTEGER NOT NULL DEFAULT 0,
+    trip_description TEXT NOT NULL DEFAULT '',
+    total_egp REAL NOT NULL DEFAULT 0,
+    paid_or_collected_egp REAL NOT NULL DEFAULT 0,
+    remaining_egp REAL NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_charter_month ON charter_trips_monthly(period_month, direction, trip_date);
+
+CREATE TABLE IF NOT EXISTS partner_statements_monthly (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    period_month TEXT NOT NULL,
+    schedule_code TEXT NOT NULL,
+    schedule_title_ar TEXT NOT NULL,
+    schedule_title_en TEXT NOT NULL,
+    tx_date TEXT NOT NULL DEFAULT '',
+    line_description_ar TEXT NOT NULL,
+    line_description_en TEXT NOT NULL DEFAULT '',
+    debit_egp REAL NOT NULL DEFAULT 0,
+    credit_egp REAL NOT NULL DEFAULT 0,
+    balance_egp REAL NOT NULL DEFAULT 0,
+    currency_note TEXT NOT NULL DEFAULT '',
+    sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_partner_stmt_month ON partner_statements_monthly(period_month, schedule_code, sort_order);
+
+CREATE TABLE IF NOT EXISTS supermarket_monthly_lines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    period_month TEXT NOT NULL,
+    tx_date TEXT NOT NULL,
+    oceano_guest REAL NOT NULL DEFAULT 0,
+    oceano_staff REAL NOT NULL DEFAULT 0,
+    nizar_guest REAL NOT NULL DEFAULT 0,
+    nizar_staff REAL NOT NULL DEFAULT 0,
+    omar4_guest REAL NOT NULL DEFAULT 0,
+    omar4_staff REAL NOT NULL DEFAULT 0,
+    external_boats REAL NOT NULL DEFAULT 0,
+    daily_total_egp REAL NOT NULL DEFAULT 0,
+    payment_egp REAL NOT NULL DEFAULT 0,
+    notes TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_supermarket_month ON supermarket_monthly_lines(period_month, tx_date);

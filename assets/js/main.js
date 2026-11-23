@@ -174,8 +174,74 @@
     return m ? decodeURIComponent(m[1]) : '';
   }
 
+  var SELLER_TTL_MS = 90 * 86400 * 1000;
+  function cleanSellerSlug(v) {
+    var s = String(v || '').trim().replace(/[^a-zA-Z0-9._\- ]/g, '').trim();
+    return s.slice(0, 64);
+  }
+  function readStoredSeller() {
+    try {
+      var raw = localStorage.getItem('sc_seller');
+      if (!raw) { return ''; }
+      if (raw.charAt(0) === '{') {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !parsed.value) { return ''; }
+        if (parsed.ts && (Date.now() - Number(parsed.ts)) > SELLER_TTL_MS) {
+          localStorage.removeItem('sc_seller');
+          return '';
+        }
+        return cleanSellerSlug(parsed.value);
+      }
+      if (raw.charAt(0) === '"') { return cleanSellerSlug(JSON.parse(raw)); }
+      return cleanSellerSlug(raw);
+    } catch (e) { return ''; }
+  }
+  function writeSellerPersistence(slug, setCookieToo) {
+    var clean = cleanSellerSlug(slug);
+    if (!clean) { return ''; }
+    try {
+      localStorage.setItem('sc_seller', JSON.stringify({ value: clean, ts: Date.now() }));
+    } catch (e) { /* private mode */ }
+    if (setCookieToo) {
+      try {
+        var sec = location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = 'sc_seller=' + encodeURIComponent(clean) + '; Max-Age=' + (90 * 86400) + '; Path=/; SameSite=Lax' + sec;
+      } catch (e2) { /* ignore */ }
+    }
+    return clean;
+  }
+  var activeSeller = (function () {
+    var fromUrl = '';
+    try {
+      var sp = new URLSearchParams(location.search);
+      fromUrl = cleanSellerSlug(sp.get('seller') || sp.get('rep') || '');
+      if (!fromUrl && (SC.page === 'checkin' || /\/check-in\/?$/i.test(location.pathname))) {
+        var refParam = String(sp.get('ref') || '').trim();
+        if (refParam && !/^(lead_|ci_|WEB-|TRIAL-)/i.test(refParam)) {
+          fromUrl = cleanSellerSlug(refParam);
+        }
+      }
+    } catch (e) { /* ignore */ }
+    var pathMatch = location.pathname.match(/^(?:\/(?:en|ru|it|pl|de|fr|ar|zh))?\/r\/([a-zA-Z0-9._-]+)\/?$/i);
+    var fromPath = pathMatch ? cleanSellerSlug(pathMatch[1]) : '';
+    var fromSc = cleanSellerSlug(SC.seller || '');
+    var fromCookie = cleanSellerSlug(readCookie('sc_seller'));
+    if (fromUrl || fromPath) {
+      var resolvedFresh = fromSc || fromCookie || fromUrl || fromPath;
+      return writeSellerPersistence(resolvedFresh, true);
+    }
+    if (fromCookie || fromSc) {
+      return writeSellerPersistence(fromCookie || fromSc, !fromCookie);
+    }
+    var fromLs = readStoredSeller();
+    if (fromLs) {
+      return writeSellerPersistence(fromLs, true);
+    }
+    return '';
+  })();
+
   var clickAttr = (function () {
-    var keys = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    var keys = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'seller', 'rep'];
     var cached = {};
     try { cached = JSON.parse(sessionStorage.getItem('sc_click_attr') || '{}') || {}; } catch (e) { cached = {}; }
     try {
@@ -185,6 +251,10 @@
         var v = sp.get(k);
         if (v) { cached[k] = v; updated = true; }
       });
+      if (activeSeller && cached.seller !== activeSeller) {
+        cached.seller = activeSeller;
+        updated = true;
+      }
       var urlFbclid = sp.get('fbclid');
       if (urlFbclid) {
         var existingFbc = readCookie('_fbc');
@@ -200,6 +270,30 @@
     return cached;
   })();
 
+  function getSeller() {
+    return activeSeller || cleanSellerSlug(clickAttr && clickAttr.seller) || cleanSellerSlug(readCookie('sc_seller')) || readStoredSeller();
+  }
+  function buildWaRefTag(src, camp, lang, explicitSeller) {
+    var s = cleanSellerSlug(explicitSeller || getSeller());
+    return '[ref: ' + (src || 'website') + ' / ' + (camp || 'general') + ' / ' + (lang || SC.lang || 'en') + (s ? ' | seller: ' + s : '') + ']';
+  }
+  function ensureWaHrefHasSeller(href, explicitSeller, placement) {
+    var s = cleanSellerSlug(explicitSeller || getSeller());
+    if (!s || !href || !/^https?:\/\/wa\.me\//i.test(href)) { return href; }
+    try {
+      var u = new URL(href);
+      var txt = u.searchParams.get('text') || '';
+      if (/\bseller:\s*[a-z0-9._-]+/i.test(txt)) { return href; }
+      if (/\[ref:\s*([^\]]+)\]/i.test(txt)) {
+        txt = txt.replace(/\[ref:\s*([^\]]+)\]/i, '[ref: $1 | seller: ' + s + ']');
+      } else {
+        var tag = buildWaRefTag(clickAttr.utm_source || 'website', clickAttr.utm_campaign || placement || 'general', SC.lang || 'en', s);
+        txt = (txt ? (txt + '\n\n') : ((T.waGreeting || 'Hello!') + '\n\n')) + tag;
+      }
+      return u.origin + u.pathname + '?text=' + encodeURIComponent(txt);
+    } catch (e) { return href; }
+  }
+
   function getMetaCookies() {
     var cFbc = readCookie('_fbc');
     var cFbp = readCookie('_fbp');
@@ -211,15 +305,27 @@
   function syncAttributionInputs(root) {
     var scope = root || document;
     var meta = getMetaCookies();
+    var sCur = getSeller();
     var all = Object.assign({}, clickAttr, meta);
-    ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbc', 'fbp'].forEach(function (k) {
+    if (sCur) { all.seller = sCur; }
+    ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbc', 'fbp', 'seller', 'rep'].forEach(function (k) {
       if (!all[k]) { return; }
       $$('input[name="' + k + '"]', scope).forEach(function (inp) {
-        if (!inp.value || k === 'fbc' || k === 'fbp') { inp.value = all[k]; }
+        if (!inp.value || k === 'fbc' || k === 'fbp' || k === 'seller') { inp.value = all[k]; }
       });
     });
   }
+  function syncWaLinksWithSeller(root) {
+    var s = getSeller();
+    if (!s) { return; }
+    $$('a[href*="wa.me/"]', root || document).forEach(function (a) {
+      if (a.hasAttribute('data-wa-from-form') || a.hasAttribute('data-calc-wa') || a.hasAttribute('data-qb-wa') || a.hasAttribute('data-checkin-wa')) { return; }
+      var updated = ensureWaHrefHasSeller(a.getAttribute('href') || '', s, a.getAttribute('data-placement') || 'general');
+      if (updated) { a.setAttribute('href', updated); }
+    });
+  }
   syncAttributionInputs(document);
+  syncWaLinksWithSeller(document);
 
   var savedHotel = store.get('sc_hotel', null);
   var hotelHooks = [];
@@ -245,14 +351,17 @@
     var meta = getMetaCookies();
     var evId = 'wa_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
     window._scLastWaEventId = evId;
+    var sellerNow = getSeller();
     var p = Object.assign({
       event_id: evId,
       kind: 'whatsapp_click',
       placement: 'general',
       page_url: location.href,
       lang: SC.lang || 'en',
-      hotel: (savedHotel && savedHotel.name) ? savedHotel.name : ''
+      hotel: (savedHotel && savedHotel.name) ? savedHotel.name : '',
+      seller: sellerNow
     }, clickAttr, meta, payload || {});
+    if (sellerNow && !p.seller) { p.seller = sellerNow; }
     if (typeof p.value === 'number' && p.estimated_eur === undefined) {
       p.estimated_eur = p.value;
     }
@@ -467,8 +576,8 @@
               try {
                 var curParams = new URLSearchParams(location.search);
                 var pass = [];
-                ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'].forEach(function (k) {
-                  var kv = curParams.get(k) || clickAttr[k];
+                ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'seller', 'rep'].forEach(function (k) {
+                  var kv = curParams.get(k) || (k === 'seller' ? getSeller() : clickAttr[k]);
                   if (kv && dest.indexOf(k + '=') === -1) { pass.push(k + '=' + encodeURIComponent(kv)); }
                 });
                 if (pass.length) { dest += (dest.indexOf('?') === -1 ? '?' : '&') + pass.join('&'); }
@@ -546,7 +655,8 @@
     var placement = btn.getAttribute('data-placement') || 'form_wa';
     var src = get('utm_source') || clickAttr.utm_source || 'website';
     var camp = get('utm_campaign') || clickAttr.utm_campaign || placement;
-    lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
+    var formSeller = get('seller') || getSeller();
+    lines.push('', buildWaRefTag(src, camp, SC.lang || 'en', formSeller));
     var itemCtx = resolveItemContext();
     var convVal = totalVal > 0 ? totalVal : (itemCtx.eur > 0 ? itemCtx.eur : 30);
     track('begin_checkout', { value: convVal, currency: 'EUR' });
@@ -561,7 +671,8 @@
       estimated_eur: convVal,
       date: get('date'),
       qty: parseInt(get('people'), 10) || 1,
-      hotel: get('hotel') || ((savedHotel && savedHotel.name) || '')
+      hotel: get('hotel') || ((savedHotel && savedHotel.name) || ''),
+      seller: formSeller
     });
     if (window.scLoadTags) { window.scLoadTags(); }
     if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
@@ -599,6 +710,11 @@
       else if (/^https?:\/\//.test(href) && a.hostname !== location.hostname) { kind = 'outbound_link'; }
     }
     if (!kind || kind === 'form_submit_click') { return; }
+    var curSeller = getSeller();
+    if (kind === 'whatsapp_click' && a.tagName === 'A' && /^https?:\/\/wa\.me\//i.test(href)) {
+      href = ensureWaHrefHasSeller(href, curSeller, a.getAttribute('data-placement') || 'general');
+      a.setAttribute('href', href);
+    }
     var params = { placement: a.getAttribute('data-placement') || '', link_url: href, link_text: (a.textContent || '').trim().slice(0, 80) };
     var itCtx = resolveItemContext();
     if (kind === 'whatsapp_click' && itCtx.eur > 0) {
@@ -616,7 +732,8 @@
         item_id: itCtx.id,
         item_name: itCtx.name,
         value: itCtx.eur,
-        estimated_eur: itCtx.eur
+        estimated_eur: itCtx.eur,
+        seller: curSeller
       });
     }
     if (window.scLoadTags) { window.scLoadTags(); }
@@ -1085,7 +1202,7 @@
           out.push((T.hotel || 'Hotel') + ': ' + savedHotel.name + (savedHotel.pickup ? ' (' + savedHotel.pickup + ')' : ''));
         }
         out.push('', (L.totalLabel || 'Total') + ' (' + st.divers + ' ' + (L.divers || 'divers') + '): ' + fmt(grand));
-        out.push('[ref: ' + (clickAttr.utm_source || 'website') + ' / ' + (clickAttr.utm_campaign || 'dive_calculator') + ' / ' + (SC.lang || 'en') + ']');
+        out.push(buildWaRefTag(clickAttr.utm_source || 'website', clickAttr.utm_campaign || 'dive_calculator', SC.lang || 'en'));
         track('whatsapp_click', { placement: 'dive_calculator', value: grand, currency: 'EUR' });
         track('contact', { method: 'whatsapp', placement: 'dive_calculator' });
         sendClickBeacon({
@@ -1096,7 +1213,8 @@
           value: grand,
           estimated_eur: grand,
           qty: st.divers,
-          hotel: (savedHotel && savedHotel.name) || ''
+          hotel: (savedHotel && savedHotel.name) || '',
+          seller: getSeller()
         });
         if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
@@ -1635,7 +1753,8 @@
       if (uPrice > 0) { lines.push((T.qbTotal || 'Estimated total') + ': ' + fmt(estEur)); }
       var src = clickAttr.utm_source || 'website';
       var camp = clickAttr.utm_campaign || pl;
-      lines.push('', '[ref: ' + src + ' / ' + camp + ' / ' + (SC.lang || 'en') + ']');
+      var qbSeller = getSeller();
+      lines.push('', buildWaRefTag(src, camp, SC.lang || 'en', qbSeller));
 
       var convVal = estEur > 0 ? estEur : 35;
       track('whatsapp_click', { placement: pl, item_id: iId, value: convVal, currency: 'EUR' });
@@ -1649,7 +1768,8 @@
         estimated_eur: convVal,
         date: dStr,
         qty: q2,
-        hotel: (savedHotel && savedHotel.name) || (hInput && hInput.value ? hInput.value.trim() : '')
+        hotel: (savedHotel && savedHotel.name) || (hInput && hInput.value ? hInput.value.trim() : ''),
+        seller: qbSeller
       });
       if (window.scLoadTags) { window.scLoadTags(); }
       if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
@@ -1746,7 +1866,8 @@
         out.push('• Medical Pre-Check: ' + (medYes ? 'YES flag (advise form)' : 'All No'));
         if (g('gear_notes')) { out.push('• Notes: ' + g('gear_notes')); }
         var pl = ciWaBtn.getAttribute('data-placement') || 'checkin_wa';
-        out.push('', '[ref: ' + (clickAttr.utm_source || 'website') + ' / ' + pl + ' / ' + (SC.lang || 'en') + ']');
+        var ciSeller = g('seller') || getSeller();
+        out.push('', buildWaRefTag(clickAttr.utm_source || 'website', pl, SC.lang || 'en', ciSeller));
 
         track('whatsapp_click', { placement: pl });
         track('contact', { method: 'whatsapp', placement: pl });
@@ -1756,7 +1877,8 @@
           item_name: 'Pre-Arrival Diver Check-In',
           date: g('arrival_date'),
           qty: parseInt(g('divers_count'), 10) || 1,
-          hotel: g('hotel')
+          hotel: g('hotel'),
+          seller: ciSeller
         });
         if (window.scLoadTags) { window.scLoadTags(); }
         if (SC.adsDirect && SC.adsId && SC.adsWhatsappLabel && typeof window.gtag === 'function') {
@@ -1840,10 +1962,17 @@
     }
   });
 
-  /* Unregister any stale legacy WordPress Service Worker on returning devices */
+  /* Unregister any stale legacy WordPress Service Worker on returning devices (skip /assets/erp/sw.js) */
   if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
     navigator.serviceWorker.getRegistrations().then(function (regs) {
-      regs.forEach(function (r) { r.unregister(); });
+      regs.forEach(function (r) {
+        var swUrl = ((r.active && r.active.scriptURL) || (r.waiting && r.waiting.scriptURL) || (r.installing && r.installing.scriptURL) || '');
+        var scopeUrl = String(r.scope || '');
+        if (swUrl.indexOf('/assets/erp/sw.js') !== -1 || scopeUrl.indexOf('/assets/erp/') !== -1 || /\/app\/?$/.test(scopeUrl)) {
+          return;
+        }
+        r.unregister();
+      });
     }).catch(function () {});
   }
 })();

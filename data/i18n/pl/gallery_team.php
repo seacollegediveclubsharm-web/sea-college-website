@@ -6,9 +6,9 @@ declare(strict_types=1);
 
 return [
     'filters' => [
-        'all'        => 'Wszystkie materiały (23)',
+        'all'        => 'Wszystkie materiały (24)',
         'guests'     => 'Prawdziwi Goście i Absolwenci PADI (5)',
-        'videos'     => 'Filmy podwodne (3)',
+        'videos'     => 'Filmy podwodne (4)',
         'underwater' => 'Rafy koralowe i nurkowie',
         'courses'    => 'Kursy PADI i dzieci',
         'boats'      => 'Jachty i motorówki',
@@ -107,6 +107,10 @@ return [
         22 => [
             'title'   => 'Stanowiska butli aluminiowych i bicie Nitroxu',
             'caption' => 'Butle 12 l i 15 l z powietrzem oraz wzbogaconym powietrzem Nitrox i serwisowany sprzęt gotowe każdego ranka.',
+        ],
+        23 => [
+            'title'   => 'Odprawa na mapie raf Cieśniny Tiran — Thomas i Jackson Reef',
+            'caption' => 'Szczegółowy briefing instruktora PADI przed wejściem do wody: ściany koralowe, piaszczyste laguny i prądy Tiranu.',
         ],
     ],
 

@@ -140,7 +140,7 @@ function strip_lang_prefix(string $path): string
     $p = '/' . ltrim($path, '/');
     $pattern = '#^/(' . implode('|', array_map('preg_quote', array_keys(SUPPORTED_LANGS))) . ')(?=/|$)#i';
     $p = (string) preg_replace($pattern, '', $p);
-    if ($p === '' || $p === '/index.php') {
+    if ($p === '' || $p === '/index.php' || preg_match('#^/r/[a-zA-Z0-9._-]+/?$#', $p)) {
         return '/';
     }
     if ($p === '/dive-sites.php') {
@@ -360,9 +360,42 @@ function csrf_verify(?string $token): bool
 $GLOBALS['SC_ATTR'] = [];
 $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = false;
 
+function sc_is_https_request(): bool
+{
+    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+}
+
+function sc_set_seller_cookie(string $sellerCode): void
+{
+    if ($sellerCode === '') {
+        return;
+    }
+    $_COOKIE['sc_seller'] = $sellerCode;
+    if (!headers_sent()) {
+        setcookie('sc_seller', $sellerCode, [
+            'expires'  => time() + UTM_COOKIE_DAYS * 86400,
+            'path'     => '/',
+            'secure'   => sc_is_https_request(),
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+    }
+}
+
 function attribution(): array
 {
-    return is_array($GLOBALS['SC_ATTR'] ?? null) ? $GLOBALS['SC_ATTR'] : [];
+    $a = is_array($GLOBALS['SC_ATTR'] ?? null) ? $GLOBALS['SC_ATTR'] : [];
+    if (empty($a['seller']) && !empty($a['rep'])) {
+        $a['seller'] = sc_normalize_seller_token((string) $a['rep']);
+    }
+    if (empty($a['seller']) && !empty($_COOKIE['sc_seller'])) {
+        $s = sc_normalize_seller_token((string) $_COOKIE['sc_seller']);
+        if ($s !== '') {
+            $a['seller'] = $s;
+        }
+    }
+    return $a;
 }
 
 function sc_sanitize_meta_cookie(string $val): string
@@ -433,6 +466,9 @@ function sc_infer_channel(array $a): string
     if ($src !== '') {
         return ucfirst($src) . ($med !== '' ? ' (' . $med . ')' : '');
     }
+    if (!empty($a['seller'])) {
+        return 'Seller QR (' . $a['seller'] . ')';
+    }
     return 'Organic / Direct';
 }
 
@@ -471,6 +507,7 @@ function sc_capture_attribution(): void
     } elseif (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['attribution']) && is_array($_SESSION['attribution'])) {
         $prev = array_intersect_key($_SESSION['attribution'], array_flip($allowedKeys));
     }
+    $priorSeller = sc_normalize_seller_token((string) ($prev['seller'] ?? $prev['rep'] ?? ($_COOKIE['sc_seller'] ?? '')));
 
     $found = [];
     foreach (UTM_KEYS as $k) {
@@ -480,9 +517,26 @@ function sc_capture_attribution(): void
     }
     if ($found) {
         $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
+        $rawSeller = (string) ($found['seller'] ?? $found['rep'] ?? '');
+        if ($rawSeller !== '') {
+            $normSeller = sc_normalize_seller_token($rawSeller);
+            if ($normSeller !== '') {
+                $found['seller'] = $normSeller;
+                sc_set_seller_cookie($normSeller);
+            } else {
+                unset($found['seller']);
+            }
+        } elseif ($priorSeller !== '') {
+            $found['seller'] = $priorSeller;
+        }
         $thisTouchChannel = sc_infer_channel($found);
-        // Merge with $prev so cross-channel click IDs (e.g. Meta fbclid + Google gclid) are BOTH preserved!
+        // Merge with $prev so cross-channel click IDs (e.g. Meta fbclid + Google gclid + Seller QR) are ALL preserved!
         $merged = array_merge($prev, $found);
+        if (!empty($found['seller'])) {
+            $merged['seller'] = $found['seller'];
+        } elseif (empty($merged['seller']) && $priorSeller !== '') {
+            $merged['seller'] = $priorSeller;
+        }
         if (!empty($found['fbclid'])) {
             $merged['fbc'] = sc_resolve_fbc($found);
         } elseif (!empty($prev['fbc'])) {
@@ -510,14 +564,62 @@ function sc_capture_attribution(): void
         }
         if (!headers_sent()) {
             setcookie('sc_attr', base64_encode((string) json_encode($merged)), [
-                'expires' => time() + UTM_COOKIE_DAYS * 86400, 'path' => '/', 'samesite' => 'Lax', 'httponly' => true,
+                'expires'  => time() + UTM_COOKIE_DAYS * 86400,
+                'path'     => '/',
+                'secure'   => sc_is_https_request(),
+                'samesite' => 'Lax',
+                'httponly' => true,
             ]);
         }
     } elseif ($prev !== []) {
+        if (empty($prev['seller']) && $priorSeller !== '') {
+            $prev['seller'] = $priorSeller;
+        } elseif (!empty($prev['seller'])) {
+            $prev['seller'] = sc_normalize_seller_token((string) $prev['seller']);
+        }
         $GLOBALS['SC_ATTR'] = $prev;
+    }
+
+    if (empty($GLOBALS['SC_ATTR']['seller']) && $priorSeller !== '') {
+        $GLOBALS['SC_ATTR']['seller'] = $priorSeller;
+    }
+    if (!empty($GLOBALS['SC_ATTR']['seller'])) {
+        $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
     }
 }
 sc_capture_attribution();
+
+/** Apply fallback seller referral (e.g. /check-in?ref=<seller_code>) before header.php runs. */
+function sc_apply_seller_referral(string $rawSeller): void
+{
+    $norm = sc_normalize_seller_token($rawSeller);
+    if ($norm === '') {
+        return;
+    }
+    $GLOBALS['SC_HAS_CAMPAIGN_QUERY'] = true;
+    $cur = attribution();
+    $cur['seller'] = $norm;
+    if (empty($cur['landing_page'])) {
+        $cur['landing_page'] = substr((string) ($_SERVER['REQUEST_URI'] ?? '/'), 0, 300);
+    }
+    if (empty($cur['captured_at'])) {
+        $cur['captured_at'] = gmdate('c');
+    }
+    $GLOBALS['SC_ATTR'] = $cur;
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $_SESSION['attribution'] = $cur;
+    }
+    sc_set_seller_cookie($norm);
+    if (!headers_sent()) {
+        setcookie('sc_attr', base64_encode((string) json_encode($cur)), [
+            'expires'  => time() + UTM_COOKIE_DAYS * 86400,
+            'path'     => '/',
+            'secure'   => sc_is_https_request(),
+            'samesite' => 'Lax',
+            'httponly' => true,
+        ]);
+    }
+}
 
 /** Hidden inputs carrying attribution into every lead form. */
 function attribution_fields(): string
@@ -525,12 +627,12 @@ function attribution_fields(): string
     $a = attribution();
     $ref = $_SESSION['first_referrer'] ?? substr((string) ($_SERVER['HTTP_REFERER'] ?? ''), 0, 300);
     $html = '';
-    foreach (UTM_KEYS as $k) {
-        $html .= '<input type="hidden" name="' . e($k) . '" value="' . e($a[$k] ?? '') . '">';
+    foreach (array_unique(UTM_KEYS) as $k) {
+        $html .= '<input type="hidden" name="' . e($k) . '" value="' . e((string) ($a[$k] ?? '')) . '">';
     }
     $html .= '<input type="hidden" name="fbc" value="' . e(sc_resolve_fbc($a)) . '">';
     $html .= '<input type="hidden" name="fbp" value="' . e(sc_resolve_fbp($a)) . '">';
-    $html .= '<input type="hidden" name="landing_page" value="' . e($a['landing_page'] ?? '') . '">';
+    $html .= '<input type="hidden" name="landing_page" value="' . e((string) ($a['landing_page'] ?? '')) . '">';
     $html .= '<input type="hidden" name="referrer" value="' . e((string) $ref) . '">';
     return $html;
 }
@@ -543,10 +645,40 @@ function whatsapp_link(string $topic = '', string $placement = 'general'): strin
     if ($topic !== '') {
         $msg .= ' ' . t('wa_interest', ['topic' => $topic]);
     }
-    $src = $a['utm_source'] ?? 'website';
-    $camp = $a['utm_campaign'] ?? $placement;
-    $msg .= "\n\n[ref: " . $src . ' / ' . $camp . ' / ' . LANG . ']';
+    $src = !empty($a['utm_source']) ? (string) $a['utm_source'] : 'website';
+    $camp = !empty($a['utm_campaign']) ? (string) $a['utm_campaign'] : $placement;
+    $seller = trim((string) ($a['seller'] ?? ''));
+    $sellerSuffix = $seller !== '' ? (' | seller: ' . $seller) : '';
+    $msg .= "\n\n[ref: " . $src . ' / ' . $camp . ' / ' . LANG . $sellerSuffix . ']';
     return 'https://wa.me/' . preg_replace('/\D/', '', WHATSAPP_NUMBER) . '?text=' . rawurlencode($msg);
+}
+
+/* ---------------- Verified Seller / Concierge Referral Pill ---------------- */
+function sc_active_seller_referral(): ?array
+{
+    $a = attribution();
+    $raw = trim((string) ($a['seller'] ?? $a['rep'] ?? ''));
+    if ($raw === '') {
+        return null;
+    }
+    return sc_resolve_seller_public($raw);
+}
+
+function sc_render_seller_referral_pill(): string
+{
+    $seller = sc_active_seller_referral();
+    if ($seller === null) {
+        return '';
+    }
+    $displayName = (LANG === 'ar') ? (string) $seller['name_ar'] : (string) $seller['name_en'];
+    $code = (string) $seller['referral_code'];
+    return '<div class="seller-pill no-print" data-seller-pill="' . e($code) . '" role="note">'
+        . '<span class="seller-pill__dot" aria-hidden="true">✓</span>'
+        . '<span class="seller-pill__badge">' . te('seller_ref_badge') . '</span>'
+        . '<span class="seller-pill__text">' . te('seller_ref_text', ['name' => $displayName]) . '</span>'
+        . '<span class="seller-pill__sep" aria-hidden="true">·</span>'
+        . '<span class="seller-pill__note">' . te('seller_ref_note') . '</span>'
+        . '</div>';
 }
 
 /* ---------------- Consent ---------------- */

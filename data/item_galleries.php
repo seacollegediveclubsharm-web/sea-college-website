@@ -129,9 +129,9 @@ return [
       'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
-      'poster' => 'images/items/gallery/sea-college-sharm-video-overview-poster.jpg',
-      'dur' => '0:22'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'dive-6' => [
@@ -141,9 +141,9 @@ return [
       'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
-      'poster' => 'images/items/gallery/sea-college-sharm-video-overview-poster.jpg',
-      'dur' => '0:22'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'dive-7' => [
@@ -261,9 +261,9 @@ return [
       'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
-      'poster' => 'images/gallery/sea-college-red-sea-coral-reef-video-poster.jpg',
-      'dur' => '0:18'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'sup-zodiac-early' => [
@@ -897,9 +897,9 @@ return [
       'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
-      'poster' => 'images/gallery/sea-college-red-sea-coral-reef-video-poster.jpg',
-      'dur' => '0:18'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'speed-3h' => [
@@ -909,9 +909,9 @@ return [
       'images/clients/sea-college-real-guests-sunset-speedboat-sharm.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
-      'poster' => 'images/gallery/sea-college-red-sea-coral-reef-video-poster.jpg',
-      'dur' => '0:18'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'private-1-5' => [
@@ -933,9 +933,9 @@ return [
       'images/fleet/sea-college-nizar-yacht-03-indoor-salon-nov2026.jpg'
     ],
     'video' => [
-      'src' => 'videos/sea-college-red-sea-coral-reef-sharm.mp4',
-      'poster' => 'images/gallery/sea-college-red-sea-coral-reef-video-poster.jpg',
-      'dur' => '0:18'
+      'src' => 'videos/sea-college-tiran-dive-briefing-sharm.mp4',
+      'poster' => 'images/gallery/sea-college-tiran-dive-briefing-poster.jpg',
+      'dur' => '0:54'
     ]
   ],
   'private-11-15' => [

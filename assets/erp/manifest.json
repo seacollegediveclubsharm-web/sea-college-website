@@ -3,7 +3,7 @@
   "short_name": "SeaCollege ERP",
   "description": "Unified Role-Based Mobile App & Big-Data Command Center for Sea College Dive Club (Sales, Operations, Jetty, Boats, Safe, Accounting & Owners)",
   "start_url": "/app",
-  "scope": "/",
+  "scope": "/app",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#061a2d",

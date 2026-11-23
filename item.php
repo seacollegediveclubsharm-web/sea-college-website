@@ -145,6 +145,7 @@ require ROOT_DIR . '/includes/header.php';
     <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
     <div class="item-hero__grid">
       <div class="item-hero__copy">
+        <?= sc_render_seller_referral_pill() ?>
         <p class="eyebrow"><a class="eyebrow__link" href="<?= e(hub_url($cat)) ?>"><?= e($cat['icon'] . ' ' . $catLabel) ?></a> · <?= e($grpLabel) ?></p>
         <h1 class="item-hero__title" dir="auto"><?= e($h1) ?></h1>
         <p class="item-hero__lead" dir="auto"><?= e(item_desc($it)) ?></p>

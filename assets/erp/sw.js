@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sc-erp-shell-v1';
-const SHELL_URLS = ['/app', '/assets/erp/manifest.json'];
+const CACHE_NAME = 'sc-erp-shell-v2';
+const SHELL_URLS = ['/app', '/assets/erp/manifest.json', '/assets/erp/qrcode.js'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(SHELL_URLS)).catch(() => {}));

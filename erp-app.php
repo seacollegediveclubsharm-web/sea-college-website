@@ -153,6 +153,40 @@ $csrf = csrf_token();
       border: 1px solid var(--border); color: var(--text); text-decoration: none;
     }
     .contact-chip:hover { border-color: var(--cyan); color: var(--cyan); }
+    .pitch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(305px, 1fr)); gap: 14px; }
+    .pitch-card {
+      background: rgba(11, 34, 57, 0.94); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.32); transition: 0.16s;
+    }
+    .pitch-card:hover { border-color: rgba(0,210,255,0.5); transform: translateY(-2px); }
+    .pitch-media { position: relative; height: 184px; background: #04101d; overflow: hidden; }
+    .pitch-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pitch-price-tag {
+      position: absolute; bottom: 10px; right: 10px; padding: 5px 11px; border-radius: 10px;
+      background: rgba(4, 19, 34, 0.92); border: 1px solid rgba(0,210,255,0.55);
+      color: var(--cyan); font-weight: 900; font-size: 15px; backdrop-filter: blur(6px);
+    }
+    .pitch-cat-tag {
+      position: absolute; top: 10px; left: 10px; padding: 4px 9px; border-radius: 999px;
+      background: rgba(4, 19, 34, 0.85); color: #e2e8f0; font-size: 10.5px; font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .info-badges { display: flex; flex-wrap: wrap; gap: 5px; margin: 9px 0; }
+    .info-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 7px;
+      background: rgba(6, 21, 38, 0.82); border: 1px solid rgba(125,211,252,0.18);
+      font-size: 11px; color: #cbd5e1; font-weight: 600;
+    }
+    .qr-box {
+      background: #ffffff; padding: 12px; border-radius: 14px; display: inline-flex;
+      align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .qr-box svg { display: block; max-width: 100%; height: auto; }
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 140; background: rgba(3, 12, 24, 0.86);
+      padding: 14px; align-items: center; justify-content: center; overflow-y: auto;
+    }
     @media (max-width: 640px) {
       .kpi-val { font-size: 18px; }
       .container { padding: 10px; }
@@ -416,8 +450,114 @@ $csrf = csrf_token();
   </div>
 </div>
 
+<!-- Product / Client QR Pitch Modal -->
+<div id="productQrModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:430px;text-align:center;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:15px;" id="pqrTitle">📱 Scan to Book with Personal Concierge</h3>
+      <button type="button" class="btn" onclick="document.getElementById('productQrModal').style.display='none'">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;" id="pqrSub"></p>
+    <div id="pqrSvgWrap" class="qr-box" style="margin:0 auto 12px;"></div>
+    <div style="font-size:11px;word-break:break-all;color:var(--cyan);margin-bottom:12px;" id="pqrUrlTxt"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button type="button" class="btn btn-primary" onclick="copyTextPrompt(document.getElementById('pqrUrlTxt').textContent)">📋 Copy Link</button>
+      <a id="pqrWaBtn" href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-emerald">💬 Send on WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<!-- 1-Tap Seller Fast-Book Modal -->
+<div id="fastBookModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:560px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="fbkTitle">⚡ 1-Tap Fast Book & Instant QR Voucher</h3>
+      <button type="button" class="btn" onclick="document.getElementById('fastBookModal').style.display='none'">✕</button>
+    </div>
+    <form onsubmit="submitFastBookForm(event)" class="grid grid-2" style="gap:10px;">
+      <input type="hidden" id="fbkProdCode" value="">
+      <div>
+        <label>Guest Full Name *</label>
+        <input type="text" id="fbkGuest" required placeholder="e.g. Marco Rossi">
+      </div>
+      <div>
+        <label>Guest WhatsApp / Phone</label>
+        <input type="tel" id="fbkPhone" placeholder="+39 333 1234567">
+      </div>
+      <div>
+        <label>Trip Date *</label>
+        <input type="date" id="fbkDate" required value="<?= gmdate('Y-m-d') ?>">
+      </div>
+      <div>
+        <label>Nationality</label>
+        <input type="text" id="fbkNat" value="ITALY">
+      </div>
+      <div>
+        <label>Sharm Hotel (Auto Pickup Window)</label>
+        <select id="fbkHotel" onchange="const o=this.selectedOptions[0];if(o&&o.dataset.pick)document.getElementById('fbkPick').value=o.dataset.pick;"></select>
+      </div>
+      <div>
+        <label>Room # &amp; Pickup Window</label>
+        <div style="display:flex;gap:6px;">
+          <input type="text" id="fbkRoom" placeholder="Room 312">
+          <input type="text" id="fbkPick" value="07:55–08:10">
+        </div>
+      </div>
+      <div>
+        <label>Adults / Children</label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" id="fbkAdl" value="2" min="1" max="60" oninput="recalcFastBookPreview()">
+          <input type="number" id="fbkCh" value="0" min="0" max="40" oninput="recalcFastBookPreview()">
+        </div>
+      </div>
+      <div>
+        <label>Commission Rule (Sale Mode)</label>
+        <select id="fbkMode" onchange="recalcFastBookPreview()">
+          <option value="INSHEET">INSHEET — 10% Gross Commission</option>
+          <option value="OUT_SIDE">OUT_SIDE — 25% Net Profit Commission</option>
+        </select>
+      </div>
+      <div>
+        <label>Paid Deposit at Desk</label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" step="0.01" min="0" id="fbkDepAmt" value="80" oninput="recalcFastBookPreview()">
+          <select id="fbkDepCur" style="width:92px;" onchange="recalcFastBookPreview()">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="EGP">EGP</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>REST Due at Boat / Jetty</label>
+        <div style="display:flex;gap:6px;">
+          <input type="number" step="0.01" min="0" id="fbkRestAmt" value="0" oninput="recalcFastBookPreview()">
+          <select id="fbkRestCur" style="width:92px;" onchange="recalcFastBookPreview()">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="EGP">EGP</option>
+          </select>
+        </div>
+      </div>
+      <div id="fbkCostRow" style="display:none;grid-column:1/-1;">
+        <label>External Supplier Cost (EGP) — Deducted Before 25% Net Commission</label>
+        <input type="number" step="1" min="0" id="fbkSupplierCost" value="0" oninput="recalcFastBookPreview()">
+      </div>
+      <div id="fbkCommPreview" style="grid-column:1/-1;padding:10px;border-radius:10px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);font-size:12px;"></div>
+      <div id="fbkResultBox" style="display:none;grid-column:1/-1;padding:12px;border-radius:12px;background:rgba(0,210,255,0.1);border:1px solid var(--cyan);text-align:center;"></div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('fastBookModal').style.display='none'">Close</button>
+        <button type="submit" id="fbkSubmitBtn" class="btn btn-primary">🎫 Confirm Booking &amp; Record My Commission</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
+<script src="/assets/erp/qrcode.js"></script>
 <script>
 let STATE = {
   lang: 'en',
@@ -428,8 +568,25 @@ let STATE = {
   horizon: 'monthly',
   yearFilter: '',
   monthFilter: '',
+  reportMonth: '2026-10',
+  walletMonth: '2026-10',
+  walletSeller: '',
+  pnlViewMode: 'consolidated',
+  bankViewMode: 'all3',
+  pitchLang: 'en',
+  pitchCurr: 'EUR',
+  pitchCat: 'ALL',
+  pitchQuery: '',
+  pitchHotel: 'Cyrene Sharm Hotel',
+  pitchPickup: '07:55–08:10',
+  pitchSaleMode: 'INSHEET',
+  pitchSupplierCost: 0,
+  pitchPax: 2,
   bi: null,
   ws: null,
+  sellerCatalog: null,
+  sellerWallet: null,
+  monthlyPack: null,
   directory: []
 };
 
@@ -441,7 +598,8 @@ function fillAccount(uname) {
 }
 
 function fmt(n, dec = 0) {
-  const v = Number(n || 0);
+  const raw = Number(n);
+  const v = Number.isFinite(raw) ? raw : 0;
   return v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
 }
 function esc(s) {
@@ -468,7 +626,7 @@ function toggleLang() {
   document.getElementById('appTitle').textContent = STATE.lang === 'ar'
     ? 'سي كولدج دايف كلوب — التطبيق الموحد للشركة والملاك'
     : 'Sea College Dive Club — Unified Ecosystem App';
-  renderApp();
+  return renderApp();
 }
 
 async function apiGet(params) {
@@ -491,14 +649,14 @@ async function boot() {
     navigator.serviceWorker.register('/assets/erp/sw.js').catch(() => {});
   }
   const dirRes = await apiGet({ action: 'directory_roles' });
-  if (dirRes.ok) {
+  if (dirRes && dirRes.ok) {
     STATE.directory = dirRes.accounts || [];
     if (dirRes.csrf_token) STATE.csrf = dirRes.csrf_token;
     renderDirectory();
   }
   const me = await apiGet({ action: 'me' });
-  if (me.csrf_token) STATE.csrf = me.csrf_token;
-  if (me.authenticated) {
+  if (me && me.csrf_token) STATE.csrf = me.csrf_token;
+  if (me && me.authenticated) {
     STATE.user = me.user;
     STATE.perms = me.permissions || [];
     await loadUserData();
@@ -530,8 +688,8 @@ function renderDirectory() {
       <div style="display:flex;align-items:center;gap:9px;min-width:0;">
         ${renderAvatarHtml(a, 36)}
         <div style="min-width:0;">
-          <div style="font-size:12px;font-weight:700;">${esc(STATE.lang === 'ar' ? a.display_name_ar : a.display_name_en)}</div>
-          <div style="font-size:11px;color:var(--muted);">@${esc(a.username)} • ${esc(STATE.lang === 'ar' ? (a.job_title_ar || a.role_code) : (a.job_title_en || a.role_code))} (${esc(a.branch_scope)})</div>
+          <div style="font-size:12px;font-weight:700;">${esc(STATE.lang === 'ar' ? (a.display_name_ar || a.display_name_en) : (a.display_name_en || a.username))}</div>
+          <div style="font-size:11px;color:var(--muted);">@${esc(a.username)} • ${esc(STATE.lang === 'ar' ? (a.job_title_ar || a.role_code) : (a.job_title_en || a.role_code))} (${esc(a.branch_scope || 'ALL')})</div>
         </div>
       </div>
       <button type="button" class="btn" onclick="fillAccount('${esc(a.username)}')">Select</button>
@@ -555,6 +713,9 @@ async function doLogin(e) {
   STATE.perms = res.permissions || [];
   STATE.csrf = res.csrf_token || STATE.csrf;
   STATE.activeTab = '';
+  STATE.sellerCatalog = null;
+  STATE.sellerWallet = null;
+  STATE.monthlyPack = null;
   await loadUserData();
 }
 
@@ -564,6 +725,9 @@ async function doLogout() {
   STATE.perms = [];
   STATE.bi = null;
   STATE.ws = null;
+  STATE.sellerCatalog = null;
+  STATE.sellerWallet = null;
+  STATE.monthlyPack = null;
   document.getElementById('userBadge').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
   document.getElementById('fabFeedback').style.display = 'none';
@@ -578,16 +742,28 @@ async function loadUserData() {
   document.getElementById('fabFeedback').style.display = 'block';
   const ub = document.getElementById('userBadge');
   ub.style.display = 'inline-flex';
-  ub.innerHTML = `${renderAvatarHtml(STATE.user, 24)} <span>${esc(STATE.lang === 'ar' ? STATE.user.display_name_ar : STATE.user.display_name_en)}</span>`;
+  const dispName = STATE.lang === 'ar'
+    ? (STATE.user.display_name_ar || STATE.user.display_name_en || STATE.user.username)
+    : (STATE.user.display_name_en || STATE.user.username);
+  ub.innerHTML = `${renderAvatarHtml(STATE.user, 24)} <span>${esc(dispName)}</span>`;
 
-  const promises = [apiGet({ action: 'role_workspace' })];
+  const jobs = [apiGet({ action: 'role_workspace' }).then((r) => { if (r && r.ok) STATE.ws = r; })];
   if (hasPerm('bi.view_executive')) {
-    promises.push(apiGet({ action: 'executive_bi', horizon: STATE.horizon, year: STATE.yearFilter, month: STATE.monthFilter }));
+    jobs.push(apiGet({ action: 'executive_bi', horizon: STATE.horizon, year: STATE.yearFilter, month: STATE.monthFilter }).then((r) => { if (r && r.ok) STATE.bi = r; }));
   }
-  const [wsRes, biRes] = await Promise.all(promises);
-  if (wsRes && wsRes.ok) STATE.ws = wsRes;
-  if (biRes && biRes.ok) STATE.bi = biRes;
-  renderApp();
+  if (hasPerm('bi.view_executive', 'gl.view_all_ledgers')) {
+    jobs.push(apiGet({ action: 'monthly_report_pack', month: STATE.reportMonth }).then((r) => { if (r && r.ok) STATE.monthlyPack = r; }));
+  }
+  if (hasPerm('sales.create_voucher', 'sales.view_own_sales')) {
+    jobs.push(apiGet({ action: 'seller_catalog', lang: STATE.pitchLang }).then((r) => { if (r && r.ok) STATE.sellerCatalog = r; }));
+  }
+  if (hasPerm('sales.view_own_sales', 'bi.view_executive', 'gl.view_all_ledgers', 'hr.manage_payroll')) {
+    const wParams = { action: 'seller_wallet', month: STATE.walletMonth };
+    if (STATE.walletSeller) wParams.seller = STATE.walletSeller;
+    jobs.push(apiGet(wParams).then((r) => { if (r && r.ok) STATE.sellerWallet = r; }));
+  }
+  await Promise.all(jobs);
+  await renderApp();
 }
 
 async function changeHorizon(h, yr = null, mo = null) {
@@ -601,35 +777,53 @@ async function changeHorizon(h, yr = null, mo = null) {
   }
 }
 
-function exportUrl(report, format) {
+function exportUrl(report, format, extra = {}) {
   const qs = new URLSearchParams({
     report,
     format,
     horizon: STATE.horizon,
     year: STATE.yearFilter,
-    month: STATE.monthFilter
+    month: extra.month || STATE.monthFilter || STATE.reportMonth || '2026-10',
+    ...extra
   });
   return '/handlers/erp_export.php?' + qs.toString();
 }
 
 function buildTabsForUser() {
   const ar = STATE.lang === 'ar';
+  const u = STATE.user || {};
+  const isSalesRepPrimary = u.role_code === 'SALES_REP' || (
+    hasPerm('sales.create_voucher', 'sales.view_own_sales') &&
+    !hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'ops.view_manifests', 'safe.view_balances', 'bi.view_partner_fleet', 'crew.view_own_manifest')
+  );
+
+  if (isSalesRepPrimary) {
+    return [
+      { id: 'seller_pitch', label: ar ? '⚡ عرض العميل والحجز السريع (Pitch)' : '⚡ Seller Pitch & Fast Book' },
+      { id: 'seller_wallet', label: ar ? '💰 باركود QR ومحفظة عمولاتي' : '💰 My QR & Commissions' },
+      { id: 'vouchers_ops', label: ar ? '🎫 حجوزاتي وفوتشراتي' : '🎫 My Vouchers & Bookings' },
+      { id: 'new_voucher', label: ar ? '➕ إصدار فوتشر باركود' : '➕ Issue QR Voucher' },
+      { id: 'team_profiles', label: ar ? '👥 دليل أرقام وإيميلات الفريق' : '👥 Team Contacts Directory' },
+      { id: 'my_profile', label: ar ? '👤 ملفي الشخصي وصورتي' : '👤 My Profile' }
+    ];
+  }
+
   const tabs = [];
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'exec_bi', label: ar ? '📊 لوحة الملاك والاتجاهات' : '📊 Owner BI & Trends' });
-    tabs.push({ id: 'team_profiles', label: ar ? '👥 ملفات فريق العمل (24)' : '👥 Team Profiles & Directory' });
-    tabs.push({ id: 'trial_pilot', label: ar ? '🧪 إدارة النسخة التجريبية والملاحظات' : '🧪 Trial Launch & Feedback' });
-    tabs.push({ id: 'exports_hub', label: ar ? '📥 تصدير الشيتات والتقارير' : '📥 Export Sheets (.xlsx / .csv)' });
-    tabs.push({ id: 'profitability', label: ar ? '🏆 الأعلى مبيعاً وربحية الرحلات والمراكب' : '🏆 Best Sellers, Trips & Boats ROI' });
   }
-  if (hasPerm('bi.view_partner_fleet') && !hasPerm('bi.view_executive')) {
-    tabs.push({ id: 'partner_fleet', label: ar ? '🛥️ حصص المراكب وعمرة الازق' : '🛥️ My Partner Vessels & Drydock' });
+  if (hasPerm('bi.view_executive', 'gl.view_all_ledgers')) {
+    tabs.push({ id: 'monthly_reports', label: ar ? '📑 التقارير الشهرية الختامية (Monthly)' : '📑 Monthly Reports Pack' });
   }
   if (hasPerm('gl.view_all_ledgers')) {
     tabs.push({ id: 'accounting_gl', label: ar ? '📚 الحسابات والعملاء والمرتبات' : '📚 Ledgers, AR/AP & Payroll' });
-    if (!hasPerm('bi.view_executive')) {
-      tabs.push({ id: 'trial_pilot', label: ar ? '🧪 ملاحظات النسخة التجريبية' : '🧪 Trial Feedback Inbox' });
-    }
+  }
+  if (hasPerm('bi.view_executive')) {
+    tabs.push({ id: 'profitability', label: ar ? '🏆 الأعلى مبيعاً وربحية الرحلات والمراكب' : '🏆 Best Sellers, Trips & Boats ROI' });
+    tabs.push({ id: 'exports_hub', label: ar ? '📥 تصدير الشيتات والتقارير' : '📥 Export Sheets (.xlsx / .csv)' });
+  }
+  if (hasPerm('bi.view_partner_fleet') && !hasPerm('bi.view_executive')) {
+    tabs.push({ id: 'partner_fleet', label: ar ? '🛥️ حصص المراكب وعمرة الازق' : '🛥️ My Partner Vessels & Drydock' });
   }
   if (hasPerm('safe.view_balances')) {
     tabs.push({ id: 'treasury_safe', label: ar ? '💵 الخزينة والعهد متعددة العملات' : '💵 Multi-Currency Safe & Cashbox' });
@@ -638,7 +832,11 @@ function buildTabsForUser() {
     tabs.push({ id: 'vouchers_ops', label: ar ? '🎫 الحجوزات والتشغيل والسقالة' : '🎫 Reservations, Dispatch & Jetty' });
   }
   if (hasPerm('sales.create_voucher')) {
+    tabs.push({ id: 'seller_pitch', label: ar ? '⚡ عرض المبيعات الذكي (Pitch)' : '⚡ Seller Pitch & Fast Book' });
     tabs.push({ id: 'new_voucher', label: ar ? '➕ إصدار فوتشر باركود' : '➕ Issue QR Voucher' });
+  }
+  if (hasPerm('sales.view_own_sales', 'bi.view_executive', 'gl.view_all_ledgers', 'hr.manage_payroll')) {
+    tabs.push({ id: 'seller_wallet', label: ar ? '💰 محافظ عمولات المناديب و QR' : '💰 Seller QR & Commissions' });
   }
   if (hasPerm('jetty.manage_gear_photo')) {
     tabs.push({ id: 'gear_assets', label: ar ? '🤿 جرد معدات الغوص S.C#' : '🤿 Dive Gear Assets (S.C #)' });
@@ -646,7 +844,13 @@ function buildTabsForUser() {
   if (hasPerm('crm.manage_leads_ads')) {
     tabs.push({ id: 'website_crm', label: ar ? '🌐 حجوزات الموقع والواتساب والإعلانات' : '🌐 Website Leads, Check-In & Ads CRM' });
   }
-  if (!hasPerm('bi.view_executive')) {
+  if (hasPerm('bi.view_executive')) {
+    tabs.push({ id: 'team_profiles', label: ar ? '👥 ملفات فريق العمل (34)' : '👥 Team Profiles & Directory' });
+    tabs.push({ id: 'trial_pilot', label: ar ? '🧪 إدارة النسخة التجريبية والملاحظات' : '🧪 Trial Launch & Feedback' });
+  } else {
+    if (hasPerm('gl.view_all_ledgers')) {
+      tabs.push({ id: 'trial_pilot', label: ar ? '🧪 ملاحظات النسخة التجريبية' : '🧪 Trial Feedback Inbox' });
+    }
     tabs.push({ id: 'team_profiles', label: ar ? '👥 دليل أرقام وإيميلات الفريق' : '👥 Team Contacts Directory' });
   }
   tabs.push({ id: 'my_profile', label: ar ? '👤 ملفي الشخصي وصورتي' : '👤 My Profile' });
@@ -660,16 +864,19 @@ function renderApp() {
   }
   const ar = STATE.lang === 'ar';
   const u = STATE.user;
-  document.getElementById('userBadge').innerHTML = `${renderAvatarHtml(u, 24)} <span>${esc(ar ? u.display_name_ar : u.display_name_en)}</span>`;
+  const dispName = ar ? (u.display_name_ar || u.display_name_en || u.username || '') : (u.display_name_en || u.username || '');
+  document.getElementById('userBadge').innerHTML = `${renderAvatarHtml(u, 24)} <span>${esc(dispName)}</span>`;
   document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, 62);
-  document.getElementById('welcomeName').textContent = ar ? u.display_name_ar : u.display_name_en;
-  const titleTxt = ar ? (u.job_title_ar || u.role_name_ar) : (u.job_title_en || u.role_name_en);
+  document.getElementById('welcomeName').textContent = dispName;
+  const titleTxt = ar
+    ? (u.job_title_ar || u.role_name_ar || u.job_title_en || u.role_code || '')
+    : (u.job_title_en || u.role_name_en || u.role_code || '');
   document.getElementById('welcomeScope').textContent =
-    `${titleTxt} • Role: ${u.role_code} • Branch: ${u.branch_scope} • Vessels: ${u.vessel_scope}`;
+    `${titleTxt} • Role: ${u.role_code || 'STAFF'} • Branch: ${u.branch_scope || 'ALL'} • Vessels: ${u.vessel_scope || 'ALL'}`;
 
   const cChips = [];
   if (u.phone) {
-    cChips.push(`<a class="contact-chip" href="tel:${esc(u.phone.replace(/\s+/g, ''))}">📞 ${esc(u.phone)}</a>`);
+    cChips.push(`<a class="contact-chip" href="tel:${esc(String(u.phone).replace(/\s+/g, ''))}">📞 ${esc(u.phone)}</a>`);
     const wd = waDigits(u.phone);
     if (wd.length >= 8) {
       cChips.push(`<a class="contact-chip" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
@@ -677,6 +884,10 @@ function renderApp() {
   }
   if (u.email) {
     cChips.push(`<a class="contact-chip" href="mailto:${esc(u.email)}">✉️ ${esc(u.email)}</a>`);
+  }
+  if (u.referral_code) {
+    const myRefUrl = 'https://seacollegediveclub.com/r/' + encodeURIComponent(u.referral_code);
+    cChips.push(`<a class="contact-chip" href="${esc(myRefUrl)}" target="_blank" rel="noopener">🔗 ${esc(myRefUrl)}</a>`);
   }
   document.getElementById('welcomeContacts').innerHTML = cChips.join('');
 
@@ -692,7 +903,39 @@ function renderApp() {
   `).join('');
 
   const box = document.getElementById('tabContent');
-  if (STATE.activeTab === 'exec_bi' && STATE.bi) {
+  if (STATE.activeTab === 'seller_pitch') {
+    if (STATE.sellerCatalog) {
+      box.innerHTML = renderSellerPitchTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل كتالوج العروض والفيديوهات...' : 'Loading Smart Seller Pitch Catalog...'}</div>`;
+    return apiGet({ action: 'seller_catalog', lang: STATE.pitchLang }).then((res) => {
+      if (res && res.ok) STATE.sellerCatalog = res;
+      box.innerHTML = renderSellerPitchTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'seller_wallet') {
+    if (STATE.sellerWallet) {
+      box.innerHTML = renderSellerWalletTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل باركود QR ومحفظة العمولات...' : 'Loading Seller QR & Commission Wallet...'}</div>`;
+    const wp = { action: 'seller_wallet', month: STATE.walletMonth };
+    if (STATE.walletSeller) wp.seller = STATE.walletSeller;
+    return apiGet(wp).then((res) => {
+      if (res && res.ok) STATE.sellerWallet = res;
+      box.innerHTML = renderSellerWalletTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'monthly_reports') {
+    if (STATE.monthlyPack) {
+      box.innerHTML = renderMonthlyReportsPack(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل حزمة التقارير الشهرية الختامية...' : 'Loading Monthly Management Closing Pack...'}</div>`;
+    return apiGet({ action: 'monthly_report_pack', month: STATE.reportMonth }).then((res) => {
+      if (res && res.ok) STATE.monthlyPack = res;
+      box.innerHTML = renderMonthlyReportsPack(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'exec_bi' && STATE.bi) {
     box.innerHTML = renderExecBi(ar);
     drawTrendChart();
   } else if (STATE.activeTab === 'team_profiles') {
@@ -890,14 +1133,16 @@ function drawTrendChart() {
 
 function renderExportsHub(ar) {
   const reports = [
-    { key: 'res_accounting_2026', icon: '🔗', title: ar ? 'ربط حجوزات مايو–نوفمبر 2026 بالحسابات والقيود' : 'May–Nov 2026 Reservations-to-Accounting & GL Pack', desc: ar ? 'مطابقة الـ 7 شهور الفعلية + 209 قيد يومية مزدوج متوازن + طاقم البحر' : '7-month audit bridge + all 7,286 rows + 209 balanced GL journals + 117 Crew' },
+    { key: 'monthly_pack', icon: '📑', title: ar ? 'حزمة التقارير الشهرية الختامية (14 شيت مطابق للإدارة)' : 'Monthly Management Closing Pack (14-Sheet Workbook)', desc: ar ? 'مطابق تماماً لتقارير الإدارة الشهرية (أكتوبر 2026): الإيرادات، العمولات، P&L الموحد، الخزينة، المرتبات، السوبر ماركت، الشركاء، البنوك والأرصدة المفتوحة' : 'Complete 14-tab monthly closing workbook: Daily Cash, Seller Commissions, Branch & Consolidated P&L, Cashbox, Payroll, Supermarket, Charters, Partners, Masked Banks & Open Balances' },
+    { key: 'seller_commissions', icon: '💰', title: ar ? 'كشف حساب عمولات المناديب وحجوزات QR' : 'Seller Commissions & QR Attribution Ledger', desc: ar ? 'عمولات 10% داخل الشيت + 10% موقع QR + 25% صافي ربح خارجي لكل مندوب' : '10% In-Sheet, 10% Website QR & 25% Net Outside commission ledger + payroll reconciliation' },
+    { key: 'res_accounting_2026', icon: '🔗', title: ar ? 'ربط حجوزات مايو–نوفمبر 2026 بالحسابات والقيود' : 'May–Nov 2026 Reservations-to-Accounting & GL Pack', desc: ar ? 'مطابقة الـ 7 شهور الفعلية + قيود يومية مزدوجة متوازنة + طاقم البحر' : '7-month audit bridge + all executed rows + balanced GL journals + Crew' },
     { key: 'pnl', icon: '📊', title: ar ? 'قائمة الأرباح والخسائر المستمرة (18 شهر)' : 'Continuous 18-Month Profit & Loss (Jun 25–Nov 26)', desc: ar ? 'ملخص الفروع + كافة بنود الإيراد والمصروف النقدي والمستحق' : 'Period summary + all Cash & Accrued P&L lines through Nov 2026' },
-    { key: 'cashflow', icon: '💵', title: ar ? 'التدفقات النقدية وإذون الصرف' : 'Multi-Currency Cash Flow & Expenses', desc: ar ? 'حركة الخزينة اليومية (LE/$/€/£/VISA) + 5,692 إذن صرف' : 'Daily multi-currency cashbox + 5,692 expense vouchers' },
-    { key: 'best_sellers', icon: '🏆', title: ar ? 'الأعلى مبيعاً في الشهر والفترة' : 'Best Sellers of the Month / Period', desc: ar ? 'ترتيب مناديب المبيعات والشركات والجنسيات وأعلى 100 فندق' : 'Top Sales Reps, B2B Agencies, Nationalities & Top 100 Hotels' },
+    { key: 'cashflow', icon: '💵', title: ar ? 'التدفقات النقدية وإذون الصرف' : 'Multi-Currency Cash Flow & Expenses', desc: ar ? 'حركة الخزينة اليومية (LE/$/€/£/VISA) + إذون الصرف' : 'Daily multi-currency cashbox + expense vouchers' },
+    { key: 'best_sellers', icon: '🏆', title: ar ? 'الأعلى مبيعاً في الشهر والفترة' : 'Best Sellers of the Month / Period', desc: ar ? 'ترتيب مناديب المبيعات والشركات والجنسيات وأعلى 100 فندق' : 'Hotel Desk Sellers vs B2B Agencies, Nationalities & Top 100 Hotels' },
     { key: 'profitable_trips', icon: '🤿', title: ar ? 'أكثر الرحلات والكورسات ربحية' : 'Most Profitable Trips, Tours & Courses', desc: ar ? 'الإيراد الفعلي مقابل التكلفة المباشرة وصافي هامش الربح %' : 'Revenue vs Direct COGS, Net Margin EGP & Margin % per activity' },
     { key: 'profitable_boats', icon: '🛥️', title: ar ? 'ربحية المراكب وعمرة الازق والأصول' : 'Most Profitable Boats, Drydock & Assets', desc: ar ? 'أوشينو، عمر 4، نزار، سحس، الاسبيد + رحلات المراكب حتى نوفمبر 2026' : 'Fleet ROI + daily boat trips through Nov 2026 + Drydock + 119 Gear tags' },
-    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? '15,667 حجز مربوط بالحسابات + 63 عميل ومورد + 758 سجل مرتبات' : '15,667 GL-linked reservations + 63 AR/AP accounts + 758 payroll records' },
-    { key: 'team_profiles', icon: '👥', title: ar ? 'دليل ملفات وصور وأرقام وإيميلات فريق العمل' : 'Team User Profiles, Phones & Emails Directory', desc: ar ? 'بيانات وصور وأرقام واتساب وإيميلات وصلاحيات الـ 24 مستخدم' : 'Complete 24-user profile sheet with phones, emails, photos & RBAC scopes' }
+    { key: 'full_data_pack', icon: '🗂️', title: ar ? 'سجل الحجوزات الكامل والعملاء والمرتبات' : 'Full Row-Level Reservations, AR/AP & Payroll', desc: ar ? 'حجوزات مربوطة بالحسابات + عملاء وموردين + سجل مرتبات' : 'GL-linked reservations + AR/AP accounts + payroll records' },
+    { key: 'team_profiles', icon: '👥', title: ar ? 'دليل ملفات وصور وأرقام وإيميلات فريق العمل' : 'Team User Profiles, Phones & Emails Directory', desc: ar ? 'بيانات وصور وأرقام واتساب وإيميلات وصلاحيات الـ 34 مستخدم' : 'Complete 34-user profile sheet with phones, emails, QR slugs & RBAC scopes' }
   ];
   return `
     ${renderHorizonBar(ar)}
@@ -1179,10 +1424,15 @@ function renderAccountingGl(ar) {
       </div>
 
       <div class="card">
-        <h3 style="font-size:14px;margin-bottom:8px;">👥 Monthly Staff Payroll & Commissions (SALERY)</h3>
+        <h3 style="font-size:14px;margin-bottom:8px;">👥 Monthly Staff Payroll &amp; Commissions (SALERY)</h3>
         <div class="table-wrap" style="max-height:310px;">
           <table>
-            <thead><tr><th>Month</th><th>Employee</th><th>Role</th><th>Days</th><th>Net Pay (EGP)</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Month</th><th>Employee</th><th>Role</th><th>Days</th>
+                <th>Base Salary</th><th>Commission</th><th>Advances / Deductions</th><th>Net Pay (EGP)</th>
+              </tr>
+            </thead>
             <tbody>
               ${pay.map((p) => `
                 <tr>
@@ -1190,7 +1440,10 @@ function renderAccountingGl(ar) {
                   <td><b>${esc(p.emp_name_ar)}</b></td>
                   <td>${esc(p.job_title_ar)}</td>
                   <td class="num">${fmt(p.worked_days)}</td>
-                  <td class="num pos">${fmt(p.net_pay_egp)}</td>
+                  <td class="num">${fmt(p.base_salary_egp)}</td>
+                  <td class="num" style="color:var(--cyan);">${fmt(p.commission_egp)}</td>
+                  <td class="num neg">${fmt(p.advances_deductions_egp)}</td>
+                  <td class="num pos"><b>${fmt(p.net_pay_egp)}</b></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -1476,10 +1729,12 @@ function renderWebsiteCrm(ar) {
 }
 
 let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredInstallPrompt = e;
-});
+if (typeof window.addEventListener === 'function') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+  });
+}
 
 function triggerInstallApp() {
   if (deferredInstallPrompt) {
@@ -1982,6 +2237,878 @@ async function submitProfileForm(e) {
     btn.disabled = false;
     btn.textContent = '💾 Save User Profile';
   }
+}
+
+/* ================= F12: SMART MOBILE SELLER PITCH & 1-TAP FAST BOOK ================= */
+function getSellerReferralSlug() {
+  const u = STATE.user || {};
+  if (u.referral_code) return String(u.referral_code);
+  if (u.username && String(u.username).endsWith('.sales')) return String(u.username).replace(/\.sales$/i, '');
+  return 'fady';
+}
+
+function copyTextPrompt(txt) {
+  const val = String(txt || '');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(() => showToast('Copied link to clipboard!')).catch(() => {});
+  } else {
+    showToast('Link ready: ' + val);
+  }
+}
+
+async function changePitchLang(lg) {
+  STATE.pitchLang = lg;
+  const res = await apiGet({ action: 'seller_catalog', lang: lg });
+  if (res && res.ok) {
+    STATE.sellerCatalog = res;
+    renderApp();
+  }
+}
+
+function formatPitchPrice(item) {
+  const cur = STATE.pitchCurr || 'EUR';
+  if (cur === 'USD') return '$' + fmt(item.price_usd, 0) + ' USD';
+  if (cur === 'GBP') return '£' + fmt(item.price_gbp, 0) + ' GBP';
+  if (cur === 'EGP') return fmt(item.price_egp, 0) + ' EGP';
+  return '€' + fmt(item.price_eur, 0) + ' EUR';
+}
+
+function buildAttributedProductUrl(item) {
+  const slug = getSellerReferralSlug();
+  const base = String(item.public_url || 'https://seacollegediveclub.com/prices');
+  const sep = base.includes('?') ? '&' : '?';
+  return `${base}${sep}seller=${encodeURIComponent(slug)}`;
+}
+
+function openProductQrModal(itemCode) {
+  const cat = STATE.sellerCatalog || {};
+  const all = [...(cat.operational_skus || []), ...(cat.items || [])];
+  const item = all.find((x) => String(x.code || x.id) === String(itemCode)) || all[0];
+  if (!item) return;
+  const url = buildAttributedProductUrl(item);
+  document.getElementById('pqrTitle').textContent = '📱 ' + (item.name || item.name_en || 'Scan to Book');
+  document.getElementById('pqrSub').textContent = `${formatPitchPrice(item)} • Hotel Pickup: ${STATE.pitchPickup || '07:55–08:10'} • 90-Day Attribution Locked`;
+  document.getElementById('pqrUrlTxt').textContent = url;
+  const svgHtml = (window.SCQR && typeof window.SCQR.toSvg === 'function')
+    ? window.SCQR.toSvg(url, { size: 220 })
+    : `<div style="color:#041322;padding:16px;font-weight:700;">${esc(url)}</div>`;
+  document.getElementById('pqrSvgWrap').innerHTML = svgHtml;
+  const msg = `🤿 *Sea College Dive Club — Sharm El Sheikh*\n*${item.name || item.name_en}* (${formatPitchPrice(item)})\n🚐 Hotel Pickup (${STATE.pitchHotel || 'Hotel'}): ${STATE.pitchPickup || '07:55–08:10'}\n🔗 Book / Details: ${url}`;
+  document.getElementById('pqrWaBtn').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  document.getElementById('productQrModal').style.display = 'flex';
+}
+
+function sharePitchWhatsApp(itemCode) {
+  const cat = STATE.sellerCatalog || {};
+  const all = [...(cat.operational_skus || []), ...(cat.items || [])];
+  const item = all.find((x) => String(x.code || x.id) === String(itemCode));
+  if (!item) return;
+  const url = buildAttributedProductUrl(item);
+  const pax = Math.max(1, Number(STATE.pitchPax || 2));
+  const msg = `🌊 *Sea College Dive Club — Official Offer*\n`
+    + `🤿 *${item.name || item.name_en}*\n`
+    + `👥 Guests: ${pax} PAX • Unit Price: ${formatPitchPrice(item)}\n`
+    + `🏨 Hotel: ${STATE.pitchHotel || 'Sharm Resort'} (Pickup: ${STATE.pitchPickup || '07:55–08:10'})\n`
+    + `✅ Book directly with my personal concierge link:\n${url}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+}
+
+let CURRENT_FBK_ITEM = null;
+function openFastBookModal(itemCode) {
+  const cat = STATE.sellerCatalog || {};
+  const all = [...(cat.operational_skus || []), ...(cat.items || [])];
+  const item = all.find((x) => String(x.code || x.id) === String(itemCode)) || all[0];
+  if (!item) return;
+  CURRENT_FBK_ITEM = item;
+  document.getElementById('fbkResultBox').style.display = 'none';
+  document.getElementById('fbkTitle').textContent = `⚡ Fast Book: ${item.name || item.name_en}`;
+  document.getElementById('fbkProdCode').value = String(item.code || item.id);
+  const hotels = cat.hotels || [];
+  const hSel = document.getElementById('fbkHotel');
+  hSel.innerHTML = hotels.map((h) => `<option value="${esc(h.name)}" data-pick="${esc(h.pickup_window)}" ${h.name === STATE.pitchHotel ? 'selected' : ''}>${esc(h.name)} (${esc(h.pickup_window)})</option>`).join('');
+  document.getElementById('fbkPick').value = STATE.pitchPickup || '07:55–08:10';
+  const pax = Math.max(1, Number(STATE.pitchPax || 2));
+  document.getElementById('fbkAdl').value = String(pax);
+  document.getElementById('fbkCh').value = '0';
+  const mode = item.default_sale_mode || STATE.pitchSaleMode || 'INSHEET';
+  document.getElementById('fbkMode').value = mode;
+  document.getElementById('fbkDepCur').value = 'EUR';
+  document.getElementById('fbkRestCur').value = 'EUR';
+  document.getElementById('fbkDepAmt').value = String(Math.round(Number(item.price_eur || 40) * pax * 100) / 100);
+  document.getElementById('fbkRestAmt').value = '0';
+  document.getElementById('fbkSupplierCost').value = String(Math.round(Number(item.default_supplier_cost_egp || 0) * pax));
+  recalcFastBookPreview();
+  document.getElementById('fastBookModal').style.display = 'flex';
+}
+
+function recalcFastBookPreview() {
+  const cat = STATE.sellerCatalog || {};
+  const fx = cat.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
+  const mode = document.getElementById('fbkMode').value;
+  document.getElementById('fbkCostRow').style.display = mode === 'OUT_SIDE' ? 'block' : 'none';
+  const depAmt = Math.max(0, Number(document.getElementById('fbkDepAmt').value || 0));
+  const depCur = document.getElementById('fbkDepCur').value || 'EUR';
+  const restAmt = Math.max(0, Number(document.getElementById('fbkRestAmt').value || 0));
+  const restCur = document.getElementById('fbkRestCur').value || 'EUR';
+  const grossEgp = depAmt * Number(fx[depCur] || 57) + restAmt * Number(fx[restCur] || 57);
+  const supCost = mode === 'OUT_SIDE' ? Math.max(0, Number(document.getElementById('fbkSupplierCost').value || 0)) : 0;
+  const netBase = mode === 'OUT_SIDE' ? Math.max(0, grossEgp - supCost) : grossEgp;
+  const rate = mode === 'OUT_SIDE' ? 0.25 : 0.10;
+  const commEgp = Math.round(netBase * rate * 100) / 100;
+  document.getElementById('fbkCommPreview').innerHTML =
+    `💰 <b>Live Commission Preview (${esc(mode)} — ${Math.round(rate * 100)}%):</b> Gross <b>${fmt(grossEgp)} EGP</b>`
+    + (mode === 'OUT_SIDE' ? ` − Supplier <b>${fmt(supCost)} EGP</b> = Net <b>${fmt(netBase)} EGP</b>` : '')
+    + ` → Your Instant Commission: <b class="pos" style="font-size:14px;">+${fmt(commEgp, 0)} EGP</b>`;
+}
+
+async function submitFastBookForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('fbkSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Issuing QR Voucher...';
+  try {
+    const res = await apiPost({
+      action: 'create_voucher',
+      guest_name: document.getElementById('fbkGuest').value.trim(),
+      guest_phone: document.getElementById('fbkPhone').value.trim(),
+      trip_date: document.getElementById('fbkDate').value,
+      nationality: document.getElementById('fbkNat').value.trim(),
+      hotel_name: document.getElementById('fbkHotel').value,
+      room_no: document.getElementById('fbkRoom').value.trim(),
+      pickup_time: document.getElementById('fbkPick').value.trim(),
+      product_code: document.getElementById('fbkProdCode').value,
+      adults: Number(document.getElementById('fbkAdl').value || 1),
+      children: Number(document.getElementById('fbkCh').value || 0),
+      deposit_amount: Number(document.getElementById('fbkDepAmt').value || 0),
+      deposit_currency: document.getElementById('fbkDepCur').value,
+      rest_amount: Number(document.getElementById('fbkRestAmt').value || 0),
+      rest_currency: document.getElementById('fbkRestCur').value,
+      sale_mode: document.getElementById('fbkMode').value,
+      supplier_cost_egp: Number(document.getElementById('fbkSupplierCost').value || 0)
+    });
+    if (!res.ok) {
+      alert(res.error || 'Could not create voucher');
+      return;
+    }
+    const rBox = document.getElementById('fbkResultBox');
+    const qrSvg = (window.SCQR && typeof window.SCQR.toSvg === 'function')
+      ? `<div class="qr-box" style="margin:8px auto;">${window.SCQR.toSvg(String(res.qr_token || res.voucher_no), { size: 150 })}</div>`
+      : '';
+    rBox.style.display = 'block';
+    rBox.innerHTML = `
+      <div style="font-size:14px;font-weight:900;color:var(--teal);">✅ Voucher ${esc(res.voucher_no)} Issued!</div>
+      <div style="font-size:12px;margin-top:4px;">Commission Recorded: <b>+${fmt(res.commission_egp, 0)} EGP</b> (${esc(res.commission_type)})</div>
+      ${qrSvg}
+      <div style="font-size:11px;color:var(--muted);">Boarding Token: ${esc(res.qr_token)}</div>
+    `;
+    showToast(`Booked ${res.voucher_no}! +${fmt(res.commission_egp, 0)} EGP added to your wallet.`);
+    STATE.sellerWallet = null;
+    const wp = { action: 'seller_wallet', month: STATE.walletMonth };
+    if (STATE.walletSeller) wp.seller = STATE.walletSeller;
+    apiGet(wp).then((w) => { if (w && w.ok) STATE.sellerWallet = w; });
+    apiGet({ action: 'role_workspace' }).then((w) => { if (w && w.ok) STATE.ws = w; });
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🎫 Confirm Booking & Record My Commission';
+  }
+}
+
+function renderSellerPitchTab(ar) {
+  const cat = STATE.sellerCatalog || {};
+  const fx = cat.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
+  const opSkus = cat.operational_skus || [];
+  const mainItems = cat.items || [];
+  const hotels = cat.hotels || [];
+  const langs = cat.languages || ['en', 'ru', 'it', 'pl', 'de', 'fr', 'ar', 'zh'];
+  const langLabels = { en: '🇬🇧 EN', ru: '🇷🇺 RU', it: '🇮🇹 IT', pl: '🇵🇱 PL', de: '🇩🇪 DE', fr: '🇫🇷 FR', ar: '🇪🇬 AR', zh: '🇨🇳 ZH' };
+
+  const selectedHotelObj = hotels.find((h) => h.name === STATE.pitchHotel) || hotels[0] || { name: 'Cyrene Sharm Hotel', pickup_window: '07:55–08:10', zone_label: 'Montazah / Ras Nasrani' };
+  STATE.pitchPickup = selectedHotelObj.pickup_window || '07:55–08:10';
+
+  const combined = [
+    ...opSkus.map((s) => ({ ...s, _isOpSku: true })),
+    ...mainItems.map((i) => ({ ...i, _isOpSku: false }))
+  ];
+
+  const catChips = [
+    ['ALL', ar ? 'كل العروض والرحلات' : `All Offers (${combined.length})`],
+    ['OPS_SKUS', ar ? '⚡ إضافات المكتب والرحلات الخاصة' : `⚡ Desk & Safari Specials (${opSkus.length})`],
+    ['intro-diving', ar ? '🤿 غطس تجريبي للمبتدئين' : '🤿 Intro Diving'],
+    ['daily-diving', ar ? '🛥️ غطس يومي للمحترفين' : '🛥️ Certified Boat Dives'],
+    ['padi-courses', ar ? '🎓 كورسات PADI' : '🎓 PADI Courses'],
+    ['snorkeling', ar ? '🏝️ سنوركلينج وتيران وراس محمد' : '🏝️ Snorkeling & Island Trips']
+  ];
+
+  const qLow = String(STATE.pitchQuery || '').trim().toLowerCase();
+  const filtered = combined.filter((it) => {
+    if (STATE.pitchCat === 'OPS_SKUS' && !it._isOpSku) return false;
+    if (STATE.pitchCat !== 'ALL' && STATE.pitchCat !== 'OPS_SKUS' && String(it.category || it.category_group || '') !== STATE.pitchCat) return false;
+    if (!qLow) return true;
+    const hay = `${it.name || ''} ${it.name_en || ''} ${it.name_ar || ''} ${it.summary || ''} ${it.category_label || ''} ${it.code || ''}`.toLowerCase();
+    return hay.includes(qLow);
+  });
+
+  const sampleEur = 75 * Math.max(1, Number(STATE.pitchPax || 2));
+  const sampleGrossEgp = sampleEur * Number(fx.EUR || 57);
+  const sampleCommEgp = STATE.pitchSaleMode === 'OUT_SIDE'
+    ? Math.max(0, sampleGrossEgp - Number(STATE.pitchSupplierCost || 0)) * 0.25
+    : sampleGrossEgp * 0.10;
+
+  const slug = getSellerReferralSlug();
+  const myQrUrl = 'https://seacollegediveclub.com/r/' + encodeURIComponent(slug);
+
+  return `
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(0,210,255,0.14),rgba(16,185,129,0.1));">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <div>
+          <h2 style="font-size:17px;">⚡ ${ar ? 'شاشة العرض الذكي للعميل والحجز السريع بالعمولة' : 'Smart Seller Pitch Deck, Infographic Quotes & 1-Tap Booking'}</h2>
+          <p style="font-size:12px;color:var(--muted);">
+            ${ar ? 'اعرض الصور والفيديوهات بـ 8 لغات و4 عملات، اعرف موعد الباص من 72 فندق بشرم الشيخ، واحجز فوراً بعمولة مسجلة في حسابك!' : 'Turn screen to guest in 8 languages & 4 currencies, check 72-hotel pickup windows, play HD reef videos, and book in 1 tap!'}
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-emerald" onclick="STATE.activeTab='seller_wallet';renderApp();">💰 ${ar ? 'باركود QR ومحفظة عمولاتي' : 'My QR & Wallet'} (${esc(myQrUrl)})</button>
+        </div>
+      </div>
+
+      <div class="grid grid-3" style="gap:10px;margin-bottom:12px;">
+        <div>
+          <label>🌍 ${ar ? 'لغة العرض للعميل (8 لغات)' : 'Guest Pitch Language (8 Languages)'}</label>
+          <div class="seg-group" style="width:100%;justify-content:space-between;">
+            ${langs.map((lg) => `<button type="button" class="seg-btn ${STATE.pitchLang === lg ? 'active' : ''}" style="padding:5px 7px;font-size:11px;" onclick="changePitchLang('${esc(lg)}')">${langLabels[lg] || esc(lg.toUpperCase())}</button>`).join('')}
+          </div>
+        </div>
+
+        <div>
+          <label>💱 ${ar ? 'عملة التسعير الفوري' : 'Instant Quote Currency'} (€1=${fmt(fx.EUR)} • $1=${fmt(fx.USD)} • £1=${fmt(fx.GBP)})</label>
+          <div class="seg-group" style="width:100%;">
+            ${['EUR', 'USD', 'GBP', 'EGP'].map((c) => `<button type="button" class="seg-btn ${STATE.pitchCurr === c ? 'active' : ''}" style="flex:1;" onclick="STATE.pitchCurr='${c}';renderApp();">${c}</button>`).join('')}
+          </div>
+        </div>
+
+        <div>
+          <label>🚐 ${ar ? 'محدد موعد الباص (72 فندق بشرم الشيخ)' : '72-Hotel Sharm Pickup Window Finder'}</label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <select onchange="STATE.pitchHotel=this.value;const o=this.selectedOptions[0];if(o&&o.dataset.pick)STATE.pitchPickup=o.dataset.pick;renderApp();">
+              ${hotels.map((h) => `<option value="${esc(h.name)}" data-pick="${esc(h.pickup_window)}" ${h.name === selectedHotelObj.name ? 'selected' : ''}>${esc(h.name)}</option>`).join('')}
+            </select>
+            <span class="pill" style="white-space:nowrap;padding:7px 10px;">🕒 ${esc(STATE.pitchPickup)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;background:rgba(6,21,38,0.78);border:1px solid var(--border);">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:800;color:var(--cyan);">💼 ${ar ? 'حاسبة عمولة المندوب المباشرة:' : 'Commission Calculator:'}</span>
+          <select style="width:auto;padding:5px 9px;font-size:12px;" onchange="STATE.pitchSaleMode=this.value;renderApp();">
+            <option value="INSHEET" ${STATE.pitchSaleMode === 'INSHEET' ? 'selected' : ''}>INSHEET (10% Gross Sales)</option>
+            <option value="OUT_SIDE" ${STATE.pitchSaleMode === 'OUT_SIDE' ? 'selected' : ''}>OUT_SIDE (25% Net Profit)</option>
+          </select>
+          <label style="margin:0;display:inline-flex;align-items:center;gap:5px;">PAX:
+            <input type="number" min="1" max="30" value="${Number(STATE.pitchPax || 2)}" style="width:64px;padding:5px;" oninput="STATE.pitchPax=Math.max(1,Number(this.value||1));renderApp();">
+          </label>
+          ${STATE.pitchSaleMode === 'OUT_SIDE' ? `
+            <label style="margin:0;display:inline-flex;align-items:center;gap:5px;">Supplier Cost (EGP):
+              <input type="number" min="0" step="50" value="${Number(STATE.pitchSupplierCost || 0)}" style="width:95px;padding:5px;" oninput="STATE.pitchSupplierCost=Math.max(0,Number(this.value||0));renderApp();">
+            </label>
+          ` : ''}
+        </div>
+        <div style="font-size:12px;">
+          Example €75 × ${Number(STATE.pitchPax || 2)} PAX = <b>${fmt(sampleGrossEgp)} EGP</b> → Your Commission: <b class="pos">+${fmt(sampleCommEgp, 0)} EGP</b>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${catChips.map(([ck, cl]) => `<button type="button" class="btn ${STATE.pitchCat === ck ? 'btn-primary' : ''}" onclick="STATE.pitchCat='${ck}';renderApp();">${esc(cl)}</button>`).join('')}
+      </div>
+      <input type="search" style="max-width:270px;" placeholder="${ar ? 'ابحث عن رحلة، كورس، تيران، رأس محمد...' : 'Search Ras Mohammed, Tiran, OWD, Safari...'}" value="${esc(STATE.pitchQuery)}" oninput="STATE.pitchQuery=this.value;renderApp();">
+    </div>
+
+    <div class="pitch-grid">
+      ${filtered.slice(0, 36).map((it) => {
+        const code = String(it.code || it.id || '');
+        const info = it.infographics || {};
+        const pax = Math.max(1, Number(STATE.pitchPax || 2));
+        const unitCurrTxt = formatPitchPrice(it);
+        const grossEgp = Number(it.price_egp || 0) * pax;
+        const mode = STATE.pitchSaleMode || it.default_sale_mode || 'INSHEET';
+        const supCost = mode === 'OUT_SIDE' ? (Number(STATE.pitchSupplierCost || it.default_supplier_cost_egp || 0)) : 0;
+        const estComm = mode === 'OUT_SIDE' ? Math.max(0, grossEgp - supCost) * 0.25 : grossEgp * 0.10;
+        const coverImg = it.cover_webp || '/assets/images/pitch/ras-mohammed-boat.webp';
+        const vidSrc = it.video_src || '/assets/videos/sea-college-tiran-dive-briefing-sharm.mp4';
+        const vidPoster = it.video_poster || coverImg;
+        return `
+          <article class="pitch-card">
+            <div>
+              <div class="pitch-media">
+                <img src="${esc(coverImg)}" alt="${esc(it.name || it.name_en)}" loading="lazy">
+                <span class="pitch-cat-tag">${esc(it.category_label || 'Red Sea Experience')}</span>
+                <span class="pitch-price-tag">${esc(unitCurrTxt)}</span>
+              </div>
+              <div style="padding:13px;">
+                <div style="font-size:15px;font-weight:800;line-height:1.3;">${esc(it.name || it.name_en)}</div>
+                <p style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45;">${esc(String(it.summary || '').slice(0, 135))}</p>
+
+                <div class="info-badges">
+                  <span class="info-badge">⏱ Duration: ${esc(it.duration || 'Full Day')}</span>
+                  <span class="info-badge">🌊 Depth: ${esc(info.max_depth || 'Surface / Reef')}</span>
+                  <span class="info-badge">🎂 Age: ${esc(info.min_age || '8+')}</span>
+                  <span class="info-badge">🪪 Cert: ${esc(info.certification || 'Beginner Friendly')}</span>
+                  <span class="info-badge">🚐 Pickup: ${esc(STATE.pitchPickup)}</span>
+                </div>
+
+                <details style="margin-top:8px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);padding:7px 9px;">
+                  <summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--cyan);">🎬 Watch 9:16 Reef &amp; Boat Video Preview</summary>
+                  <video controls preload="none" playsinline poster="${esc(vidPoster)}" src="${esc(vidSrc)}" style="width:100%;max-height:240px;border-radius:8px;margin-top:8px;background:#000;"></video>
+                </details>
+              </div>
+            </div>
+
+            <div style="padding:10px 13px 13px;border-top:1px solid rgba(148,163,184,0.14);background:rgba(6,21,38,0.5);">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;margin-bottom:8px;">
+                <span>${pax} PAX Total: <b>€${fmt(Number(it.price_eur || 0) * pax)} EUR</b> (${fmt(grossEgp)} EGP)</span>
+                <span class="pos" style="font-weight:800;">Comm: +${fmt(estComm, 0)} EGP</span>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" style="flex:1.3;justify-content:center;" onclick="openFastBookModal('${esc(code)}')">⚡ Fast Book</button>
+                <button type="button" class="btn" onclick="openProductQrModal('${esc(code)}')">📱 QR</button>
+                <button type="button" class="btn btn-emerald" onclick="sharePitchWhatsApp('${esc(code)}')">💬 WhatsApp</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/* ================= F13: PERSONAL SELLER QR PROFILE & COMMISSION WALLET ================= */
+async function changeWalletFilter(monthVal, sellerVal) {
+  if (monthVal !== null) STATE.walletMonth = monthVal;
+  if (sellerVal !== null) STATE.walletSeller = sellerVal;
+  const wp = { action: 'seller_wallet', month: STATE.walletMonth };
+  if (STATE.walletSeller) wp.seller = STATE.walletSeller;
+  const res = await apiGet(wp);
+  if (res && res.ok) {
+    STATE.sellerWallet = res;
+    renderApp();
+  }
+}
+
+function downloadSellerQrPng(qrUrl, slug) {
+  if (!window.SCQR || typeof window.SCQR.toDataUrl !== 'function') {
+    showToast('QR generator ready');
+    return;
+  }
+  const dataUrl = window.SCQR.toDataUrl(String(qrUrl), { size: 512 });
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = `SeaCollege_Seller_QR_${slug || 'badge'}.png`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast('Downloaded printable PNG QR badge!');
+}
+
+function renderSellerWalletTab(ar) {
+  const w = STATE.sellerWallet || {};
+  const prof = w.seller_profile || {};
+  const k = w.kpis || {};
+  const rows = w.ledger_rows || [];
+  const leads = w.attributed_leads || [];
+  const allSellers = w.all_sellers || [];
+  const slug = prof.referral_code || getSellerReferralSlug();
+  const qrUrl = prof.qr_url || ('https://seacollegediveclub.com/r/' + encodeURIComponent(slug));
+  const locUrls = prof.localized_urls || { en: qrUrl };
+  const svgQr = (window.SCQR && typeof window.SCQR.toSvg === 'function')
+    ? window.SCQR.toSvg(qrUrl, { size: 208 })
+    : `<div style="color:#041322;padding:14px;font-weight:800;">${esc(qrUrl)}</div>`;
+
+  const expParams = new URLSearchParams({
+    report: 'seller_commissions',
+    format: 'xlsx',
+    month: w.month || STATE.walletMonth || '2026-10'
+  });
+  if (prof.username) expParams.set('seller', prof.username);
+  const walletExportHref = '/handlers/erp_export.php?' + expParams.toString();
+
+  const monthsOpts = ['2026-10', 'ALL', '2026-11', '2026-09', '2026-08', '2026-07', '2026-06', '2026-05'];
+
+  return `
+    <div class="horizon-bar" style="margin-bottom:14px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-weight:800;color:var(--cyan);">💰 ${ar ? 'محفظة العمولات وباركود المندوب الشخصي' : 'Seller QR Profile & Real-Time Commission Wallet'}</span>
+        ${allSellers.length ? `
+          <select style="width:auto;" onchange="changeWalletFilter(null, this.value)">
+            ${allSellers.map((s) => `<option value="${esc(s.username)}" ${s.username === prof.username ? 'selected' : ''}>${esc(s.display_name_en)} (@${esc(s.username)} • ${esc(s.branch_scope)})</option>`).join('')}
+          </select>
+        ` : ''}
+        <select style="width:auto;" onchange="changeWalletFilter(this.value, null)">
+          ${monthsOpts.map((m) => `<option value="${esc(m)}" ${(w.month || STATE.walletMonth) === m ? 'selected' : ''}>${m === 'ALL' ? (ar ? 'كل الشهور (تراكمي)' : 'All Months (Cumulative)') : esc(m)}</option>`).join('')}
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a class="btn btn-emerald" href="${esc(walletExportHref)}">⬇ Export Commissions (.xlsx)</a>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div class="qr-box">${svgQr}</div>
+        <div style="flex:1;min-width:210px;">
+          <span class="pill">${esc(prof.branch_scope || 'CYRENE')} • REP: ${esc(prof.rep_scope || slug.toUpperCase())}</span>
+          <h3 style="font-size:18px;margin-top:6px;">${esc(ar ? (prof.display_name_ar || prof.display_name_en) : (prof.display_name_en || prof.username))}</h3>
+          <div style="font-size:12px;color:var(--cyan);word-break:break-all;margin:6px 0;font-weight:700;">${esc(qrUrl)}</div>
+          <p style="font-size:11.5px;color:var(--muted);margin-bottom:10px;">
+            10% Commission on In-Sheet &amp; Website QR Bookings • 25% Net Profit Commission on Outside / Safari Excursions (90-Day Cookie + LocalStorage Attribution).
+          </p>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" onclick="downloadSellerQrPng('${esc(qrUrl)}', '${esc(slug)}')">⬇ Download PNG QR Badge</button>
+            <button type="button" class="btn" onclick="copyTextPrompt('${esc(qrUrl)}')">📋 Copy Link</button>
+            <a class="btn btn-emerald" href="https://wa.me/?text=${encodeURIComponent('🤿 Book your Sharm El Sheikh Red Sea Dive & Snorkeling directly with me at Sea College Dive Club: ' + qrUrl)}" target="_blank" rel="noopener">💬 Share QR Link</a>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;">
+            ${Object.entries(locUrls).map(([lg, uLink]) => `<button type="button" class="contact-chip" style="cursor:pointer;" onclick="copyTextPrompt('${esc(uLink)}')">🌐 ${esc(lg.toUpperCase())}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-kpi" style="align-content:start;">
+        <div class="card">
+          <div class="kpi-label">${ar ? 'إجمالي المبيعات المسجلة' : 'Gross Attributed Sales'}</div>
+          <div class="kpi-val">${fmt(k.gross_sales_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+          <div class="kpi-sub">${fmt(k.entries_count)} Commission Vouchers</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">${ar ? 'إجمالي العمولة المستحقة' : 'Total Earned + Pending Comm'}</div>
+          <div class="kpi-val pos">${fmt(k.total_commission_rounded_egp ?? k.total_commission_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+          <div class="kpi-sub">Exact: ${fmt(k.total_commission_egp, 2)} EGP</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">${ar ? 'مؤكد بالسقالة مقابل قيد التنفيذ' : 'Boarded Earned vs Pending'}</div>
+          <div class="kpi-val" style="color:var(--cyan);font-size:17px;">${fmt(k.earned_commission_egp + k.paid_commission_egp)} / ${fmt(k.pending_commission_egp)}</div>
+          <div class="kpi-sub">Earned+Paid / Pending Jetty</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">${ar ? 'الراتب الأساسي والبدلات' : 'Payroll Base + Allowances'}</div>
+          <div class="kpi-val">${fmt(k.payroll_base_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+          <div class="kpi-sub">Deductions/Advances: <span class="neg">-${fmt(k.payroll_deductions_egp)} EGP</span></div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">${ar ? 'صافي المستحق للصرف' : 'Net Payable Balance'}</div>
+          <div class="kpi-val ${Number(k.net_balance_egp || 0) >= 0 ? 'pos' : 'neg'}">${fmt(k.net_balance_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+          <div class="kpi-sub">Base + Comm − Advances</div>
+        </div>
+        <div class="card">
+          <div class="kpi-label">${ar ? 'عملاء باركود QR عبر الموقع' : 'Website QR Leads & Bookings'}</div>
+          <div class="kpi-val" style="color:#fcd34d;">${fmt(k.attributed_leads_count ?? leads.length)}</div>
+          <div class="kpi-sub">Live /r/${esc(slug)} Conversions</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3 style="font-size:14px;margin-bottom:8px;">📋 ${ar ? 'دفتر تفصيلي لعمولات الفوتشرات وحجوزات QR' : 'Detailed Voucher & Website QR Commission Ledger'} (${rows.length})</h3>
+      <div class="table-wrap" style="max-height:340px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>VO.NO</th><th>Channel</th><th>Rule</th><th>Gross Sales (EGP)</th>
+              <th>Supplier Cost</th><th>Base EGP</th><th>Rate</th><th>Commission (EGP)</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((r) => `
+              <tr>
+                <td>${esc(r.tx_date)}</td>
+                <td><b>${esc(r.voucher_no)}</b></td>
+                <td>${esc(r.source_channel)}</td>
+                <td><span class="pill">${esc(r.commission_type)}</span></td>
+                <td class="num">${fmt(r.gross_amount_egp)}</td>
+                <td class="num">${fmt(r.supplier_cost_egp)}</td>
+                <td class="num">${fmt(r.commissionable_base_egp)}</td>
+                <td class="num">${fmt(Number(r.commission_rate || 0) * 100, 1)}%</td>
+                <td class="num pos"><b>${fmt(r.commission_egp, 2)}</b></td>
+                <td><span class="pill" style="${r.status === 'REVERSED_CANCELLED' ? 'color:#fb7185;border-color:#f43f5e;' : ''}">${esc(r.status)}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:14px;margin-bottom:8px;">🌐 ${ar ? 'عملاء الموقع والواتساب المسجلين عبر الباركود الخاص بك' : 'Attributed Website QR Bookings, Check-Ins & WhatsApp Clicks'} (${leads.length})</h3>
+      <div class="table-wrap" style="max-height:260px;">
+        <table>
+          <thead><tr><th>Received</th><th>Type</th><th>Lang</th><th>Guest</th><th>Trip Date</th><th>Interest</th><th>Est. EUR</th><th>Voucher</th></tr></thead>
+          <tbody>
+            ${leads.map((l) => `
+              <tr>
+                <td>${esc(String(l.received_at || '').slice(0, 16))}</td>
+                <td><span class="pill">${esc(l.lead_type)}</span></td>
+                <td>${esc(l.lang)}</td>
+                <td><b>${esc(l.guest_name || 'WhatsApp Visitor')}</b></td>
+                <td>${esc(l.trip_date || '—')}</td>
+                <td>${esc(l.interest_items || '—')}</td>
+                <td class="num pos">€${fmt(l.estimated_eur, 2)}</td>
+                <td><b>${esc(l.linked_voucher_no || '—')}</b></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+/* ================= F14: MONTHLY MANAGEMENT REPORTS PACK (ALL 12 SCHEDULES) ================= */
+async function changeReportMonth(m) {
+  STATE.reportMonth = m || '2026-10';
+  const res = await apiGet({ action: 'monthly_report_pack', month: STATE.reportMonth });
+  if (res && res.ok) {
+    STATE.monthlyPack = res;
+    renderApp();
+  }
+}
+
+function renderMonthlyReportsPack(ar) {
+  const pack = STATE.monthlyPack || {};
+  const m = pack.month || STATE.reportMonth || '2026-10';
+  const months = pack.available_months || ['2026-10'];
+  const fx = pack.fx_rates || { USD: 50, EUR: 57, GBP: 65, EGP: 1 };
+  const k = pack.kpis || {};
+  const sc = pack.schedules || {};
+
+  const dcr = sc.daily_cash_revenue || { totals: {}, rows: [] };
+  const scomm = sc.seller_commissions || { totals: {}, rows: [] };
+  const pCyr = sc.pnl_cyrene || { totals: {}, rows: [] };
+  const pJet = sc.pnl_jetty || { totals: {}, rows: [] };
+  const pCon = sc.pnl_consolidated || { totals: {}, rows: [] };
+  const cbox = sc.treasury_cashbox || { totals: {}, rows: [] };
+  const prCyr = sc.payroll_cyrene || { totals: {}, rows: [] };
+  const prJet = sc.payroll_jetty_boats || { totals: {}, rows: [] };
+  const sm = sc.supermarket || { totals: {}, rows: [] };
+  const chIn = sc.charters_in || { totals: {}, rows: [] };
+  const chOut = sc.charters_out || { totals: {}, rows: [] };
+  const pStmt = sc.partner_statements || { rows: [] };
+  const ytd = sc.profit_share_ytd || { rows: [] };
+  const banks = sc.bank_balances || { totals: {}, rows: [] };
+  const ob = sc.open_balances || { totals: {}, receivables: [], payables: [], liquidity_bridge: [] };
+  const bridge = (sc.res_accounting_bridge && sc.res_accounting_bridge.summary) || {};
+
+  const xlsxPackUrl = `/handlers/erp_export.php?report=monthly_pack&format=xlsx&month=${encodeURIComponent(m)}`;
+  const csvPackUrl = `/handlers/erp_export.php?report=monthly_pack&format=csv&month=${encodeURIComponent(m)}`;
+  const commXlsxUrl = `/handlers/erp_export.php?report=seller_commissions&format=xlsx&month=${encodeURIComponent(m)}`;
+
+  const showConsolidated = STATE.pnlViewMode !== 'branch';
+  const showAll3Banks = STATE.bankViewMode !== 'operating';
+  const shownBankTotal = showAll3Banks ? banks.totals.all_3_banks_egp : banks.totals.operating_banks_egp;
+
+  return `
+    <div class="horizon-bar" style="margin-bottom:14px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span style="font-size:14px;font-weight:900;color:var(--cyan);">📑 ${ar ? 'الحزمة الشهرية الختامية الموحدة للإدارة' : 'Monthly Management Closing & Reconciliation Pack'}</span>
+        <select style="width:auto;font-weight:800;" onchange="changeReportMonth(this.value)">
+          ${months.map((mo) => `<option value="${esc(mo)}" ${mo === m ? 'selected' : ''}>📅 ${esc(mo)}</option>`).join('')}
+        </select>
+        <span class="pill">FX: $1=${fmt(fx.USD)} • €1=${fmt(fx.EUR)} • £1=${fmt(fx.GBP)} EGP</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a class="btn btn-emerald" href="${esc(xlsxPackUrl)}">⬇ 14-Sheet Monthly Pack (.xlsx)</a>
+        <a class="btn" href="${esc(csvPackUrl)}">⬇ Summary (.csv)</a>
+        <a class="btn" href="${esc(commXlsxUrl)}">⬇ Seller Commissions (.xlsx)</a>
+      </div>
+    </div>
+
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">${ar ? 'إجمالي النقدية اليومية (سيرين + السقالة)' : 'Combined Daily Cash Rev'}</div>
+        <div class="kpi-val">${fmt(k.combined_cash_rev_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">Cyrene: ${fmt(k.cyrene_cash_rev_egp)} • Jetty: ${fmt(k.jetty_cash_rev_egp)}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'مقبوضات الفيزا + عمولات سيرين' : 'Combined VISA & Cyrene Comm'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.combined_visa_egp)} <span style="font-size:11px;color:var(--muted);">VISA</span></div>
+        <div class="kpi-sub">Cyrene Seller Comm: <b>${fmt(k.cyrene_commissions_egp)} EGP</b></div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'صافي ربح التشغيل الموحد' : 'Consolidated Net Profit'}</div>
+        <div class="kpi-val ${Number(k.consolidated_net_profit_egp || 0) >= 0 ? 'pos' : 'neg'}">${fmt(k.consolidated_net_profit_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">Cyrene: ${fmt(k.cyrene_net_profit_egp)} • Jetty: +${fmt(k.jetty_net_profit_egp)}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'صافي المرتبات (سيرين + السقالة والمراكب)' : 'Combined Net Payroll'}</div>
+        <div class="kpi-val">${fmt(k.combined_net_payroll_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">Cyrene: ${fmt(prCyr.totals.net_pay_egp)} • Jetty/Boats: ${fmt(prJet.totals.net_pay_egp)}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'إجمالي البنوك المؤمنة' : 'Corporate Bank Treasury'}</div>
+        <div class="kpi-val pos">${fmt(shownBankTotal, 2)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">Operating (2): ${fmt(banks.totals.operating_banks_egp, 2)} • All 3: ${fmt(banks.totals.all_3_banks_egp, 2)}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">${ar ? 'الأرصدة المفتوحة وصافي السيولة' : 'Open AR / AP & Free Liquidity'}</div>
+        <div class="kpi-val" style="font-size:16px;">AR ${fmt(k.open_receivables_egp)} / AP ${fmt(k.open_payables_egp)}</div>
+        <div class="kpi-sub">Net Free Liquidity: <b>${fmt(k.net_free_liquidity_egp)} EGP</b></div>
+      </div>
+    </div>
+
+    <!-- Schedule 3/4/5: Branch vs Consolidated P&L Toggle -->
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <h3 style="font-size:15px;">⚖️ ${ar ? 'قائمة الأرباح والخسائر الموحدة واستبعاد التحويلات المتبادلة' : 'Schedule 3–5: Branch vs Consolidated Profit & Loss (Inter-Branch Eliminated)'}</h3>
+        <div class="seg-group">
+          <button type="button" class="seg-btn ${showConsolidated ? 'active' : ''}" onclick="STATE.pnlViewMode='consolidated';renderApp();">Consolidated (Eliminate ${fmt(pCon.totals.interbranch_elimination_egp)} Interbranch)</button>
+          <button type="button" class="seg-btn ${!showConsolidated ? 'active' : ''}" onclick="STATE.pnlViewMode='branch';renderApp();">Uneliminated Branch Gross (${fmt(pCon.totals.gross_branch_rev_egp)})</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+        Gross Branch Revenue: <b>${fmt(pCon.totals.gross_branch_rev_egp)} EGP</b> − Interbranch Elimination: <b>${fmt(pCon.totals.interbranch_elimination_egp)} EGP</b> = Consolidated External Revenue: <b>${fmt(pCon.totals.consolidated_ext_rev_egp)} EGP</b> • External Expenses: <b>${fmt(pCon.totals.consolidated_ext_exp_egp)} EGP</b> • Consolidated Net Profit: <b class="pos">${fmt(pCon.totals.consolidated_net_profit_egp)} EGP</b>
+      </div>
+      <div class="grid grid-2">
+        <div class="table-wrap" style="max-height:290px;">
+          <table>
+            <thead><tr><th>Cyrene P&amp;L Line</th><th>Type</th><th>Amount (EGP)</th></tr></thead>
+            <tbody>
+              ${(pCyr.rows || []).map((r) => `
+                <tr>
+                  <td>${esc(ar ? r.line_name_ar : (r.line_name_en || r.line_name_ar))} ${r.is_interbranch ? '<span class="pill">Interbranch</span>' : ''}</td>
+                  <td>${esc(r.section_type)}</td>
+                  <td class="num ${r.section_type === 'NET_PROFIT' ? (r.amount_egp >= 0 ? 'pos' : 'neg') : ''}">${fmt(r.amount_egp)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap" style="max-height:290px;">
+          <table>
+            <thead><tr><th>Travco Jetty P&amp;L Line</th><th>Type</th><th>Amount (EGP)</th></tr></thead>
+            <tbody>
+              ${(pJet.rows || []).map((r) => `
+                <tr>
+                  <td>${esc(ar ? r.line_name_ar : (r.line_name_en || r.line_name_ar))} ${r.is_interbranch ? '<span class="pill">Interbranch</span>' : ''}</td>
+                  <td>${esc(r.section_type)}</td>
+                  <td class="num ${r.section_type === 'NET_PROFIT' ? (r.amount_egp >= 0 ? 'pos' : 'neg') : ''}">${fmt(r.amount_egp)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule 1 & Schedule 2: Daily Cash Revenue & Seller Commissions -->
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">💵 Schedule 1: ${esc(ar ? dcr.title_ar : dcr.title_en)} (Total: ${fmt(dcr.totals.combined_cash_egp)} EGP)</h3>
+        <div class="table-wrap" style="max-height:270px;">
+          <table>
+            <thead><tr><th>Date</th><th>Cyrene Cash</th><th>Jetty Cash</th><th>Combined Cash</th><th>VISA</th></tr></thead>
+            <tbody>
+              ${(dcr.rows || []).map((r) => `
+                <tr>
+                  <td>${esc(r.rev_date)}</td>
+                  <td class="num">${fmt(r.cyrene_total_egp)}</td>
+                  <td class="num">${fmt(r.jetty_total_egp)}</td>
+                  <td class="num pos"><b>${fmt(r.combined_total_egp)}</b></td>
+                  <td class="num">${fmt(Number(r.cyrene_visa || 0) + Number(r.jetty_visa || 0))}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">🏆 Schedule 2: ${esc(ar ? scomm.title_ar : scomm.title_en)} (Cyrene: ${fmt(scomm.totals.cyrene_comm_rounded_egp)} EGP on ${fmt(scomm.totals.cyrene_sales_egp)} Sales)</h3>
+        <div class="table-wrap" style="max-height:270px;">
+          <table>
+            <thead><tr><th>Rep</th><th>Branch</th><th>In-Sheet 10%</th><th>Outside 25%</th><th>QR 10%</th><th>Total Sales</th><th>Total Comm</th></tr></thead>
+            <tbody>
+              ${(scomm.rows || []).map((r) => `
+                <tr>
+                  <td><b>${esc(r.rep_scope)}</b></td>
+                  <td><span class="pill">${esc(r.branch_code || 'CYRENE')}</span></td>
+                  <td class="num">${fmt(r.insheet_comm_egp)}</td>
+                  <td class="num">${fmt(r.outside_comm_egp)}</td>
+                  <td class="num">${fmt(r.qr_comm_egp)}</td>
+                  <td class="num">${fmt(r.total_sales_egp)}</td>
+                  <td class="num pos"><b>${fmt(r.total_comm_rounded_egp ?? r.total_comm_egp)}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule 6 & Schedule 14: Cashbox Movement & Masked Bank Balances -->
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">🔐 Schedule 6: ${esc(ar ? cbox.title_ar : cbox.title_en)}</h3>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">
+          Closing Cashbox: <b>${fmt(cbox.totals.closing_le)} LE</b> • <b>$${fmt(cbox.totals.closing_usd)}</b> • <b>€${fmt(cbox.totals.closing_eur)}</b> • <b>£${fmt(cbox.totals.closing_gbp)}</b> • VISA Cumulative: <b>${fmt(cbox.totals.inc_visa)} EGP</b>
+        </div>
+        <div class="table-wrap" style="max-height:240px;">
+          <table>
+            <thead><tr><th>Date</th><th>Bal LE</th><th>Bal $</th><th>Bal €</th><th>Bal £</th><th>In VISA</th></tr></thead>
+            <tbody>
+              ${(cbox.rows || []).map((r) => `
+                <tr>
+                  <td>${esc(r.tx_date)}</td>
+                  <td class="num ${Number(r.bal_le || 0) < 0 ? 'neg' : ''}">${fmt(r.bal_le)}</td>
+                  <td class="num">${fmt(r.bal_usd)}</td>
+                  <td class="num">${fmt(r.bal_eur)}</td>
+                  <td class="num">${fmt(r.bal_gbp)}</td>
+                  <td class="num">${fmt(r.inc_visa)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+          <h3 style="font-size:14px;">🏦 Schedule 14: ${esc(ar ? banks.title_ar : banks.title_en)}</h3>
+          <div class="seg-group">
+            <button type="button" class="seg-btn ${showAll3Banks ? 'active' : ''}" onclick="STATE.bankViewMode='all3';renderApp();">All 3 Banks (${fmt(banks.totals.all_3_banks_egp, 2)})</button>
+            <button type="button" class="seg-btn ${!showAll3Banks ? 'active' : ''}" onclick="STATE.bankViewMode='operating';renderApp();">Operating (${fmt(banks.totals.operating_banks_egp, 2)})</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Bank</th><th>Masked Account</th><th>EGP</th><th>USD</th><th>EUR</th><th>GBP</th><th>Total EGP Equiv</th></tr></thead>
+            <tbody>
+              ${(banks.rows || []).filter((b) => showAll3Banks || Number(b.is_operating_bank || 0) === 1).map((b) => `
+                <tr>
+                  <td><b>${esc(ar ? (b.bank_name_ar || b.bank_code) : (b.bank_name_en || b.bank_code))}</b></td>
+                  <td><code>${esc(b.account_masked || '****')}</code></td>
+                  <td class="num">${fmt(b.bal_egp, 2)}</td>
+                  <td class="num">$${fmt(b.bal_usd, 2)}</td>
+                  <td class="num">€${fmt(b.bal_eur, 2)}</td>
+                  <td class="num">£${fmt(b.bal_gbp, 2)}</td>
+                  <td class="num pos"><b>${fmt(b.total_egp_equiv, 2)}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule 7/8 Payroll & Schedule 9/10/11 Supermarket + Charters -->
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">👥 Schedule 7–8: Staff Payroll (Combined Net: ${fmt(k.combined_net_payroll_egp)} EGP)</h3>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">
+          Cyrene Net: <b>${fmt(prCyr.totals.net_pay_egp)} EGP</b> (Gross ${fmt(prCyr.totals.gross_egp)}) • Jetty &amp; Boats Net: <b>${fmt(prJet.totals.net_pay_egp)} EGP</b> (Gross ${fmt(prJet.totals.gross_egp)})
+        </div>
+        <div class="table-wrap" style="max-height:250px;">
+          <table>
+            <thead><tr><th>Branch</th><th>Employee</th><th>Base</th><th>Comm</th><th>Ded.</th><th>Net Pay</th></tr></thead>
+            <tbody>
+              ${[...(prCyr.rows || []), ...(prJet.rows || [])].map((p) => `
+                <tr>
+                  <td><span class="pill">${esc(p.branch_code || 'STAFF')}</span></td>
+                  <td><b>${esc(p.emp_name_ar || p.emp_name_en || '—')}</b></td>
+                  <td class="num">${fmt(p.base_salary_egp)}</td>
+                  <td class="num">${fmt(p.commission_egp)}</td>
+                  <td class="num neg">${fmt(p.advances_deductions_egp)}</td>
+                  <td class="num pos"><b>${fmt(p.net_pay_egp)}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">🛒🛥️ Schedules 9–11: Supermarket Catering &amp; Boat Charters IN / OUT</h3>
+        <div class="grid grid-3" style="gap:8px;margin-bottom:10px;">
+          <div style="padding:9px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);">
+            <div class="kpi-label">Supermarket Total</div>
+            <div style="font-size:15px;font-weight:800;margin-top:3px;">${fmt(sm.totals.total_egp)} EGP</div>
+            <div style="font-size:11px;color:var(--muted);">Paid ${fmt(sm.totals.paid_egp)} • Due ${fmt(sm.totals.payable_egp)}</div>
+          </div>
+          <div style="padding:9px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);">
+            <div class="kpi-label">Charters IN (${fmt(chIn.totals.trips_count)} Trips)</div>
+            <div style="font-size:15px;font-weight:800;margin-top:3px;">${fmt(chIn.totals.total_egp)} EGP</div>
+            <div style="font-size:11px;color:var(--muted);">Paid ${fmt(chIn.totals.paid_or_collected_egp)} • AP ${fmt(chIn.totals.remaining_egp)}</div>
+          </div>
+          <div style="padding:9px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);">
+            <div class="kpi-label">Charters OUT (${fmt(chOut.totals.trips_count)} Trips)</div>
+            <div style="font-size:15px;font-weight:800;margin-top:3px;" class="pos">${fmt(chOut.totals.total_egp)} EGP</div>
+            <div style="font-size:11px;color:var(--muted);">Coll. ${fmt(chOut.totals.paid_or_collected_egp)} • AR ${fmt(chOut.totals.remaining_egp)}</div>
+          </div>
+        </div>
+        <div class="table-wrap" style="max-height:175px;">
+          <table>
+            <thead><tr><th>Dir</th><th>Date</th><th>Boat / Counterparty</th><th>PAX</th><th>Total EGP</th><th>Remaining</th></tr></thead>
+            <tbody>
+              ${[...(chIn.rows || []), ...(chOut.rows || [])].map((c) => `
+                <tr>
+                  <td><span class="pill">${esc(c.direction)}</span></td>
+                  <td>${esc(c.trip_date)}</td>
+                  <td>${esc(c.boat_name)} — ${esc(c.counterparty_name)}</td>
+                  <td class="num">${fmt(Number(c.adults || 0) + Number(c.children || 0))}</td>
+                  <td class="num">${fmt(c.total_egp)}</td>
+                  <td class="num">${fmt(c.remaining_egp)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule 12 Partner Statements, Schedule 13 YTD Profit Share & Schedule 15/16 Open Balances + Res Bridge -->
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">🤝 Schedule 12–13: Partner Yacht Statements &amp; YTD 10% Profit Pool</h3>
+        <div class="table-wrap" style="max-height:260px;">
+          <table>
+            <thead><tr><th>Schedule</th><th>Description</th><th>Credit / Pool</th><th>Debit / Share</th><th>Balance (EGP)</th></tr></thead>
+            <tbody>
+              ${[...(ytd.rows || []), ...(pStmt.rows || [])].map((p) => `
+                <tr>
+                  <td><span class="pill">${esc(p.schedule_code)}</span></td>
+                  <td>${esc(ar ? (p.line_description_ar || p.line_description_en) : (p.line_description_en || p.line_description_ar || '—'))}</td>
+                  <td class="num">${fmt(p.credit_egp)}</td>
+                  <td class="num">${fmt(p.debit_egp)}</td>
+                  <td class="num ${Number(p.balance_egp || 0) >= 0 ? 'pos' : 'neg'}"><b>${fmt(p.balance_egp)}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:8px;">📊 Schedule 15–16: Open Balances (${fmt(ob.totals.receivables_advances_egp)} AR vs ${fmt(ob.totals.payables_accruals_egp)} AP) &amp; Reservations Bridge</h3>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px;">
+          Executed Vouchers: <b>${fmt(bridge.executed_vouchers)}</b> (Cancelled &lt;N&gt;: ${fmt(bridge.cancelled_vouchers)}) • Net Free Liquidity: <b class="pos">${fmt(ob.totals.net_free_liquidity_egp)} EGP</b>
+        </div>
+        <div class="table-wrap" style="max-height:230px;">
+          <table>
+            <thead><tr><th>Side</th><th>Counterparty / Item</th><th>Amount (EGP)</th></tr></thead>
+            <tbody>
+              ${[...(ob.receivables || []), ...(ob.payables || []), ...(ob.liquidity_bridge || [])].map((o) => `
+                <tr>
+                  <td><span class="pill">${esc(o.side)}</span></td>
+                  <td><b>${esc(ar ? (o.party_name_ar || o.party_name_en) : (o.party_name_en || o.party_name_ar))}</b></td>
+                  <td class="num">${fmt(o.amount_egp)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 boot();

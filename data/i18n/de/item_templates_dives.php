@@ -229,14 +229,14 @@ return static function (array $it, string $gid, string $name, string $desc, stri
             'h1' => "{$name} in Sharm El Sheikh (Druckkammer-Schutz)",
             'meta_title' => "{$name} Sharm El Sheikh | Druckkammer-Schutz | Sea College",
             'meta_desc' => "Sorgenfrei tauchen im Roten Meer: {$name} in Sharm El Sheikh — deckt Druckkammer-Behandlung & tauchmedizinische Notfallversorgung vor Ort ab.",
-            'aeo_answer' => "Die „{$name}“ im Sea College Dive Club in Sharm El Sheikh bietet zertifizierten Tauchern für {$dur} vollen tauchmedizinischen Unfall- und Druckkammerschutz am Roten Meer. Da reguläre Auslandsreisekrankenversicherungen Dekompressionsbehandlungen oft ausschließen und in Ägypten ein Nachweis für zertifizierte Taucher vorgeschrieben ist, aktivieren wir diese Kurzzeitpolice unkompliziert direkt beim Check-in zum tagesaktuellen Kammer-Tarif (Hinweis: In unseren 4 PADI Sparpaketen sowie im Open Water / Scuba Diver Kurs ist die Tauchversicherung bereits inklusive!).",
+            'aeo_answer' => "Die „{$name}“ im Sea College Dive Club in Sharm El Sheikh kostet {$pStr} pro Person und bietet zertifizierten Tauchern für {$dur} vollen tauchmedizinischen Unfall- und Druckkammerschutz am Roten Meer. Da reguläre Auslandsreisekrankenversicherungen Dekompressionsbehandlungen oft ausschließen, aktivieren wir diese Kurzzeitpolice unkompliziert direkt beim Check-in (Hinweis: In unseren 4 PADI Sparpaketen sowie im Open Water / Scuba Diver Kurs ist die Tauchversicherung bereits inklusive!).",
             'overview' => [
                 'Sharm El Sheikh verfügt mit seinem modernen hyperbaren Druckkammerzentrum über eine erstklassige tauchmedizinische Infrastruktur. Eine dedizierte Tauchunfallversicherung stellt sicher, dass im unwahrscheinlichen Ernstfall sämtliche Rettungs-, Sauerstoff- und Druckkammerkosten ohne teure Vorkasse übernommen werden.',
-                "Falls Sie keine eigene Jahrespolice (wie aqua med, DAN Europe oder VDST) besitzen, schließen Sie diese Kurzzeitdeckung über {$dur} in zwei Minuten direkt bei Ihrer Ankunft an unserer Basis ab.",
+                "Falls Sie keine eigene Jahrespolice (wie aqua med, DAN Europe oder VDST) besitzen, schließen Sie diese Kurzzeitdeckung über {$dur} ({$pStr}) in zwei Minuten direkt bei Ihrer Ankunft an unserer Basis ab.",
             ],
             'specs' => [
                 ['Laufzeit', "{$dur} durchgehender Tauchschutz"],
-                ['Tarif', 'Tagesaktueller Vor-Ort-Tarif — wir nennen Ihnen den exakten Euro-Betrag bei Buchung'],
+                ['Tarif', "{$pStr} pro Person ({$dur})"],
                 ['Abdeckung', 'Tauchmedizinische Notfallbehandlung & hyperbare Druckkammer in Sharm El Sheikh'],
                 ['Eigene DAN / aqua med?', 'Wird selbstverständlich anerkannt — bringen Sie einfach Ihre Policennummer mit!'],
                 ['Bei Sparpaketen?', 'Bereits kostenlos in Stars, Super, Mega, Heros, OWD & Scuba Diver enthalten!'],
@@ -265,7 +265,7 @@ return static function (array $it, string $gid, string $name, string $desc, stri
             'faqs' => [
                 ['q' => 'Reicht meine normale ADAC- oder Kreditkarten-Auslandskrankenversicherung zum Tauchen?', 'a' => 'Prüfen Sie Ihre Bedingungen genau: Viele Standardpolicen schließen Tauchunfälle und teure Druckkammerfahrten explizit aus. Mit einer dedizierten Kurzzeit-Tauchversicherung (oder aqua med / DAN) sind Sie auf der sicheren Seite.'],
                 ['q' => 'Ich habe bereits aqua med, DAN oder VDST — muss ich diese Versicherung buchen?', 'a' => 'Nein! Bringen Sie einfach Ihre digitale Mitgliedskarte oder Policennummer zum Check-in mit.'],
-                ['q' => 'Warum steht der Preis auf „Auf Anfrage“?', 'a' => 'Weil die offizielle ägyptische Kammer-/Versicherungsprämie direkt an den jeweiligen Anbieter weitergereicht wird — wir teilen Ihnen den genauen Betrag (wenige Euro pro Tag) sofort bei Ihrer Anfrage mit!'],
+                ['q' => 'Was kosten die verschiedenen Laufzeiten der Kurzzeit-Tauchversicherung?', 'a' => "Die offiziellen Direktpreise betragen 15 € für 3 Tage, 25 € für 7 Tage, 35 € für 10 Tage und 45 € für 14 Tage (diese Police über {$dur} kostet {$pStr})."],
             ],
         ];
     }

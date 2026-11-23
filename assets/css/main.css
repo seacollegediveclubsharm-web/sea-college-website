@@ -985,4 +985,13 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
 }
 /* === END === */
 
-
+.seller-pill { display: flex; width: fit-content; max-width: 100%; flex-wrap: wrap; align-items: center; gap: .38rem .55rem; margin: 0 0 .85rem; padding: .38rem .85rem .38rem .48rem; border-radius: 999px; background: rgba(11, 29, 44, .84); border: 1px solid rgba(52, 224, 161, .48); color: #eef8fc; font-size: .82rem; line-height: 1.35; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); backdrop-filter: blur(6px); }
+.seller-pill__dot { width: 20px; height: 20px; border-radius: 50%; background: #34e0a1; color: #08281c; font-size: .74rem; font-weight: 900; display: inline-grid; place-items: center; flex: none; }
+.seller-pill__badge { background: rgba(52, 224, 161, .16); color: #6ff2c0; font-weight: 800; font-size: .73rem; padding: .12rem .52rem; border-radius: 999px; letter-spacing: .02em; white-space: nowrap; }
+.seller-pill__text { font-weight: 700; color: #fff; }
+.seller-pill__sep { color: rgba(207, 227, 238, .5); }
+.seller-pill__note { color: #bcd5e3; font-size: .78rem; }
+@media (max-width: 599px) {
+  .seller-pill { border-radius: 14px; padding: .45rem .72rem; font-size: .79rem; }
+  .seller-pill__sep, .seller-pill__note { display: none; }
+}

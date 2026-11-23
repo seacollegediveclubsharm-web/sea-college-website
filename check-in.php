@@ -9,6 +9,16 @@ require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
+$sc_raw_ref = trim((string) ($_GET['ref'] ?? ''));
+$checkin_event_id = '';
+if ($sc_raw_ref !== '') {
+    if (preg_match('/^(lead_|ci_|WEB-|TRIAL-)/i', $sc_raw_ref)) {
+        $checkin_event_id = substr(preg_replace('/[^\w\-]/', '', $sc_raw_ref) ?? '', 0, 40);
+    } elseif (empty($_GET['seller']) && empty($_GET['rep'])) {
+        sc_apply_seller_referral($sc_raw_ref);
+    }
+}
+
 $page['id']             = 'checkin';
 $page['canonical_path'] = '/check-in';
 $page['title']          = t('meta_checkin_title');
@@ -24,6 +34,7 @@ require ROOT_DIR . '/includes/header.php';
 <section class="page-hero">
   <div class="container">
     <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
+    <?= sc_render_seller_referral_pill() ?>
     <p class="eyebrow">🪪 <?= te('checkin_page_eyebrow') ?></p>
     <h1 dir="auto"><?= te('checkin_page_title') ?></h1>
     <p class="hero__sub" dir="auto"><?= te('checkin_page_sub') ?></p>
@@ -34,7 +45,6 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container container--narrow">
     <?= render_hotel_pickup_checker('checkin') ?>
     <?php
-    $checkin_event_id   = substr(preg_replace('/[^\w\-]/', '', (string) ($_GET['ref'] ?? '')) ?? '', 0, 40);
     $checkin_standalone = true;
     include ROOT_DIR . '/includes/checkin_form.php';
     ?>

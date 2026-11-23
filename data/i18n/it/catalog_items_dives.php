@@ -184,18 +184,18 @@ return [
     // ---------- diving-insurance ----------
     'ins-3' => [
         'name' => 'Assicurazione Subacquea — 3 giorni',
-        'desc' => 'Copertura medica subacquea e camera iperbarica per 3 giorni a Sharm El Sheikh. Tariffa confermata alla prenotazione.',
+        'desc' => 'Copertura medica subacquea e camera iperbarica per 3 giorni a Sharm El Sheikh (€15 a persona).',
     ],
     'ins-7' => [
         'name' => 'Assicurazione Subacquea — 7 giorni',
-        'desc' => 'Copertura medica subacquea e camera iperbarica per 7 giorni a Sharm El Sheikh. Tariffa confermata alla prenotazione.',
+        'desc' => 'Copertura medica subacquea e camera iperbarica per 7 giorni a Sharm El Sheikh (€25 a persona).',
     ],
     'ins-10' => [
         'name' => 'Assicurazione Subacquea — 10 giorni',
-        'desc' => 'Copertura medica subacquea e camera iperbarica per 10 giorni a Sharm El Sheikh. Tariffa confermata alla prenotazione.',
+        'desc' => 'Copertura medica subacquea e camera iperbarica per 10 giorni a Sharm El Sheikh (€35 a persona).',
     ],
     'ins-14' => [
         'name' => 'Assicurazione Subacquea — 14 giorni',
-        'desc' => 'Copertura medica subacquea e camera iperbarica per 14 giorni a Sharm El Sheikh. Tariffa confermata alla prenotazione.',
+        'desc' => 'Copertura medica subacquea e camera iperbarica per 14 giorni a Sharm El Sheikh (€45 a persona).',
     ],
 ];

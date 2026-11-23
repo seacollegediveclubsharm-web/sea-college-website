@@ -91,34 +91,53 @@ $rawEvId = clean_line($data['event_id'] ?? '', 48);
 $eventId = (preg_match('/^wa_[a-zA-Z0-9_]{8,40}$/', $rawEvId)) ? $rawEvId : ('wa_' . bin2hex(random_bytes(8)));
 $chSummary = sc_resolve_channel_summary($attr + $cookieAttr);
 
+$rawSeller = clean_line($data['seller'] ?? '', 64);
+if ($rawSeller === '') {
+    $rawSeller = clean_line($data['rep'] ?? '', 64);
+}
+if ($rawSeller === '') {
+    $rawSeller = clean_line($_COOKIE['sc_seller'] ?? '', 64);
+}
+if ($rawSeller === '' && !empty($cookieAttr['seller'])) {
+    $rawSeller = clean_line((string) $cookieAttr['seller'], 64);
+}
+if ($rawSeller === '' && !empty($cookieAttr['rep'])) {
+    $rawSeller = clean_line((string) $cookieAttr['rep'], 64);
+}
+$sellerInfo = sc_resolve_seller_attribution($rawSeller);
+
 $row = [
-    'clicked_at'    => gmdate('c'),
-    'event_id'      => $eventId,
-    'kind'          => $kind,
-    'placement'     => $placement,
-    'lang'          => $lang,
-    'item_id'       => $itemId,
-    'item_name'     => $itemName,
-    'value_eur'     => $value,
-    'qty'           => $qty > 0 ? $qty : '',
-    'date'          => $date,
-    'hotel'         => $hotel,
-    'page_url'      => $pageUrl,
-    'gclid'         => $attr['gclid'],
-    'gbraid'        => $attr['gbraid'],
-    'wbraid'        => $attr['wbraid'],
-    'fbclid'        => $attr['fbclid'],
-    'ttclid'        => $attr['ttclid'],
-    'msclkid'       => $attr['msclkid'],
-    'utm_source'    => $attr['utm_source'],
-    'utm_medium'    => $attr['utm_medium'],
-    'utm_campaign'  => $attr['utm_campaign'],
-    'utm_term'      => $attr['utm_term'],
-    'ip_hash'       => hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . date('Y-m')),
-    'utm_content'   => $attr['utm_content'],
-    'fbc'           => $fbc,
-    'fbp'           => $fbp,
-    'estimated_eur' => $value,
+    'clicked_at'      => gmdate('c'),
+    'event_id'        => $eventId,
+    'kind'            => $kind,
+    'placement'       => $placement,
+    'lang'            => $lang,
+    'item_id'         => $itemId,
+    'item_name'       => $itemName,
+    'value_eur'       => $value,
+    'qty'             => $qty > 0 ? $qty : '',
+    'date'            => $date,
+    'hotel'           => $hotel,
+    'page_url'        => $pageUrl,
+    'gclid'           => $attr['gclid'],
+    'gbraid'          => $attr['gbraid'],
+    'wbraid'          => $attr['wbraid'],
+    'fbclid'          => $attr['fbclid'],
+    'ttclid'          => $attr['ttclid'],
+    'msclkid'         => $attr['msclkid'],
+    'utm_source'      => $attr['utm_source'],
+    'utm_medium'      => $attr['utm_medium'],
+    'utm_campaign'    => $attr['utm_campaign'],
+    'utm_term'        => $attr['utm_term'],
+    'ip_hash'         => hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . date('Y-m')),
+    'utm_content'     => $attr['utm_content'],
+    'fbc'             => $fbc,
+    'fbp'             => $fbp,
+    'estimated_eur'   => $value,
+    'seller'          => $sellerInfo['seller'],
+    'seller_username' => $sellerInfo['seller_username'],
+    'sales_rep'       => $sellerInfo['sales_rep'],
+    'seller_branch'   => $sellerInfo['seller_branch'],
 ];
 
 store_csv('wa_clicks.csv', $row);
@@ -157,6 +176,7 @@ $shouldSyncCrm = CRM_WEBHOOK_URL !== '' && (
     || $fbc !== ''
     || $itemId !== ''
     || $attr['utm_campaign'] !== ''
+    || $sellerInfo['seller'] !== ''
     || in_array($placement, $keyPlacements, true)
 );
 
@@ -192,6 +212,10 @@ if ($shouldSyncCrm) {
         'channel_source'      => $chSummary['channel_source'],
         'first_channel'       => $chSummary['first_channel'],
         'journey_path'        => $chSummary['journey_path'],
+        'seller'              => $sellerInfo['seller'],
+        'seller_username'     => $sellerInfo['seller_username'],
+        'sales_rep'           => $sellerInfo['sales_rep'],
+        'seller_branch'       => $sellerInfo['seller_branch'],
     ];
     post_json(CRM_WEBHOOK_URL, $crmPayload, 2);
 }

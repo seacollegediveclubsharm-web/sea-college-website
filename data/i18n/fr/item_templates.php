@@ -236,14 +236,14 @@ return static function (array $it, array $seo): array {
                 'h1'         => $name . ' — Couverture Plongée & Caisson Hyperbare Mer Rouge',
                 'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | Assurance Plongée Mer Rouge',
                 'meta_desc'  => 'Plongez l’esprit tranquille à Charm el-Cheikh (Sharm El Sheikh) : souscrivez une ' . $name . ' temporaire couvrant médecine de plongée et caisson hyperbare local.',
-                'aeo_answer' => 'La ' . $name . ' proposée par Sea College Dive Club à Charm el-Cheikh (durée ' . $dur . ', tarif officiel actualisé sur demande / à l’enregistrement) offre une couverture temporaire immédiate spécialisée pour la plongée sous-marine en Égypte, incluant les frais médicaux d’urgence et la prise en charge au centre hyperbare spécialisé de Charm el-Cheikh pour les plongeurs non couverts par DAN, Lafont/FFESSM ou leur assurance voyage.',
+                'aeo_answer' => 'La ' . $name . ' proposée par Sea College Dive Club à Charm el-Cheikh coûte ' . $pStr . ' par personne (durée ' . $dur . ') et offre une couverture temporaire immédiate spécialisée pour la plongée sous-marine en Égypte, incluant les frais médicaux d’urgence et la prise en charge au centre hyperbare spécialisé de Charm el-Cheikh pour les plongeurs non couverts par DAN, Lafont/FFESSM ou leur assurance voyage.',
                 'overview'   => [
                     'En Égypte, disposer d’une couverture d’assurance incluant explicitement la plongée sous-marine et le traitement en caisson hyperbare est indispensable pour tout plongeur certifié (les cartes bancaires classiques excluent souvent la plongée au-delà de 18 m ou les soins hyperbares).',
-                    'Charm el-Cheikh possède l’un des meilleurs centres médicaux hyperbares du Moyen-Orient dirigé par le célèbre Dr Adel Taher : cette police courte durée (' . $dur . ') s’active en quelques minutes directement au centre avant votre première mise à l’eau !',
+                    'Charm el-Cheikh possède l’un des meilleurs centres médicaux hyperbares du Moyen-Orient dirigé par le célèbre Dr Adel Taher : cette police courte durée (' . $dur . ', ' . $pStr . ') s’active en quelques minutes directement au centre avant votre première mise à l’eau !',
                 ],
                 'specs'      => [
                     ['Durée de validité', $dur . ' consécutifs dès activation'],
-                    ['Tarif', 'Sur demande (tarif officiel assureur partenaire sans majoration)'],
+                    ['Tarif', $pStr . ' par personne (' . $dur . ')'],
                     ['Garanties clés', 'Urgences médicales de plongée, évacuation marine & caisson hyperbare'],
                     ['Souscription', 'Immédiate sur place au centre Sea College ou la veille via WhatsApp'],
                     ['Qui est exempté ?', 'Élèves en cours débutants PADI (couverts pendant le cours) & assurés DAN / FFESSM / DiveAssure'],
@@ -271,7 +271,7 @@ return static function (array $it, array $seo): array {
                 ],
                 'faqs'       => [
                     ['q' => 'Ma licence FFESSM + assurance Lafont ou mon contrat DAN suffisent-ils ?', 'a' => 'Oui, tout à fait ! Apportez simplement votre numéro de police DAN, DiveAssure ou votre attestation d’assurance fédérale valide à l’étranger et vous n’aurez pas besoin de souscrire cette assurance temporaire.'],
-                    ['q' => 'Combien coûte environ l’assurance courte durée sur place ?', 'a' => 'Le tarif officiel de la chambre/assureur local est très modique (quelques euros par jour selon le palier de ' . $dur . ') ; écrivez-nous sur WhatsApp pour le barème exact en vigueur cette saison.'],
+                    ['q' => 'Combien coûte l’assurance courte durée sur place ?', 'a' => 'Le tarif officiel est fixe et transparent : 15 € pour 3 jours, 25 € pour 7 jours, 35 € pour 10 jours et 45 € pour 14 jours (cette formule de ' . $dur . ' est à ' . $pStr . ').'],
                     ['q' => 'Puis-je la prendre le matin même de ma première sortie ?', 'a' => 'Oui, l’enregistrement numérique prend moins de 3 minutes à votre arrivée au centre avant le départ !'],
                 ],
             ];
