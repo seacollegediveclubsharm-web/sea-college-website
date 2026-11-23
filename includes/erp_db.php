@@ -57,6 +57,9 @@ function sc_erp_pdo(): ?PDO
         require_once __DIR__ . '/erp_trial_seed.php';
         sc_erp_seed_trial_if_empty($pdo);
         sc_erp_ensure_user_profiles($pdo);
+
+        require_once __DIR__ . '/erp_oct2026_auto_hydrate.php';
+        sc_erp_auto_hydrate_oct2026_if_needed($pdo);
         return $pdo;
     } catch (Throwable $e) {
         error_log('SC_ERP DB connection warning: ' . $e->getMessage());
