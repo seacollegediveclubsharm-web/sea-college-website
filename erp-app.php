@@ -501,12 +501,25 @@ $csrf = csrf_token();
 
 <!-- Product / Client QR & Social Media Share Modal -->
 <div id="productQrModal" class="modal-backdrop">
-  <div class="card" style="width:100%;max-width:460px;text-align:center;">
+  <div class="card" style="width:100%;max-width:490px;text-align:center;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <h3 style="font-size:15px;" id="pqrTitle">📱 Scan or Share Personal Booking Link</h3>
       <button type="button" class="btn" onclick="document.getElementById('productQrModal').style.display='none'">✕</button>
     </div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;" id="pqrSub"></p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="pqrSub"></p>
+    <input type="hidden" id="pqrItemCode" value="">
+    <div id="pqrPromoControls" style="margin-bottom:12px;padding:9px 10px;border-radius:10px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.35);text-align:left;">
+      <div style="font-size:11.5px;font-weight:800;color:#fde68a;margin-bottom:6px;">🎁 Attach Special Discount to Share Link &amp; QR (Optional)</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        <select id="pqrDiscType" style="width:128px;padding:6px;" onchange="if(this.value==='NONE'){document.getElementById('pqrDiscVal').value='0';applyPromoToProductQrModal();}">
+          <option value="NONE">No Discount</option>
+          <option value="PERCENT">Percentage (%)</option>
+          <option value="AMOUNT">Fixed Amount (€)</option>
+        </select>
+        <input type="number" step="0.5" min="0" id="pqrDiscVal" value="0" style="width:86px;padding:6px;" placeholder="e.g. 10">
+        <button type="button" class="btn btn-amber" onclick="applyPromoToProductQrModal()">✨ Apply Promo</button>
+      </div>
+    </div>
     <div id="pqrSvgWrap" class="qr-box" style="margin:0 auto 12px;"></div>
     <div style="font-size:11.5px;word-break:break-all;color:var(--cyan);margin-bottom:12px;font-weight:700;" id="pqrUrlTxt"></div>
     <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap;">
@@ -569,6 +582,26 @@ $csrf = csrf_token();
             <span style="font-size:11px;color:var(--teal);">👶 Infants (&lt;3 Free)</span>
             <input type="number" id="fbkInf" value="0" min="0" max="20" oninput="recalcFastBookGuestTotal(false)">
           </div>
+        </div>
+      </div>
+      <div id="fbkDiscountRow" style="grid-column:1/-1;padding:10px 12px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.32);">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+          <label style="margin:0;color:#fde68a;">🎁 Special Guest Discount (By Percentage % or Fixed Amount)</label>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('NONE', 0)">None</button>
+            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 5)">-5%</button>
+            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 10)">-10%</button>
+            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 15)">-15%</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.1fr 0.9fr 1.4fr;gap:7px;">
+          <select id="fbkDiscType" onchange="if(this.value==='NONE')document.getElementById('fbkDiscVal').value='0';recalcFastBookGuestTotal(true)">
+            <option value="NONE">No Discount</option>
+            <option value="PERCENT">Percentage (%)</option>
+            <option value="AMOUNT">Fixed Amount</option>
+          </select>
+          <input type="number" step="0.5" min="0" id="fbkDiscVal" value="0" placeholder="0" oninput="recalcFastBookGuestTotal(true)">
+          <input type="text" id="fbkDiscReason" placeholder="Optional note (e.g. Family / Repeat Guest)">
         </div>
       </div>
       <div>
@@ -746,6 +779,11 @@ let STATE = {
   pitchPax: 2,
   pitchChildren: 0,
   pitchInfants: 0,
+  pitchDiscType: 'NONE',
+  pitchDiscVal: 0,
+  walletPromoType: 'PERCENT',
+  walletPromoVal: 10,
+  walletPromoUrl: '',
   sellerBiHorizon: 'monthly',
   sellerBiFrom: '2026-10-01',
   sellerBiTo: '2026-10-31',
@@ -1061,6 +1099,35 @@ async function saveOwnerTargets(toggleActive = null) {
   }
 }
 
+async function saveOwnerDiscountPolicy(toggleEnabled = null) {
+  const curPol = (STATE.sellerBi && STATE.sellerBi.discount_policy) || { is_enabled: true, max_discount_pct: 20, max_discount_eur: 50 };
+  const nextEnabled = toggleEnabled !== null ? Boolean(toggleEnabled) : Boolean(curPol.is_enabled);
+  const pEl = document.getElementById('discMaxPctInp');
+  const eEl = document.getElementById('discMaxEurInp');
+  const res = await apiPost({
+    action: 'save_seller_discount_policy',
+    seller_username: '*',
+    is_discount_enabled: nextEnabled ? 1 : 0,
+    max_discount_pct: pEl ? Number(pEl.value || curPol.max_discount_pct) : curPol.max_discount_pct,
+    max_discount_eur: eEl ? Number(eEl.value || curPol.max_discount_eur) : curPol.max_discount_eur
+  });
+  if (res && res.ok) {
+    showToast(nextEnabled ? '🎁 Seller Special Discounts Enabled!' : '⏸ Seller Special Discounts Disabled');
+    await changeSellerBiHorizon(STATE.sellerBiHorizon);
+    if (STATE.sellerCatalog) {
+      const cRes = await apiGet({ action: 'seller_catalog', lang: STATE.pitchLang });
+      if (cRes && cRes.ok) STATE.sellerCatalog = cRes;
+    }
+    if (STATE.sellerWallet) {
+      const wp = { action: 'seller_wallet', month: STATE.walletMonth };
+      if (STATE.walletSeller) wp.seller = STATE.walletSeller;
+      const wRes = await apiGet(wp);
+      if (wRes && wRes.ok) STATE.sellerWallet = wRes;
+    }
+    renderApp();
+  }
+}
+
 function exportUrl(report, format, extra = {}) {
   const qs = new URLSearchParams({
     report,
@@ -1359,7 +1426,7 @@ function renderOwnerSellerCommandCenter(ar) {
       </div>
 
       <!-- Owner Target Activation & Threshold Controls -->
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;background:rgba(6,21,38,0.75);border:1px solid var(--border);margin-bottom:12px;">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;background:rgba(6,21,38,0.75);border:1px solid var(--border);margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <span style="font-size:12px;font-weight:800;color:var(--cyan);">🎯 ${ar ? 'تارجت المناديب داخل حساباتهم:' : 'Seller Account Target Bar:'}</span>
           <button type="button" class="btn ${tCfg.is_active ? 'btn-emerald' : 'btn-amber'}" onclick="saveOwnerTargets(${tCfg.is_active ? 'false' : 'true'})">
@@ -1374,13 +1441,29 @@ function renderOwnerSellerCommandCenter(ar) {
         </div>
       </div>
 
+      <!-- Owner Seller Special Discounts Policy Controls (% or Fixed Amount) -->
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.35);margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:800;color:#fde68a;">🎁 ${ar ? 'صلاحية الخصم الخاص للمناديب (% أو مبلغ ثابت):' : 'Seller Special Discounts (% or Amount):'}</span>
+          <button type="button" class="btn ${(sb.discount_policy ? sb.discount_policy.is_enabled : true) ? 'btn-emerald' : 'btn-amber'}" onclick="saveOwnerDiscountPolicy(${(sb.discount_policy ? sb.discount_policy.is_enabled : true) ? 'false' : 'true'})">
+            ${(sb.discount_policy ? sb.discount_policy.is_enabled : true) ? '✅ ENABLED (Protected Above Vendor Cost)' : '⏸ DISABLED'}
+          </button>
+          <span style="font-size:11px;color:var(--muted);">Window Discounts: <b>${fmt(tot.discounts_granted_egp || 0)} EGP</b></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px;">
+          <span>Max %: <input type="number" step="1" min="0" max="80" id="discMaxPctInp" value="${Number((sb.discount_policy && sb.discount_policy.max_discount_pct) ?? 20)}" style="width:74px;padding:5px;"></span>
+          <span>Max Fixed (€): <input type="number" step="1" min="0" max="500" id="discMaxEurInp" value="${Number((sb.discount_policy && sb.discount_policy.max_discount_eur) ?? 50)}" style="width:82px;padding:5px;"></span>
+          <button type="button" class="btn btn-amber" onclick="saveOwnerDiscountPolicy(null)">💾 Save Discount Policy</button>
+        </div>
+      </div>
+
       <!-- Full 18-Seller Leaderboard -->
       <div class="table-wrap" style="max-height:360px;margin-bottom:${mods.length ? '12px' : '0'};">
         <table>
           <thead>
             <tr>
               <th>#</th><th>Seller</th><th>Awards</th><th>Branch</th><th>Trips</th><th>Actual PAX</th>
-              <th>Actual Total (EGP)</th><th>Collected Paid</th><th>Open REST</th>
+              <th>Actual Total (EGP)</th><th>🎁 Discounts</th><th>Collected Paid</th><th>Open REST</th>
               <th>Actual Due Comm</th><th>Allowances Paid</th><th>Net Payable</th>
               ${tCfg.is_active ? '<th>Target %</th>' : ''}
               <th>Inspect</th>
@@ -1389,6 +1472,7 @@ function renderOwnerSellerCommandCenter(ar) {
           <tbody>
             ${rows.map((s) => {
               const medals = (s.awards || []).map((a) => `<span title="${esc(a.title_en)}">${esc(a.icon)}</span>`).join(' ');
+              const dGrant = Number(s.discounts_granted_egp || 0);
               return `
                 <tr>
                   <td class="num"><b>#${s.rank || '—'}</b></td>
@@ -1403,6 +1487,7 @@ function renderOwnerSellerCommandCenter(ar) {
                   <td class="num"><b>${fmt(s.trips_sold)}</b></td>
                   <td class="num">${fmt(s.actual_pax)}</td>
                   <td class="num"><b>${fmt(s.actual_total_egp)}</b></td>
+                  <td class="num" style="color:${dGrant > 0 ? '#fcd34d' : 'var(--muted)'};">${dGrant > 0 ? '-' + fmt(dGrant) + ` (${s.discounted_trips || 1})` : '—'}</td>
                   <td class="num pos">${fmt(s.actual_paid_egp)}</td>
                   <td class="num ${s.open_rest_egp > 0 ? 'neg' : ''}">${fmt(s.open_rest_egp)}</td>
                   <td class="num pos"><b>${fmt(s.actual_due_comm_egp)}</b></td>
@@ -1827,9 +1912,9 @@ function renderAccountingGl(ar) {
                   <td>${esc(v.trip_date)}</td>
                   <td><b>${esc(v.sales_rep)}</b></td>
                   <td>${esc(v.guest_name || v.hotel_name || '—')}</td>
-                  <td>${esc(v.trip_name)}</td>
+                  <td>${esc(v.trip_name)}${Number(v.discount_egp || 0) > 0 ? `<div style="font-size:10px;color:#fcd34d;">🎁 Special Discount: -${fmt(v.discount_egp)} EGP (${v.discount_type === 'PERCENT' ? '-' + esc(v.discount_value) + '%' : '-' + esc(v.discount_value) + ' ' + esc(v.discount_currency || 'EUR')})</div>` : ''}</td>
                   <td class="num">${adl}A + ${ch}C${inf > 0 ? ' + ' + inf + 'I' : ''}</td>
-                  <td class="num"><b>${fmt(totEgp)}</b></td>
+                  <td class="num">${Number(v.discount_egp || 0) > 0 ? `<s style="opacity:0.6;font-size:10.5px;">${fmt(Number(v.list_total_egp || (totEgp + Number(v.discount_egp))))}</s> ` : ''}<b>${fmt(totEgp)}</b></td>
                   <td class="num pos">${fmt(paidEgp)}</td>
                   <td class="num ${restEgp > 0.5 ? 'neg' : 'pos'}"><b>${restEgp > 0.5 ? fmt(restEgp) + ' EGP' : 'PAID 100%'}</b></td>
                   <td><span class="pill">${esc(wf)}</span></td>
@@ -2154,7 +2239,7 @@ function renderVouchersOps(ar) {
                     <div style="font-size:10.5px;color:var(--muted);">${esc(v.hotel_name)} ${v.room_no ? '#' + esc(v.room_no) : ''} (${esc(v.nationality || '—')})</div>
                   </td>
                   <td class="num">${adl}A${ch > 0 ? '+' + ch + 'C' : ''}${inf > 0 ? '+' + inf + 'I' : ''} (${fmt(v.total_pax)})</td>
-                  <td>${esc(v.trip_name)} ${v.modification_note ? `<div style="font-size:10px;color:#fcd34d;">✏️ ${esc(String(v.modification_note).slice(0, 48))}</div>` : ''}</td>
+                  <td>${esc(v.trip_name)} ${Number(v.discount_egp || 0) > 0 ? `<div style="font-size:10px;color:#fcd34d;">🎁 -${fmt(v.discount_egp)} EGP (${v.discount_type === 'PERCENT' ? '-' + esc(v.discount_value) + '%' : '-' + esc(v.discount_value) + ' ' + esc(v.discount_currency || 'EUR')})</div>` : ''} ${v.modification_note ? `<div style="font-size:10px;color:#fcd34d;">✏️ ${esc(String(v.modification_note).slice(0, 48))}</div>` : ''}</td>
                   <td>${esc(v.sales_rep)}</td>
                   <td class="num">${fmt(paidEgp)} / <b>${fmt(totEgp)}</b></td>
                   <td class="num ${restEgp > 0.5 ? 'neg' : 'pos'}"><b>${restEgp > 0.5 ? fmt(restEgp) + ' EGP' : 'PAID'}</b></td>
@@ -2362,6 +2447,20 @@ function renderNewVoucherForm(ar) {
         <div><label>Nationality</label><input type="text" id="nvNat" value="ITALY"></div>
         <div><label>Adults / Children</label><div style="display:flex;gap:6px;"><input type="number" id="nvAdl" value="2" min="1"><input type="number" id="nvCh" value="0" min="0"></div></div>
         <div><label>Remaining REST Due at Jetty (EUR)</label><input type="number" step="0.01" id="nvRest" value="40"></div>
+        <div style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px 11px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.32);">
+          <div>
+            <label style="color:#fde68a;">🎁 Special Discount Type</label>
+            <select id="nvDiscType">
+              <option value="NONE">No Discount</option>
+              <option value="PERCENT">Percentage (%)</option>
+              <option value="AMOUNT">Fixed Amount (EUR)</option>
+            </select>
+          </div>
+          <div>
+            <label style="color:#fde68a;">Discount Value (% or €)</label>
+            <input type="number" step="0.5" min="0" id="nvDiscVal" value="0" placeholder="0">
+          </div>
+        </div>
         <div style="grid-column:1/-1;">
           <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px;">🎫 Generate QR Voucher & Sync to Operations</button>
         </div>
@@ -2383,7 +2482,10 @@ async function submitNewVoucher(e) {
     nationality: document.getElementById('nvNat').value,
     adults: document.getElementById('nvAdl').value,
     children: document.getElementById('nvCh').value,
-    rest_eur: document.getElementById('nvRest').value
+    rest_eur: document.getElementById('nvRest').value,
+    discount_type: document.getElementById('nvDiscType') ? document.getElementById('nvDiscType').value : 'NONE',
+    discount_value: document.getElementById('nvDiscVal') ? Number(document.getElementById('nvDiscVal').value || 0) : 0,
+    discount_currency: 'EUR'
   });
   if (res.ok) {
     showToast(`Issued ${res.voucher_no} (${res.qr_token})!`);
@@ -3029,6 +3131,71 @@ function formatPitchPrice(item) {
   return u.sym + fmt(u.adult, 0) + ' ' + cur;
 }
 
+function getSellerDiscountPolicy() {
+  const isOwner = hasPerm('bi.view_executive');
+  const p = (STATE.sellerCatalog && STATE.sellerCatalog.discount_policy)
+    || (STATE.sellerWallet && STATE.sellerWallet.discount_policy)
+    || { is_enabled: true, max_discount_pct: 20, max_discount_eur: 50 };
+  return {
+    is_enabled: isOwner ? true : Boolean(p.is_enabled),
+    max_discount_pct: isOwner ? 80 : Number(p.max_discount_pct ?? 20),
+    max_discount_eur: isOwner ? 500 : Number(p.max_discount_eur ?? 50)
+  };
+}
+
+function calcClientDiscountForTrip(item, adl, ch, curr, discType, discVal) {
+  const cat = STATE.sellerCatalog || {};
+  const fx = cat.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
+  const pol = getSellerDiscountPolicy();
+  const u = getAdultChildUnitInCurr(item, curr);
+  const listInCurr = Math.round((adl * u.adult + ch * u.child) * 100) / 100;
+  const rawType = String(discType || 'NONE').toUpperCase();
+  const rawVal = Math.max(0, Number(discVal || 0));
+  if (!pol.is_enabled || listInCurr <= 0 || rawType === 'NONE' || rawVal <= 0) {
+    return { listTotal: listInCurr, netTotal: listInCurr, discInCurr: 0, appliedType: 'NONE', appliedVal: 0, badge: '', clamped: false };
+  }
+  const currRateEgp = Number(fx[u.curr] || fx.EUR || 57);
+  const fxEur = Number(fx.EUR || 57);
+  const listEgp = listInCurr * currRateEgp;
+  const isOutside = String(item.default_sale_mode || '').toUpperCase().includes('OUT');
+  const supCostEgp = isOutside
+    ? (adl * Number(item.adult_cost_egp || item.default_supplier_cost_egp || 0) + ch * Number(item.child_cost_egp || 0))
+    : 0;
+  const maxAboveVendorInCurr = Math.max(0, (listEgp - supCostEgp) / currRateEgp);
+
+  let discInCurr = 0;
+  let appliedVal = rawVal;
+  let clamped = false;
+  if (rawType === 'PERCENT') {
+    if (appliedVal > pol.max_discount_pct) {
+      appliedVal = pol.max_discount_pct;
+      clamped = true;
+    }
+    discInCurr = listInCurr * (appliedVal / 100);
+    if (discInCurr > maxAboveVendorInCurr) {
+      discInCurr = maxAboveVendorInCurr;
+      appliedVal = listInCurr > 0 ? Math.round((discInCurr / listInCurr) * 1000) / 10 : 0;
+      clamped = true;
+    }
+  } else {
+    const maxAllowedInCurr = (pol.max_discount_eur * fxEur) / currRateEgp;
+    const halfCapInCurr = hasPerm('bi.view_executive') ? listInCurr : (listInCurr * 0.5);
+    const ceilInCurr = Math.min(maxAllowedInCurr, halfCapInCurr, maxAboveVendorInCurr);
+    discInCurr = Math.min(rawVal, Math.max(0, ceilInCurr));
+    if (rawVal > discInCurr + 0.01) clamped = true;
+    appliedVal = Math.round(discInCurr * 100) / 100;
+  }
+  discInCurr = Math.round(Math.max(0, discInCurr) * 100) / 100;
+  const netTotal = Math.round(Math.max(0, listInCurr - discInCurr) * 100) / 100;
+  if (discInCurr <= 0) {
+    return { listTotal: listInCurr, netTotal: listInCurr, discInCurr: 0, appliedType: 'NONE', appliedVal: 0, badge: '', clamped };
+  }
+  const badge = rawType === 'PERCENT'
+    ? `🎁 -${appliedVal}%`
+    : `🎁 -${u.curr === 'EGP' ? fmt(appliedVal, 0) + ' EGP' : u.sym + fmt(appliedVal, 1)}`;
+  return { listTotal: listInCurr, netTotal, discInCurr, appliedType: rawType, appliedVal, badge, clamped };
+}
+
 function buildAttributedProductUrl(item) {
   const slug = getSellerReferralSlug();
   const code = String((item && (item.code || item.id)) || '');
@@ -3036,49 +3203,126 @@ function buildAttributedProductUrl(item) {
   return `https://seacollegediveclub.com${lg}/s/${encodeURIComponent(slug)}${code ? '/' + encodeURIComponent(code) : ''}`;
 }
 
-function openProductQrModal(itemCode) {
-  const all = getUnifiedPitchItems(STATE.sellerCatalog);
-  const item = all.find((x) => String(x.code || x.id) === String(itemCode)) || all[0];
-  if (!item) return;
-  const url = buildAttributedProductUrl(item);
+function syncProductQrModalShareTargets(item, url, promoLabel = '') {
   const uPrice = getAdultChildUnitInCurr(item, STATE.pitchCurr);
   const chTxt = uPrice.curr === 'EGP' ? `${fmt(uPrice.child, 0)} EGP` : `${uPrice.sym}${fmt(uPrice.child, 0)}`;
-  document.getElementById('pqrTitle').textContent = '📱 ' + (item.name || item.name_en || 'Scan or Share Booking Link');
-  document.getElementById('pqrSub').textContent = `Adult: ${formatPitchPrice(item)} • Child: ${chTxt} • Infant (<3): FREE • Pickup: ${STATE.pitchPickup || '07:55–08:10'}`;
   document.getElementById('pqrUrlTxt').textContent = url;
   const svgHtml = (window.SCQR && typeof window.SCQR.toSvg === 'function')
     ? window.SCQR.toSvg(url, { size: 220 })
     : `<div style="color:#041322;padding:16px;font-weight:700;">${esc(url)}</div>`;
   document.getElementById('pqrSvgWrap').innerHTML = svgHtml;
-  const msg = `🌊 *Sea College Sharm El Sheikh — Official Concierge Offer*\n✨ *${item.name || item.name_en}*\n👤 Adult: ${formatPitchPrice(item)} | 🧒 Child: ${chTxt} | 👶 Infant (<3 yrs): FREE\n🚐 Hotel Pickup (${STATE.pitchHotel || 'Hotel'}): ${STATE.pitchPickup || '07:55–08:10'}\n✅ View photos & confirm your booking anytime:\n${url}`;
+  const promoLine = promoLabel ? `\n🎁 *Special VIP Discount Included: ${promoLabel}*` : '';
+  const msg = `🌊 *Sea College Sharm El Sheikh — Official Concierge Offer*\n✨ *${item.name || item.name_en}*${promoLine}\n👤 Adult: ${formatPitchPrice(item)} | 🧒 Child: ${chTxt} | 👶 Infant (<3 yrs): FREE\n🚐 Hotel Pickup (${STATE.pitchHotel || 'Hotel'}): ${STATE.pitchPickup || '07:55–08:10'}\n✅ View photos & confirm your booking anytime:\n${url}`;
   document.getElementById('pqrWaBtn').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
   const fbBtn = document.getElementById('pqrFbBtn');
   if (fbBtn) fbBtn.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
   const tgBtn = document.getElementById('pqrTgBtn');
-  if (tgBtn) tgBtn.href = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(item.name || item.name_en || '');
-  document.getElementById('productQrModal').style.display = 'flex';
+  if (tgBtn) tgBtn.href = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent((item.name || item.name_en || '') + (promoLabel ? ` (${promoLabel})` : ''));
 }
 
-function sharePitchWhatsApp(itemCode) {
+function openProductQrModal(itemCode) {
+  const all = getUnifiedPitchItems(STATE.sellerCatalog);
+  const item = all.find((x) => String(x.code || x.id) === String(itemCode)) || all[0];
+  if (!item) return;
+  const code = String(item.code || item.id || '');
+  document.getElementById('pqrItemCode').value = code;
+  const pol = getSellerDiscountPolicy();
+  const promoRow = document.getElementById('pqrPromoControls');
+  if (promoRow) promoRow.style.display = pol.is_enabled ? 'block' : 'none';
+
+  const dTypeEl = document.getElementById('pqrDiscType');
+  const dValEl = document.getElementById('pqrDiscVal');
+  if (dTypeEl && dValEl) {
+    dTypeEl.value = pol.is_enabled && STATE.pitchDiscType !== 'NONE' ? STATE.pitchDiscType : 'NONE';
+    dValEl.value = pol.is_enabled && STATE.pitchDiscType !== 'NONE' ? String(STATE.pitchDiscVal || 0) : '0';
+  }
+
+  const url = buildAttributedProductUrl(item);
+  const uPrice = getAdultChildUnitInCurr(item, STATE.pitchCurr);
+  const chTxt = uPrice.curr === 'EGP' ? `${fmt(uPrice.child, 0)} EGP` : `${uPrice.sym}${fmt(uPrice.child, 0)}`;
+  document.getElementById('pqrTitle').textContent = '📱 ' + (item.name || item.name_en || 'Scan or Share Booking Link');
+  document.getElementById('pqrSub').textContent = `Adult: ${formatPitchPrice(item)} • Child: ${chTxt} • Infant (<3): FREE • Pickup: ${STATE.pitchPickup || '07:55–08:10'}`;
+  syncProductQrModalShareTargets(item, url, '');
+  document.getElementById('productQrModal').style.display = 'flex';
+  if (pol.is_enabled && STATE.pitchDiscType !== 'NONE' && Number(STATE.pitchDiscVal || 0) > 0) {
+    applyPromoToProductQrModal();
+  }
+}
+
+async function applyPromoToProductQrModal() {
+  const code = document.getElementById('pqrItemCode').value;
+  const all = getUnifiedPitchItems(STATE.sellerCatalog);
+  const item = all.find((x) => String(x.code || x.id) === String(code)) || all[0];
+  if (!item) return;
+  const dType = document.getElementById('pqrDiscType').value || 'NONE';
+  const dVal = Math.max(0, Number(document.getElementById('pqrDiscVal').value || 0));
+  if (dType === 'NONE' || dVal <= 0) {
+    syncProductQrModalShareTargets(item, buildAttributedProductUrl(item), '');
+    return;
+  }
+  const res = await apiPost({
+    action: 'create_promo_share_link',
+    trip_code: code,
+    lang: STATE.pitchLang || 'en',
+    discount_type: dType,
+    discount_value: dVal,
+    discount_currency: 'EUR'
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Could not generate promo link');
+    return;
+  }
+  if (res.was_clamped) {
+    document.getElementById('pqrDiscVal').value = String(res.discount_value);
+    showToast(`ℹ️ Capped to policy max: ${res.discount_type === 'PERCENT' ? res.discount_value + '%' : '€' + res.discount_value}`);
+  } else {
+    showToast('🎁 Signed Special Promo QR & Link Ready!');
+  }
+  const lbl = res.discount_type === 'PERCENT' ? `-${res.discount_value}% Off` : `-€${res.discount_value} Off`;
+  syncProductQrModalShareTargets(item, res.promo_url, lbl);
+}
+
+async function sharePitchWhatsApp(itemCode) {
   const all = getUnifiedPitchItems(STATE.sellerCatalog);
   const item = all.find((x) => String(x.code || x.id) === String(itemCode));
   if (!item) return;
-  const url = buildAttributedProductUrl(item);
+  const code = String(item.code || item.id || '');
+  let url = buildAttributedProductUrl(item);
   const adl = Math.max(1, Number(STATE.pitchPax || 2));
   const ch = Math.max(0, Number(STATE.pitchChildren || 0));
   const inf = Math.max(0, Number(STATE.pitchInfants || 0));
   const uPrice = getAdultChildUnitInCurr(item, STATE.pitchCurr);
-  const tot = Math.round((adl * uPrice.adult + ch * uPrice.child) * 100) / 100;
-  const totTxt = uPrice.curr === 'EGP' ? `${fmt(tot, 0)} EGP` : `${uPrice.sym}${fmt(tot, 0)} ${uPrice.curr}`;
+  const dCalc = calcClientDiscountForTrip(item, adl, ch, STATE.pitchCurr, STATE.pitchDiscType, STATE.pitchDiscVal);
+  if (dCalc.discInCurr > 0) {
+    const pRes = await apiPost({
+      action: 'create_promo_share_link',
+      trip_code: code,
+      lang: STATE.pitchLang || 'en',
+      discount_type: dCalc.appliedType,
+      discount_value: dCalc.appliedVal,
+      discount_currency: STATE.pitchCurr
+    });
+    if (pRes && pRes.ok && pRes.promo_url) url = pRes.promo_url;
+  }
+  const totTxt = uPrice.curr === 'EGP' ? `${fmt(dCalc.netTotal, 0)} EGP` : `${uPrice.sym}${fmt(dCalc.netTotal, 0)} ${uPrice.curr}`;
+  const promoNote = dCalc.discInCurr > 0 ? ` (${dCalc.badge} Special Offer!)` : '';
   const msg = `🌊 *Sea College Sharm El Sheikh — Personal Trip Proposal*\n`
     + `✨ *${item.name || item.name_en}*\n`
-    + `👥 Group: ${adl} Adults${ch > 0 ? ` + ${ch} Kids` : ''}${inf > 0 ? ` + ${inf} Infants (FREE)` : ''} • Total: *${totTxt}*\n`
+    + `👥 Group: ${adl} Adults${ch > 0 ? ` + ${ch} Kids` : ''}${inf > 0 ? ` + ${inf} Infants (FREE)` : ''} • Total: *${totTxt}*${promoNote}\n`
     + `🏨 Hotel: ${STATE.pitchHotel || 'Sharm Resort'} (Pickup: ${STATE.pitchPickup || '07:55–08:10'})\n`
     + `📲 Take your time & confirm your booking directly via my link:\n${url}`;
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
 }
 
 let CURRENT_FBK_ITEM = null;
+function setFastBookPresetDiscount(dType, dVal) {
+  const tEl = document.getElementById('fbkDiscType');
+  const vEl = document.getElementById('fbkDiscVal');
+  if (tEl) tEl.value = dType;
+  if (vEl) vEl.value = String(dVal);
+  recalcFastBookGuestTotal(true);
+}
+
 function openFastBookModal(itemCode) {
   const cat = STATE.sellerCatalog || {};
   const all = getUnifiedPitchItems(cat);
@@ -3098,6 +3342,14 @@ function openFastBookModal(itemCode) {
   const cur = STATE.pitchCurr || 'EUR';
   document.getElementById('fbkDepCur').value = cur;
   document.getElementById('fbkRestCur').value = cur;
+
+  const pol = getSellerDiscountPolicy();
+  const dRow = document.getElementById('fbkDiscountRow');
+  if (dRow) dRow.style.display = pol.is_enabled ? 'block' : 'none';
+  document.getElementById('fbkDiscType').value = pol.is_enabled ? (STATE.pitchDiscType || 'NONE') : 'NONE';
+  document.getElementById('fbkDiscVal').value = pol.is_enabled && STATE.pitchDiscType !== 'NONE' ? String(STATE.pitchDiscVal || 0) : '0';
+  document.getElementById('fbkDiscReason').value = '';
+
   recalcFastBookGuestTotal(true);
   document.getElementById('fastBookModal').style.display = 'flex';
 }
@@ -3107,13 +3359,19 @@ function syncFastBookCurrency(newCur) {
   recalcFastBookGuestTotal(true);
 }
 
-function recalcFastBookGuestTotal(resetDepositFull = false) {
-  if (!CURRENT_FBK_ITEM) return;
+function getFastBookComputedDiscount() {
   const cur = document.getElementById('fbkDepCur').value || 'EUR';
-  const u = getAdultChildUnitInCurr(CURRENT_FBK_ITEM, cur);
   const adl = Math.max(1, Number(document.getElementById('fbkAdl').value || 1));
   const ch = Math.max(0, Number(document.getElementById('fbkCh').value || 0));
-  const tot = Math.round((adl * u.adult + ch * u.child) * 100) / 100;
+  const dType = document.getElementById('fbkDiscType') ? document.getElementById('fbkDiscType').value : 'NONE';
+  const dVal = document.getElementById('fbkDiscVal') ? Number(document.getElementById('fbkDiscVal').value || 0) : 0;
+  return calcClientDiscountForTrip(CURRENT_FBK_ITEM, adl, ch, cur, dType, dVal);
+}
+
+function recalcFastBookGuestTotal(resetDepositFull = false) {
+  if (!CURRENT_FBK_ITEM) return;
+  const dCalc = getFastBookComputedDiscount();
+  const tot = dCalc.netTotal;
   if (resetDepositFull) {
     document.getElementById('fbkDepAmt').value = String(tot);
     document.getElementById('fbkRestAmt').value = '0';
@@ -3127,10 +3385,8 @@ function recalcFastBookGuestTotal(resetDepositFull = false) {
 function recalcFastBookRestFromDeposit() {
   if (!CURRENT_FBK_ITEM) return;
   const cur = document.getElementById('fbkDepCur').value || 'EUR';
-  const u = getAdultChildUnitInCurr(CURRENT_FBK_ITEM, cur);
-  const adl = Math.max(1, Number(document.getElementById('fbkAdl').value || 1));
-  const ch = Math.max(0, Number(document.getElementById('fbkCh').value || 0));
-  const tot = Math.round((adl * u.adult + ch * u.child) * 100) / 100;
+  const dCalc = getFastBookComputedDiscount();
+  const tot = dCalc.netTotal;
   const dep = Math.max(0, Number(document.getElementById('fbkDepAmt').value || 0));
   const rest = Math.max(0, Math.round((tot - dep) * 100) / 100);
   document.getElementById('fbkRestCur').value = cur;
@@ -3146,14 +3402,17 @@ function recalcFastBookSummaryBox() {
   const adl = Math.max(1, Number(document.getElementById('fbkAdl').value || 1));
   const ch = Math.max(0, Number(document.getElementById('fbkCh').value || 0));
   const inf = Math.max(0, Number(document.getElementById('fbkInf').value || 0));
-  const tot = Math.round((adl * u.adult + ch * u.child) * 100) / 100;
+  const dCalc = getFastBookComputedDiscount();
   const dep = Math.max(0, Number(document.getElementById('fbkDepAmt').value || 0));
   const rest = Math.max(0, Number(document.getElementById('fbkRestAmt').value || 0));
+  const priceLine = dCalc.discInCurr > 0
+    ? ` = <s style="opacity:0.65;">${u.sym}${fmt(dCalc.listTotal, 1)}</s> <b class="pos">${u.sym}${fmt(dCalc.netTotal, 1)} ${esc(cur)}</b> <span style="color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)} Special Offer!)</span>`
+    : ` = <b>${u.sym}${fmt(dCalc.netTotal, 1)} ${esc(cur)}</b>`;
   document.getElementById('fbkGuestSummary').innerHTML =
     `🌊 <b>Trip Summary:</b> ${adl} Adult (${u.sym}${fmt(u.adult, 0)})`
     + (ch > 0 ? ` + ${ch} Child (${u.sym}${fmt(u.child, 0)})` : '')
     + ` + ${inf} Infant (<span class="pos">FREE &lt;3 yrs</span>)`
-    + ` = <b>${u.sym}${fmt(tot, 1)} ${esc(cur)}</b><br>`
+    + `${priceLine}<br>`
     + `✅ Deposit Paid Now: <b class="pos">${fmt(dep, 1)} ${esc(cur)}</b> • Remaining at Pickup Time: <b style="color:${rest > 0 ? '#fcd34d' : '#34d399'};">${fmt(rest, 1)} ${esc(restCur)}</b>`;
 }
 
@@ -3163,6 +3422,8 @@ async function submitFastBookForm(e) {
   btn.disabled = true;
   btn.textContent = '⏳ Issuing Boarding Pass...';
   try {
+    const dCalc = getFastBookComputedDiscount();
+    const cur = document.getElementById('fbkDepCur').value || 'EUR';
     const res = await apiPost({
       action: 'create_voucher',
       guest_name: document.getElementById('fbkGuest').value.trim(),
@@ -3176,8 +3437,12 @@ async function submitFastBookForm(e) {
       adults: Number(document.getElementById('fbkAdl').value || 1),
       children: Number(document.getElementById('fbkCh').value || 0),
       infants: Number(document.getElementById('fbkInf').value || 0),
+      discount_type: dCalc.appliedType,
+      discount_value: dCalc.appliedVal,
+      discount_currency: cur,
+      discount_reason: document.getElementById('fbkDiscReason') ? document.getElementById('fbkDiscReason').value.trim() : '',
       deposit_amount: Number(document.getElementById('fbkDepAmt').value || 0),
-      deposit_currency: document.getElementById('fbkDepCur').value,
+      deposit_currency: cur,
       rest_amount: Number(document.getElementById('fbkRestAmt').value || 0),
       rest_currency: document.getElementById('fbkRestCur').value
     });
@@ -3192,7 +3457,7 @@ async function submitFastBookForm(e) {
     rBox.style.display = 'block';
     rBox.innerHTML = `
       <div style="font-size:15px;font-weight:900;color:var(--teal);">✅ Booking Confirmed — Voucher ${esc(res.voucher_no)}</div>
-      <div style="font-size:12px;margin-top:4px;">Pickup Window: <b>${esc(document.getElementById('fbkPick').value)}</b> • Guests: <b>${Number(res.adults || 1)} Adults${Number(res.children || 0) > 0 ? ` + ${res.children} Kids` : ''}${Number(res.infants || 0) > 0 ? ` + ${res.infants} Infants` : ''}</b></div>
+      <div style="font-size:12px;margin-top:4px;">Pickup Window: <b>${esc(document.getElementById('fbkPick').value)}</b> • Guests: <b>${Number(res.adults || 1)} Adults${Number(res.children || 0) > 0 ? ` + ${res.children} Kids` : ''}${Number(res.infants || 0) > 0 ? ` + ${res.infants} Infants` : ''}</b>${Number(res.discount_egp || 0) > 0 ? ` • <span style="color:#fcd34d;">🎁 Special Discount Applied</span>` : ''}</div>
       ${qrSvg}
       <div style="font-size:11px;color:var(--muted);">Digital Boarding Pass: ${esc(res.qr_token)}</div>
     `;
@@ -3208,12 +3473,19 @@ async function submitFastBookForm(e) {
   }
 }
 
+function setPitchDiscount(dType, dVal) {
+  STATE.pitchDiscType = dType;
+  STATE.pitchDiscVal = Math.max(0, Number(dVal || 0));
+  renderApp();
+}
+
 function renderSellerPitchTab(ar) {
   const cat = STATE.sellerCatalog || {};
   const fx = cat.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
   const hotels = cat.hotels || [];
   const langs = cat.languages || ['en', 'ru', 'it', 'pl', 'de', 'fr', 'ar', 'zh'];
   const langLabels = { en: '🇬🇧 EN', ru: '🇷🇺 RU', it: '🇮🇹 IT', pl: '🇵🇱 PL', de: '🇩🇪 DE', fr: '🇫🇷 FR', ar: '🇪🇬 AR', zh: '🇨🇳 ZH' };
+  const discPol = getSellerDiscountPolicy();
 
   const selectedHotelObj = hotels.find((h) => h.name === STATE.pitchHotel) || hotels[0] || { name: 'Cyrene Sharm Hotel', pickup_window: '07:55–08:10', zone_label: 'Montazah / Ras Nasrani' };
   STATE.pitchPickup = selectedHotelObj.pickup_window || '07:55–08:10';
@@ -3307,6 +3579,29 @@ function renderSellerPitchTab(ar) {
           ✅ <b>Book with Deposit Now</b> &amp; pay remaining balance easily at hotel pickup!
         </div>
       </div>
+
+      ${discPol.is_enabled ? `
+        <div id="pitchSpecialDiscountBar" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:11px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.34);">
+          <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:800;color:#fde68a;">🎁 ${ar ? 'خصم خاص للضيف (% أو مبلغ):' : 'Special Guest Discount:'}</span>
+            <select style="width:auto;padding:5px 8px;" onchange="STATE.pitchDiscType=this.value;if(this.value==='NONE')STATE.pitchDiscVal=0;else if(!STATE.pitchDiscVal)STATE.pitchDiscVal=10;renderApp();">
+              <option value="NONE" ${STATE.pitchDiscType === 'NONE' ? 'selected' : ''}>${ar ? 'بدون خصم' : 'Standard Price'}</option>
+              <option value="PERCENT" ${STATE.pitchDiscType === 'PERCENT' ? 'selected' : ''}>${ar ? 'نسبة مئوية (%)' : 'Percentage (%)'}</option>
+              <option value="AMOUNT" ${STATE.pitchDiscType === 'AMOUNT' ? 'selected' : ''}>${ar ? `مبلغ ثابت (${STATE.pitchCurr})` : `Fixed Amount (${STATE.pitchCurr})`}</option>
+            </select>
+            ${STATE.pitchDiscType !== 'NONE' ? `
+              <input type="number" step="0.5" min="0" value="${Number(STATE.pitchDiscVal || 0)}" style="width:82px;padding:5px;" onchange="STATE.pitchDiscVal=Math.max(0,Number(this.value||0));renderApp();">
+              <span style="font-size:11.5px;color:#fde68a;font-weight:800;">${STATE.pitchDiscType === 'PERCENT' ? `% (Max ${discPol.max_discount_pct}%)` : esc(STATE.pitchCurr)}</span>
+            ` : ''}
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <button type="button" class="btn ${STATE.pitchDiscType === 'NONE' ? 'btn-primary' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('NONE', 0)">Standard</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 5 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 5)">🎁 -5%</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 10 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 10)">🎁 -10%</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 15 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 15)">🎁 -15%</button>
+          </div>
+        </div>
+      ` : ''}
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -3323,8 +3618,9 @@ function renderSellerPitchTab(ar) {
         const uPrice = getAdultChildUnitInCurr(it, STATE.pitchCurr);
         const unitCurrTxt = formatPitchPrice(it);
         const childCurrTxt = uPrice.curr === 'EGP' ? `${fmt(uPrice.child, 0)} EGP` : `${uPrice.sym}${fmt(uPrice.child, 0)}`;
-        const groupTotal = Math.round((adlCount * uPrice.adult + chCount * uPrice.child) * 100) / 100;
-        const groupTotalTxt = uPrice.curr === 'EGP' ? `${fmt(groupTotal, 0)} EGP` : `${uPrice.sym}${fmt(groupTotal, 0)} ${uPrice.curr}`;
+        const dCalc = calcClientDiscountForTrip(it, adlCount, chCount, STATE.pitchCurr, STATE.pitchDiscType, STATE.pitchDiscVal);
+        const listGroupTxt = uPrice.curr === 'EGP' ? `${fmt(dCalc.listTotal, 0)} EGP` : `${uPrice.sym}${fmt(dCalc.listTotal, 0)} ${uPrice.curr}`;
+        const netGroupTxt = uPrice.curr === 'EGP' ? `${fmt(dCalc.netTotal, 0)} EGP` : `${uPrice.sym}${fmt(dCalc.netTotal, 0)} ${uPrice.curr}`;
         const coverImg = it.cover_webp || '/assets/images/pitch/ras-mohammed-boat.webp';
         const vidSrc = it.video_src || '/assets/videos/sea-college-tiran-dive-briefing-sharm.mp4';
         const vidPoster = it.video_poster || coverImg;
@@ -3358,9 +3654,12 @@ function renderSellerPitchTab(ar) {
             </div>
 
             <div style="padding:10px 13px 13px;border-top:1px solid rgba(148,163,184,0.14);background:rgba(6,21,38,0.5);">
-              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px;gap:6px;flex-wrap:wrap;">
                 <span>Group (${adlCount}A${chCount > 0 ? `+${chCount}C` : ''}${infCount > 0 ? `+${infCount}I` : ''}):</span>
-                <b style="font-size:14px;color:var(--cyan);">${esc(groupTotalTxt)}</b>
+                ${dCalc.discInCurr > 0
+                  ? `<span><s style="opacity:0.65;font-size:11.5px;margin-right:4px;">${esc(listGroupTxt)}</s><b style="font-size:14px;color:#34d399;">${esc(netGroupTxt)}</b> <span style="font-size:11px;color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)})</span></span>`
+                  : `<b style="font-size:14px;color:var(--cyan);">${esc(netGroupTxt)}</b>`
+                }
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button type="button" class="btn btn-primary" style="flex:1.3;justify-content:center;" onclick="openFastBookModal('${esc(code)}')">⚡ Book Now</button>
@@ -3378,7 +3677,10 @@ function renderSellerPitchTab(ar) {
 /* ================= F13: PRIVATE GAMIFIED SELLER PROFILE, QR, ACTUAL COMMISSIONS & ALLOWANCES ================= */
 async function changeWalletFilter(monthVal, sellerVal) {
   if (monthVal !== null) STATE.walletMonth = monthVal;
-  if (sellerVal !== null) STATE.walletSeller = sellerVal;
+  if (sellerVal !== null) {
+    STATE.walletSeller = sellerVal;
+    STATE.walletPromoUrl = '';
+  }
   const wp = { action: 'seller_wallet', month: STATE.walletMonth };
   if (STATE.walletSeller) wp.seller = STATE.walletSeller;
   const res = await apiGet(wp);
@@ -3386,6 +3688,32 @@ async function changeWalletFilter(monthVal, sellerVal) {
     STATE.sellerWallet = res;
     renderApp();
   }
+}
+
+async function generateWalletPromoShareLink() {
+  const w = STATE.sellerWallet || {};
+  const prof = w.seller_profile || {};
+  const dType = document.getElementById('walPromoType') ? document.getElementById('walPromoType').value : 'PERCENT';
+  const dVal = document.getElementById('walPromoVal') ? Math.max(0, Number(document.getElementById('walPromoVal').value || 0)) : 0;
+  STATE.walletPromoType = dType;
+  STATE.walletPromoVal = dVal;
+  const res = await apiPost({
+    action: 'create_promo_share_link',
+    seller_username: prof.username || '',
+    trip_code: '',
+    lang: STATE.lang === 'ar' ? 'ar' : 'en',
+    discount_type: dType,
+    discount_value: dVal,
+    discount_currency: 'EUR'
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Could not generate promo share link');
+    return;
+  }
+  STATE.walletPromoVal = Number(res.discount_value || 0);
+  STATE.walletPromoUrl = String(res.promo_url || '');
+  showToast(res.promo_token ? '🎁 Signed VIP Promo Brochure Link & QR Ready!' : 'Reset to standard brochure link');
+  renderApp();
 }
 
 function downloadSellerQrPng(qrUrl, slug) {
@@ -3439,6 +3767,8 @@ function renderSellerWalletTab(ar) {
   const k = w.kpis || {};
   const brk = w.actual_due_breakdown || {};
   const tgt = w.target_progress || { is_active: false };
+  const discPol = w.discount_policy || { is_enabled: true, max_discount_pct: 20, max_discount_eur: 50 };
+  const discSum = w.discounts_summary || { discounted_trips_count: 0, total_discount_egp: 0 };
   const myAwards = w.awards || [];
   const myTrips = w.my_trips || [];
   const advRows = w.advances_rows || [];
@@ -3447,11 +3777,13 @@ function renderSellerWalletTab(ar) {
   const allSellers = w.all_sellers || [];
   const slug = prof.referral_code || getSellerReferralSlug();
   const qrUrl = prof.qr_url || ('https://seacollegediveclub.com/r/' + encodeURIComponent(slug));
-  const brochureUrl = prof.share_brochure_url || ('https://seacollegediveclub.com/s/' + encodeURIComponent(slug));
-  const locUrls = prof.localized_brochure_urls || prof.localized_urls || { en: brochureUrl };
+  const baseBrochureUrl = prof.share_brochure_url || ('https://seacollegediveclub.com/s/' + encodeURIComponent(slug));
+  const activeShareBrochure = STATE.walletPromoUrl || baseBrochureUrl;
+  const qrTargetUrl = STATE.walletPromoUrl || qrUrl;
+  const locUrls = prof.localized_brochure_urls || prof.localized_urls || { en: baseBrochureUrl };
   const svgQr = (window.SCQR && typeof window.SCQR.toSvg === 'function')
-    ? window.SCQR.toSvg(qrUrl, { size: 204 })
-    : `<div style="color:#041322;padding:14px;font-weight:800;">${esc(qrUrl)}</div>`;
+    ? window.SCQR.toSvg(qrTargetUrl, { size: 204 })
+    : `<div style="color:#041322;padding:14px;font-weight:800;">${esc(qrTargetUrl)}</div>`;
 
   const expParams = new URLSearchParams({
     report: 'seller_commissions',
@@ -3517,17 +3849,33 @@ function renderSellerWalletTab(ar) {
         <div style="flex:1;min-width:220px;">
           <span class="pill">${esc(prof.branch_scope || 'CYRENE')} • REP: ${esc(prof.rep_scope || slug.toUpperCase())}</span>
           <h3 style="font-size:18px;margin-top:6px;">${esc(ar ? (prof.display_name_ar || prof.display_name_en) : (prof.display_name_en || prof.username))}</h3>
-          <div style="font-size:11.5px;color:#34d399;word-break:break-all;margin:5px 0 2px;font-weight:800;">📲 All-Trips Client Brochure: ${esc(brochureUrl)}</div>
+          <div style="font-size:11.5px;color:#34d399;word-break:break-all;margin:5px 0 2px;font-weight:800;">📲 Shareable Brochure Link: ${esc(activeShareBrochure)}</div>
           <div style="font-size:11px;color:var(--cyan);word-break:break-all;margin-bottom:6px;">🤿 Diving QR Link: ${esc(qrUrl)}</div>
+
+          ${discPol.is_enabled ? `
+            <div style="margin:8px 0 10px;padding:8px 10px;border-radius:10px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.34);">
+              <div style="font-size:11px;font-weight:800;color:#fde68a;margin-bottom:5px;">🎁 ${ar ? 'إنشاء رابط خصم خاص موثّق لعملائك (% أو مبلغ €):' : 'Create Personal VIP Discount Share Link & QR (% or €):'}</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <select id="walPromoType" style="width:auto;padding:5px 7px;font-size:11.5px;">
+                  <option value="PERCENT" ${STATE.walletPromoType === 'PERCENT' ? 'selected' : ''}>Percentage (%) — Max ${discPol.max_discount_pct}%</option>
+                  <option value="AMOUNT" ${STATE.walletPromoType === 'AMOUNT' ? 'selected' : ''}>Fixed Amount (€) — Max €${discPol.max_discount_eur}</option>
+                </select>
+                <input type="number" step="0.5" min="0" id="walPromoVal" value="${Number(STATE.walletPromoVal || 10)}" style="width:74px;padding:5px;font-size:11.5px;">
+                <button type="button" class="btn btn-amber" style="padding:5px 10px;font-size:11.5px;" onclick="generateWalletPromoShareLink()">✨ Generate VIP Link</button>
+                ${STATE.walletPromoUrl ? `<button type="button" class="btn" style="padding:5px 8px;font-size:11px;" onclick="STATE.walletPromoUrl='';renderApp();">Reset</button>` : ''}
+              </div>
+            </div>
+          ` : ''}
+
           <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">
-            Share via WhatsApp, Facebook, Instagram or Telegram — when your client books later, it registers directly under your name &amp; sends you an instant 🔔 notification! (INSHEET 10% Gross • OUT_SIDE 25% Net Profit after Adult/Child Supplier Cost).
+            Share via WhatsApp, Facebook, Instagram or Telegram — when your client books later, it registers directly under your name &amp; sends you an instant 🔔 notification! (Commission calculated on actual net discounted amount: INSHEET 10% Net • OUT_SIDE 25% Net Profit after Supplier Cost).
           </p>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <a class="btn btn-emerald" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips and confirm your booking directly with me: ' + brochureUrl)}" target="_blank" rel="noopener">💬 WhatsApp Link</a>
-            <a class="btn" style="border-color:#3b82f6;color:#93c5fd;" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(brochureUrl)}" target="_blank" rel="noopener">📘 Facebook</a>
-            <a class="btn" style="border-color:#38bdf8;color:#7dd3fc;" href="https://t.me/share/url?url=${encodeURIComponent(brochureUrl)}" target="_blank" rel="noopener">✈️ Telegram</a>
-            <button type="button" class="btn" onclick="shareNativeOrCopy('${esc(brochureUrl)}', 'Sea College Trips')">📲 Copy / Instagram</button>
-            <button type="button" class="btn btn-primary" onclick="downloadSellerQrPng('${esc(qrUrl)}', '${esc(slug)}')">⬇ Download PNG QR</button>
+            <a class="btn btn-emerald" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips and confirm your booking directly with me: ' + activeShareBrochure)}" target="_blank" rel="noopener">💬 WhatsApp Link</a>
+            <a class="btn" style="border-color:#3b82f6;color:#93c5fd;" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">📘 Facebook</a>
+            <a class="btn" style="border-color:#38bdf8;color:#7dd3fc;" href="https://t.me/share/url?url=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">✈️ Telegram</a>
+            <button type="button" class="btn" onclick="shareNativeOrCopy('${esc(activeShareBrochure)}', 'Sea College Trips')">📲 Copy / Instagram</button>
+            <button type="button" class="btn btn-primary" onclick="downloadSellerQrPng('${esc(qrTargetUrl)}', '${esc(slug)}')">⬇ Download PNG QR</button>
           </div>
           <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;">
             ${Object.entries(locUrls).map(([lg, uLink]) => `<button type="button" class="contact-chip" style="cursor:pointer;" onclick="copyTextPrompt('${esc(uLink)}')">🌐 ${esc(lg.toUpperCase())}</button>`).join('')}
@@ -3557,9 +3905,9 @@ function renderSellerWalletTab(ar) {
           <div class="kpi-sub">Unlocks when trip done &amp; REST = 0</div>
         </div>
         <div class="card">
-          <div class="kpi-label">${ar ? 'إجمالي المبيعات المسجلة باسمي' : 'My Total Sales Volume'}</div>
+          <div class="kpi-label">${ar ? 'إجمالي المبيعات الصافية والخصومات الممنوحة' : 'My Net Sales & Special Discounts'}</div>
           <div class="kpi-val">${fmt(k.gross_sales_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">${fmt(k.entries_count)} Trips • Total Comm: ${fmt(k.total_commission_rounded_egp ?? k.total_commission_egp)} EGP</div>
+          <div class="kpi-sub">${fmt(k.entries_count)} Trips • 🎁 Discounts: ${fmt(discSum.total_discount_egp || 0)} EGP (${fmt(discSum.discounted_trips_count || 0)})</div>
         </div>
         <div class="card">
           <div class="kpi-label">${ar ? 'صافي المستحق الشامل بالراتب' : 'Full Payroll + Comm Net Balance'}</div>
@@ -3571,13 +3919,13 @@ function renderSellerWalletTab(ar) {
 
     <!-- Seller's Isolated Trips & Client Confirmations Table -->
     <div class="card" style="margin-bottom:14px;">
-      <h3 style="font-size:14px;margin-bottom:8px;">🎫 ${ar ? 'رحلاتي وحجوزات عملائي وحالة التحصيل والعمولة الفعلية' : 'My Trips Only — Booking Status, Paid Deposit, Remaining REST & Actual Commission'} (${myTrips.length})</h3>
+      <h3 style="font-size:14px;margin-bottom:8px;">🎫 ${ar ? 'رحلاتي وحجوزات عملائي وحالة التحصيل والعمولة الفعلية' : 'My Trips Only — Booking Status, Special Discounts, Paid Deposit & Actual Commission'} (${myTrips.length})</h3>
       <div class="table-wrap" style="max-height:310px;">
         <table>
           <thead>
             <tr>
               <th>Date</th><th>VO.NO</th><th>Guest &amp; Hotel</th><th>Trip</th><th>PAX</th>
-              <th>Actual Total</th><th>Paid</th><th>REST Due</th><th>Status</th><th>Action</th>
+              <th>Actual Net Total</th><th>Paid</th><th>REST Due</th><th>Status</th><th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -3585,15 +3933,21 @@ function renderSellerWalletTab(ar) {
               const wf = String(t.workflow_status || t.boarding_status || 'CONFIRMED');
               const restEgp = Number(t.rest_egp_equiv || 0);
               const totEgp = Number(t.actual_total_egp || (Number(t.paid_egp_equiv || 0) + restEgp));
+              const dEgp = Number(t.discount_egp || 0);
+              const listEgp = Number(t.list_total_egp || (totEgp + dEgp));
               const isDonePaid = (t.boarding_status === 'BOARDED' || t.boarding_status === 'EXECUTED') && restEgp <= 0.5;
               return `
                 <tr>
                   <td>${esc(t.trip_date)}</td>
                   <td><b>${esc(t.voucher_no)}</b></td>
                   <td><b>${esc(t.guest_name || 'Guest')}</b><div style="font-size:10.5px;color:var(--muted);">${esc(t.hotel_name || '')} ${t.room_no ? '#' + esc(t.room_no) : ''}</div></td>
-                  <td>${esc(t.trip_name)} ${t.modification_note ? `<div style="font-size:10px;color:#fcd34d;">✏️ ${esc(t.modification_note)}</div>` : ''}</td>
+                  <td>
+                    ${esc(t.trip_name)}
+                    ${dEgp > 0 ? `<div style="font-size:10px;color:#fcd34d;">🎁 Special Discount: -${fmt(dEgp)} EGP (${t.discount_type === 'PERCENT' ? '-' + esc(t.discount_value) + '%' : '-' + esc(t.discount_value) + ' ' + esc(t.discount_currency || 'EUR')})</div>` : ''}
+                    ${t.modification_note ? `<div style="font-size:10px;color:#fcd34d;">✏️ ${esc(t.modification_note)}</div>` : ''}
+                  </td>
                   <td class="num">${Number(t.adults || 1)}A${Number(t.children || 0) > 0 ? `+${t.children}C` : ''}${Number(t.infants || 0) > 0 ? `+${t.infants}I` : ''}</td>
-                  <td class="num"><b>${fmt(totEgp)} EGP</b></td>
+                  <td class="num">${dEgp > 0 ? `<s style="opacity:0.6;font-size:10.5px;">${fmt(listEgp)}</s> ` : ''}<b>${fmt(totEgp)} EGP</b></td>
                   <td class="num pos">${fmt(t.paid_egp_equiv)}</td>
                   <td class="num ${restEgp > 0.5 ? 'neg' : 'pos'}">${restEgp > 0.5 ? fmt(restEgp) + ' EGP' : 'PAID 100%'}</td>
                   <td><span class="pill" style="${isDonePaid ? 'border-color:#10b981;color:#34d399;' : ''}">${isDonePaid ? '✅ DONE & PAID' : esc(wf)}</span></td>

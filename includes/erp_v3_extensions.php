@@ -69,6 +69,12 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
         'workflow_stage'       => "TEXT NOT NULL DEFAULT 'CONFIRMED_OPS'",
         'has_modification'     => 'INTEGER NOT NULL DEFAULT 0',
         'modification_summary' => "TEXT NOT NULL DEFAULT ''",
+        'list_total_egp'       => 'REAL NOT NULL DEFAULT 0',
+        'discount_type'        => "TEXT NOT NULL DEFAULT 'NONE'",
+        'discount_value'       => 'REAL NOT NULL DEFAULT 0',
+        'discount_currency'    => "TEXT NOT NULL DEFAULT 'EUR'",
+        'discount_egp'         => 'REAL NOT NULL DEFAULT 0',
+        'discount_reason'      => "TEXT NOT NULL DEFAULT ''",
     ];
     foreach ($resAddCols as $col => $ddl) {
         if (!isset($haveResCols[$col])) {
@@ -155,15 +161,30 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
             weekly_target_egp REAL NOT NULL DEFAULT 95000,
             monthly_target_egp REAL NOT NULL DEFAULT 380000,
             monthly_trips_target INTEGER NOT NULL DEFAULT 65,
+            is_discount_enabled INTEGER NOT NULL DEFAULT 1,
+            max_discount_pct REAL NOT NULL DEFAULT 20,
+            max_discount_eur REAL NOT NULL DEFAULT 50,
             updated_by TEXT NOT NULL DEFAULT 'SYSTEM',
             updated_at TEXT NOT NULL DEFAULT ''
         );"
     );
 
+    $haveTgtCols = array_flip(array_column($pdo->query('PRAGMA table_info(seller_targets_config)')->fetchAll(), 'name'));
+    $tgtAddCols = [
+        'is_discount_enabled' => 'INTEGER NOT NULL DEFAULT 1',
+        'max_discount_pct'    => 'REAL NOT NULL DEFAULT 20',
+        'max_discount_eur'    => 'REAL NOT NULL DEFAULT 50',
+    ];
+    foreach ($tgtAddCols as $col => $ddl) {
+        if (!isset($haveTgtCols[$col])) {
+            $pdo->exec("ALTER TABLE seller_targets_config ADD COLUMN {$col} {$ddl}");
+        }
+    }
+
     $pdo->exec(
         "INSERT OR IGNORE INTO seller_targets_config
-         (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target, updated_by, updated_at)
-         VALUES ('__GLOBAL__', 1, 15000, 95000, 380000, 65, 'SYSTEM', '2026-10-01T00:00:00Z')"
+         (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target, is_discount_enabled, max_discount_pct, max_discount_eur, updated_by, updated_at)
+         VALUES ('__GLOBAL__', 1, 15000, 95000, 380000, 65, 1, 20, 50, 'SYSTEM', '2026-10-01T00:00:00Z')"
     );
 
     $tripCnt = (int) $pdo->query('SELECT COUNT(*) FROM master_trips_catalog')->fetchColumn();
@@ -545,3 +566,227 @@ function sc_erp_compute_best_seller_awards(PDO $pdo, ?string $anchorDate = null)
         'yearly_best'   => $queryTop($pdo, 'r.period_year = ?', [$yearKey]),
     ];
 }
+
+/**
+ * Fetch seller discount policy (`is_enabled`, `max_discount_pct`, `max_discount_eur`), falling back to `__GLOBAL__`.
+ */
+function sc_erp_get_seller_discount_policy(PDO $pdo, string $sellerUsername): array
+{
+    $st = $pdo->prepare('SELECT * FROM seller_targets_config WHERE LOWER(seller_username) = LOWER(?) LIMIT 1');
+    $st->execute([trim($sellerUsername)]);
+    $row = $st->fetch();
+
+    $gSt  = $pdo->query("SELECT * FROM seller_targets_config WHERE seller_username = '__GLOBAL__' LIMIT 1");
+    $glob = $gSt ? ($gSt->fetch() ?: []) : [];
+
+    $globEnabled = isset($glob['is_discount_enabled']) ? (int) $glob['is_discount_enabled'] : 1;
+    $isEnabled   = $globEnabled === 1
+        ? (isset($row['is_discount_enabled']) ? ((int) $row['is_discount_enabled'] === 1) : true)
+        : false;
+
+    $maxPct = (float) ($row['max_discount_pct'] ?? $glob['max_discount_pct'] ?? 20.0);
+    $maxEur = (float) ($row['max_discount_eur'] ?? $glob['max_discount_eur'] ?? 50.0);
+
+    return [
+        'is_enabled'       => $isEnabled,
+        'max_discount_pct' => max(0.0, min(80.0, $maxPct)),
+        'max_discount_eur' => max(0.0, min(1000.0, $maxEur)),
+    ];
+}
+
+/**
+ * Calculate validated special discount by Percentage (`PERCENT`) or Fixed Amount (`AMOUNT`),
+ * enforcing:
+ *   1. Seller discount policy caps (`is_enabled`, `max_discount_pct`, `max_discount_eur`) unless `$isOwnerOverride`.
+ *   2. Strict vendor-cost floor (`net_total_egp >= $supplierCostEgp`) so outside supplier trips NEVER go negative.
+ *   3. 50% sanity cap on fixed-amount seller discounts on in-house (`INSHEET`) trips unless `$isOwnerOverride`.
+ */
+function sc_erp_calculate_discount(
+    float $listTotalEgp,
+    float $supplierCostEgp,
+    string $discType,
+    float $discVal,
+    string $discCurr,
+    array $fx,
+    array $policy,
+    bool $isOwnerOverride = false
+): array {
+    $listTotalEgp    = round(max(0.0, $listTotalEgp), 2);
+    $supplierCostEgp = round(max(0.0, $supplierCostEgp), 2);
+    $fxEur           = max(1.0, (float) ($fx['EUR'] ?? 57.0));
+
+    $rawType = strtoupper(trim($discType));
+    $normType = match ($rawType) {
+        'PERCENT', 'PCT', 'PERCENTAGE', '%' => 'PERCENT',
+        'AMOUNT', 'FIXED', 'CASH', 'VALUE'  => 'AMOUNT',
+        default                             => 'NONE',
+    };
+
+    $curr = strtoupper(trim($discCurr));
+    if (!isset($fx[$curr])) {
+        $curr = 'EUR';
+    }
+    $currRate = max(1.0, (float) ($fx[$curr] ?? $fxEur));
+
+    $enabled = $isOwnerOverride || !empty($policy['is_enabled']);
+    if ($listTotalEgp <= 0.0 || $normType === 'NONE' || $discVal <= 0.0 || !$enabled) {
+        return [
+            'list_total_egp'     => $listTotalEgp,
+            'discount_type'      => 'NONE',
+            'discount_value'     => 0.0,
+            'discount_currency'  => $curr,
+            'discount_egp'       => 0.0,
+            'discount_eur_equiv' => 0.0,
+            'effective_pct'      => 0.0,
+            'net_total_egp'      => $listTotalEgp,
+            'was_clamped'        => ($normType !== 'NONE' && $discVal > 0.0 && !$enabled),
+        ];
+    }
+
+    $wasClamped = false;
+    $maxRoomAboveVendor = round(max(0.0, $listTotalEgp - $supplierCostEgp), 2);
+
+    if ($normType === 'PERCENT') {
+        $maxPct = $isOwnerOverride ? 100.0 : max(0.0, (float) ($policy['max_discount_pct'] ?? 20.0));
+        $appliedPct = min($discVal, $maxPct);
+        if ($discVal > $maxPct + 0.001) {
+            $wasClamped = true;
+        }
+        $discEgp = round($listTotalEgp * ($appliedPct / 100.0), 2);
+        if ($discEgp > $maxRoomAboveVendor) {
+            $discEgp = $maxRoomAboveVendor;
+            $appliedPct = $listTotalEgp > 0 ? round(($discEgp / $listTotalEgp) * 100.0, 2) : 0.0;
+            $wasClamped = true;
+        }
+        $appliedVal = round($appliedPct, 2);
+    } else {
+        $reqEgp = round($discVal * $currRate, 2);
+        $maxEurCapEgp = $isOwnerOverride
+            ? $listTotalEgp
+            : round(max(0.0, (float) ($policy['max_discount_eur'] ?? 50.0)) * $fxEur, 2);
+        $sanityHalfCapEgp = $isOwnerOverride ? $listTotalEgp : round($listTotalEgp * 0.50, 2);
+        $ceilEgp = min($maxEurCapEgp, $sanityHalfCapEgp, $maxRoomAboveVendor);
+        $discEgp = round(min($reqEgp, max(0.0, $ceilEgp)), 2);
+        if ($reqEgp > $discEgp + 0.05) {
+            $wasClamped = true;
+        }
+        $appliedVal = round($discEgp / $currRate, 2);
+    }
+
+    if ($discEgp <= 0.0) {
+        return [
+            'list_total_egp'     => $listTotalEgp,
+            'discount_type'      => 'NONE',
+            'discount_value'     => 0.0,
+            'discount_currency'  => $curr,
+            'discount_egp'       => 0.0,
+            'discount_eur_equiv' => 0.0,
+            'effective_pct'      => 0.0,
+            'net_total_egp'      => $listTotalEgp,
+            'was_clamped'        => $wasClamped,
+        ];
+    }
+
+    $netEgp = round(max($supplierCostEgp, $listTotalEgp - $discEgp), 2);
+    $actualDiscEgp = round(max(0.0, $listTotalEgp - $netEgp), 2);
+
+    return [
+        'list_total_egp'     => $listTotalEgp,
+        'discount_type'      => $normType,
+        'discount_value'     => $appliedVal,
+        'discount_currency'  => $curr,
+        'discount_egp'       => $actualDiscEgp,
+        'discount_eur_equiv' => round($actualDiscEgp / $fxEur, 2),
+        'effective_pct'      => $listTotalEgp > 0 ? round(($actualDiscEgp / $listTotalEgp) * 100.0, 2) : 0.0,
+        'net_total_egp'      => $netEgp,
+        'was_clamped'        => $wasClamped,
+    ];
+}
+
+/**
+ * Internal server HMAC key for tamper-proof seller promo links (`/s/<slug>?promo=<token>`).
+ */
+function sc_erp_promo_secret(): string
+{
+    return hash('sha256', __DIR__ . '|SC_SELLER_PROMO_HMAC_V31|' . SC_ERP_DB_PATH);
+}
+
+/**
+ * Create a tamper-proof HMAC-signed promo token for a seller share link or QR code.
+ */
+function sc_erp_sign_promo_token(
+    string $sellerSlug,
+    string $tripCode,
+    string $discType,
+    float $discVal,
+    string $discCurr = 'EUR',
+    int $ttlDays = 14
+): string {
+    $normType = strtoupper(trim($discType)) === 'AMOUNT' ? 'AMOUNT' : 'PERCENT';
+    $payload = [
+        's'   => strtolower(trim($sellerSlug)),
+        't'   => trim($tripCode),
+        'dt'  => $normType,
+        'dv'  => round(max(0.0, $discVal), 2),
+        'dc'  => strtoupper(trim($discCurr ?: 'EUR')),
+        'exp' => time() + max(1, $ttlDays) * 86400,
+    ];
+    $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
+    $b64  = rtrim(strtr(base64_encode((string) $json), '+/', '-_'), '=');
+    $sig  = substr(hash_hmac('sha256', $b64, sc_erp_promo_secret()), 0, 22);
+    return $b64 . '.' . $sig;
+}
+
+/**
+ * Verify a `?promo=<token>` parameter from a shareable seller link.
+ * Returns decoded promo metadata on exact HMAC + expiry + seller/trip match, or `null` if tampered/expired.
+ */
+function sc_erp_verify_promo_token(string $token, string $expectedSellerSlug = '', string $tripCode = ''): ?array
+{
+    $token = trim($token);
+    if ($token === '' || !str_contains($token, '.')) {
+        return null;
+    }
+    [$b64, $sig] = explode('.', $token, 2);
+    if ($b64 === '' || $sig === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $b64) || !preg_match('/^[a-f0-9]{22}$/', $sig)) {
+        return null;
+    }
+    $expectedSig = substr(hash_hmac('sha256', $b64, sc_erp_promo_secret()), 0, 22);
+    if (!hash_equals($expectedSig, $sig)) {
+        return null;
+    }
+    $rawJson = base64_decode(strtr($b64, '-_', '+/'), true);
+    if ($rawJson === false) {
+        return null;
+    }
+    $data = json_decode($rawJson, true);
+    if (!is_array($data)) {
+        return null;
+    }
+    $exp = (int) ($data['exp'] ?? 0);
+    if ($exp < time()) {
+        return null;
+    }
+    $tokSeller = strtolower(trim((string) ($data['s'] ?? '')));
+    if ($expectedSellerSlug !== '' && $tokSeller !== '' && strtolower(trim($expectedSellerSlug)) !== $tokSeller) {
+        return null;
+    }
+    $tokTrip = trim((string) ($data['t'] ?? ''));
+    if ($tripCode !== '' && $tokTrip !== '' && $tokTrip !== '*' && strtolower($tokTrip) !== strtolower(trim($tripCode))) {
+        return null;
+    }
+    $dt = strtoupper((string) ($data['dt'] ?? 'NONE'));
+    $dv = round((float) ($data['dv'] ?? 0.0), 2);
+    if (!in_array($dt, ['PERCENT', 'AMOUNT'], true) || $dv <= 0.0) {
+        return null;
+    }
+    return [
+        'seller_slug'       => $tokSeller,
+        'trip_code'         => $tokTrip,
+        'discount_type'     => $dt,
+        'discount_value'    => $dv,
+        'discount_currency' => strtoupper((string) ($data['dc'] ?? 'EUR')),
+        'expires_at'        => $exp,
+    ];
+}
+

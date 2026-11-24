@@ -53,6 +53,7 @@ if (!$pdo) {
 $sellerToken = clean_line($in['seller'] ?? ($_COOKIE['sc_seller'] ?? ''), 64);
 $seller      = sc_erp_resolve_seller($pdo, $sellerToken) ?: sc_erp_resolve_seller($pdo, 'fady.sales');
 
+$lang      = clean_line($in['lang'] ?? 'en', 8);
 $guestName = clean_line($in['guest_name'] ?? ($in['name'] ?? ''), 120);
 $phone     = clean_line($in['phone'] ?? ($in['guest_phone'] ?? ''), 48);
 $hotel     = clean_line($in['hotel_name'] ?? ($in['hotel'] ?? ''), 120);
@@ -64,7 +65,6 @@ $adults    = max(1, min(50, (int) ($in['adults'] ?? 2)));
 $children  = max(0, min(30, (int) ($in['children'] ?? 0)));
 $infants   = max(0, min(15, (int) ($in['infants'] ?? 0)));
 $notes     = clean_line($in['notes'] ?? '', 240);
-$lang      = clean_line($in['lang'] ?? 'en', 8);
 
 if ($guestName === '' || $phone === '') {
     http_response_code(422);
@@ -80,11 +80,58 @@ $voNo   = 'SLB-' . random_int(10000, 99999);
 $qrTok  = 'QR-' . strtoupper(bin2hex(random_bytes(6)));
 [$wk, $mo, $qr, $yr] = sc_erp_period_parts($tripDate);
 
-$tripName   = $tripMeta ? (string) $tripMeta['unified_name_en'] : $tripCode;
-$totalEur   = (float) $fin['catalog_total_eur'];
-$grossEgp   = (float) $fin['gross_total_egp'];
-$supCostEgp = (float) $fin['supplier_cost_egp'];
-$saleMode   = (string) $fin['sale_mode'];
+$tripName     = $tripMeta ? (string) $tripMeta['unified_name_en'] : $tripCode;
+$resolvedCode = $tripMeta ? (string) $tripMeta['trip_code'] : $tripCode;
+$listTotalEur = (float) $fin['catalog_total_eur'];
+$listGrossEgp = (float) $fin['gross_total_egp'];
+$supCostEgp   = (float) $fin['supplier_cost_egp'];
+$saleMode     = (string) $fin['sale_mode'];
+
+$sUser   = $seller ? (string) $seller['username'] : 'fady.sales';
+$sRep    = $seller ? (string) $seller['rep_scope'] : 'FADY';
+$sSlug   = $seller ? (string) ($seller['referral_code'] ?: preg_replace('/\.sales$/i', '', $sUser)) : 'fady';
+$sBranch = $seller ? (string) ($seller['branch_scope'] ?: 'CYRENE') : 'CYRENE';
+
+// Verify optional HMAC-signed promo token (?promo=...) — any tampering rejects cleanly back to 0 discount
+$promoToken   = trim((string) ($in['promo_token'] ?? ($_GET['promo'] ?? '')));
+$verifiedPromo= $promoToken !== '' ? sc_erp_verify_promo_token($promoToken, $sSlug, $resolvedCode) : null;
+if (!$verifiedPromo && $promoToken !== '' && $tripCode !== $resolvedCode) {
+    $verifiedPromo = sc_erp_verify_promo_token($promoToken, $sSlug, $tripCode);
+}
+$discPolicy   = sc_erp_get_seller_discount_policy($pdo, $sUser);
+
+if ($verifiedPromo && !empty($discPolicy['is_enabled'])) {
+    $discRes = sc_erp_calculate_discount(
+        $listGrossEgp,
+        $saleMode === 'OUT_SIDE' ? $supCostEgp : 0.0,
+        (string) $verifiedPromo['discount_type'],
+        (float) $verifiedPromo['discount_value'],
+        (string) $verifiedPromo['discount_currency'],
+        $fx,
+        $discPolicy,
+        false
+    );
+} else {
+    $discRes = [
+        'list_total_egp'     => $listGrossEgp,
+        'discount_type'      => 'NONE',
+        'discount_value'     => 0.0,
+        'discount_currency'  => 'EUR',
+        'discount_egp'       => 0.0,
+        'discount_eur_equiv' => 0.0,
+        'net_total_egp'      => $listGrossEgp,
+    ];
+}
+
+$discTypeOut = (string) $discRes['discount_type'];
+$discValOut  = (float) $discRes['discount_value'];
+$discCurrOut = (string) $discRes['discount_currency'];
+$discEgpOut  = (float) $discRes['discount_egp'];
+$discEurOut  = (float) $discRes['discount_eur_equiv'];
+$grossEgp    = (float) $discRes['net_total_egp'];
+$totalEur    = round($grossEgp / $fx['EUR'], 2);
+$promoApplied= $discEgpOut > 0.0;
+$discReason  = $promoApplied ? 'Signed Seller Promo Link' : '';
 
 $inCurr    = strtoupper(clean_line($in['currency'] ?? 'EUR', 8));
 $depRaw    = max(0.0, (float) ($in['deposit_paid_now'] ?? 0.0));
@@ -92,12 +139,11 @@ $depInEur  = $inCurr === 'EUR' ? $depRaw : round(($depRaw * ($fx[$inCurr] ?? $fx
 $paidEur   = round(min($totalEur, $depInEur), 2);
 $remEur    = round(max(0.0, $totalEur - $paidEur), 2);
 $depEgp    = round($paidEur * $fx['EUR'], 2);
-$restEgp   = round($remEur * $fx['EUR'], 2);
+$restEgp   = round(max(0.0, $grossEgp - $depEgp), 2);
 $payStatus = $restEgp <= 0.01 ? 'PAID' : 'OPEN_REST';
 
-$sUser   = $seller ? (string) $seller['username'] : 'fady.sales';
-$sRep    = $seller ? (string) $seller['rep_scope'] : 'FADY';
-$sBranch = $seller ? (string) ($seller['branch_scope'] ?: 'CYRENE') : 'CYRENE';
+$commNote = 'Guest booked via shareable seller link (' . $lang . ')'
+    . ($promoApplied ? (' | Promo ' . ($discTypeOut === 'PERCENT' ? "-{$discValOut}%" : "-{$discValOut} {$discCurrOut}")) : '');
 
 $commRes = sc_erp_record_seller_commission($pdo, [
     'seller_token'     => $sUser,
@@ -112,7 +158,7 @@ $commRes = sc_erp_record_seller_commission($pdo, [
     'status'           => 'PENDING_EXECUTION',
     'source_channel'   => 'SELLER_SHARE_LINK',
     'branch_code'      => $sBranch,
-    'notes'            => 'Guest booked via shareable seller link (' . $lang . ')',
+    'notes'            => $commNote,
 ]);
 
 $pickupWindow = clean_line($in['pickup_time'] ?? '08:00', 24);
@@ -123,6 +169,7 @@ $ins = $pdo->prepare(
       trip_name, unified_trip_code, product_category, adults, children, infants, total_pax,
       adult_unit_eur, child_unit_eur, infant_unit_eur,
       booked_adults, booked_children, booked_infants, booked_total_egp,
+      list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
       snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
       sales_rep, executor, ap_supplier_code, client_agency,
       rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
@@ -130,15 +177,16 @@ $ins = $pdo->prepare(
       estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
       boarding_status, payment_status, booking_state, workflow_stage, source_file,
       seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-     VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, 0,0,0,0,?, ?,?,?,?, 0,0,?,0,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+     VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?, ?,?,?,?, 0,0,?,0,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
 );
 $ins->execute([
     $voNo, $qrTok, $tripDate, $wk, $mo, $qr, $yr,
     $sBranch, 'SELLER_SHARE_LINK', $hotel !== '' ? $hotel : 'Sharm Hotel', '', $room, $nat !== '' ? $nat : strtoupper($lang), $pickupWindow,
-    $tripName, $tripMeta ? (string) $tripMeta['trip_code'] : $tripCode, 'SHARE_LINK_BOOKING',
+    $tripName, $resolvedCode, 'SHARE_LINK_BOOKING',
     $adults, $children, $infants, $adults + $children + $infants,
     $fin['adult_unit_eur'], $fin['child_unit_eur'], $fin['infant_unit_eur'],
     $adults, $children, $infants, $grossEgp,
+    $listGrossEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $discReason,
     $guestName . ' (' . $phone . ')',
     $sRep, $fin['supplier_name'], $fin['supplier_code'] !== 'SEA_COLLEGE' ? $fin['supplier_code'] : '', 'DIRECT',
     $remEur, $restEgp,
@@ -157,12 +205,12 @@ $pdo->prepare(
       people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
       status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
       seller_username, sales_rep_code)
-     VALUES (?,?,?,?,?,?, "", ?,?,?,?,?, "", "{}", ?, ?, "NEW", "", "", "seller_share_link", "brochure", ?, ?, ?, ?)'
+     VALUES (?,?,?,?,?,?, "", ?,?,?,?,?, "", "{}", ?, ?, "NEW", "", "", "seller_share_link", ?, ?, ?, ?, ?)'
 )->execute([
     'slb_' . strtolower($voNo), gmdate('c'), 'SELLER_LINK_BOOKING', $lang,
     $guestName, $phone, $tripName,
     $adults + $children + $infants, $tripDate, $hotel, $room,
-    $totalEur, $paidEur, $sRep, $voNo, $sUser, $sRep,
+    $totalEur, $paidEur, $promoApplied ? 'promo_brochure' : 'brochure', $sRep, $voNo, $sUser, $sRep,
 ]);
 
 sc_erp_push_notification(
@@ -172,24 +220,35 @@ sc_erp_push_notification(
     $voNo,
     "🎉 New Booking Confirmed by Guest ({$voNo})!",
     "🎉 حجز جديد من العميل عبر رابطك الشخصي ({$voNo})!",
-    "{$guestName} ({$phone}) booked {$tripName} for {$tripDate} ({$adults} Adl, {$children} Ch, {$infants} Inf — Total €{$totalEur}, Deposit €{$paidEur}, Rest €{$remEur}). Tap to confirm to Reservations!",
-    "حجز العميل {$guestName} ({$phone}) رحلة {$tripName} ليوم {$tripDate} ({$adults} بالغ، {$children} طفل، {$infants} رضيع — الإجمالي €{$totalEur}، العربون €{$paidEur}، المتبقي €{$remEur}). اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
+    "{$guestName} ({$phone}) booked {$tripName} for {$tripDate} ({$adults} Adl, {$children} Ch, {$infants} Inf — Total €{$totalEur}" . ($promoApplied ? " after Special Promo -€{$discEurOut}" : "") . ", Deposit €{$paidEur}, Rest €{$remEur}). Tap to confirm to Reservations!",
+    "حجز العميل {$guestName} ({$phone}) رحلة {$tripName} ليوم {$tripDate} ({$adults} بالغ، {$children} طفل، {$infants} رضيع — الإجمالي €{$totalEur}" . ($promoApplied ? " بعد الخصم الخاص -€{$discEurOut}" : "") . "، العربون €{$paidEur}، المتبقي €{$remEur}). اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
 );
 
 echo json_encode([
-    'ok'             => true,
-    'voucher_id'     => $newVid,
-    'voucher_no'     => $voNo,
-    'qr_token'       => $qrTok,
-    'trip_name'      => $tripName,
-    'trip_date'      => $tripDate,
-    'adults'         => $adults,
-    'children'       => $children,
-    'infants'        => $infants,
-    'total_eur'      => $totalEur,
-    'deposit_eur'    => $paidEur,
-    'remaining_eur'  => $remEur,
-    'pickup_time'    => $pickupWindow,
-    'seller_name'    => $seller ? (string) $seller['display_name_en'] : 'Sea College Concierge',
-    'whatsapp_phone' => WHATSAPP_NUMBER,
+    'ok'                => true,
+    'voucher_id'        => $newVid,
+    'voucher_no'        => $voNo,
+    'qr_token'          => $qrTok,
+    'trip_name'         => $tripName,
+    'trip_date'         => $tripDate,
+    'adults'            => $adults,
+    'children'          => $children,
+    'infants'           => $infants,
+    'list_total_eur'    => $listTotalEur,
+    'list_total_egp'    => $listGrossEgp,
+    'promo_applied'     => $promoApplied,
+    'discount_type'     => $discTypeOut,
+    'discount_value'    => $discValOut,
+    'discount_currency' => $discCurrOut,
+    'discount_eur'      => $discEurOut,
+    'discount_egp'      => $discEgpOut,
+    'total_eur'         => $totalEur,
+    'net_total_egp'     => $grossEgp,
+    'deposit_eur'       => $paidEur,
+    'remaining_eur'     => $remEur,
+    'commission_egp'    => $commRes['commission_egp'],
+    'pickup_time'       => $pickupWindow,
+    'seller_name'       => $seller ? (string) $seller['display_name_en'] : 'Sea College Concierge',
+    'whatsapp_phone'    => WHATSAPP_NUMBER,
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+

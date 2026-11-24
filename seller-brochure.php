@@ -137,6 +137,17 @@ foreach (($hotelData['hotels'] ?? []) as $h) {
 }
 
 $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '/' . $lang) . '/s/' . rawurlencode($sellerSlug);
+
+$rawPromo = trim((string) ($_GET['promo'] ?? ''));
+$sUserForPolicy = $sellerRow ? (string) $sellerRow['username'] : 'fady.sales';
+$sellerDiscPolicy = $pdo ? sc_erp_get_seller_discount_policy($pdo, $sUserForPolicy) : ['is_enabled' => true, 'max_discount_pct' => 20.0, 'max_discount_eur' => 50.0];
+$verifiedPromo = ($pdo && $rawPromo !== '' && !empty($sellerDiscPolicy['is_enabled']))
+    ? sc_erp_verify_promo_token($rawPromo, $sellerSlug, '')
+    : null;
+$activePromoToken = $verifiedPromo ? $rawPromo : '';
+if ($activePromoToken !== '') {
+    $canonicalShareUrl .= '?promo=' . rawurlencode($activePromoToken);
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars($lang, ENT_QUOTES) ?>" dir="<?= $isRtl ? 'rtl' : 'ltr' ?>">
@@ -164,6 +175,7 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     .btn-wa{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff}
     .btn-ghost{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid var(--line)}
     .wrap{max-width:1180px;margin:0 auto;padding:16px}
+    .promo-banner{margin-bottom:14px;padding:13px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(16,185,129,.22));border:1px solid rgba(251,191,36,.55);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:800;color:#fef3c7}
     .cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px}
     .chip{padding:9px 15px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
     .chip.active{background:linear-gradient(135deg,var(--cyan),#0284c7);color:#031221;border-color:transparent}
@@ -172,6 +184,7 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     .card-media{position:relative;aspect-ratio:16/9;background:#07192b;overflow:hidden}
     .card-media img{width:100%;height:100%;object-fit:cover;display:block}
     .cat-pill{position:absolute;top:10px;left:10px;background:rgba(6,21,38,.82);backdrop-filter:blur(6px);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#7dd3fc;border:1px solid var(--line)}
+    .promo-pill{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:900;color:#041322;box-shadow:0 4px 10px rgba(0,0,0,.35)}
     .price-pill{position:absolute;bottom:10px;right:10px;background:linear-gradient(135deg,#0369a1,#0ea5e9);padding:6px 12px;border-radius:10px;font-weight:900;font-size:15px;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.4)}
     .card-body{padding:15px;display:flex;flex-direction:column;gap:10px;flex:1}
     .card-title{font-size:16px;font-weight:800;line-height:1.35}
@@ -186,7 +199,7 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     .form-grid .full{grid-column:1/-1}
     label{display:block;font-size:12px;color:#93c5fd;margin-bottom:4px;font-weight:700}
     .form-grid input,.form-grid select{width:100%}
-    .total-box{margin-top:12px;padding:12px;border-radius:12px;background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.3);display:flex;justify-content:space-between;align-items:center;font-weight:800}
+    .total-box{margin-top:12px;padding:12px;border-radius:12px;background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.3);display:flex;justify-content:space-between;align-items:center;font-weight:800;gap:10px;flex-wrap:wrap}
   </style>
 </head>
 <body>
@@ -217,6 +230,16 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
   </header>
 
   <main class="wrap">
+    <?php if ($verifiedPromo):
+        $pLabel = $verifiedPromo['discount_type'] === 'PERCENT'
+            ? ('-' . rtrim(rtrim(number_format((float) $verifiedPromo['discount_value'], 2), '0'), '.') . '%')
+            : ('-' . rtrim(rtrim(number_format((float) $verifiedPromo['discount_value'], 2), '0'), '.') . ' ' . $verifiedPromo['discount_currency']);
+    ?>
+      <div class="promo-banner" id="vipPromoBanner">
+        <span>🎁 <?= htmlspecialchars($isRtl ? ('خصم خاص لك من ' . $sellerNameAr . ': ' . $pLabel . ' مطبق تلقائيًا على حجزك!') : ('Personal Special Discount from ' . $sellerNameEn . ': ' . $pLabel . ' automatically applied to your booking!'), ENT_QUOTES) ?></span>
+        <span style="font-size:12px;color:#a7f3d0;">✅ <?= $isRtl ? 'عرض موثّق ومعتمد' : 'Verified VIP Offer' ?></span>
+      </div>
+    <?php endif; ?>
     <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
       <input type="search" id="searchInp" style="flex:1;min-width:220px" placeholder="<?= htmlspecialchars($isRtl ? 'ابحث عن الجزيرة البيضاء، سفاري، القاهرة، سانت كاترين، غوص...' : 'Search White Island, Quad Safari, Cairo, St. Catherine, Diving...', ENT_QUOTES) ?>">
     </div>
@@ -296,11 +319,38 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     const CSRF_TOKEN = <?= json_encode($csrf) ?>;
     const SHARE_URL = <?= json_encode($canonicalShareUrl) ?>;
     const FOCUS_TRIP = <?= json_encode($focusTrip) ?>;
+    const PROMO = <?= json_encode($verifiedPromo) ?>;
+    const PROMO_TOKEN = <?= json_encode($activePromoToken) ?>;
     const IS_RTL = <?= $isRtl ? 'true' : 'false' ?>;
 
     let activeCat = 'ALL';
     let cur = 'EUR';
     let activeTrip = null;
+
+    function promoMatchesTrip(tripId) {
+      if (!PROMO) return false;
+      if (!PROMO.trip_code || PROMO.trip_code === '*') return true;
+      return String(PROMO.trip_code).toLowerCase() === String(tripId || '').toLowerCase();
+    }
+
+    function calcPromoNetEur(listEur, tripId) {
+      if (!promoMatchesTrip(tripId) || listEur <= 0) return { listEur, netEur: listEur, savedEur: 0, badge: '' };
+      const fxEur = Number(FX.EUR || 57);
+      let discEur = 0;
+      let badge = '';
+      if (PROMO.discount_type === 'PERCENT') {
+        discEur = Math.round(listEur * (Number(PROMO.discount_value || 0) / 100) * 100) / 100;
+        badge = `🎁 -${PROMO.discount_value}%`;
+      } else {
+        const dc = String(PROMO.discount_currency || 'EUR');
+        const rate = Number(FX[dc] || fxEur);
+        const valInEur = dc === 'EUR' ? Number(PROMO.discount_value || 0) : ((Number(PROMO.discount_value || 0) * rate) / fxEur);
+        discEur = Math.min(listEur * 0.5, Math.round(valInEur * 100) / 100);
+        badge = `🎁 -${PROMO.discount_value} ${dc}`;
+      }
+      const netEur = Math.max(0, Math.round((listEur - discEur) * 100) / 100);
+      return { listEur, netEur, savedEur: Math.round((listEur - netEur) * 100) / 100, badge };
+    }
 
     function fmtMoney(eurVal) {
       const eurEgp = Number(FX.EUR || 57);
@@ -329,19 +379,24 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     function renderGrid() {
       const q = document.getElementById('searchInp').value.trim().toLowerCase();
       const list = CARDS.filter(c => (activeCat === 'ALL' || c.cat === activeCat) && (!q || (c.name + ' ' + c.summary + ' ' + c.cat_label).toLowerCase().includes(q)));
-      document.getElementById('cardsGrid').innerHTML = list.map(c => `
+      document.getElementById('cardsGrid').innerHTML = list.map(c => {
+        const hasPctCard = promoMatchesTrip(c.id) && PROMO && PROMO.discount_type === 'PERCENT';
+        const hasAmtCard = promoMatchesTrip(c.id) && PROMO && PROMO.discount_type === 'AMOUNT';
+        const netAdlEur = hasPctCard ? Math.round(c.adult_eur * (1 - Number(PROMO.discount_value) / 100) * 100) / 100 : c.adult_eur;
+        return `
         <article class="card">
           <div class="card-media">
             <img src="${esc(c.img)}" alt="${esc(c.name)}" loading="lazy">
             <span class="cat-pill">${esc(c.cat_label)}</span>
-            <span class="price-pill">${fmtMoney(c.adult_eur)}</span>
+            ${hasPctCard ? `<span class="promo-pill">🎁 -${esc(PROMO.discount_value)}% VIP</span>` : (hasAmtCard ? `<span class="promo-pill">🎁 -${esc(PROMO.discount_value)} ${esc(PROMO.discount_currency)}</span>` : '')}
+            <span class="price-pill">${hasPctCard ? `<s style="opacity:.75;font-size:12px;margin-right:4px">${fmtMoney(c.adult_eur)}</s>${fmtMoney(netAdlEur)}` : fmtMoney(c.adult_eur)}</span>
           </div>
           <div class="card-body">
             <div class="card-title">${esc(c.name)}</div>
             <div class="card-desc">${esc(c.summary)}</div>
             <div class="tier-prices">
-              <span>👤 ${IS_RTL ? 'بالغ' : 'Adult'}: ${fmtMoney(c.adult_eur)}</span>
-              <span>· 🧒 ${IS_RTL ? 'طفل' : 'Child'}: ${c.child_eur > 0 ? fmtMoney(c.child_eur) : (IS_RTL ? 'مجانًا' : 'Included')}</span>
+              <span>👤 ${IS_RTL ? 'بالغ' : 'Adult'}: ${fmtMoney(netAdlEur)}</span>
+              <span>· 🧒 ${IS_RTL ? 'طفل' : 'Child'}: ${c.child_eur > 0 ? fmtMoney(hasPctCard ? Math.round(c.child_eur * (1 - Number(PROMO.discount_value) / 100) * 100) / 100 : c.child_eur) : (IS_RTL ? 'مجانًا' : 'Included')}</span>
               <span>· 👶 ${IS_RTL ? 'رضيع (<3)' : 'Infant (<3)'}: ${c.infant_eur > 0 ? fmtMoney(c.infant_eur) : (IS_RTL ? 'مجانًا' : 'FREE')}</span>
             </div>
             <div class="badges">
@@ -355,7 +410,7 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
             </div>
           </div>
         </article>
-      `).join('');
+      `}).join('');
     }
 
     function openBook(id) {
@@ -375,8 +430,14 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
       const a = Math.max(1, parseInt(document.getElementById('fAdults').value || '1', 10));
       const c = Math.max(0, parseInt(document.getElementById('fChildren').value || '0', 10));
       const i = Math.max(0, parseInt(document.getElementById('fInfants').value || '0', 10));
-      const eur = a * activeTrip.adult_eur + c * activeTrip.child_eur + i * activeTrip.infant_eur;
-      document.getElementById('mTotalPrice').textContent = fmtMoney(eur);
+      const listEur = a * activeTrip.adult_eur + c * activeTrip.child_eur + i * activeTrip.infant_eur;
+      const pr = calcPromoNetEur(listEur, activeTrip.id);
+      const el = document.getElementById('mTotalPrice');
+      if (pr.savedEur > 0) {
+        el.innerHTML = `<s style="opacity:.65;font-size:13px;color:#cbd5e1;margin-right:6px">${fmtMoney(pr.listEur)}</s> <span style="color:#34d399">${fmtMoney(pr.netEur)}</span> <span style="font-size:11.5px;color:#fcd34d">(${esc(pr.badge)})</span>`;
+      } else {
+        el.textContent = fmtMoney(listEur);
+      }
     }
     ['fAdults', 'fChildren', 'fInfants'].forEach(id => document.getElementById(id).addEventListener('input', updateModalTotal));
 
@@ -394,6 +455,7 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
           body: JSON.stringify({
             csrf_token: CSRF_TOKEN,
             seller: SELLER_SLUG,
+            promo_token: PROMO_TOKEN,
             lang: <?= json_encode($lang) ?>,
             trip_code: activeTrip.id,
             guest_name: document.getElementById('fName').value.trim(),
@@ -412,8 +474,8 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
         const j = await resp.json();
         if (!j.ok) throw new Error(j.error || 'Booking failed');
         const box = document.getElementById('mSuccess');
-        const waMsg = encodeURIComponent(`Hello Sea College! Confirmed booking ${j.voucher_no}: ${j.trip_name} on ${j.trip_date} (${j.adults} Adl, ${j.children} Ch, ${j.infants} Inf) — Ref: ${SELLER_SLUG}`);
-        box.innerHTML = `✅ <strong>${IS_RTL ? 'تم تسجيل حجزك بنجاح!' : 'Booking Confirmed!'}</strong><br>Ref: <strong>${esc(j.voucher_no)}</strong> · Pickup: ~${esc(j.pickup_time)}<br><a class="btn btn-wa" style="margin-top:8px;width:100%" target="_blank" rel="noopener" href="https://wa.me/${esc(j.whatsapp_phone)}?text=${waMsg}">💬 ${IS_RTL ? 'إرسال التأكيد عبر واتساب' : 'Send Confirmation on WhatsApp'}</a>`;
+        const waMsg = encodeURIComponent(`Hello Sea College! Confirmed booking ${j.voucher_no}: ${j.trip_name} on ${j.trip_date} (${j.adults} Adl, ${j.children} Ch, ${j.infants} Inf — Total €${j.total_eur}) — Ref: ${SELLER_SLUG}`);
+        box.innerHTML = `✅ <strong>${IS_RTL ? 'تم تسجيل حجزك بنجاح!' : 'Booking Confirmed!'}</strong><br>Ref: <strong>${esc(j.voucher_no)}</strong> · Total: <strong>€${esc(j.total_eur)}</strong>${j.promo_applied ? ` <span style="color:#fcd34d">(Saved €${esc(j.discount_eur)})</span>` : ''} · Pickup: ~${esc(j.pickup_time)}<br><a class="btn btn-wa" style="margin-top:8px;width:100%" target="_blank" rel="noopener" href="https://wa.me/${esc(j.whatsapp_phone)}?text=${waMsg}">💬 ${IS_RTL ? 'إرسال التأكيد عبر واتساب' : 'Send Confirmation on WhatsApp'}</a>`;
         box.style.display = 'block';
         btn.style.display = 'none';
       } catch (err) {
@@ -424,7 +486,8 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     });
 
     function shareTrip(id) {
-      const u = SHARE_URL + '/' + encodeURIComponent(id);
+      const baseNoQs = SHARE_URL.split('?')[0];
+      const u = baseNoQs + '/' + encodeURIComponent(id) + (PROMO_TOKEN ? '?promo=' + encodeURIComponent(PROMO_TOKEN) : '');
       if (navigator.share) {
         navigator.share({ title: document.title, url: u }).catch(() => {});
       } else {
@@ -443,7 +506,8 @@ $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '
     document.getElementById('curSelect').addEventListener('change', e => { cur = e.target.value; renderGrid(); updateModalTotal(); });
     document.getElementById('langSelect').addEventListener('change', e => {
       const lg = e.target.value;
-      window.location.href = (lg === 'en' ? '' : '/' + lg) + '/s/' + encodeURIComponent(SELLER_SLUG) + (FOCUS_TRIP ? '/' + encodeURIComponent(FOCUS_TRIP) : '');
+      const qs = PROMO_TOKEN ? ('?promo=' + encodeURIComponent(PROMO_TOKEN)) : '';
+      window.location.href = (lg === 'en' ? '' : '/' + lg) + '/s/' + encodeURIComponent(SELLER_SLUG) + (FOCUS_TRIP ? '/' + encodeURIComponent(FOCUS_TRIP) : '') + qs;
     });
     document.getElementById('searchInp').addEventListener('input', renderGrid);
 

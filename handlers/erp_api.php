@@ -521,12 +521,15 @@ if ($action === 'seller_catalog') {
         ];
     }
 
+    $discPolicy = sc_erp_get_seller_discount_policy($pdo, (string) $ctx['user']['username']);
+
     echo json_encode([
         'ok'               => true,
         'lang'             => $lang,
         'languages'        => $supportedLangs,
         'site_url'         => 'https://seacollegediveclub.com',
         'fx_rates'         => $fx,
+        'discount_policy'  => $discPolicy,
         'items'            => $items,
         'operational_skus' => array_merge($excursionsOut, $opSkusOut),
         'excursions'       => $excursionsOut,
@@ -685,6 +688,7 @@ if ($action === 'seller_wallet') {
         "SELECT id, voucher_no, trip_date, period_month, hotel_name, room_no, nationality, pickup_time,
                 trip_name, unified_trip_code, adults, children, infants, total_pax,
                 booked_adults, booked_children, booked_infants, booked_total_egp,
+                list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
                 divers_names, deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
                 estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp,
                 seller_commission_egp, commission_type, commission_status,
@@ -695,13 +699,22 @@ if ($action === 'seller_wallet') {
          ORDER BY trip_date DESC, id DESC LIMIT 200"
     );
     $myTripsSt->execute($myTripsArgs);
-    $myTrips = array_map(static function (array $r): array {
+    $discTripsCnt = 0;
+    $discTotalEgp = 0.0;
+    $myTrips = array_map(static function (array $r) use (&$discTripsCnt, &$discTotalEgp): array {
         $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
         $rest = round((float) ($r['rest_egp_equiv'] ?? 0.0), 2);
         $tot  = round((float) (($r['estimated_revenue_egp'] ?? 0.0) > 0 ? $r['estimated_revenue_egp'] : ($paid + $rest)), 2);
+        $dEgp = round((float) ($r['discount_egp'] ?? 0.0), 2);
+        if ($dEgp > 0.0 && strtoupper((string) ($r['booking_state'] ?? 'EXECUTED')) === 'EXECUTED') {
+            $discTripsCnt++;
+            $discTotalEgp = round($discTotalEgp + $dEgp, 2);
+        }
         $r['guest_name']        = (string) ($r['divers_names'] ?? '');
         $r['paid_egp_equiv']    = $paid;
         $r['actual_total_egp']  = $tot;
+        $r['list_total_egp']    = round((float) (($r['list_total_egp'] ?? 0.0) > 0 ? $r['list_total_egp'] : ($tot + $dEgp)), 2);
+        $r['discount_egp']      = $dEgp;
         $r['workflow_status']   = (string) (($r['workflow_stage'] ?? '') !== '' ? $r['workflow_stage'] : ($r['boarding_status'] ?? 'CONFIRMED'));
         $r['modification_note'] = (string) ($r['modification_summary'] ?? '');
         return $r;
@@ -737,9 +750,10 @@ if ($action === 'seller_wallet') {
     $settledAlreadyEgp = round((float) ($kpis['paid_commission_egp'] ?? 0.0) + $advPaidEgp, 2);
     $netDueNowEgp      = round(max(0.0, $earnedComm - $settledAlreadyEgp), 2);
 
-    // Target progress & gamification awards
-    $targetCfg = sc_erp_get_seller_target($pdo, $sUser);
-    $awardsAll = sc_erp_compute_best_seller_awards($pdo);
+    // Target progress, discount policy & gamification awards
+    $targetCfg  = sc_erp_get_seller_target($pdo, $sUser);
+    $discPolicy = sc_erp_get_seller_discount_policy($pdo, $sUser);
+    $awardsAll  = sc_erp_compute_best_seller_awards($pdo);
     $activeMonthForTarget = $monthFilter !== 'ALL' ? $monthFilter : $awardsAll['month_key'];
 
     $tStatSt = $pdo->prepare(
@@ -800,6 +814,8 @@ if ($action === 'seller_wallet') {
     $kpis['net_due_now_egp']                 = $netDueNowEgp;
     $kpis['earned_unpaid_egp']               = round((float) ($kpis['earned_commission_egp'] ?? 0.0), 2);
     $kpis['paid_settled_egp']                = round((float) ($kpis['paid_commission_egp'] ?? 0.0), 2);
+    $kpis['discounts_granted_egp']           = $discTotalEgp;
+    $kpis['discounted_trips_count']          = $discTripsCnt;
 
     $brochureLocLinks = [];
     foreach (['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'] as $lgCode) {
@@ -811,6 +827,11 @@ if ($action === 'seller_wallet') {
     echo json_encode([
         'ok'                         => true,
         'month'                      => $monthFilter,
+        'discount_policy'            => $discPolicy,
+        'discounts_summary'          => [
+            'discounted_trips_count' => $discTripsCnt,
+            'total_discount_egp'     => $discTotalEgp,
+        ],
         'seller'                     => [
             'username'      => $sUser,
             'referral_code' => $sSlug,
@@ -966,9 +987,13 @@ if ($action === 'seller_performance_bi') {
     ];
 
     $globalTarget = sc_erp_get_seller_target($pdo, '__GLOBAL__');
+    $globalDiscPolicy = sc_erp_get_seller_discount_policy($pdo, '__GLOBAL__');
     $globalTarget['target_daily_egp']   = $globalTarget['daily_target_egp'];
     $globalTarget['target_weekly_egp']  = $globalTarget['weekly_target_egp'];
     $globalTarget['target_monthly_egp'] = $globalTarget['monthly_target_egp'];
+    $globalTarget['is_discount_enabled']= $globalDiscPolicy['is_enabled'];
+    $globalTarget['max_discount_pct']   = $globalDiscPolicy['max_discount_pct'];
+    $globalTarget['max_discount_eur']   = $globalDiscPolicy['max_discount_eur'];
 
     $sellersRows = $pdo->query(
         "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code, avatar_url
@@ -980,6 +1005,7 @@ if ($action === 'seller_performance_bi') {
     $totPax   = 0;
     $totSales = 0.0;
     $totColl  = 0.0;
+    $totDisc  = 0.0;
 
     foreach ($sellersRows as $sr) {
         $u = (string) $sr['username'];
@@ -988,11 +1014,13 @@ if ($action === 'seller_performance_bi') {
         $rSt = $pdo->prepare(
             "SELECT SUM(CASE WHEN booking_state = 'EXECUTED' THEN 1 ELSE 0 END) AS trips_sold,
                     SUM(CASE WHEN booking_state LIKE 'CANCEL%' THEN 1 ELSE 0 END) AS trips_cancelled,
+                    SUM(CASE WHEN booking_state = 'EXECUTED' AND discount_egp > 0 THEN 1 ELSE 0 END) AS discounted_trips,
                     COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN total_pax ELSE 0 END), 0) AS actual_pax,
                     COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN adults ELSE 0 END), 0) AS actual_adults,
                     COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN children ELSE 0 END), 0) AS actual_children,
                     COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN infants ELSE 0 END), 0) AS actual_infants,
                     ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN (CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END) ELSE 0 END), 0), 2) AS actual_total_egp,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN discount_egp ELSE 0 END), 0), 2) AS discounts_granted_egp,
                     ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN rest_egp_equiv ELSE 0 END), 0), 2) AS open_rest_egp,
                     ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN supplier_cost_egp ELSE 0 END), 0), 2) AS supplier_cost_egp
              FROM reservations_fact
@@ -1028,6 +1056,7 @@ if ($action === 'seller_performance_bi') {
             default  => $tCfg['monthly_target_egp'],
         };
         $actualTotal = (float) ($rAgg['actual_total_egp'] ?? 0.0);
+        $discGranted = (float) ($rAgg['discounts_granted_egp'] ?? 0.0);
         $openRest    = (float) ($rAgg['open_rest_egp'] ?? 0.0);
         $collected   = round(max(0.0, $actualTotal - $openRest), 2);
         $dueComm     = (float) ($cAgg['actual_due_comm'] ?? 0.0);
@@ -1037,6 +1066,7 @@ if ($action === 'seller_performance_bi') {
         $totPax   += (int) ($rAgg['actual_pax'] ?? 0);
         $totSales += $actualTotal;
         $totColl  += $collected;
+        $totDisc  += $discGranted;
 
         $badges = [];
         $awardObjs = [];
@@ -1067,6 +1097,8 @@ if ($action === 'seller_performance_bi') {
             'referral_code'          => $sr['referral_code'],
             'trips_sold'             => (int) ($rAgg['trips_sold'] ?? 0),
             'trips_cancelled'        => (int) ($rAgg['trips_cancelled'] ?? 0),
+            'discounted_trips'       => (int) ($rAgg['discounted_trips'] ?? 0),
+            'discounts_granted_egp'  => $discGranted,
             'actual_pax'             => (int) ($rAgg['actual_pax'] ?? 0),
             'actual_adults'          => (int) ($rAgg['actual_adults'] ?? 0),
             'actual_children'        => (int) ($rAgg['actual_children'] ?? 0),
@@ -1128,7 +1160,8 @@ if ($action === 'seller_performance_bi') {
     }, $pdo->query(
         "SELECT id, voucher_no, trip_date, hotel_name, room_no, divers_names, trip_name,
                 adults, children, infants, total_pax, deposit_egp_equiv, collected_rest_egp,
-                rest_egp_equiv, estimated_revenue_egp, sales_rep, seller_username,
+                rest_egp_equiv, estimated_revenue_egp, list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
+                sales_rep, seller_username,
                 boarding_status, payment_status, booking_state, workflow_stage,
                 has_modification, modification_summary
          FROM reservations_fact
@@ -1143,13 +1176,15 @@ if ($action === 'seller_performance_bi') {
         'date_from'                   => $dateFrom,
         'date_to'                     => $dateTo,
         'totals'                      => [
-            'trips_sold'       => $totTrips,
-            'actual_pax'       => $totPax,
-            'actual_sales_egp' => round($totSales, 2),
-            'collected_egp'    => round($totColl, 2),
+            'trips_sold'            => $totTrips,
+            'actual_pax'            => $totPax,
+            'actual_sales_egp'      => round($totSales, 2),
+            'collected_egp'         => round($totColl, 2),
+            'discounts_granted_egp' => round($totDisc, 2),
         ],
         'awards'                      => $awards,
         'target_config'               => $globalTarget,
+        'discount_policy'             => $globalDiscPolicy,
         'sellers_leaderboard'         => $leaderboard,
         'voucher_modifications_audit' => $modAudit,
         'commission_allowances'       => $pendAllow,
@@ -2522,15 +2557,7 @@ if ($method === 'POST') {
             ? max(0.0, round((float) $rawIn['supplier_cost_egp'], 2))
             : $autoSupplierCostEgp;
 
-        $cogsEgp  = ($saleModeRaw === 'OUT_SIDE' || $saleModeRaw === 'OUTSIDE')
-            ? ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2))
-            : ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2));
-        $profEgp  = round($grossEgp - $cogsEgp, 2);
-
-        $supCode  = $masterTrip ? (string) $masterTrip['supplier_code'] : 'SEA_COLLEGE';
-        $supName  = $masterTrip ? (string) $masterTrip['supplier_name'] : 'SEA COLLEGE';
-
-        // Resolve seller attribution (Sales Rep self-scoped; Ops/Admin can pass optional seller_username)
+        // Resolve seller attribution first so discount policy caps follow the seller
         $sellerCandidate = '';
         if ($user['role_code'] === 'SALES_REP') {
             $sellerCandidate = (string) $user['username'];
@@ -2547,7 +2574,86 @@ if ($method === 'POST') {
             : ($user['branch_scope'] !== 'ALL' ? (string) $user['branch_scope'] : 'CYRENE');
         $sellerType = $resolvedSeller ? 'HOTEL_SELLER' : 'HOUSE_OPS';
 
-        // Commission starts as PENDING_EXECUTION until BOTH trip is done AND 100% of money (deposit + rest) is collected!
+        // Special Seller Discount by Percentage ('PERCENT') or Fixed Amount ('AMOUNT')
+        $reqDiscType   = strtoupper(trim((string) ($rawIn['discount_type'] ?? 'NONE')));
+        $reqDiscVal    = max(0.0, (float) ($rawIn['discount_value'] ?? 0.0));
+        $reqDiscCurr   = strtoupper(trim((string) ($rawIn['discount_currency'] ?? ($rawIn['deposit_currency'] ?? 'EUR'))));
+        $reqDiscReason = clean_line($rawIn['discount_reason'] ?? '', 160);
+
+        $policyUser     = $resolvedSeller ? (string) $resolvedSeller['username'] : (string) $user['username'];
+        $discPolicy     = sc_erp_get_seller_discount_policy($pdo, $policyUser);
+        $isOwnerOverride= in_array('bi.view_executive', $ctx['perms'], true);
+
+        if (in_array($reqDiscType, ['PERCENT', 'PCT', 'PERCENTAGE', '%', 'AMOUNT', 'FIXED', 'CASH', 'VALUE'], true) && $reqDiscVal > 0.0) {
+            $explicitListEgp = max(0.0, (float) ($rawIn['list_total_egp'] ?? 0.0));
+            $baseListEgp     = $explicitListEgp > 0.0 ? $explicitListEgp : ($catalogRevEgp > 0.0 ? $catalogRevEgp : $explicitGross);
+            $floorCostEgp    = ($saleModeRaw === 'OUT_SIDE' || $saleModeRaw === 'OUTSIDE') ? $supplierCostEgp : 0.0;
+
+            $discRes = sc_erp_calculate_discount(
+                $baseListEgp,
+                $floorCostEgp,
+                $reqDiscType,
+                $reqDiscVal,
+                $reqDiscCurr,
+                $fx,
+                $discPolicy,
+                $isOwnerOverride
+            );
+            $listTotalEgp = $discRes['list_total_egp'];
+            $grossEgp     = $discRes['net_total_egp'];
+            $discTypeOut  = $discRes['discount_type'];
+            $discValOut   = $discRes['discount_value'];
+            $discCurrOut  = $discRes['discount_currency'];
+            $discEgpOut   = $discRes['discount_egp'];
+            $discClamped  = (bool) $discRes['was_clamped'];
+
+            // Reconcile deposit + rest cleanly so deposit_egp + rest_egp_equiv == net discounted grossEgp
+            if ($depositEgp > $grossEgp) {
+                $depositEgp = $grossEgp;
+            }
+            if (abs(($depositEgp + $restEq) - $grossEgp) > 1.50) {
+                $restEq = round(max(0.0, $grossEgp - $depositEgp), 2);
+                $rEgp = 0.0;
+                $rUsd = 0.0;
+                $rEur = 0.0;
+                $rGbp = 0.0;
+                if ($restEq > 0.0) {
+                    $targetRestCurr = array_key_exists('rest_currency', $rawIn) ? $restCurr : 'EUR';
+                    if ($targetRestCurr === 'EGP') {
+                        $rEgp = $restEq;
+                    } elseif ($targetRestCurr === 'USD') {
+                        $rUsd = round($restEq / $fx['USD'], 2);
+                    } elseif ($targetRestCurr === 'GBP') {
+                        $rGbp = round($restEq / $fx['GBP'], 2);
+                    } else {
+                        $rEur = round($restEq / $fx['EUR'], 2);
+                    }
+                }
+            }
+        } else {
+            $listTotalEgp = $grossEgp;
+            $discTypeOut  = 'NONE';
+            $discValOut   = 0.0;
+            $discCurrOut  = isset($fx[$reqDiscCurr]) ? $reqDiscCurr : 'EUR';
+            $discEgpOut   = 0.0;
+            $discClamped  = false;
+        }
+
+        $cogsEgp  = ($saleModeRaw === 'OUT_SIDE' || $saleModeRaw === 'OUTSIDE')
+            ? ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2))
+            : ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2));
+        $profEgp  = round($grossEgp - $cogsEgp, 2);
+
+        $supCode  = $masterTrip ? (string) $masterTrip['supplier_code'] : 'SEA_COLLEGE';
+        $supName  = $masterTrip ? (string) $masterTrip['supplier_name'] : 'SEA COLLEGE';
+
+        $commNote = $notes;
+        if ($discEgpOut > 0.0) {
+            $dBadge = $discTypeOut === 'PERCENT' ? ("-{$discValOut}%") : ("-{$discValOut} {$discCurrOut}");
+            $commNote = trim($commNote . ($commNote !== '' ? ' | ' : '') . "Discount {$dBadge} (-" . round($discEgpOut) . " EGP)");
+        }
+
+        // Commission starts as PENDING_EXECUTION on ACTUAL NET DISCOUNTED AMOUNT ($grossEgp) until BOTH trip is done AND 100% paid!
         $commRes = sc_erp_record_seller_commission($pdo, [
             'seller_token'     => $resolvedSeller ? (string) $resolvedSeller['username'] : '',
             'sale_mode'        => $saleModeRaw,
@@ -2561,7 +2667,7 @@ if ($method === 'POST') {
             'status'           => 'PENDING_EXECUTION',
             'source_channel'   => 'LIVE_MOBILE_APP',
             'branch_code'      => $branch,
-            'notes'            => $notes,
+            'notes'            => $commNote,
         ]);
 
         $ins = $pdo->prepare(
@@ -2571,6 +2677,7 @@ if ($method === 'POST') {
               trip_name, unified_trip_code, product_category, adults, children, infants, total_pax,
               adult_unit_eur, child_unit_eur, infant_unit_eur,
               booked_adults, booked_children, booked_infants, booked_total_egp,
+              list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
               snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
               sales_rep, executor, ap_supplier_code, client_agency,
               rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
@@ -2578,7 +2685,7 @@ if ($method === 'POST') {
               estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
               boarding_status, payment_status, booking_state, workflow_stage, source_file,
               seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, 0,0,0,0,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
         );
         $ins->execute([
             $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
@@ -2586,6 +2693,7 @@ if ($method === 'POST') {
             $tripName, $masterTrip ? (string) $masterTrip['trip_code'] : $prodCode, 'MOBILE_VOUCHER', $adults, $children, $infants, $pax,
             $adlEur, $chdEur, $infEur,
             $adults, $children, $infants, $grossEgp,
+            $listTotalEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $reqDiscReason,
             $guest,
             $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', 'DIRECT',
             $rEgp, $rUsd, $rEur, $rGbp, $restEq,
@@ -2607,12 +2715,16 @@ if ($method === 'POST') {
             $voNo,
             "📋 New Seller Voucher Ready for Dispatch ({$voNo})",
             "📋 حجز جديد من المبيعات بانتظار تأكيد الحجوزات والتشغيل ({$voNo})",
-            "{$repName}: {$guest} ({$adults} Adl, {$children} Ch, {$infants} Inf) — {$tripName} on {$tripDt}.",
-            "{$repName}: العميل {$guest} ({$adults} بالغ، {$children} طفل، {$infants} رضيع) — {$tripName} بتاريخ {$tripDt}."
+            "{$repName}: {$guest} ({$adults} Adl, {$children} Ch, {$infants} Inf) — {$tripName} on {$tripDt}" . ($discEgpOut > 0 ? " [Special Discount -" . number_format($discEgpOut) . " EGP]" : "") . ".",
+            "{$repName}: العميل {$guest} ({$adults} بالغ، {$children} طفل، {$infants} رضيع) — {$tripName} بتاريخ {$tripDt}" . ($discEgpOut > 0 ? " [خصم خاص -" . number_format($discEgpOut) . " ج.م]" : "") . "."
         );
 
         sc_erp_audit($pdo, (string) $user['username'], (string) $user['role_code'], 'CREATE_VOUCHER', 'VOUCHER', $voNo, [
             'pax'            => $pax,
+            'list_total_egp' => $listTotalEgp,
+            'discount_type'  => $discTypeOut,
+            'discount_value' => $discValOut,
+            'discount_egp'   => $discEgpOut,
             'gross_egp'      => $grossEgp,
             'sale_mode'      => $saleModeRaw,
             'commission_egp' => $commRes['commission_egp'],
@@ -2627,6 +2739,13 @@ if ($method === 'POST') {
             'adults'                => $adults,
             'children'              => $children,
             'infants'               => $infants,
+            'list_total_egp'        => $listTotalEgp,
+            'discount_type'         => $discTypeOut,
+            'discount_value'        => $discValOut,
+            'discount_currency'     => $discCurrOut,
+            'discount_egp'          => $discEgpOut,
+            'was_discount_clamped'  => $discClamped,
+            'net_total_egp'         => $grossEgp,
             'estimated_revenue_egp' => $grossEgp,
             'gross_amount_egp'      => $grossEgp,
             'deposit_egp'           => $depositEgp,
@@ -2869,16 +2988,6 @@ if ($method === 'POST') {
         $extraCurr = strtoupper(trim((string) ($rawIn['extra_charge_currency'] ?? 'EUR')));
         $extraExplicitEgp = $extraAmt != 0.0 ? round($extraAmt * ($fx[$extraCurr] ?? $fx['EUR']), 2) : 0.0;
 
-        if (array_key_exists('override_total_egp', $rawIn) && (float) $rawIn['override_total_egp'] > 0) {
-            $newTotalEgp = round((float) $rawIn['override_total_egp'], 2);
-        } elseif (array_key_exists('adult_price_eur', $rawIn) && (float) $rawIn['adult_price_eur'] > 0) {
-            $newTotalEgp = round(max(0.0, ($newAdl * $adlEur + $newChd * $chdEur + $newInf * $infEur) * $fx['EUR']), 2);
-        } else {
-            $newTotalEgp = round(max(0.0, $prevTot + ($extraExplicitEgp != 0.0 ? $extraExplicitEgp : $deltaFromPaxEgp)), 2);
-        }
-
-        $deltaTotalEgp = round($newTotalEgp - $prevTot, 2);
-
         // Recalculate actual supplier cost for actual Adults + Children
         $adlCost = $tripMeta ? (float) $tripMeta['adult_cost_egp'] : 0.0;
         $chdCost = $tripMeta ? (float) $tripMeta['child_cost_egp'] : round($adlCost * 0.5, 2);
@@ -2886,6 +2995,49 @@ if ($method === 'POST') {
         $newSupCostEgp = $tripMeta
             ? round($newAdl * $adlCost + $newChd * $chdCost + $newInf * $infCost, 2)
             : round((float) ($v['supplier_cost_egp'] ?? 0.0), 2);
+
+        $commType   = (string) ($v['commission_type'] ?? 'INSHEET_10');
+        $isOutSide  = (str_contains($commType, 'OUT_SIDE') || str_contains($commType, 'OUTSIDE'));
+
+        $vDiscType = array_key_exists('discount_type', $rawIn)
+            ? strtoupper(trim((string) $rawIn['discount_type']))
+            : strtoupper(trim((string) ($v['discount_type'] ?? 'NONE')));
+        $vDiscVal  = array_key_exists('discount_value', $rawIn)
+            ? max(0.0, (float) $rawIn['discount_value'])
+            : max(0.0, (float) ($v['discount_value'] ?? 0.0));
+        $vDiscCurr = array_key_exists('discount_currency', $rawIn)
+            ? strtoupper(trim((string) $rawIn['discount_currency']))
+            : strtoupper(trim((string) ($v['discount_currency'] ?? 'EUR')));
+
+        $newListTotalEgp = round(max(0.0, ($newAdl * $adlEur + $newChd * $chdEur + $newInf * $infEur) * $fx['EUR']), 2);
+        $newDiscEgp      = 0.0;
+
+        if (array_key_exists('override_total_egp', $rawIn) && (float) $rawIn['override_total_egp'] > 0) {
+            $newTotalEgp = round((float) $rawIn['override_total_egp'], 2);
+            $newDiscEgp  = round(max(0.0, $newListTotalEgp - $newTotalEgp), 2);
+        } elseif ($vDiscType !== 'NONE' && $vDiscVal > 0.0 && $newListTotalEgp > 0.0 && $extraExplicitEgp == 0.0) {
+            $discAdj = sc_erp_calculate_discount(
+                $newListTotalEgp,
+                $isOutSide ? $newSupCostEgp : 0.0,
+                $vDiscType,
+                $vDiscVal,
+                $vDiscCurr,
+                $fx,
+                ['is_enabled' => true, 'max_discount_pct' => 100.0, 'max_discount_eur' => 100000.0],
+                true
+            );
+            $newTotalEgp = $discAdj['net_total_egp'];
+            $newDiscEgp  = $discAdj['discount_egp'];
+            $vDiscType   = $discAdj['discount_type'];
+            $vDiscVal    = $discAdj['discount_value'];
+        } elseif (array_key_exists('adult_price_eur', $rawIn) && (float) $rawIn['adult_price_eur'] > 0) {
+            $newTotalEgp = $newListTotalEgp;
+        } else {
+            $newTotalEgp = round(max(0.0, $prevTot + ($extraExplicitEgp != 0.0 ? $extraExplicitEgp : $deltaFromPaxEgp)), 2);
+            $newListTotalEgp = max($newListTotalEgp, $newTotalEgp);
+        }
+
+        $deltaTotalEgp = round($newTotalEgp - $prevTot, 2);
 
         $depositPaid   = round((float) ($v['deposit_egp_equiv'] ?? 0.0), 2);
         $prevCollRest  = round((float) ($v['collected_rest_egp'] ?? 0.0), 2);
@@ -2922,7 +3074,6 @@ if ($method === 'POST') {
         $newCancelledPax = (int) ($v['cancelled_pax'] ?? 0) + $cancelledDelta;
 
         // Commission becomes EARNED_UNPAID ("Actual Due") ONLY when markTripDone == true AND newRestEquiv <= 0.01!
-        $commType   = (string) ($v['commission_type'] ?? 'INSHEET_10');
         $sellerUser = (string) ($v['seller_username'] ?? '');
         $isFullyDoneAndPaid = $markTripDone && ($newRestEquiv <= 0.01);
         $newCommStatus = ($sellerUser !== '' && $commType !== 'NONE')
@@ -2931,7 +3082,7 @@ if ($method === 'POST') {
 
         $newCommEgp = 0.0;
         if ($sellerUser !== '' && $commType !== 'NONE') {
-            $commMode = (str_contains($commType, 'OUT_SIDE') || str_contains($commType, 'OUTSIDE'))
+            $commMode = $isOutSide
                 ? 'OUT_SIDE'
                 : ($commType === 'WEBSITE_QR_10' ? 'WEBSITE_QR_10' : 'INSHEET');
             $scChSt = $pdo->prepare('SELECT source_channel FROM seller_commissions_ledger WHERE voucher_no = ? AND LOWER(seller_username) = LOWER(?) LIMIT 1');
@@ -2972,6 +3123,7 @@ if ($method === 'POST') {
             'UPDATE reservations_fact
              SET adults = ?, children = ?, infants = ?, total_pax = ?, cancelled_pax = ?,
                  adult_unit_eur = ?, child_unit_eur = ?,
+                 list_total_egp = ?, discount_type = ?, discount_value = ?, discount_currency = ?, discount_egp = ?,
                  rest_egp = 0, rest_usd = 0, rest_eur = ?, rest_gbp = 0, rest_egp_equiv = ?,
                  collected_rest_egp = ?, actual_paid_total_egp = ?,
                  supplier_cost_egp = ?, estimated_revenue_egp = ?, estimated_cogs_egp = ?, estimated_profit_egp = ?,
@@ -2982,6 +3134,7 @@ if ($method === 'POST') {
         )->execute([
             $newAdl, $newChd, $newInf, $newPax, $newCancelledPax,
             $adlEur, $chdEur,
+            $newListTotalEgp, $vDiscType, $vDiscVal, $vDiscCurr, $newDiscEgp,
             $newRestEur, $newRestEquiv,
             $newCollectedRest, $actualPaidTotal,
             $newSupCostEgp, $newTotalEgp, $newSupCostEgp, round($newTotalEgp - $newSupCostEgp, 2),
@@ -3135,32 +3288,162 @@ if ($method === 'POST') {
         exit;
     }
 
-    if ($action === 'save_seller_targets') {
+    if ($action === 'save_seller_targets' || $action === 'save_seller_discount_policy') {
         erp_require_perm($ctx, 'bi.view_executive');
         $rawTargetSeller = clean_line($rawIn['seller_username'] ?? '__GLOBAL__', 64) ?: '__GLOBAL__';
         $targetSeller = ($rawTargetSeller === '*' || strtoupper($rawTargetSeller) === 'ALL') ? '__GLOBAL__' : $rawTargetSeller;
-        $activeKey    = array_key_exists('is_active', $rawIn) ? 'is_active' : 'is_target_active';
-        $isActive     = !empty($rawIn[$activeKey]) ? 1 : 0;
-        $dailyEgp     = max(0.0, (float) ($rawIn['target_daily_egp'] ?? ($rawIn['daily_target_egp'] ?? 15000.0)));
-        $weeklyEgp    = max(0.0, (float) ($rawIn['target_weekly_egp'] ?? ($rawIn['weekly_target_egp'] ?? 95000.0)));
-        $monthlyEgp   = max(0.0, (float) ($rawIn['target_monthly_egp'] ?? ($rawIn['monthly_target_egp'] ?? 380000.0)));
-        $monthlyTrips = max(1, (int) ($rawIn['monthly_trips_target'] ?? 65));
+
+        $exSt = $pdo->prepare('SELECT * FROM seller_targets_config WHERE LOWER(seller_username) = LOWER(?) LIMIT 1');
+        $exSt->execute([$targetSeller]);
+        $exRow = $exSt->fetch() ?: [];
+
+        if (array_key_exists('is_active', $rawIn) || array_key_exists('is_target_active', $rawIn)) {
+            $activeKey = array_key_exists('is_active', $rawIn) ? 'is_active' : 'is_target_active';
+            $isActive  = !empty($rawIn[$activeKey]) ? 1 : 0;
+        } else {
+            $isActive  = isset($exRow['is_target_active']) ? (int) $exRow['is_target_active'] : 1;
+        }
+
+        $dailyEgp     = max(0.0, (float) ($rawIn['target_daily_egp'] ?? ($rawIn['daily_target_egp'] ?? ($exRow['daily_target_egp'] ?? 15000.0))));
+        $weeklyEgp    = max(0.0, (float) ($rawIn['target_weekly_egp'] ?? ($rawIn['weekly_target_egp'] ?? ($exRow['weekly_target_egp'] ?? 95000.0))));
+        $monthlyEgp   = max(0.0, (float) ($rawIn['target_monthly_egp'] ?? ($rawIn['monthly_target_egp'] ?? ($exRow['monthly_target_egp'] ?? 380000.0))));
+        $monthlyTrips = max(1, (int) ($rawIn['monthly_trips_target'] ?? ($exRow['monthly_trips_target'] ?? 65)));
+
+        $isDiscEnabled = array_key_exists('is_discount_enabled', $rawIn)
+            ? (!empty($rawIn['is_discount_enabled']) ? 1 : 0)
+            : (isset($exRow['is_discount_enabled']) ? (int) $exRow['is_discount_enabled'] : 1);
+        $maxDiscPct = array_key_exists('max_discount_pct', $rawIn)
+            ? max(0.0, min(80.0, (float) $rawIn['max_discount_pct']))
+            : (float) ($exRow['max_discount_pct'] ?? 20.0);
+        $maxDiscEur = array_key_exists('max_discount_eur', $rawIn)
+            ? max(0.0, min(1000.0, (float) $rawIn['max_discount_eur']))
+            : (float) ($exRow['max_discount_eur'] ?? 50.0);
 
         $pdo->prepare(
             'INSERT OR REPLACE INTO seller_targets_config
-             (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target, updated_by, updated_at)
-             VALUES (?,?,?,?,?,?,?,?)'
-        )->execute([$targetSeller, $isActive, $dailyEgp, $weeklyEgp, $monthlyEgp, $monthlyTrips, (string) $ctx['user']['username'], gmdate('Y-m-d\TH:i:s\Z')]);
+             (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target,
+              is_discount_enabled, max_discount_pct, max_discount_eur, updated_by, updated_at)
+             VALUES (?,?,?,?,?,?, ?,?,?,?,?)'
+        )->execute([
+            $targetSeller, $isActive, $dailyEgp, $weeklyEgp, $monthlyEgp, $monthlyTrips,
+            $isDiscEnabled, $maxDiscPct, $maxDiscEur,
+            (string) $ctx['user']['username'], gmdate('Y-m-d\TH:i:s\Z'),
+        ]);
+
+        sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'UPDATE_SELLER_POLICY', 'SELLER_POLICY', $targetSeller, [
+            'is_target_active'    => $isActive,
+            'is_discount_enabled' => $isDiscEnabled,
+            'max_discount_pct'    => $maxDiscPct,
+            'max_discount_eur'    => $maxDiscEur,
+        ]);
+
+        echo json_encode([
+            'ok'                  => true,
+            'seller_username'     => $targetSeller,
+            'is_active'           => $isActive === 1,
+            'is_target_active'    => $isActive === 1,
+            'daily_target_egp'    => $dailyEgp,
+            'weekly_target_egp'   => $weeklyEgp,
+            'monthly_target_egp'  => $monthlyEgp,
+            'is_discount_enabled' => $isDiscEnabled === 1,
+            'max_discount_pct'    => $maxDiscPct,
+            'max_discount_eur'    => $maxDiscEur,
+        ]);
+        exit;
+    }
+
+    if ($action === 'create_promo_share_link') {
+        erp_require_perm($ctx, 'sales.create_voucher', 'sales.view_own_sales', 'bi.view_executive');
+        $me = $ctx['user'];
+        $isOwner = in_array('bi.view_executive', $ctx['perms'], true);
+        $targetUser = ($me['role_code'] === 'SALES_REP' || empty($rawIn['seller_username']))
+            ? (string) $me['username']
+            : clean_line($rawIn['seller_username'], 64);
+        $sellerRow = sc_erp_resolve_seller($pdo, $targetUser) ?: $me;
+        $sUser = (string) $sellerRow['username'];
+        $sSlug = (string) (($sellerRow['referral_code'] ?? '') !== '' ? $sellerRow['referral_code'] : preg_replace('/\.sales$/i', '', $sUser));
+        if ($sSlug === '') {
+            $sSlug = 'fady';
+        }
+
+        $policy = sc_erp_get_seller_discount_policy($pdo, $sUser);
+        if (!$policy['is_enabled'] && !$isOwner) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Special seller discounts are currently disabled by management']);
+            exit;
+        }
+
+        $rawType  = strtoupper(trim((string) ($rawIn['discount_type'] ?? 'PERCENT')));
+        $discType = in_array($rawType, ['AMOUNT', 'FIXED', 'CASH', 'VALUE'], true) ? 'AMOUNT' : 'PERCENT';
+        $discVal  = max(0.0, (float) ($rawIn['discount_value'] ?? 0.0));
+        $fx       = sc_erp_fx_rates($pdo);
+        $discCurr = strtoupper(trim((string) ($rawIn['discount_currency'] ?? 'EUR')));
+        if (!isset($fx[$discCurr])) {
+            $discCurr = 'EUR';
+        }
+        $tripCode = clean_line($rawIn['trip_code'] ?? '', 64);
+        $lang     = strtolower(clean_line($rawIn['lang'] ?? 'en', 8));
+        if (!in_array($lang, ['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'], true)) {
+            $lang = 'en';
+        }
+
+        $baseUrl = 'https://seacollegediveclub.com'
+            . ($lang !== 'en' ? '/' . rawurlencode($lang) : '')
+            . '/s/' . rawurlencode($sSlug)
+            . ($tripCode !== '' ? '/' . rawurlencode($tripCode) : '');
+
+        if ($discVal <= 0.0) {
+            echo json_encode([
+                'ok'                => true,
+                'promo_token'       => '',
+                'promo_url'         => $baseUrl,
+                'discount_type'     => 'NONE',
+                'discount_value'    => 0.0,
+                'discount_currency' => $discCurr,
+                'was_clamped'       => false,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            exit;
+        }
+
+        $wasClamped = false;
+        if ($discType === 'PERCENT') {
+            $maxPct = $isOwner ? 80.0 : (float) $policy['max_discount_pct'];
+            if ($discVal > $maxPct + 0.001) {
+                $discVal = $maxPct;
+                $wasClamped = true;
+            }
+        } else {
+            $maxEur = $isOwner ? 500.0 : (float) $policy['max_discount_eur'];
+            $maxInCurr = round(($maxEur * $fx['EUR']) / $fx[$discCurr], 2);
+            if ($discVal > $maxInCurr + 0.01) {
+                $discVal = $maxInCurr;
+                $wasClamped = true;
+            }
+        }
+        $discVal = round($discVal, 2);
+
+        $token = sc_erp_sign_promo_token($sSlug, $tripCode, $discType, $discVal, $discCurr, 14);
+        $promoUrl = $baseUrl . '?promo=' . rawurlencode($token);
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'CREATE_PROMO_LINK', 'PROMO_LINK', $sSlug, [
+            'trip_code'      => $tripCode,
+            'discount_type'  => $discType,
+            'discount_value' => $discVal,
+            'currency'       => $discCurr,
+            'was_clamped'    => $wasClamped,
+        ]);
 
         echo json_encode([
             'ok'                => true,
-            'seller_username'   => $targetSeller,
-            'is_active'         => $isActive === 1,
-            'is_target_active'  => $isActive === 1,
-            'daily_target_egp'  => $dailyEgp,
-            'weekly_target_egp' => $weeklyEgp,
-            'monthly_target_egp'=> $monthlyEgp,
-        ]);
+            'seller_slug'       => $sSlug,
+            'trip_code'         => $tripCode,
+            'promo_token'       => $token,
+            'promo_url'         => $promoUrl,
+            'discount_type'     => $discType,
+            'discount_value'    => $discVal,
+            'discount_currency' => $discCurr,
+            'was_clamped'       => $wasClamped,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 
