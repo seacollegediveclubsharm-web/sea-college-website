@@ -190,6 +190,7 @@
     var btn = e.target.closest('[data-consent]');
     if (btn) { choose(btn.getAttribute('data-consent')); return; }
     if (e.target.closest('[data-consent-open]')) {
+      document.documentElement.removeAttribute('data-consent-auto');
       document.documentElement.setAttribute('data-consent-state', 'open');
       var box = document.getElementById('consent');
       if (box) { box.hidden = false; var b = box.querySelector('button'); if (b) { b.focus(); } }

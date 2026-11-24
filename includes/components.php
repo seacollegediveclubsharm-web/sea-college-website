@@ -50,6 +50,20 @@ function add_button(array $it): string
         . ' aria-label="' . te('add_to_booking') . ': ' . e($disp) . '">+ ' . te('add_to_booking') . '</button>';
 }
 
+function card_wa_button(array $it): string
+{
+    $disp = item_name($it);
+    $topic = $disp . ($it['price'] !== null ? ' (' . money($it['price']) . ')' : '');
+    $href = whatsapp_link($topic, 'card_wa');
+    $waSvg = '<svg class="icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.82 14.01c-.24.68-1.41 1.3-1.95 1.38-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.94-4.36-.15-.19-1.18-1.57-1.18-3s.75-2.12 1.01-2.41c.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.82 2.01.89 2.15.07.15.12.31.02.5-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.3-.13.59.17.29.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.35 1.46.29.15.46.12.63-.07.17-.19.73-.85.92-1.14.19-.29.39-.24.65-.15.27.1 1.7.8 1.99.95.29.15.48.22.56.34.07.12.07.7-.17 1.38z"/></svg>';
+    return '<a class="btn btn--wa btn--sm btn--wa-card" href="' . e($href) . '" target="_blank" rel="noopener"'
+        . ' data-track="whatsapp_click" data-placement="card_wa"'
+        . ' data-item-id="' . e((string) ($it['id'] ?? '')) . '"'
+        . ' data-item-name="' . e($disp) . '"'
+        . ' data-item-eur="' . e($it['price'] === null ? '' : (string) $it['price']) . '"'
+        . ' aria-label="WhatsApp: ' . e($disp) . '">' . $waSvg . '<span>WhatsApp</span></a>';
+}
+
 /** Experience/product card used on home, services, category hubs & related items. */
 function product_card(array $it, string $image = 'images/hero.jpg', bool $eager = false): string
 {
@@ -81,7 +95,7 @@ function product_card(array $it, string $image = 'images/hero.jpg', bool $eager 
     }
     $html .= '<div class="pcard__foot">';
     $html .= '<span class="pcard__price">' . ($it['price'] !== null ? te('from') . ' ' : '') . price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) . $child . '</span>';
-    $html .= '<span class="pcard__actions"><a class="btn btn--detail btn--sm" href="' . e($href) . '">' . te('cta_details') . '</a>' . add_button($it) . '</span>';
+    $html .= '<span class="pcard__actions">' . card_wa_button($it) . '<a class="btn btn--detail btn--sm" href="' . e($href) . '">' . te('cta_details') . '</a>' . add_button($it) . '</span>';
     $html .= '</div></div></article>';
     return $html;
 }

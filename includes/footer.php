@@ -83,6 +83,15 @@ declare(strict_types=1);
 </div>
 <?php endif; ?>
 
+<?php if (!in_array(($page['id'] ?? ''), ['item', 'thanks', 'checkin'], true)): ?>
+<div class="mobile-quick-bar no-print" role="region" aria-label="Quick Contact">
+  <a class="btn btn--wa mobile-quick-bar__wa" href="<?= e(whatsapp_link('', 'mobile_sticky_bar')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="mobile_sticky_bar">
+    <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span>
+  </a>
+  <a class="btn btn--ghost-dark mobile-quick-bar__call" href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click" data-placement="mobile_sticky_bar" aria-label="Call <?= e(BUSINESS['phone_display']) ?>">📞</a>
+</div>
+<?php endif; ?>
+
 <a class="wa-float" href="<?= e(whatsapp_link('', 'floating_button')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="floating" aria-label="<?= te('cta_whatsapp') ?>">
   <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?>
 </a>

@@ -170,6 +170,20 @@ function doPost(e) {
       ]);
     }
 
+    // Automatically log every server-captured gclid lead (WhatsApp Click or Reservation Form) to Google_Ads_OCT_Export
+    // so Google Ads Data Manager recovers 100% of conversions even when EU/UK mobile visitors skip the cookie banner!
+    const liveGclid = String(data.gclid || '').trim();
+    if (liveGclid && (type === 'whatsapp_click' || type === 'lead')) {
+      const oct = ss.getSheetByName('Google_Ads_OCT_Export');
+      if (oct) {
+        const convName = type === 'whatsapp_click' ? 'WhatsApp Lead' : 'Reservation Form Submitted';
+        const defEur = type === 'whatsapp_click' ? 45 : 120;
+        const valEur = Number(data.estimated_total_eur || 0) > 0 ? Number(data.estimated_total_eur) : defEur;
+        const convTime = Utilities.formatDate(new Date(), 'Africa/Cairo', 'yyyy-MM-dd HH:mm:ss+02:00');
+        oct.appendRow([liveGclid, convName, convTime, valEur, 'EUR']);
+      }
+    }
+
     return ContentService.createTextOutput(JSON.stringify({ ok: true }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {

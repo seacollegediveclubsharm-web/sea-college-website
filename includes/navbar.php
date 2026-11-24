@@ -29,9 +29,14 @@ $sc_nav = [
       <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
     </a>
 
-    <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">
-      <span class="nav-toggle__bar"></span><span class="sr-only"><?= te('menu') ?></span>
-    </button>
+    <div class="header-mobile-actions">
+      <a class="btn btn--wa btn--sm header-wa-mobile" href="<?= e(whatsapp_link('', 'mobile_header')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="mobile_header" aria-label="<?= te('cta_whatsapp') ?>">
+        <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span>WhatsApp</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">
+        <span class="nav-toggle__bar"></span><span class="sr-only"><?= te('menu') ?></span>
+      </button>
+    </div>
 
     <nav class="site-nav" id="site-nav" aria-label="Main">
       <ul class="site-nav__list">

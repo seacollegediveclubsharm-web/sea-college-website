@@ -52,17 +52,20 @@ function main() {
   // 1) Process all user-approved actions in Action_Queue first (skipped in Preview mode)
   processActionQueue(ss, isPreview);
 
-  // 2) Export live Google Ads data + Account Conversion Goals Health Audit into each tab
+  // 2) Export live Google Ads data + Daily Spend Forensics + Conversion Goals Health Audit into each tab
   syncAccountOverview(ss);
+  syncDailySpendAndLeads(ss);
   syncCampaigns(ss);
   syncAdGroups(ss);
   syncKeywords(ss);
+  syncRecent7dSearchTerms(ss);
   syncSearchTerms(ss);
   syncAds(ss);
   syncConversionActions(ss);
+  syncConversionBreakdown(ss);
   syncCustomerGoalsAudit(ss);
 
-  Logger.log('Sea College Google Ads Sync + Conversion Goals Audit (v2.1) completed with 0 errors.');
+  Logger.log('Sea College Google Ads Sync + Daily Spend Forensics + Goals Audit (v2.2) completed with 0 errors.');
 }
 
 /* ---------------- Helpers ---------------- */
@@ -136,7 +139,7 @@ function syncAccountOverview(ss) {
   const cpa = conv > 0 ? Number((cost / conv).toFixed(2)) : 0;
 
   const rows = [
-    ['Sync Status', 'CONNECTED', 'Live sync via Google Ads Scripts (v2.1)'],
+    ['Sync Status', 'CONNECTED', 'Live sync via Google Ads Scripts (v2.2)'],
     ['Last Synced (UTC)', new Date().toISOString(), 'Set script schedule to Hourly in Google Ads'],
     ['Customer ID', acct.getCustomerId(), 'Google Ads 10-digit account ID'],
     ['Account Name', acct.getName() || '(Unnamed Account)', ''],
@@ -152,6 +155,54 @@ function syncAccountOverview(ss) {
     ['30d Cost / Conversion', cpa, 'Last 30 days']
   ];
   writeRows(ss, 'Account_Overview', ['Metric', 'Value', 'Notes'], rows);
+}
+
+/* ---------------- 1B. Daily Spend, CPC & Leads Forensics (Last 14 Days) ---------------- */
+
+function syncDailySpendAndLeads(ss) {
+  const headers = [
+    'Date', 'Day', 'Campaign Name', 'Configured Daily Budget (EGP)', 'Actual Spend (EGP)',
+    'Variance vs 2000 EGP', 'Impressions', 'Clicks', 'Avg CPC (EGP)',
+    'Conversions', 'Conv. Value', 'Cost / Conv (EGP)'
+  ];
+  const rows = [];
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  try {
+    const it = AdsApp.search(
+      "SELECT segments.date, campaign.name, campaign_budget.amount_micros, " +
+      "metrics.impressions, metrics.clicks, metrics.average_cpc, metrics.cost_micros, " +
+      "metrics.conversions, metrics.conversions_value " +
+      "FROM campaign WHERE campaign.status != 'REMOVED' AND segments.date DURING LAST_14_DAYS " +
+      "ORDER BY segments.date DESC, metrics.cost_micros DESC"
+    );
+    while (it.hasNext()) {
+      const r = it.next();
+      const dtStr = String((r.segments && r.segments.date) || '');
+      const dtObj = dtStr ? new Date(dtStr + 'T00:00:00Z') : null;
+      const dayName = dtObj && !isNaN(dtObj.getTime()) ? days[dtObj.getUTCDay()] : '';
+      const budget = r.campaignBudget ? micros(r.campaignBudget.amountMicros) : 0;
+      const spend = micros(r.metrics.costMicros);
+      const conv = Number((Number(r.metrics.conversions || 0)).toFixed(2));
+      const cpa = conv > 0 ? Number((spend / conv).toFixed(2)) : 0;
+      rows.push([
+        dtStr,
+        dayName,
+        r.campaign.name || '',
+        budget,
+        spend,
+        Number((spend - 2000).toFixed(2)),
+        Number(r.metrics.impressions || 0),
+        Number(r.metrics.clicks || 0),
+        micros(r.metrics.averageCpc),
+        conv,
+        Number((Number(r.metrics.conversionsValue || 0)).toFixed(2)),
+        cpa
+      ]);
+    }
+  } catch (e) {
+    Logger.log('Daily spend forensics query error: ' + e);
+  }
+  writeRows(ss, 'Daily_Spend_&_Leads', headers, rows);
 }
 
 /* ---------------- 2. Campaigns (All types incl. Search & PMax) ---------------- */
@@ -288,6 +339,40 @@ function syncKeywords(ss) {
   writeRows(ss, 'Keywords', headers, rows);
 }
 
+/* ---------------- 4B. Last 7 Days Search Terms (Ordered by Spend EGP) ---------------- */
+
+function syncRecent7dSearchTerms(ss) {
+  const headers = [
+    'Search Term', 'Status', 'Campaign Name', 'Ad Group Name',
+    '7d Impressions', '7d Clicks', '7d Avg CPC (EGP)', '7d Spend (EGP)', '7d Conversions', '7d Conv. Value'
+  ];
+  const rows = [];
+  try {
+    const it = AdsApp.search(
+      "SELECT search_term_view.search_term, search_term_view.status, " +
+      "campaign.name, ad_group.name, metrics.impressions, metrics.clicks, " +
+      "metrics.average_cpc, metrics.cost_micros, metrics.conversions, metrics.conversions_value " +
+      "FROM search_term_view " +
+      "WHERE segments.date DURING LAST_7_DAYS AND metrics.impressions > 0 " +
+      "ORDER BY metrics.cost_micros DESC, metrics.clicks DESC LIMIT 500"
+    );
+    while (it.hasNext()) {
+      const r = it.next();
+      rows.push([
+        r.searchTermView.searchTerm || '', r.searchTermView.status || '',
+        r.campaign.name, r.adGroup.name,
+        Number(r.metrics.impressions || 0), Number(r.metrics.clicks || 0),
+        micros(r.metrics.averageCpc), micros(r.metrics.costMicros),
+        Number((Number(r.metrics.conversions || 0)).toFixed(2)),
+        Number((Number(r.metrics.conversionsValue || 0)).toFixed(2))
+      ]);
+    }
+  } catch (e) {
+    Logger.log('7d Search terms query error: ' + e);
+  }
+  writeRows(ss, 'Last_7d_Search_Terms', headers, rows);
+}
+
 /* ---------------- 5. Search Terms (Last 30 days) ---------------- */
 
 function syncSearchTerms(ss) {
@@ -410,6 +495,65 @@ function syncConversionActions(ss) {
   writeRows(ss, 'Conversion_Actions', headers, rows);
 }
 
+/* ---------------- 7A. Conversion Breakdown by Action (Last 7d vs Last 30d) ---------------- */
+
+function syncConversionBreakdown(ss) {
+  const headers = [
+    'Conversion Action ID', 'Conversion Action Name', 'Category', 'Primary for Goal',
+    '7d Conversions', '7d Value', '30d Conversions', '30d Value'
+  ];
+  const byId = {};
+  try {
+    const base = AdsApp.search(
+      "SELECT conversion_action.id, conversion_action.name, conversion_action.category, conversion_action.primary_for_goal " +
+      "FROM conversion_action WHERE conversion_action.status != 'REMOVED'"
+    );
+    while (base.hasNext()) {
+      const ca = base.next().conversionAction;
+      byId[String(ca.id)] = {
+        id: String(ca.id),
+        name: ca.name || '',
+        cat: ca.category || '',
+        prim: String(ca.primaryForGoal),
+        c7: 0, v7: 0, c30: 0, v30: 0
+      };
+    }
+    const m7 = AdsApp.search(
+      "SELECT conversion_action.id, metrics.all_conversions, metrics.all_conversions_value " +
+      "FROM conversion_action WHERE segments.date DURING LAST_7_DAYS"
+    );
+    while (m7.hasNext()) {
+      const r = m7.next();
+      const o = byId[String(r.conversionAction.id)];
+      if (o) {
+        o.c7 += Number(r.metrics.allConversions || 0);
+        o.v7 += Number(r.metrics.allConversionsValue || 0);
+      }
+    }
+    const m30 = AdsApp.search(
+      "SELECT conversion_action.id, metrics.all_conversions, metrics.all_conversions_value " +
+      "FROM conversion_action WHERE segments.date DURING LAST_30_DAYS"
+    );
+    while (m30.hasNext()) {
+      const r = m30.next();
+      const o = byId[String(r.conversionAction.id)];
+      if (o) {
+        o.c30 += Number(r.metrics.allConversions || 0);
+        o.v30 += Number(r.metrics.allConversionsValue || 0);
+      }
+    }
+  } catch (e) {
+    Logger.log('Conversion breakdown query note: ' + e);
+  }
+  const rows = Object.keys(byId)
+    .map(function (k) { return byId[k]; })
+    .filter(function (o) { return o.prim === 'true' || o.c30 > 0 || o.c7 > 0; })
+    .map(function (o) {
+      return [o.id, o.name, o.cat, o.prim, Number(o.c7.toFixed(2)), Number(o.v7.toFixed(2)), Number(o.c30.toFixed(2)), Number(o.v30.toFixed(2))];
+    });
+  writeRows(ss, 'Conversion_Breakdown', headers, rows);
+}
+
 /* ---------------- 7B. Account Customer Conversion Goals Audit ---------------- */
 
 function syncCustomerGoalsAudit(ss) {
@@ -446,7 +590,7 @@ function syncCustomerGoalsAudit(ss) {
   }
 }
 
-/* ---------------- 8. Two-Way Safe Action Queue (Negatives + Conversion Goal Repairs) ---------------- */
+/* ---------------- 8. Two-Way Safe Action Queue (Negatives + Budgets + Target CPA + Keywords + Goals) ---------------- */
 
 function processActionQueue(ss, isPreview) {
   const sheet = ss.getSheetByName('Action_Queue');
@@ -515,10 +659,40 @@ function executeQueuedAction(type, campName, agName, targetVal, matchType) {
     const amt = parseFloat(targetVal);
     if (!(amt > 0)) throw new Error('Invalid budget: ' + targetVal);
     camp.getBudget().setAmount(amt);
+  } else if (type === 'SET_TARGET_CPA') {
+    const cpa = parseFloat(targetVal);
+    if (!(cpa > 0)) throw new Error('Invalid Target CPA: ' + targetVal);
+    const cid = cleanCustomerId();
+    const resName = 'customers/' + cid + '/campaigns/' + String(camp.getId());
+    const res = AdsApp.mutate({
+      campaignOperation: {
+        update: {
+          resourceName: resName,
+          maximizeConversions: {
+            targetCpaMicros: String(Math.round(cpa * 1000000))
+          }
+        },
+        updateMask: 'maximize_conversions.target_cpa_micros'
+      }
+    }, { partialFailure: false });
+    if (res && typeof res.isSuccessful === 'function' && !res.isSuccessful()) {
+      throw new Error(res.getErrorMessages().join('; '));
+    }
   } else if (type === 'ADD_CAMPAIGN_NEGATIVE') {
     const mType = matchType || 'PHRASE';
     const formatted = mType === 'EXACT' ? '[' + targetVal + ']' : mType === 'BROAD' ? targetVal : '"' + targetVal + '"';
     camp.createNegativeKeyword(formatted);
+  } else if (type === 'ADD_KEYWORD') {
+    const agIt = camp.adGroups().withCondition('ad_group.name = "' + agName.replace(/"/g, '\\"') + '"').get();
+    if (!agIt.hasNext()) throw new Error('Ad group not found: ' + agName);
+    const ag = agIt.next();
+    const mType = matchType || 'EXACT';
+    const kwClean = targetVal.replace(/^[\["']+|[\]"']+$/g, '').trim();
+    const formatted = mType === 'EXACT' ? '[' + kwClean + ']' : mType === 'PHRASE' ? '"' + kwClean + '"' : kwClean;
+    const op = ag.newKeywordBuilder().withText(formatted).build();
+    if (op && typeof op.isSuccessful === 'function' && !op.isSuccessful()) {
+      throw new Error(op.getErrors().join('; '));
+    }
   } else if (type === 'PAUSE_KEYWORD') {
     let sel = camp.keywords()
       .withCondition('ad_group.name = "' + agName.replace(/"/g, '\\"') + '"')

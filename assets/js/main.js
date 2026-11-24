@@ -606,7 +606,24 @@
   });
 
   /* ---------------- WhatsApp from form + cart & Dynamic Item EUR Resolver ---------------- */
-  function resolveItemContext() {
+  function openWhatsAppUrl(waUrl) {
+    try {
+      var win = window.open(waUrl, '_blank', 'noopener');
+      if (!win) { window.location.href = waUrl; }
+    } catch (err) {
+      window.location.href = waUrl;
+    }
+  }
+
+  function resolveItemContext(el) {
+    if (el && el.getAttribute) {
+      var btnEur = parseFloat(el.getAttribute('data-item-eur') || '');
+      var btnId = el.getAttribute('data-item-id') || '';
+      var btnName = el.getAttribute('data-item-name') || '';
+      if (!isNaN(btnEur) && btnEur > 0) {
+        return { id: btnId, name: btnName, eur: Math.round(btnEur * 100) / 100 };
+      }
+    }
     var id = (SC.item && SC.item.id) || '';
     var name = (SC.item && SC.item.name) || '';
     var eur = 0;
@@ -657,7 +674,7 @@
     var camp = get('utm_campaign') || clickAttr.utm_campaign || placement;
     var formSeller = get('seller') || getSeller();
     lines.push('', buildWaRefTag(src, camp, SC.lang || 'en', formSeller));
-    var itemCtx = resolveItemContext();
+    var itemCtx = resolveItemContext(btn);
     var convVal = totalVal > 0 ? totalVal : (itemCtx.eur > 0 ? itemCtx.eur : 30);
     track('begin_checkout', { value: convVal, currency: 'EUR' });
     track('whatsapp_click', { placement: placement, value: convVal, currency: 'EUR' });
@@ -693,7 +710,7 @@
     if (granted() && window.fbq) { window.fbq('track', 'Contact', fbFormContact, { eventID: window._scLastWaEventId }); }
     if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'form_whatsapp', value: convVal, currency: 'EUR' }); }
     if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
-    window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    openWhatsAppUrl('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')));
   });
 
   /* ---------------- Click tracking ---------------- */
@@ -716,7 +733,7 @@
       a.setAttribute('href', href);
     }
     var params = { placement: a.getAttribute('data-placement') || '', link_url: href, link_text: (a.textContent || '').trim().slice(0, 80) };
-    var itCtx = resolveItemContext();
+    var itCtx = resolveItemContext(a);
     if (kind === 'whatsapp_click' && itCtx.eur > 0) {
       params.value = itCtx.eur;
       params.currency = 'EUR';
@@ -1226,7 +1243,7 @@
         if (granted() && window.fbq) { window.fbq('track', 'Contact', calcContact, { eventID: window._scLastWaEventId }); }
         if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: 'dive_calculator_wa', value: grand, currency: 'EUR' }); }
         if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: grand, currency: 'EUR' }); }
-        window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
+        openWhatsAppUrl('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')));
       });
     }
 
@@ -1780,7 +1797,7 @@
       if (granted() && window.fbq) { window.fbq('track', 'Contact', qbContact, { eventID: window._scLastWaEventId }); }
       if (granted() && window.ttq) { window.ttq.track('Contact', { content_name: pl, value: convVal, currency: 'EUR' }); }
       if (granted() && SC.uetId && window.uetq) { window.uetq.push('event', 'whatsapp_click', { event_category: 'contact', revenue_value: convVal, currency: 'EUR' }); }
-      window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+      openWhatsAppUrl('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(lines.join('\n')));
     }
   });
 
@@ -1888,7 +1905,7 @@
           if (ciPh && ciPh.length >= 9) { window.gtag('set', 'user_data', { phone_number: ciPh }); }
           window.gtag('event', 'conversion', { send_to: SC.adsId + '/' + SC.adsWhatsappLabel, value: 35, currency: 'EUR', transaction_id: 'wa_ci_' + Date.now(), transport_type: 'beacon' });
         }
-        window.open('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')), '_blank', 'noopener');
+        openWhatsAppUrl('https://wa.me/' + (SC.whatsapp || '') + '?text=' + encodeURIComponent(out.join('\n')));
       });
     }
   });
