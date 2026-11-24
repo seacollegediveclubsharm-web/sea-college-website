@@ -3502,12 +3502,13 @@ function renderSellerPitchTab(ar) {
     ['cairo-luxor', ar ? '✈️ القاهرة والأقصر (طيران / باص)' : '✈️ Cairo & Luxor (Plane / Bus)'],
     ['sinai-dahab', ar ? '⛰️ سانت كاترين وجبل موسى ودهب' : '⛰️ St. Catherine, Moses & Dahab'],
     ['marine-family', ar ? '🐬 دولفين، غواصة، جلاس بوت وعشاء' : '🐬 Dolphin, Submarine & Dinner'],
-    ['watersports', ar ? '🪂 براشوت وألعاب مائية' : '🪂 Parasailing & Watersports']
+    ['watersports', ar ? '🪂 براشوت وألعاب مائية' : '🪂 Parasailing & Watersports'],
+    ['equipment', ar ? '🤿 معدات وتأمين الغوص' : '🤿 Dive Gear & Insurance']
   ];
 
   const qLow = String(STATE.pitchQuery || '').trim().toLowerCase();
   const filtered = combined.filter((it) => {
-    const itemCat = String(it.category || it.category_group || '');
+    const itemCat = String(it.category || it.category_group || it.category_key || '');
     if (STATE.pitchCat !== 'ALL' && itemCat !== STATE.pitchCat) return false;
     if (!qLow) return true;
     const hay = `${it.name || ''} ${it.name_en || ''} ${it.name_ar || ''} ${it.summary || ''} ${it.category_label || ''} ${it.code || ''}`.toLowerCase();
@@ -3614,11 +3615,12 @@ function renderSellerPitchTab(ar) {
     <div class="pitch-grid">
       ${filtered.slice(0, 120).map((it) => {
         const code = String(it.code || it.id || '');
+        const isGear = /^(eq|ins)-/.test(code);
         const info = it.infographics || {};
         const uPrice = getAdultChildUnitInCurr(it, STATE.pitchCurr);
         const unitCurrTxt = formatPitchPrice(it);
         const childCurrTxt = uPrice.curr === 'EGP' ? `${fmt(uPrice.child, 0)} EGP` : `${uPrice.sym}${fmt(uPrice.child, 0)}`;
-        const dCalc = calcClientDiscountForTrip(it, adlCount, chCount, STATE.pitchCurr, STATE.pitchDiscType, STATE.pitchDiscVal);
+        const dCalc = calcClientDiscountForTrip(it, adlCount, isGear ? 0 : chCount, STATE.pitchCurr, STATE.pitchDiscType, STATE.pitchDiscVal);
         const listGroupTxt = uPrice.curr === 'EGP' ? `${fmt(dCalc.listTotal, 0)} EGP` : `${uPrice.sym}${fmt(dCalc.listTotal, 0)} ${uPrice.curr}`;
         const netGroupTxt = uPrice.curr === 'EGP' ? `${fmt(dCalc.netTotal, 0)} EGP` : `${uPrice.sym}${fmt(dCalc.netTotal, 0)} ${uPrice.curr}`;
         const coverImg = it.cover_webp || '/assets/images/pitch/ras-mohammed-boat.webp';
@@ -3637,13 +3639,21 @@ function renderSellerPitchTab(ar) {
                 <p style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45;">${esc(String(it.summary || '').slice(0, 145))}</p>
 
                 <div class="info-badges">
-                  <span class="info-badge">👤 Adult: ${esc(unitCurrTxt)}</span>
-                  <span class="info-badge">🧒 Child: ${esc(childCurrTxt)}</span>
-                  <span class="info-badge" style="color:#34d399;">👶 Infant &lt;3: FREE</span>
-                  <span class="info-badge">⏱ Duration: ${esc(it.duration || 'Full Day')}</span>
-                  <span class="info-badge">🌊 Depth: ${esc(info.max_depth || 'Surface / Guided')}</span>
-                  <span class="info-badge">🎂 Age: ${esc(info.min_age || 'All Ages')}</span>
-                  <span class="info-badge">🚐 Pickup: ${esc(STATE.pitchPickup)}</span>
+                  ${isGear ? `
+                    <span class="info-badge">🔧 Rate: ${esc(unitCurrTxt)}</span>
+                    <span class="info-badge" style="color:#34d399;">✅ Sanitised &amp; Tested S.C Gear</span>
+                    <span class="info-badge">⏱ ${esc(it.duration || 'Per Dive Day')}</span>
+                    <span class="info-badge">🤿 ${esc(info.max_depth || 'Pro Scuba Rental')}</span>
+                    <span class="info-badge">🚤 Ready on Boat / Dive Center</span>
+                  ` : `
+                    <span class="info-badge">👤 Adult: ${esc(unitCurrTxt)}</span>
+                    <span class="info-badge">🧒 Child: ${esc(childCurrTxt)}</span>
+                    <span class="info-badge" style="color:#34d399;">👶 Infant &lt;3: FREE</span>
+                    <span class="info-badge">⏱ Duration: ${esc(it.duration || 'Full Day')}</span>
+                    <span class="info-badge">🌊 Depth: ${esc(info.max_depth || 'Surface / Guided')}</span>
+                    <span class="info-badge">🎂 Age: ${esc(info.min_age || 'All Ages')}</span>
+                    <span class="info-badge">🚐 Pickup: ${esc(STATE.pitchPickup)}</span>
+                  `}
                 </div>
 
                 <details style="margin-top:8px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);padding:7px 9px;">
@@ -3655,7 +3665,7 @@ function renderSellerPitchTab(ar) {
 
             <div style="padding:10px 13px 13px;border-top:1px solid rgba(148,163,184,0.14);background:rgba(6,21,38,0.5);">
               <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px;gap:6px;flex-wrap:wrap;">
-                <span>Group (${adlCount}A${chCount > 0 ? `+${chCount}C` : ''}${infCount > 0 ? `+${infCount}I` : ''}):</span>
+                <span>${isGear ? `Total (${adlCount} ${adlCount === 1 ? 'Diver' : 'Divers'}):` : `Group (${adlCount}A${chCount > 0 ? `+${chCount}C` : ''}${infCount > 0 ? `+${infCount}I` : ''}):`}</span>
                 ${dCalc.discInCurr > 0
                   ? `<span><s style="opacity:0.65;font-size:11.5px;margin-right:4px;">${esc(listGroupTxt)}</s><b style="font-size:14px;color:#34d399;">${esc(netGroupTxt)}</b> <span style="font-size:11px;color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)})</span></span>`
                   : `<b style="font-size:14px;color:var(--cyan);">${esc(netGroupTxt)}</b>`

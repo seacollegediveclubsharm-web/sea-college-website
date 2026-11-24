@@ -387,19 +387,42 @@ if ($action === 'seller_catalog') {
                 $adultCostEgp  = $isThistlegorm ? round(100.0 * $eurToEgp, 0) : round($priceEur * $eurToEgp * 0.35, 0);
 
                 $specs = $seo['specs'] ?? [];
+                $isEquip = str_starts_with($id, 'eq-');
+                $isIns   = str_starts_with($id, 'ins-');
+                $isIntro = str_starts_with($id, 'dsd-');
+                if ($isEquip || $isIns) {
+                    $resolvedGroup = 'equipment';
+                    $resolvedLabel = $isIns
+                        ? ($lang === 'ar' ? '🛡️ تأمين الغوص' : '🛡️ Dive Insurance')
+                        : ($lang === 'ar' ? '🤿 إيجار معدات الغوص' : '🤿 Equipment Rental');
+                } elseif ($isIntro) {
+                    $resolvedGroup = 'intro-diving';
+                    $resolvedLabel = $lang === 'ar' ? '🤿 غطس تجريبي للمبتدئين' : '🤿 Intro Diving';
+                } elseif ($catKey === 'padi-courses' || $catKey === 'offers') {
+                    $resolvedGroup = 'padi-courses';
+                    $resolvedLabel = $catLabel;
+                } elseif ($catKey === 'snorkeling') {
+                    $resolvedGroup = 'snorkeling';
+                    $resolvedLabel = $catLabel;
+                } else {
+                    $resolvedGroup = 'daily-diving';
+                    $resolvedLabel = $catLabel;
+                }
+
                 $items[] = [
                     'id'                        => $id,
                     'code'                      => $id,
                     'section'                   => $section,
                     'slug'                      => $slug,
-                    'category_key'              => $catKey,
-                    'category_label'            => $catLabel,
+                    'category_group'            => $resolvedGroup,
+                    'category_key'              => ($isEquip || $isIns) ? 'equipment' : $catKey,
+                    'category_label'            => $resolvedLabel,
                     'group_title'               => $grpTitle,
                     'name'                      => $nameLoc,
                     'name_en'                   => (string) ($it['name'] ?? $id),
                     'name_ar'                   => (string) ($it['name_ar'] ?? $nameLoc),
                     'summary'                   => $descLoc,
-                    'duration'                  => (string) ($it['duration'] ?? ($specs['duration'] ?? 'Full day (08:00–16:30)')),
+                    'duration'                  => (string) ($it['duration'] ?? ($specs['duration'] ?? (($isEquip || $isIns) ? 'Per Dive Day' : 'Full day (08:00–16:30)'))),
                     'popular'                   => !empty($it['popular']),
                     'price_eur'                 => $priceEur,
                     'child_price_eur'           => $childEur,
@@ -421,10 +444,10 @@ if ($action === 'seller_catalog') {
                     'video_poster'              => $vidPoster,
                     'public_url'                => $publicUrl,
                     'infographics'              => [
-                        'min_age'       => (string) ($specs['min_age'] ?? (str_contains($catKey, 'snork') ? 'All Ages (Infant <3 Free)' : '10+ Years')),
-                        'max_depth'     => (string) ($specs['max_depth'] ?? (str_contains($id, 'owd') ? '18 m' : (str_contains($id, 'aowd') ? '30 m' : (str_contains($id, 'dsd') ? '6–12 m (1:1 Pro)' : 'Surface / 18–30 m')))),
+                        'min_age'       => (string) ($specs['min_age'] ?? (($isEquip || $isIns) ? 'Certified / Student Diver' : (str_contains($catKey, 'snork') ? 'All Ages (Infant <3 Free)' : '10+ Years'))),
+                        'max_depth'     => (string) ($specs['max_depth'] ?? ($isIns ? 'Hyperbaric Chamber Coverage' : ($isEquip ? 'Sanitised Pro Scuba Gear' : (str_contains($id, 'owd') ? '18 m' : (str_contains($id, 'aowd') ? '30 m' : (str_contains($id, 'dsd') ? '6–12 m (1:1 Pro)' : 'Surface / 18–30 m')))))),
                         'certification' => (string) ($specs['prerequisites'] ?? (str_contains($id, 'dive-') ? 'Certified Diver' : 'No Experience Needed')),
-                        'pickup'        => 'Free Hotel Transfer (All 6 Sharm Zones)',
+                        'pickup'        => ($isEquip || $isIns) ? 'Prepared Ready on Boat / Dive Center' : 'Free Hotel Transfer (All 6 Sharm Zones)',
                         'included'      => is_array($catMeta['notes'][$lang] ?? null) ? array_slice($catMeta['notes'][$lang], 0, 2) : ['PADI Instructor / Guide, Hotel Transfers & Briefing'],
                     ],
                 ];

@@ -412,9 +412,9 @@ return [
   ],
   'eq-computer' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
+      'images/items/sea-college-sharm-dive-computer-rental-sharm-el-sheikh.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -424,9 +424,9 @@ return [
   ],
   'eq-torch' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
+      'images/items/sea-college-sharm-underwater-dive-torch-rental-sharm.jpg',
+      'images/items/sea-college-sharm-padi-night-diver-sharm-el-sheikh.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -436,9 +436,9 @@ return [
   ],
   'eq-15air' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg'
+      'images/items/sea-college-sharm-15l-air-tank-upgrade-sharm.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-08-seac-bcds-rack-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -448,9 +448,9 @@ return [
   ],
   'eq-15nx' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
+      'images/items/sea-college-sharm-15l-nitrox-tank-upgrade-sharm.jpg',
+      'images/items/sea-college-sharm-15l-air-tank-upgrade-sharm.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -460,9 +460,9 @@ return [
   ],
   'eq-12nx' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
+      'images/items/sea-college-sharm-12l-nitrox-tank-fill-sharm.jpg',
+      'images/items/sea-college-sharm-15l-air-tank-upgrade-sharm.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -472,9 +472,9 @@ return [
   ],
   'eq-sm-tank' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg'
+      'images/items/sea-college-sharm-12l-sidemount-air-tank-sharm.jpg',
+      'images/items/sea-college-sharm-padi-sidemount-diver-sharm-el-sheikh.jpg',
+      'images/items/sea-college-sharm-15l-air-tank-upgrade-sharm.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -484,9 +484,9 @@ return [
   ],
   'eq-sm-full' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
+      'images/items/sea-college-sharm-full-sidemount-equipment-rental-sharm.jpg',
+      'images/items/sea-college-sharm-padi-sidemount-diver-sharm-el-sheikh.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -496,9 +496,9 @@ return [
   ],
   'ins-3' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
+      'images/items/sea-college-sharm-diving-insurance-3-days-sharm.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -508,9 +508,9 @@ return [
   ],
   'ins-7' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-02.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg'
+      'images/items/sea-college-sharm-diving-insurance-7-days-sharm.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -520,9 +520,9 @@ return [
   ],
   'ins-10' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-03.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-04.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg'
+      'images/items/sea-college-sharm-diving-insurance-10-days-sharm.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
@@ -532,9 +532,9 @@ return [
   ],
   'ins-14' => [
     'photos' => [
-      'images/items/gallery/sea-college-sharm-dives-gallery-05.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-06.jpg',
-      'images/items/gallery/sea-college-sharm-dives-gallery-01.jpg'
+      'images/items/sea-college-sharm-diving-insurance-14-days-sharm.jpg',
+      'images/center/sea-college-dive-club-center-04-equipment-room-lockers-nov2026.jpg',
+      'images/center/sea-college-dive-club-center-07-scuba-rigs-wall-nov2026.jpg'
     ],
     'video' => [
       'src' => 'videos/sea-college-sharm-red-sea-overview.mp4',
