@@ -337,6 +337,7 @@ if ($action === 'seller_catalog') {
     $galleries    = is_file(ROOT_DIR . '/data/item_galleries.php') ? (require ROOT_DIR . '/data/item_galleries.php') : [];
     $seoExtras    = is_file(ROOT_DIR . '/data/items_seo.php') ? (require ROOT_DIR . '/data/items_seo.php') : [];
     $opSkusRaw    = is_file(ROOT_DIR . '/data/operational_skus.php') ? (require ROOT_DIR . '/data/operational_skus.php') : [];
+    $appExcRaw    = is_file(ROOT_DIR . '/data/app_excursions_catalog.php') ? (require ROOT_DIR . '/data/app_excursions_catalog.php') : [];
     $hotelData    = is_file(ROOT_DIR . '/data/hotel_zones.php') ? (require ROOT_DIR . '/data/hotel_zones.php') : ['zones' => [], 'hotels' => []];
     $GLOBALS['SC_LANG'] = $prevLang;
 
@@ -344,21 +345,6 @@ if ($action === 'seller_catalog') {
     $eurToEgp = $fx['EUR'] ?? 57.0;
     $usdToEgp = $fx['USD'] ?? 50.0;
     $gbpToEgp = $fx['GBP'] ?? 65.0;
-
-    $resolveAssetWebp = static function (string $relPath): string {
-        if ($relPath === '') {
-            return '';
-        }
-        $p = '/' . ltrim($relPath, '/');
-        if (!str_starts_with($p, '/assets/')) {
-            $p = '/assets/' . ltrim($p, '/');
-        }
-        $webp = (string) preg_replace('/\.(jpe?g|png)$/i', '.webp', $p);
-        if ($webp !== $p && is_file(ROOT_DIR . $webp)) {
-            return $webp;
-        }
-        return $p;
-    };
 
     $items = [];
     foreach ($rawCatalog as $catKey => $catMeta) {
@@ -375,21 +361,19 @@ if ($action === 'seller_catalog') {
                     continue;
                 }
                 $priceEur = (float) $it['price'];
+                $childEur = str_contains($catKey, 'snork') ? round($priceEur * 0.5, 0) : $priceEur;
                 $gal      = $galleries[$id] ?? [];
                 $seo      = $seoExtras[$id] ?? [];
-                $coverImg = $resolveAssetWebp((string) ($it['img'] ?? ''));
-                $photos   = [];
-                if ($coverImg !== '') {
-                    $photos[] = $coverImg;
-                }
+                $coverImg = sc_erp_resolve_asset_webp((string) ($it['img'] ?? ($gal['photos'][0] ?? '')));
+                $photos   = [$coverImg];
                 foreach (($gal['photos'] ?? []) as $gp) {
-                    $wp = $resolveAssetWebp((string) $gp);
+                    $wp = sc_erp_resolve_asset_webp((string) $gp);
                     if ($wp !== '' && !in_array($wp, $photos, true)) {
                         $photos[] = $wp;
                     }
                 }
                 $vidSrc    = !empty($gal['video']['src']) ? ('/assets/' . ltrim((string) $gal['video']['src'], '/')) : '/assets/videos/sea-college-sharm-red-sea-overview.mp4';
-                $vidPoster = !empty($gal['video']['poster']) ? $resolveAssetWebp((string) $gal['video']['poster']) : '/assets/images/items/gallery/sea-college-sharm-video-overview-poster.webp';
+                $vidPoster = !empty($gal['video']['poster']) ? sc_erp_resolve_asset_webp((string) $gal['video']['poster']) : $coverImg;
 
                 $nameLoc = $lang === 'ar' && !empty($it['name_ar']) ? (string) $it['name_ar'] : (string) ($it['name'] ?? $id);
                 $descLoc = $lang === 'ar' && !empty($it['desc_ar']) ? (string) $it['desc_ar'] : (string) ($it['desc'] ?? '');
@@ -398,6 +382,9 @@ if ($action === 'seller_catalog') {
                 $slug     = (string) ($it['slug'] ?? $id);
                 $langPref = $lang === 'en' ? '' : ('/' . $lang);
                 $publicUrl = 'https://seacollegediveclub.com' . $langPref . '/' . $section . '/' . $slug;
+
+                $isThistlegorm = str_contains($id, 'thistlegorm');
+                $adultCostEgp  = $isThistlegorm ? round(100.0 * $eurToEgp, 0) : round($priceEur * $eurToEgp * 0.35, 0);
 
                 $specs = $seo['specs'] ?? [];
                 $items[] = [
@@ -415,19 +402,26 @@ if ($action === 'seller_catalog') {
                     'duration'                  => (string) ($it['duration'] ?? ($specs['duration'] ?? 'Full day (08:00–16:30)')),
                     'popular'                   => !empty($it['popular']),
                     'price_eur'                 => $priceEur,
+                    'child_price_eur'           => $childEur,
+                    'infant_price_eur'          => 0.0,
                     'price_usd'                 => round(($priceEur * $eurToEgp) / $usdToEgp, 2),
                     'price_gbp'                 => round(($priceEur * $eurToEgp) / $gbpToEgp, 2),
                     'price_egp'                 => round($priceEur * $eurToEgp, 0),
+                    'supplier_code'             => $isThistlegorm ? 'AP_THISTLEGORM' : 'SEA_COLLEGE',
+                    'supplier_name'             => $isThistlegorm ? 'SS Thistlegorm Marine Charter' : 'Sea College PADI 5* Dive Center',
                     'default_sale_mode'         => 'INSHEET',
                     'default_comm_pct'          => 0.10,
-                    'default_supplier_cost_egp' => 0.0,
+                    'default_supplier_cost_egp' => $adultCostEgp,
+                    'adult_cost_egp'            => $adultCostEgp,
+                    'child_cost_egp'            => round($adultCostEgp * 0.5, 0),
+                    'is_app_excursion'          => false,
                     'cover_webp'                => $coverImg,
                     'photos'                    => array_slice($photos, 0, 5),
                     'video_src'                 => $vidSrc,
                     'video_poster'              => $vidPoster,
                     'public_url'                => $publicUrl,
                     'infographics'              => [
-                        'min_age'       => (string) ($specs['min_age'] ?? (str_contains($catKey, 'snork') ? 'All Ages (4+)' : '10+ Years')),
+                        'min_age'       => (string) ($specs['min_age'] ?? (str_contains($catKey, 'snork') ? 'All Ages (Infant <3 Free)' : '10+ Years')),
                         'max_depth'     => (string) ($specs['max_depth'] ?? (str_contains($id, 'owd') ? '18 m' : (str_contains($id, 'aowd') ? '30 m' : (str_contains($id, 'dsd') ? '6–12 m (1:1 Pro)' : 'Surface / 18–30 m')))),
                         'certification' => (string) ($specs['prerequisites'] ?? (str_contains($id, 'dive-') ? 'Certified Diver' : 'No Experience Needed')),
                         'pickup'        => 'Free Hotel Transfer (All 6 Sharm Zones)',
@@ -438,14 +432,26 @@ if ($action === 'seller_catalog') {
         }
     }
 
-    $opSkusOut = [];
-    foreach ($opSkusRaw as $sku) {
+    $formatSkuRow = static function (array $sku, bool $isExcursion) use ($lang, $eurToEgp, $usdToEgp, $gbpToEgp): array {
         $pEur = (float) ($sku['price_eur'] ?? 0);
-        $opSkusOut[] = [
+        $cEur = isset($sku['child_price_eur']) && $sku['child_price_eur'] !== null ? (float) $sku['child_price_eur'] : round($pEur * 0.5, 0);
+        $iEur = (float) ($sku['infant_price_eur'] ?? 0.0);
+        $aCost = (float) ($sku['adult_cost_egp'] ?? $sku['default_supplier_cost_egp'] ?? 0.0);
+        $cCost = (float) ($sku['child_cost_egp'] ?? round($aCost * 0.5, 0));
+        $cover = sc_erp_resolve_asset_webp((string) ($sku['cover_webp'] ?? ''));
+        $photos = [$cover];
+        foreach (($sku['gallery_photos'] ?? []) as $gp) {
+            $wp = sc_erp_resolve_asset_webp((string) $gp);
+            if ($wp !== '' && !in_array($wp, $photos, true)) {
+                $photos[] = $wp;
+            }
+        }
+        return [
             'id'                        => (string) $sku['id'],
             'code'                      => (string) ($sku['code'] ?? $sku['id']),
-            'category_group'            => (string) ($sku['category_group'] ?? 'companion-upsells'),
-            'category_label'            => (string) ($sku['category_labels'][$lang] ?? $sku['category_labels']['en'] ?? 'Operational Add-On'),
+            'category_group'            => (string) ($sku['category_group'] ?? 'excursions'),
+            'category_key'              => (string) ($sku['category_group'] ?? 'excursions'),
+            'category_label'            => (string) ($sku['category_labels'][$lang] ?? $sku['category_labels']['en'] ?? 'Sharm Excursion'),
             'name'                      => (string) ($sku['names'][$lang] ?? $sku['names']['en'] ?? $sku['id']),
             'name_en'                   => (string) ($sku['names']['en'] ?? $sku['id']),
             'name_ar'                   => (string) ($sku['names']['ar'] ?? $sku['names']['en'] ?? $sku['id']),
@@ -453,25 +459,41 @@ if ($action === 'seller_catalog') {
             'duration'                  => (string) ($sku['duration'] ?? 'Flexible'),
             'popular'                   => !empty($sku['popular']),
             'price_eur'                 => $pEur,
+            'child_price_eur'           => $cEur,
+            'infant_price_eur'          => $iEur,
             'price_usd'                 => round(($pEur * $eurToEgp) / $usdToEgp, 2),
             'price_gbp'                 => round(($pEur * $eurToEgp) / $gbpToEgp, 2),
             'price_egp'                 => round($pEur * $eurToEgp, 0),
+            'supplier_code'             => (string) ($sku['supplier_code'] ?? (($sku['default_sale_mode'] ?? 'INSHEET') === 'OUT_SIDE' ? 'AP_PARTNER' : 'SEA_COLLEGE')),
+            'supplier_name'             => (string) ($sku['supplier_name'] ?? 'Sea College Partner'),
             'default_sale_mode'         => (string) ($sku['default_sale_mode'] ?? 'INSHEET'),
             'default_comm_pct'          => (float) ($sku['default_comm_pct'] ?? 0.10),
-            'default_supplier_cost_egp' => (float) ($sku['default_supplier_cost_egp'] ?? 0.0),
-            'cover_webp'                => (string) ($sku['cover_webp'] ?? ''),
-            'photos'                    => $sku['gallery_photos'] ?? [$sku['cover_webp'] ?? ''],
+            'default_supplier_cost_egp' => $aCost,
+            'adult_cost_egp'            => $aCost,
+            'child_cost_egp'            => $cCost,
+            'is_app_excursion'          => $isExcursion,
+            'cover_webp'                => $cover,
+            'photos'                    => $photos,
             'video_src'                 => (string) ($sku['video_src'] ?? '/assets/videos/sea-college-tiran-dive-briefing-sharm.mp4'),
-            'video_poster'              => (string) ($sku['video_poster'] ?? '/assets/images/gallery/sea-college-tiran-dive-briefing-poster.webp'),
+            'video_poster'              => sc_erp_resolve_asset_webp((string) ($sku['video_poster'] ?? $cover)),
             'public_url'                => 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '/' . $lang) . '/prices',
             'infographics'              => [
-                'min_age'       => (string) ($sku['specs']['min_age'] ?? '8+'),
-                'max_depth'     => (string) ($sku['specs']['max_depth'] ?? 'Surface / Reef'),
+                'min_age'       => (string) ($sku['specs']['min_age'] ?? 'All Ages'),
+                'max_depth'     => (string) ($sku['specs']['max_depth'] ?? 'Red Sea / Sinai'),
                 'certification' => (string) ($sku['specs']['prerequisites'] ?? 'None'),
                 'pickup'        => (string) ($sku['specs']['pickup'] ?? 'Included'),
                 'included'      => $sku['included'][$lang] ?? $sku['included']['en'] ?? [],
             ],
         ];
+    };
+
+    $opSkusOut = [];
+    foreach ($opSkusRaw as $sku) {
+        $opSkusOut[] = $formatSkuRow($sku, false);
+    }
+    $excursionsOut = [];
+    foreach ($appExcRaw as $exc) {
+        $excursionsOut[] = $formatSkuRow($exc, true);
     }
 
     $zonesMap = $hotelData['zones'] ?? [];
@@ -506,7 +528,8 @@ if ($action === 'seller_catalog') {
         'site_url'         => 'https://seacollegediveclub.com',
         'fx_rates'         => $fx,
         'items'            => $items,
-        'operational_skus' => $opSkusOut,
+        'operational_skus' => array_merge($excursionsOut, $opSkusOut),
+        'excursions'       => $excursionsOut,
         'zones'            => array_values($zonesOut),
         'hotels'           => $hotelsOut,
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -650,10 +673,151 @@ if ($action === 'seller_wallet') {
         )->fetchAll();
     }
 
+    // Strict "Actual Done + 100% Paid" commission calculation & seller's own trips
+    $brochureUrl = 'https://seacollegediveclub.com/s/' . rawurlencode($sSlug);
+    $myTripsArgs = [$sUser, $sRep];
+    $myTripsMonthSql = '';
+    if ($monthFilter !== 'ALL') {
+        $myTripsMonthSql = ' AND period_month = ?';
+        $myTripsArgs[] = $monthFilter;
+    }
+    $myTripsSt = $pdo->prepare(
+        "SELECT id, voucher_no, trip_date, period_month, hotel_name, room_no, nationality, pickup_time,
+                trip_name, unified_trip_code, adults, children, infants, total_pax,
+                booked_adults, booked_children, booked_infants, booked_total_egp,
+                divers_names, deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
+                estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp,
+                seller_commission_egp, commission_type, commission_status,
+                boarding_status, payment_status, booking_state, workflow_stage,
+                has_modification, modification_summary
+         FROM reservations_fact
+         WHERE (LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?))) {$myTripsMonthSql}
+         ORDER BY trip_date DESC, id DESC LIMIT 200"
+    );
+    $myTripsSt->execute($myTripsArgs);
+    $myTrips = array_map(static function (array $r): array {
+        $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
+        $rest = round((float) ($r['rest_egp_equiv'] ?? 0.0), 2);
+        $tot  = round((float) (($r['estimated_revenue_egp'] ?? 0.0) > 0 ? $r['estimated_revenue_egp'] : ($paid + $rest)), 2);
+        $r['guest_name']        = (string) ($r['divers_names'] ?? '');
+        $r['paid_egp_equiv']    = $paid;
+        $r['actual_total_egp']  = $tot;
+        $r['workflow_status']   = (string) (($r['workflow_stage'] ?? '') !== '' ? $r['workflow_stage'] : ($r['boarding_status'] ?? 'CONFIRMED'));
+        $r['modification_note'] = (string) ($r['modification_summary'] ?? '');
+        return $r;
+    }, $myTripsSt->fetchAll());
+
+    // Actual Done + Paid commission = EARNED_UNPAID + PAID_SETTLED
+    $earnedComm = round((float) ($kpis['earned_commission_egp'] ?? 0.0) + (float) ($kpis['paid_commission_egp'] ?? 0.0), 2);
+    $pendingComm = round((float) ($kpis['pending_commission_egp'] ?? 0.0), 2);
+
+    // Mid-month allowances / installments requested or paid
+    $advArgs = [$sUser];
+    $advMonthSql = '';
+    if ($monthFilter !== 'ALL') {
+        $advMonthSql = ' AND period_month = ?';
+        $advArgs[] = $monthFilter;
+    }
+    $advSt = $pdo->prepare("SELECT * FROM seller_commission_advances WHERE LOWER(seller_username) = LOWER(?) {$advMonthSql} ORDER BY id DESC LIMIT 60");
+    $advSt->execute($advArgs);
+    $advRows = array_map(static function (array $a): array {
+        $a['request_date'] = (string) ($a['tx_date'] ?? substr((string) ($a['created_at'] ?? ''), 0, 10));
+        return $a;
+    }, $advSt->fetchAll());
+
+    $advPaidEgp = 0.0;
+    $advReqEgp  = 0.0;
+    foreach ($advRows as $ar) {
+        if (in_array((string) $ar['status'], ['APPROVED_PAID', 'PAID'], true)) {
+            $advPaidEgp += (float) $ar['amount_egp'];
+        } elseif ((string) $ar['status'] === 'REQUESTED') {
+            $advReqEgp += (float) $ar['amount_egp'];
+        }
+    }
+    $settledAlreadyEgp = round((float) ($kpis['paid_commission_egp'] ?? 0.0) + $advPaidEgp, 2);
+    $netDueNowEgp      = round(max(0.0, $earnedComm - $settledAlreadyEgp), 2);
+
+    // Target progress & gamification awards
+    $targetCfg = sc_erp_get_seller_target($pdo, $sUser);
+    $awardsAll = sc_erp_compute_best_seller_awards($pdo);
+    $activeMonthForTarget = $monthFilter !== 'ALL' ? $monthFilter : $awardsAll['month_key'];
+
+    $tStatSt = $pdo->prepare(
+        "SELECT COUNT(*) AS trips_cnt,
+                COALESCE(SUM(total_pax), 0) AS pax_cnt,
+                ROUND(COALESCE(SUM(CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END), 0), 2) AS sales_egp
+         FROM reservations_fact
+         WHERE (LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?)))
+           AND booking_state = 'EXECUTED' AND period_month = ?"
+    );
+    $tStatSt->execute([$sUser, $sRep, $activeMonthForTarget]);
+    $tStat = $tStatSt->fetch() ?: ['trips_cnt' => 0, 'pax_cnt' => 0, 'sales_egp' => 0];
+    $actualMonthSales = (float) ($tStat['sales_egp'] ?? 0.0);
+    $actualMonthTrips = (int) ($tStat['trips_cnt'] ?? 0);
+    $pctMonthly = $targetCfg['monthly_target_egp'] > 0
+        ? round(min(999.0, ($actualMonthSales / $targetCfg['monthly_target_egp']) * 100.0), 1)
+        : 0.0;
+
+    $myAwards = [];
+    foreach ([
+        'daily_best'   => ['code' => 'BEST_DAILY',   'icon' => '🥇', 'title_en' => 'Star Seller of the Day',   'title_ar' => 'نجم مبيعات اليوم'],
+        'weekly_best'  => ['code' => 'BEST_WEEKLY',  'icon' => '🏆', 'title_en' => 'Weekly Sales Champion',    'title_ar' => 'بطل مبيعات الأسبوع'],
+        'monthly_best' => ['code' => 'BEST_MONTHLY', 'icon' => '👑', 'title_en' => 'Seller of the Month MVP',  'title_ar' => 'أفضل مسوق في الشهر'],
+        'yearly_best'  => ['code' => 'BEST_YEARLY',  'icon' => '💎', 'title_en' => 'Annual Legend Award',      'title_ar' => 'أسطورة مبيعات العام'],
+    ] as $awKey => $meta) {
+        $win = $awardsAll[$awKey] ?? null;
+        if ($win && strtolower((string) $win['username']) === strtolower($sUser)) {
+            $myAwards[] = array_merge($meta, [
+                'sales_egp'   => (float) $win['actual_sales_egp'],
+                'trips_count' => (int) $win['trips_count'],
+            ]);
+        }
+    }
+    $xpPoints = (int) round(($actualMonthTrips * 25) + ($actualMonthSales / 500));
+    $levelTitleEn = $xpPoints >= 2500 ? '💎 Diamond Concierge' : ($xpPoints >= 1200 ? '👑 Gold Reef Pro' : ($xpPoints >= 500 ? '🥈 Silver Diver Rep' : '🌊 Rising Star'));
+    $levelTitleAr = $xpPoints >= 2500 ? '💎 كونسيرج ماسي' : ($xpPoints >= 1200 ? '👑 محترف ذهبي' : ($xpPoints >= 500 ? '🥈 مسوق فضي' : '🌊 نجم صاعد'));
+
+    // Seller notifications
+    $nSt = $pdo->prepare('SELECT * FROM user_notifications WHERE LOWER(recipient_username) = LOWER(?) ORDER BY id DESC LIMIT 30');
+    $nSt->execute([$sUser]);
+    $notifRows = array_map(static function (array $nr): array {
+        $nr['title']              = (string) ($nr['title_en'] ?? '');
+        $nr['body']               = (string) ($nr['body_en'] ?? '');
+        $nr['related_voucher_no'] = (string) ($nr['voucher_no'] ?? '');
+        return $nr;
+    }, $nSt->fetchAll());
+    $unreadCnt = 0;
+    foreach ($notifRows as $nr) {
+        if ((int) ($nr['is_read'] ?? 0) === 0) {
+            $unreadCnt++;
+        }
+    }
+
+    $kpis['actual_done_paid_commission_egp'] = $earnedComm;
+    $kpis['waiting_rest_or_trip_comm_egp']   = $pendingComm;
+    $kpis['allowances_paid_egp']             = round($advPaidEgp, 2);
+    $kpis['allowances_requested_egp']        = round($advReqEgp, 2);
+    $kpis['net_due_now_egp']                 = $netDueNowEgp;
+    $kpis['earned_unpaid_egp']               = round((float) ($kpis['earned_commission_egp'] ?? 0.0), 2);
+    $kpis['paid_settled_egp']                = round((float) ($kpis['paid_commission_egp'] ?? 0.0), 2);
+
+    $brochureLocLinks = [];
+    foreach (['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'] as $lgCode) {
+        $brochureLocLinks[$lgCode] = $lgCode === 'en'
+            ? ('https://seacollegediveclub.com/s/' . rawurlencode($sSlug))
+            : ('https://seacollegediveclub.com/' . $lgCode . '/s/' . rawurlencode($sSlug));
+    }
+
     echo json_encode([
-        'ok'               => true,
-        'month'            => $monthFilter,
-        'seller_profile'   => [
+        'ok'                         => true,
+        'month'                      => $monthFilter,
+        'seller'                     => [
+            'username'      => $sUser,
+            'referral_code' => $sSlug,
+            'qr_url'        => $qrUrl,
+            'brochure_url'  => $brochureUrl,
+        ],
+        'seller_profile'             => [
             'username'                 => $sUser,
             'display_name_en'          => (string) ($targetSeller['display_name_en'] ?? $sUser),
             'display_name_ar'          => (string) ($targetSeller['display_name_ar'] ?? $sUser),
@@ -662,17 +826,334 @@ if ($action === 'seller_wallet') {
             'referral_code'            => $sSlug,
             'qr_url'                   => $qrUrl,
             'referral_url'             => $qrUrl,
+            'share_brochure_url'       => $brochureUrl,
             'localized_urls'           => $langLinks,
+            'localized_brochure_urls'  => $brochureLocLinks,
             'default_comm_insheet_pct' => (float) ($targetSeller['default_comm_insheet_pct'] ?? 0.10),
             'default_comm_outside_pct' => (float) ($targetSeller['default_comm_outside_pct'] ?? 0.25),
             'phone'                    => (string) ($targetSeller['phone'] ?? ''),
             'email'                    => (string) ($targetSeller['email'] ?? ''),
             'avatar_url'               => (string) ($targetSeller['avatar_url'] ?? ''),
+            'xp_points'                => $xpPoints,
+            'level_title'              => $levelTitleEn,
+            'level_title_en'           => $levelTitleEn,
+            'level_title_ar'           => $levelTitleAr,
+            'awards'                   => $myAwards,
         ],
-        'kpis'             => $kpis,
-        'ledger_rows'      => $ledgerRows,
-        'attributed_leads' => $attributedLeads,
-        'all_sellers'      => $allSellers,
+        'kpis'                       => $kpis,
+        'actual_due_breakdown'       => [
+            'actual_done_paid_commission_egp'  => $earnedComm,
+            'waiting_rest_or_trip_comm_egp'    => $pendingComm,
+            'settled_and_allowances_egp'       => $settledAlreadyEgp,
+            'allowances_paid_egp'              => round($advPaidEgp, 2),
+            'allowances_requested_egp'         => round($advReqEgp, 2),
+            'requested_pending_allowances_egp' => round($advReqEgp, 2),
+            'net_due_now_egp'                  => $netDueNowEgp,
+        ],
+        'target_progress'            => [
+            'is_active'            => $targetCfg['is_active'],
+            'period_month'         => $activeMonthForTarget,
+            'daily_target_egp'     => $targetCfg['daily_target_egp'],
+            'weekly_target_egp'    => $targetCfg['weekly_target_egp'],
+            'monthly_target_egp'   => $targetCfg['monthly_target_egp'],
+            'target_daily_egp'     => $targetCfg['daily_target_egp'],
+            'target_weekly_egp'    => $targetCfg['weekly_target_egp'],
+            'target_monthly_egp'   => $targetCfg['monthly_target_egp'],
+            'monthly_trips_target' => $targetCfg['monthly_trips_target'],
+            'actual_sales_egp'     => $actualMonthSales,
+            'achieved_monthly_egp' => $actualMonthSales,
+            'actual_trips'         => $actualMonthTrips,
+            'pct_monthly'          => $pctMonthly,
+        ],
+        'awards'                     => $myAwards,
+        'my_trips'                   => $myTrips,
+        'advances_rows'              => $advRows,
+        'notifications'              => $notifRows,
+        'unread_notifications_count' => $unreadCnt,
+        'ledger_rows'                => $ledgerRows,
+        'attributed_leads'           => $attributedLeads,
+        'all_sellers'                => $allSellers,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- LIVE IN-APP NOTIFICATIONS (`notifications`) ---------------- */
+if ($action === 'notifications') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    $uName = (string) $ctx['user']['username'];
+    $roleTag = 'ROLE:' . (string) $ctx['user']['role_code'];
+    $nSt = $pdo->prepare(
+        'SELECT * FROM user_notifications
+         WHERE LOWER(recipient_username) = LOWER(?) OR recipient_username = ?
+         ORDER BY id DESC LIMIT 40'
+    );
+    $nSt->execute([$uName, $roleTag]);
+    $rows = array_map(static function (array $r): array {
+        $r['title']              = (string) ($r['title_en'] ?? '');
+        $r['body']               = (string) ($r['body_en'] ?? '');
+        $r['related_voucher_no'] = (string) ($r['voucher_no'] ?? '');
+        return $r;
+    }, $nSt->fetchAll());
+    $unread = 0;
+    foreach ($rows as $r) {
+        if ((int) ($r['is_read'] ?? 0) === 0) {
+            $unread++;
+        }
+    }
+    echo json_encode(['ok' => true, 'unread_count' => $unread, 'notifications' => $rows], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- OWNER & ACCOUNTING MULTI-HORIZON SELLER PERFORMANCE & AWARDS BI ---------------- */
+if ($action === 'seller_performance_bi') {
+    erp_require_perm($ctx, 'bi.view_executive', 'gl.view_all_ledgers');
+    $horizon = strtolower(trim((string) ($_GET['horizon'] ?? 'monthly')));
+    if (!in_array($horizon, ['daily', 'weekly', 'monthly', 'yearly', 'custom'], true)) {
+        $horizon = 'monthly';
+    }
+
+    $awards = sc_erp_compute_best_seller_awards($pdo);
+    $anchor = $awards['anchor_date'];
+
+    $reqFrom = trim((string) ($_GET['date_from'] ?? ''));
+    $reqTo   = trim((string) ($_GET['date_to'] ?? ''));
+
+    if ($horizon === 'custom' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $reqFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $reqTo)) {
+        $dateFrom = min($reqFrom, $reqTo);
+        $dateTo   = max($reqFrom, $reqTo);
+    } elseif ($horizon === 'daily') {
+        $dateFrom = preg_match('/^\d{4}-\d{2}-\d{2}$/', $reqFrom) ? $reqFrom : $anchor;
+        $dateTo   = $dateFrom;
+    } elseif ($horizon === 'weekly') {
+        $dateTo   = $anchor;
+        $dateFrom = $awards['week_from'];
+    } elseif ($horizon === 'yearly') {
+        $yr = preg_match('/^\d{4}$/', $reqFrom) ? $reqFrom : $awards['year_key'];
+        $dateFrom = $yr . '-01-01';
+        $dateTo   = $yr . '-12-31';
+    } else {
+        $mo = preg_match('/^\d{4}-\d{2}$/', $reqFrom) ? $reqFrom : $awards['month_key'];
+        $dateFrom = $mo . '-01';
+        $dateTo   = $mo . '-31';
+    }
+
+    $fmtWin = static function (?array $w, string $icon, string $wStart, string $wEnd): ?array {
+        if (!$w) {
+            return null;
+        }
+        return [
+            'username'        => (string) $w['username'],
+            'display_name_en' => (string) $w['display_name_en'],
+            'display_name_ar' => (string) $w['display_name_ar'],
+            'rep_code'        => (string) ($w['rep_scope'] ?: $w['username']),
+            'icon'            => $icon,
+            'sales_egp'       => (float) $w['actual_sales_egp'],
+            'trips_count'     => (int) $w['trips_count'],
+            'pax'             => (int) $w['total_pax'],
+            'window_start'    => $wStart,
+            'window_end'      => $wEnd,
+        ];
+    };
+    $awards['winners'] = [
+        'daily'   => $fmtWin($awards['daily_best'] ?? null,   '🥇', $anchor, $anchor),
+        'weekly'  => $fmtWin($awards['weekly_best'] ?? null,  '🏆', $awards['week_from'], $anchor),
+        'monthly' => $fmtWin($awards['monthly_best'] ?? null, '👑', $awards['month_key'] . '-01', $awards['month_key'] . '-31'),
+        'yearly'  => $fmtWin($awards['yearly_best'] ?? null,  '💎', $awards['year_key'] . '-01-01', $awards['year_key'] . '-12-31'),
+    ];
+
+    $globalTarget = sc_erp_get_seller_target($pdo, '__GLOBAL__');
+    $globalTarget['target_daily_egp']   = $globalTarget['daily_target_egp'];
+    $globalTarget['target_weekly_egp']  = $globalTarget['weekly_target_egp'];
+    $globalTarget['target_monthly_egp'] = $globalTarget['monthly_target_egp'];
+
+    $sellersRows = $pdo->query(
+        "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code, avatar_url
+         FROM users WHERE role_code = 'SALES_REP' AND is_active = 1 ORDER BY id ASC"
+    )->fetchAll();
+
+    $leaderboard = [];
+    $totTrips = 0;
+    $totPax   = 0;
+    $totSales = 0.0;
+    $totColl  = 0.0;
+
+    foreach ($sellersRows as $sr) {
+        $u = (string) $sr['username'];
+        $rep = (string) $sr['rep_scope'];
+
+        $rSt = $pdo->prepare(
+            "SELECT SUM(CASE WHEN booking_state = 'EXECUTED' THEN 1 ELSE 0 END) AS trips_sold,
+                    SUM(CASE WHEN booking_state LIKE 'CANCEL%' THEN 1 ELSE 0 END) AS trips_cancelled,
+                    COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN total_pax ELSE 0 END), 0) AS actual_pax,
+                    COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN adults ELSE 0 END), 0) AS actual_adults,
+                    COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN children ELSE 0 END), 0) AS actual_children,
+                    COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN infants ELSE 0 END), 0) AS actual_infants,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN (CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END) ELSE 0 END), 0), 2) AS actual_total_egp,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN rest_egp_equiv ELSE 0 END), 0), 2) AS open_rest_egp,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN supplier_cost_egp ELSE 0 END), 0), 2) AS supplier_cost_egp
+             FROM reservations_fact
+             WHERE (LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?)))
+               AND trip_date BETWEEN ? AND ?"
+        );
+        $rSt->execute([$u, $rep, $dateFrom, $dateTo]);
+        $rAgg = $rSt->fetch() ?: [];
+
+        $cSt = $pdo->prepare(
+            "SELECT ROUND(COALESCE(SUM(CASE WHEN status IN ('EARNED_UNPAID', 'PAID_SETTLED') THEN commission_egp ELSE 0 END), 0), 2) AS actual_due_comm,
+                    ROUND(COALESCE(SUM(CASE WHEN status = 'PENDING_EXECUTION' THEN commission_egp ELSE 0 END), 0), 2) AS pending_comm,
+                    ROUND(COALESCE(SUM(CASE WHEN status = 'PAID_SETTLED' THEN commission_egp ELSE 0 END), 0), 2) AS settled_comm
+             FROM seller_commissions_ledger
+             WHERE LOWER(seller_username) = LOWER(?) AND tx_date BETWEEN ? AND ?"
+        );
+        $cSt->execute([$u, $dateFrom, $dateTo]);
+        $cAgg = $cSt->fetch() ?: [];
+
+        $aSt = $pdo->prepare(
+            "SELECT ROUND(COALESCE(SUM(CASE WHEN status IN ('APPROVED_PAID', 'PAID') THEN amount_egp ELSE 0 END), 0), 2) AS adv_paid
+             FROM seller_commission_advances
+             WHERE LOWER(seller_username) = LOWER(?) AND tx_date BETWEEN ? AND ?"
+        );
+        $aSt->execute([$u, $dateFrom, $dateTo]);
+        $advPaid = (float) ($aSt->fetchColumn() ?: 0.0);
+
+        $tCfg = sc_erp_get_seller_target($pdo, $u);
+        $targetRef = match ($horizon) {
+            'daily'  => $tCfg['daily_target_egp'],
+            'weekly' => $tCfg['weekly_target_egp'],
+            'yearly' => round($tCfg['monthly_target_egp'] * 12.0, 0),
+            default  => $tCfg['monthly_target_egp'],
+        };
+        $actualTotal = (float) ($rAgg['actual_total_egp'] ?? 0.0);
+        $openRest    = (float) ($rAgg['open_rest_egp'] ?? 0.0);
+        $collected   = round(max(0.0, $actualTotal - $openRest), 2);
+        $dueComm     = (float) ($cAgg['actual_due_comm'] ?? 0.0);
+        $settledTot  = round((float) ($cAgg['settled_comm'] ?? 0.0) + $advPaid, 2);
+
+        $totTrips += (int) ($rAgg['trips_sold'] ?? 0);
+        $totPax   += (int) ($rAgg['actual_pax'] ?? 0);
+        $totSales += $actualTotal;
+        $totColl  += $collected;
+
+        $badges = [];
+        $awardObjs = [];
+        if (($awards['daily_best']['username'] ?? '') === $u) {
+            $badges[] = '🥇 Daily #1';
+            $awardObjs[] = ['icon' => '🥇', 'title_en' => 'Best Seller Today'];
+        }
+        if (($awards['weekly_best']['username'] ?? '') === $u) {
+            $badges[] = '🏆 Weekly #1';
+            $awardObjs[] = ['icon' => '🏆', 'title_en' => 'Best Seller This Week'];
+        }
+        if (($awards['monthly_best']['username'] ?? '') === $u) {
+            $badges[] = '👑 Monthly #1';
+            $awardObjs[] = ['icon' => '👑', 'title_en' => 'Best Seller This Month'];
+        }
+        if (($awards['yearly_best']['username'] ?? '') === $u) {
+            $badges[] = '💎 Yearly #1';
+            $awardObjs[] = ['icon' => '💎', 'title_en' => 'Best Seller of the Year'];
+        }
+
+        $leaderboard[] = [
+            'username'               => $u,
+            'display_name_en'        => $sr['display_name_en'],
+            'display_name_ar'        => $sr['display_name_ar'],
+            'avatar_url'             => $sr['avatar_url'],
+            'rep_scope'              => $rep,
+            'branch_scope'           => $sr['branch_scope'],
+            'referral_code'          => $sr['referral_code'],
+            'trips_sold'             => (int) ($rAgg['trips_sold'] ?? 0),
+            'trips_cancelled'        => (int) ($rAgg['trips_cancelled'] ?? 0),
+            'actual_pax'             => (int) ($rAgg['actual_pax'] ?? 0),
+            'actual_adults'          => (int) ($rAgg['actual_adults'] ?? 0),
+            'actual_children'        => (int) ($rAgg['actual_children'] ?? 0),
+            'actual_infants'         => (int) ($rAgg['actual_infants'] ?? 0),
+            'actual_total_egp'       => $actualTotal,
+            'actual_collected_egp'   => $collected,
+            'actual_paid_egp'        => $collected,
+            'open_rest_egp'          => $openRest,
+            'supplier_cost_egp'      => (float) ($rAgg['supplier_cost_egp'] ?? 0.0),
+            'actual_due_comm_egp'    => $dueComm,
+            'pending_comm_egp'       => (float) ($cAgg['pending_comm'] ?? 0.0),
+            'allowances_paid_egp'    => round($advPaid, 2),
+            'net_payable_comm_egp'   => round(max(0.0, $dueComm - $settledTot), 2),
+            'target_egp'             => $targetRef,
+            'target_pct'             => $targetRef > 0 ? round(($actualTotal / $targetRef) * 100.0, 1) : 0.0,
+            'badges'                 => $badges,
+            'awards'                 => $awardObjs,
+        ];
+    }
+
+    usort($leaderboard, static fn($a, $b) => ($b['actual_total_egp'] <=> $a['actual_total_egp']) ?: ($b['trips_sold'] <=> $a['trips_sold']));
+    foreach ($leaderboard as $idx => &$lbRow) {
+        $lbRow['rank'] = $idx + 1;
+    }
+    unset($lbRow);
+
+    $modAudit = array_map(static function (array $m): array {
+        $m['old_adults']       = (int) ($m['prev_adults'] ?? 0);
+        $m['old_children']     = (int) ($m['prev_children'] ?? 0);
+        $m['old_infants']      = (int) ($m['prev_infants'] ?? 0);
+        $m['old_total_egp']    = (float) ($m['prev_total_egp'] ?? 0.0);
+        $m['extra_charge_egp'] = (float) ($m['delta_total_egp'] ?? 0.0);
+        $m['reason']           = (string) ($m['reason_notes'] ?? '');
+        $m['actor_username']   = (string) ($m['changed_by_username'] ?? '');
+        return $m;
+    }, $pdo->query('SELECT * FROM voucher_change_audit_log ORDER BY id DESC LIMIT 50')->fetchAll());
+
+    $pendAllow = array_map(static function (array $a): array {
+        $a['request_date'] = (string) ($a['tx_date'] ?? substr((string) ($a['created_at'] ?? ''), 0, 10));
+        $a['rep_code']     = (string) ($a['rep_scope'] ?? $a['seller_username'] ?? '');
+        return $a;
+    }, $pdo->query(
+        "SELECT a.*, u.display_name_en, u.display_name_ar
+         FROM seller_commission_advances a
+         LEFT JOIN users u ON LOWER(u.username) = LOWER(a.seller_username)
+         ORDER BY CASE WHEN a.status='REQUESTED' THEN 0 ELSE 1 END, a.id DESC LIMIT 40"
+    )->fetchAll());
+
+    $pipelineRows = array_map(static function (array $r): array {
+        $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
+        $rest = round((float) ($r['rest_egp_equiv'] ?? 0.0), 2);
+        $tot  = round((float) (($r['estimated_revenue_egp'] ?? 0.0) > 0 ? $r['estimated_revenue_egp'] : ($paid + $rest)), 2);
+        $r['guest_name']        = (string) ($r['divers_names'] ?? '');
+        $r['paid_egp_equiv']    = $paid;
+        $r['actual_total_egp']  = $tot;
+        $r['workflow_status']   = (string) (($r['workflow_stage'] ?? '') !== '' ? $r['workflow_stage'] : ($r['boarding_status'] ?? 'CONFIRMED'));
+        $r['modification_note'] = (string) ($r['modification_summary'] ?? '');
+        return $r;
+    }, $pdo->query(
+        "SELECT id, voucher_no, trip_date, hotel_name, room_no, divers_names, trip_name,
+                adults, children, infants, total_pax, deposit_egp_equiv, collected_rest_egp,
+                rest_egp_equiv, estimated_revenue_egp, sales_rep, seller_username,
+                boarding_status, payment_status, booking_state, workflow_stage,
+                has_modification, modification_summary
+         FROM reservations_fact
+         WHERE source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'SELLER_SHARE_LINK')
+            OR has_modification = 1
+         ORDER BY id DESC LIMIT 60"
+    )->fetchAll());
+
+    echo json_encode([
+        'ok'                          => true,
+        'horizon'                     => $horizon,
+        'date_from'                   => $dateFrom,
+        'date_to'                     => $dateTo,
+        'totals'                      => [
+            'trips_sold'       => $totTrips,
+            'actual_pax'       => $totPax,
+            'actual_sales_egp' => round($totSales, 2),
+            'collected_egp'    => round($totColl, 2),
+        ],
+        'awards'                      => $awards,
+        'target_config'               => $globalTarget,
+        'sellers_leaderboard'         => $leaderboard,
+        'voucher_modifications_audit' => $modAudit,
+        'commission_allowances'       => $pendAllow,
+        'live_confirmation_pipeline'  => $pipelineRows,
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
@@ -1468,22 +1949,64 @@ if ($action === 'role_workspace') {
         $out['cashbox_recent'] = $pdo->query('SELECT * FROM cashbox_daily_fact ORDER BY tx_date DESC LIMIT 45')->fetchAll();
     }
 
-    if (in_array('ops.view_manifests', $perms, true) || in_array('jetty.scan_boarding_collect_rest', $perms, true)) {
-        $out['vouchers'] = $pdo->query('SELECT * FROM reservations_fact ORDER BY trip_date DESC, id DESC LIMIT 80')->fetchAll();
+    $roleTag = 'ROLE:' . (string) $user['role_code'];
+    $unSt = $pdo->prepare('SELECT * FROM user_notifications WHERE LOWER(recipient_username) = LOWER(?) OR recipient_username = ? ORDER BY id DESC LIMIT 30');
+    $unSt->execute([(string) $user['username'], $roleTag]);
+    $wsNotifs = array_map(static function (array $r): array {
+        $r['title']              = (string) ($r['title_en'] ?? '');
+        $r['body']               = (string) ($r['body_en'] ?? '');
+        $r['related_voucher_no'] = (string) ($r['voucher_no'] ?? '');
+        return $r;
+    }, $unSt->fetchAll());
+    $wsUnread = 0;
+    foreach ($wsNotifs as $wn) {
+        if ((int) ($wn['is_read'] ?? 0) === 0) {
+            $wsUnread++;
+        }
+    }
+    $out['notifications']              = $wsNotifs;
+    $out['unread_notifications_count'] = $wsUnread;
+
+    $enrichVoucherRow = static function (array $r): array {
+        $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
+        $rest = round((float) ($r['rest_egp_equiv'] ?? 0.0), 2);
+        $tot  = round((float) (($r['estimated_revenue_egp'] ?? 0.0) > 0 ? $r['estimated_revenue_egp'] : ($paid + $rest)), 2);
+        $r['guest_name']        = (string) ($r['divers_names'] ?? '');
+        $r['paid_egp_equiv']    = $paid;
+        $r['actual_total_egp']  = $tot;
+        $r['workflow_status']   = (string) (($r['workflow_stage'] ?? '') !== '' ? $r['workflow_stage'] : ($r['boarding_status'] ?? 'CONFIRMED'));
+        $r['modification_note'] = (string) ($r['modification_summary'] ?? '');
+        return $r;
+    };
+
+    if (in_array('ops.view_manifests', $perms, true) || in_array('jetty.scan_boarding_collect_rest', $perms, true) || in_array('gl.view_all_ledgers', $perms, true) || in_array('bi.view_executive', $perms, true)) {
+        $out['vouchers'] = array_map($enrichVoucherRow, $pdo->query('SELECT * FROM reservations_fact ORDER BY CASE WHEN source_file IN ("LIVE_MOBILE_APP","LIVE_WEBSITE_FORM","SELLER_SHARE_LINK") THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 90')->fetchAll());
+        $modRows = array_map(static function (array $m): array {
+            $m['old_adults']       = (int) ($m['prev_adults'] ?? 0);
+            $m['old_children']     = (int) ($m['prev_children'] ?? 0);
+            $m['old_infants']      = (int) ($m['prev_infants'] ?? 0);
+            $m['old_total_egp']    = (float) ($m['prev_total_egp'] ?? 0.0);
+            $m['extra_charge_egp'] = (float) ($m['delta_total_egp'] ?? 0.0);
+            $m['reason']           = (string) ($m['reason_notes'] ?? '');
+            $m['actor_username']   = (string) ($m['changed_by_username'] ?? '');
+            return $m;
+        }, $pdo->query('SELECT * FROM voucher_change_audit_log ORDER BY id DESC LIMIT 40')->fetchAll());
+        $out['voucher_modifications'] = $modRows;
+        $out['voucher_audit_recent']  = $modRows;
     } elseif (in_array('sales.view_own_sales', $perms, true)) {
         // Strict horizontal isolation between sellers!
         $uLower = strtolower((string) $user['username']);
         $repUp  = strtoupper(trim((string) ($user['rep_scope'] ?: $user['username'])));
         $whereSeller = '(LOWER(seller_username) = ? OR (seller_username = "" AND UPPER(sales_rep) = ?))';
-        $vSt = $pdo->prepare("SELECT * FROM reservations_fact WHERE {$whereSeller} ORDER BY trip_date DESC, id DESC LIMIT 80");
+        $vSt = $pdo->prepare("SELECT * FROM reservations_fact WHERE {$whereSeller} ORDER BY CASE WHEN source_file IN ('LIVE_MOBILE_APP','LIVE_WEBSITE_FORM','SELLER_SHARE_LINK') THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 80");
         $vSt->execute([$uLower, $repUp]);
-        $myRows = $vSt->fetchAll();
+        $myRows = array_map($enrichVoucherRow, $vSt->fetchAll());
         $sSt = $pdo->prepare("SELECT COUNT(*) AS total_vouchers, COALESCE(SUM(total_pax),0) AS total_pax, ROUND(COALESCE(SUM(estimated_revenue_egp),0),2) AS est_rev_egp, ROUND(COALESCE(SUM(seller_commission_egp),0),2) AS total_commission_egp FROM reservations_fact WHERE {$whereSeller} AND booking_state = 'EXECUTED'");
         $sSt->execute([$uLower, $repUp]);
         $out['vouchers']       = $myRows;
         $out['my_sales_stats'] = $sSt->fetch();
     } elseif (in_array('crew.view_own_manifest', $perms, true)) {
-        $out['vouchers'] = $pdo->query("SELECT * FROM reservations_fact WHERE dives_pax > 0 OR intro1_pax > 0 OR intro2_pax > 0 ORDER BY trip_date DESC LIMIT 50")->fetchAll();
+        $out['vouchers'] = array_map($enrichVoucherRow, $pdo->query("SELECT * FROM reservations_fact WHERE dives_pax > 0 OR intro1_pax > 0 OR intro2_pax > 0 ORDER BY trip_date DESC LIMIT 50")->fetchAll());
         $out['checkins'] = $pdo->query("SELECT * FROM website_leads_crm WHERE lead_type = 'DIVER_CHECKIN' ORDER BY id DESC LIMIT 30")->fetchAll();
     }
 
@@ -1925,7 +2448,8 @@ if ($method === 'POST') {
 
         $adults   = max(1, min(60, (int) ($rawIn['adults'] ?? 2)));
         $children = max(0, min(40, (int) ($rawIn['children'] ?? 0)));
-        $pax      = $adults + $children;
+        $infants  = max(0, min(20, (int) ($rawIn['infants'] ?? 0)));
+        $pax      = $adults + $children + $infants;
 
         $fx = sc_erp_fx_rates($pdo);
 
@@ -1961,43 +2485,50 @@ if ($method === 'POST') {
         }
         $restEq = round($rEgp + $rUsd * $fx['USD'] + $rEur * $fx['EUR'] + $rGbp * $fx['GBP'], 2);
 
+        $masterTrip = sc_erp_lookup_unified_trip($pdo, $prodCode);
         $pSt = $pdo->prepare('SELECT * FROM products_catalog WHERE code = ?');
         $pSt->execute([$prodCode]);
         $prod = $pSt->fetch();
-        $tripName = $prod ? (string) $prod['name_en'] : '';
-        $unitEur  = ($prod && $prod['price_eur'] !== null) ? (float) $prod['price_eur'] : 0.0;
-        $costRatio = (float) ($prod['direct_cost_ratio'] ?? 0.38);
 
-        if ($tripName === '' && is_file(ROOT_DIR . '/data/operational_skus.php')) {
-            $opSkus = require ROOT_DIR . '/data/operational_skus.php';
-            foreach ($opSkus as $sk) {
-                if (($sk['id'] ?? '') === $prodCode || ($sk['code'] ?? '') === $prodCode) {
-                    $tripName = (string) ($sk['names']['en'] ?? $prodCode);
-                    $unitEur  = (float) ($sk['price_eur'] ?? 45.0);
-                    break;
-                }
-            }
-        }
-        if ($tripName === '') {
-            $tripName = $prodCode;
-        }
-        if ($unitEur <= 0.0) {
-            $unitEur = 55.0;
-        }
+        $tripName   = $masterTrip ? (string) $masterTrip['unified_name_en'] : ($prod ? (string) $prod['name_en'] : $prodCode);
+        $adlEur     = $masterTrip ? (float) $masterTrip['adult_sell_eur'] : (($prod && $prod['price_eur'] !== null) ? (float) $prod['price_eur'] : 55.0);
+        $chdEur     = $masterTrip ? (float) $masterTrip['child_sell_eur'] : round($adlEur * 0.5, 2);
+        $infEur     = $masterTrip ? (float) $masterTrip['infant_sell_eur'] : 0.0;
+        $costRatio  = (float) ($prod['direct_cost_ratio'] ?? 0.38);
 
-        $catalogRevEgp = round(($adults + 0.5 * $children) * $unitEur * $fx['EUR'], 2);
+        $catalogRevEgp = round(($adults * $adlEur + $children * $chdEur + $infants * $infEur) * $fx['EUR'], 2);
         $explicitGross = round($depositEgp + $restEq, 2);
         $grossEgp      = $explicitGross > 0.0 ? $explicitGross : $catalogRevEgp;
 
-        $saleModeRaw = strtoupper(trim((string) ($rawIn['sale_mode'] ?? 'INSHEET')));
-        if (!in_array($saleModeRaw, ['INSHEET', 'OUT_SIDE', 'OUTSIDE', 'CENTER'], true)) {
-            $saleModeRaw = 'INSHEET';
+        // If deposit was 0 and rest wasn't explicitly set, automatically put remaining amount in REST EUR so pickup/Jetty knows what to collect!
+        if ($explicitGross <= 0.0 && $catalogRevEgp > 0.0 && !array_key_exists('deposit_amount', $rawIn) && !array_key_exists('rest_amount', $rawIn) && !array_key_exists('rest_eur', $rawIn)) {
+            $rEur   = round($adults * $adlEur + $children * $chdEur + $infants * $infEur, 2);
+            $restEq = $catalogRevEgp;
         }
-        $supplierCostEgp = max(0.0, round((float) ($rawIn['supplier_cost_egp'] ?? 0.0), 2));
+
+        // Hidden automatic accounting mode & Adult/Child supplier cost from master_trips_catalog unless explicitly overridden
+        $defaultMode = $masterTrip ? (string) $masterTrip['sale_mode'] : 'INSHEET';
+        $saleModeRaw = isset($rawIn['sale_mode']) && trim((string) $rawIn['sale_mode']) !== ''
+            ? strtoupper(trim((string) $rawIn['sale_mode']))
+            : $defaultMode;
+        if (!in_array($saleModeRaw, ['INSHEET', 'OUT_SIDE', 'OUTSIDE', 'CENTER'], true)) {
+            $saleModeRaw = $defaultMode;
+        }
+
+        $autoSupplierCostEgp = $masterTrip
+            ? round($adults * (float) $masterTrip['adult_cost_egp'] + $children * (float) $masterTrip['child_cost_egp'] + $infants * (float) $masterTrip['infant_cost_egp'], 2)
+            : 0.0;
+        $supplierCostEgp = array_key_exists('supplier_cost_egp', $rawIn) && (float) $rawIn['supplier_cost_egp'] > 0
+            ? max(0.0, round((float) $rawIn['supplier_cost_egp'], 2))
+            : $autoSupplierCostEgp;
+
         $cogsEgp  = ($saleModeRaw === 'OUT_SIDE' || $saleModeRaw === 'OUTSIDE')
             ? ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2))
-            : round($grossEgp * $costRatio, 2);
+            : ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2));
         $profEgp  = round($grossEgp - $cogsEgp, 2);
+
+        $supCode  = $masterTrip ? (string) $masterTrip['supplier_code'] : 'SEA_COLLEGE';
+        $supName  = $masterTrip ? (string) $masterTrip['supplier_name'] : 'SEA COLLEGE';
 
         // Resolve seller attribution (Sales Rep self-scoped; Ops/Admin can pass optional seller_username)
         $sellerCandidate = '';
@@ -2016,6 +2547,7 @@ if ($method === 'POST') {
             : ($user['branch_scope'] !== 'ALL' ? (string) $user['branch_scope'] : 'CYRENE');
         $sellerType = $resolvedSeller ? 'HOTEL_SELLER' : 'HOUSE_OPS';
 
+        // Commission starts as PENDING_EXECUTION until BOTH trip is done AND 100% of money (deposit + rest) is collected!
         $commRes = sc_erp_record_seller_commission($pdo, [
             'seller_token'     => $resolvedSeller ? (string) $resolvedSeller['username'] : '',
             'sale_mode'        => $saleModeRaw,
@@ -2025,7 +2557,7 @@ if ($method === 'POST') {
             'product_name'     => $tripName,
             'pax'              => $pax,
             'gross_amount_egp' => $grossEgp,
-            'supplier_cost_egp'=> $supplierCostEgp,
+            'supplier_cost_egp'=> ($saleModeRaw === 'OUT_SIDE' || $saleModeRaw === 'OUTSIDE') ? $supplierCostEgp : 0.0,
             'status'           => 'PENDING_EXECUTION',
             'source_channel'   => 'LIVE_MOBILE_APP',
             'branch_code'      => $branch,
@@ -2036,30 +2568,48 @@ if ($method === 'POST') {
             'INSERT INTO reservations_fact
              (voucher_no, qr_token, trip_date, period_week, period_month, period_quarter, period_year,
               branch_code, channel, hotel_name, pickup_zone, room_no, nationality, pickup_time,
-              trip_name, product_category, adults, children, infants, total_pax,
+              trip_name, unified_trip_code, product_category, adults, children, infants, total_pax,
+              adult_unit_eur, child_unit_eur, infant_unit_eur,
+              booked_adults, booked_children, booked_infants, booked_total_egp,
               snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
-              sales_rep, executor, client_agency, rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
-              desk_paid_egp, deposit_egp_equiv, supplier_cost_egp,
+              sales_rep, executor, ap_supplier_code, client_agency,
+              rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
+              desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
               estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
-              boarding_status, payment_status, booking_state, source_file,
+              boarding_status, payment_status, booking_state, workflow_stage, source_file,
               seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?, ?,?,?, ?,?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ?, ?,?,?,?,?)'
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, 0,0,0,0,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
         );
         $ins->execute([
             $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
             $branch, 'MOBILE_APP', $hotel, '', $room, $nat, $pickup,
-            $tripName, 'MOBILE_VOUCHER', $adults, $children, 0, $pax,
-            $guest, $repName, 'SEA COLLEGE', 'DIRECT',
+            $tripName, $masterTrip ? (string) $masterTrip['trip_code'] : $prodCode, 'MOBILE_VOUCHER', $adults, $children, $infants, $pax,
+            $adlEur, $chdEur, $infEur,
+            $adults, $children, $infants, $grossEgp,
+            $guest,
+            $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', 'DIRECT',
             $rEgp, $rUsd, $rEur, $rGbp, $restEq,
-            $depositEgp, $depositEgp, $supplierCostEgp,
+            $depositEgp, $depositEgp, $depositEgp, $supplierCostEgp,
             $grossEgp, $cogsEgp, $profEgp,
-            '', 'BOOKED', $restEq > 0 ? 'OPEN_REST' : 'PAID', 'EXECUTED', 'LIVE_MOBILE_APP',
+            '', 'BOOKED', $restEq > 0 ? 'OPEN_REST' : 'PAID', 'EXECUTED', 'SELLER_CONFIRMED_PENDING_OPS', 'LIVE_MOBILE_APP',
             $sellerType,
             $commRes['seller_username'],
             $commRes['commission_egp'],
             $commRes['commission_type'],
             $commRes['commission_status'],
         ]);
+        $createdVid = (int) $pdo->lastInsertId();
+
+        sc_erp_push_notification(
+            $pdo,
+            'ROLE:OPERATIONS_MANAGER',
+            'SELLER_CONFIRMED',
+            $voNo,
+            "📋 New Seller Voucher Ready for Dispatch ({$voNo})",
+            "📋 حجز جديد من المبيعات بانتظار تأكيد الحجوزات والتشغيل ({$voNo})",
+            "{$repName}: {$guest} ({$adults} Adl, {$children} Ch, {$infants} Inf) — {$tripName} on {$tripDt}.",
+            "{$repName}: العميل {$guest} ({$adults} بالغ، {$children} طفل، {$infants} رضيع) — {$tripName} بتاريخ {$tripDt}."
+        );
 
         sc_erp_audit($pdo, (string) $user['username'], (string) $user['role_code'], 'CREATE_VOUCHER', 'VOUCHER', $voNo, [
             'pax'            => $pax,
@@ -2070,10 +2620,17 @@ if ($method === 'POST') {
 
         echo json_encode([
             'ok'                    => true,
+            'id'                    => $createdVid,
+            'voucher_id'            => $createdVid,
             'voucher_no'            => $voNo,
             'qr_token'              => $qrTok,
+            'adults'                => $adults,
+            'children'              => $children,
+            'infants'               => $infants,
             'estimated_revenue_egp' => $grossEgp,
             'gross_amount_egp'      => $grossEgp,
+            'deposit_egp'           => $depositEgp,
+            'rest_egp'              => $restEq,
             'commission_egp'        => $commRes['commission_egp'],
             'commission_type'       => $commRes['commission_type'],
             'commission_status'     => $commRes['commission_status'],
@@ -2086,15 +2643,89 @@ if ($method === 'POST') {
         $id     = (int) ($rawIn['id'] ?? 0);
         $vessel = clean_line($rawIn['vessel_code'] ?? 'OCEANO', 32);
         $pickup = clean_line($rawIn['pickup_time'] ?? '07:40', 20);
-        $upd = $pdo->prepare("UPDATE reservations_fact SET vessel_code = ?, pickup_time = ?, boarding_status = 'DISPATCHED' WHERE id = ?");
+        $upd = $pdo->prepare("UPDATE reservations_fact SET vessel_code = ?, pickup_time = ?, boarding_status = 'DISPATCHED', workflow_stage = 'CONFIRMED_OPS' WHERE id = ?");
         $upd->execute([$vessel, $pickup, $id]);
         sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'ASSIGN_BOAT', 'VOUCHER_ID', (string) $id, ['vessel' => $vessel]);
         echo json_encode(['ok' => true]);
         exit;
     }
 
+    if ($action === 'seller_confirm_booking') {
+        erp_require_perm($ctx, 'sales.view_own_sales', 'ops.assign_boat_driver', 'bi.view_executive');
+        $id   = (int) ($rawIn['id'] ?? 0);
+        $voIn = trim((string) ($rawIn['voucher_no'] ?? ''));
+        $vSt  = $id > 0
+            ? $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?')
+            : $pdo->prepare('SELECT * FROM reservations_fact WHERE voucher_no = ? ORDER BY id DESC LIMIT 1');
+        $vSt->execute([$id > 0 ? $id : $voIn]);
+        $v = $vSt->fetch();
+        if (!$v) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Booking not found']);
+            exit;
+        }
+        if ($ctx['user']['role_code'] === 'SALES_REP' && strtolower((string) $v['seller_username']) !== strtolower((string) $ctx['user']['username'])) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Cannot confirm another seller booking']);
+            exit;
+        }
+        $voNo = (string) $v['voucher_no'];
+        $pdo->prepare("UPDATE reservations_fact SET workflow_stage = 'SELLER_CONFIRMED_PENDING_OPS' WHERE id = ?")->execute([(int) $v['id']]);
+        $pdo->prepare("UPDATE user_notifications SET is_read = 1 WHERE voucher_no = ? AND LOWER(recipient_username) = LOWER(?)")->execute([$voNo, (string) $ctx['user']['username']]);
+
+        sc_erp_push_notification(
+            $pdo,
+            'ROLE:OPERATIONS_MANAGER',
+            'SELLER_CONFIRMED',
+            $voNo,
+            "✅ Seller Confirmed Link Booking ({$voNo}) — Ready for Reservations",
+            "✅ أكد المسوق الحجز الإلكتروني ({$voNo}) — جاهز لتأكيد مدير الحجوزات",
+            "Guest {$v['divers_names']} · {$v['trip_name']} ({$v['total_pax']} PAX) on {$v['trip_date']}.",
+            "العميل {$v['divers_names']} · {$v['trip_name']} ({$v['total_pax']} أفراد) بتاريخ {$v['trip_date']}."
+        );
+        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'workflow_stage' => 'SELLER_CONFIRMED_PENDING_OPS', 'workflow_status' => 'SELLER_CONFIRMED_PENDING_OPS']);
+        exit;
+    }
+
+    if ($action === 'ops_confirm_reservation') {
+        erp_require_perm($ctx, 'ops.view_manifests', 'ops.assign_boat_driver', 'bi.view_executive', 'gl.view_all_ledgers');
+        $id     = (int) ($rawIn['id'] ?? 0);
+        $voIn   = trim((string) ($rawIn['voucher_no'] ?? ''));
+        $pickup = clean_line($rawIn['pickup_time'] ?? '', 24);
+        $vessel = clean_line($rawIn['vessel_code'] ?? '', 32);
+
+        $vSt = $id > 0
+            ? $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?')
+            : $pdo->prepare('SELECT * FROM reservations_fact WHERE voucher_no = ? ORDER BY id DESC LIMIT 1');
+        $vSt->execute([$id > 0 ? $id : $voIn]);
+        $v = $vSt->fetch();
+        if (!$v) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Reservation not found']);
+            exit;
+        }
+        $voNo = (string) $v['voucher_no'];
+        $newPickup = $pickup !== '' ? $pickup : (string) ($v['pickup_time'] ?: '08:00');
+        $newVessel = $vessel !== '' ? $vessel : (string) ($v['vessel_code'] ?? '');
+        $pdo->prepare("UPDATE reservations_fact SET workflow_stage = 'OPS_CONFIRMED', boarding_status = CASE WHEN boarding_status='BOOKED' THEN 'DISPATCHED' ELSE boarding_status END, pickup_time = ?, vessel_code = ? WHERE id = ?")
+            ->execute([$newPickup, $newVessel, (int) $v['id']]);
+
+        sc_erp_push_notification(
+            $pdo,
+            'ROLE:CHIEF_ACCOUNTANT',
+            'OPS_CONFIRMED',
+            $voNo,
+            "📑 Confirmed Reservation Posted to Accounting ({$voNo})",
+            "📑 حجز مؤكد من مدير الحجوزات جاهز للمتابعة المالية ({$voNo})",
+            "{$v['divers_names']} · {$v['trip_name']} · Total: " . number_format((float) $v['estimated_revenue_egp']) . " EGP · Paid: " . number_format((float) $v['deposit_egp_equiv']) . " EGP · Rest: " . number_format((float) $v['rest_egp_equiv']) . " EGP.",
+            "العميل {$v['divers_names']} · {$v['trip_name']} · الإجمالي: " . number_format((float) $v['estimated_revenue_egp']) . " ج.م · المدفوع: " . number_format((float) $v['deposit_egp_equiv']) . " ج.م · المتبقي للتحصيل: " . number_format((float) $v['rest_egp_equiv']) . " ج.م."
+        );
+        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'workflow_stage' => 'OPS_CONFIRMED', 'workflow_status' => 'OPS_CONFIRMED']);
+        exit;
+    }
+
     if ($action === 'collect_rest_board') {
-        erp_require_perm($ctx, 'jetty.scan_boarding_collect_rest');
+        erp_require_perm($ctx, 'jetty.scan_boarding_collect_rest', 'safe.record_tx', 'ops.assign_boat_driver', 'gl.view_all_ledgers');
         $id  = (int) ($rawIn['id'] ?? 0);
         $vSt = $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?');
         $vSt->execute([$id]);
@@ -2107,15 +2738,22 @@ if ($method === 'POST') {
         $voNo = (string) $v['voucher_no'];
         $alreadyBoarded = strtoupper((string) ($v['boarding_status'] ?? '')) === 'BOARDED';
         $collectedEgp   = $alreadyBoarded ? 0.0 : max(0.0, (float) $v['rest_egp_equiv']);
+        $totalPaidNow   = round((float) ($v['deposit_egp_equiv'] ?? 0.0) + (float) ($v['collected_rest_egp'] ?? 0.0) + $collectedEgp, 2);
+        if ($totalPaidNow <= 0.0) {
+            $totalPaidNow = (float) ($v['estimated_revenue_egp'] ?? 0.0);
+        }
 
         $pdo->prepare(
             "UPDATE reservations_fact
              SET rest_egp = 0, rest_usd = 0, rest_eur = 0, rest_gbp = 0, rest_egp_equiv = 0,
+                 collected_rest_egp = ROUND(collected_rest_egp + ?, 2),
+                 actual_paid_total_egp = ?,
                  payment_status = 'PAID',
                  boarding_status = 'BOARDED',
+                 workflow_stage = 'COMPLETED_SETTLED',
                  commission_status = CASE WHEN seller_username != '' AND commission_type != 'NONE' THEN 'EARNED_UNPAID' ELSE commission_status END
              WHERE id = ?"
-        )->execute([$id]);
+        )->execute([$collectedEgp, $totalPaidNow, $id]);
 
         if ($collectedEgp > 0.0) {
             $pdo->prepare("UPDATE safes_wallets SET bal_egp = bal_egp + ?, updated_at = ? WHERE code = 'SAFE_JETTY'")->execute([$collectedEgp, gmdate('c')]);
@@ -2129,8 +2767,414 @@ if ($method === 'POST') {
             )->execute([$voNo]);
         }
 
+        if (!empty($v['seller_username'])) {
+            sc_erp_push_notification(
+                $pdo,
+                (string) $v['seller_username'],
+                'COMMISSION_UNLOCKED',
+                $voNo,
+                "💰 Trip Done & 100% Paid ({$voNo}) — Commission Unlocked!",
+                "💰 تمت الرحلة وتحصيل كامل المبلغ ({$voNo}) — العمولة مستحقة الآن!",
+                "Guest {$v['divers_names']} completed {$v['trip_name']} & full payment was collected.",
+                "أتم العميل {$v['divers_names']} رحلة {$v['trip_name']} وتم تحصيل كامل المبلغ في الخزينة."
+            );
+        }
+
         sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'JETTY_BOARD_COLLECT_REST', 'VOUCHER', $voNo, ['collected_egp' => $collectedEgp]);
-        echo json_encode(['ok' => true, 'collected_egp' => $collectedEgp, 'commission_status' => 'EARNED_UNPAID']);
+        echo json_encode(['ok' => true, 'collected_egp' => $collectedEgp, 'actual_paid_total_egp' => $totalPaidNow, 'commission_status' => 'EARNED_UNPAID']);
+        exit;
+    }
+
+    if ($action === 'modify_voucher_settlement') {
+        erp_require_perm($ctx, 'ops.view_manifests', 'ops.assign_boat_driver', 'jetty.scan_boarding_collect_rest', 'safe.record_tx', 'gl.view_all_ledgers', 'bi.view_executive');
+        $id   = (int) ($rawIn['id'] ?? 0);
+        $voIn = trim((string) ($rawIn['voucher_no'] ?? ''));
+        $vSt  = $id > 0
+            ? $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?')
+            : $pdo->prepare('SELECT * FROM reservations_fact WHERE voucher_no = ? ORDER BY id DESC LIMIT 1');
+        $vSt->execute([$id > 0 ? $id : $voIn]);
+        $v = $vSt->fetch();
+        if (!$v) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Voucher not found']);
+            exit;
+        }
+
+        $vid  = (int) $v['id'];
+        $voNo = (string) $v['voucher_no'];
+        $fx   = sc_erp_fx_rates($pdo);
+
+        $prevAdl = (int) ($v['adults'] ?? 0);
+        $prevChd = (int) ($v['children'] ?? 0);
+        $prevInf = (int) ($v['infants'] ?? 0);
+        $prevTot = round((float) ($v['estimated_revenue_egp'] ?? 0.0), 2);
+        $prevCom = round((float) ($v['seller_commission_egp'] ?? 0.0), 2);
+
+        $adlKey = array_key_exists('new_adults', $rawIn) ? 'new_adults' : (array_key_exists('adults', $rawIn) ? 'adults' : null);
+        $chdKey = array_key_exists('new_children', $rawIn) ? 'new_children' : (array_key_exists('children', $rawIn) ? 'children' : null);
+        $infKey = array_key_exists('new_infants', $rawIn) ? 'new_infants' : (array_key_exists('infants', $rawIn) ? 'infants' : null);
+
+        $newAdl = $adlKey !== null ? max(0, min(60, (int) $rawIn[$adlKey])) : $prevAdl;
+        $newChd = $chdKey !== null ? max(0, min(40, (int) $rawIn[$chdKey])) : $prevChd;
+        $newInf = $infKey !== null ? max(0, min(20, (int) $rawIn[$infKey])) : $prevInf;
+        if (!empty($rawIn['cancel_trip'])) {
+            $newAdl = 0;
+            $newChd = 0;
+            $newInf = 0;
+        }
+        $newPax = $newAdl + $newChd + $newInf;
+
+        $reason = clean_line($rawIn['reason'] ?? 'PAX / Settlement updated at pickup/Jetty', 240);
+        if ($newPax === 0) {
+            $pdo->prepare(
+                "UPDATE reservations_fact
+                 SET adults = 0, children = 0, infants = 0, total_pax = 0,
+                     cancelled_pax = ?, rest_egp = 0, rest_usd = 0, rest_eur = 0, rest_gbp = 0, rest_egp_equiv = 0,
+                     booking_state = 'CANCELLED', boarding_status = 'CANCELLED', payment_status = 'CANCELLED',
+                     workflow_stage = 'CANCELLED', seller_commission_egp = 0, commission_status = 'REVERSED_CANCELLED',
+                     has_modification = 1, modification_summary = ?
+                 WHERE id = ?"
+            )->execute([$prevAdl + $prevChd + $prevInf, 'FULL_CANCEL: ' . $reason, $vid]);
+            $pdo->prepare("UPDATE seller_commissions_ledger SET pax = 0, commission_egp = 0, status = 'REVERSED_CANCELLED', notes = ? WHERE voucher_no = ?")
+                ->execute([$reason, $voNo]);
+            $pdo->prepare(
+                'INSERT INTO voucher_change_audit_log
+                 (created_at, voucher_no, trip_date, period_month, seller_username, changed_by_username, changed_by_role,
+                  change_type, prev_adults, prev_children, prev_infants, new_adults, new_children, new_infants,
+                  prev_total_egp, new_total_egp, delta_total_egp, extra_collected_egp, prev_comm_egp, new_comm_egp, reason_notes)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+            )->execute([
+                gmdate('Y-m-d\TH:i:s\Z'), $voNo, (string) $v['trip_date'], (string) $v['period_month'], (string) ($v['seller_username'] ?? ''),
+                (string) $ctx['user']['username'], (string) $ctx['user']['role_code'],
+                'FULL_CANCEL', $prevAdl, $prevChd, $prevInf, 0, 0, 0,
+                $prevTot, 0.0, -$prevTot, 0.0, $prevCom, 0.0, $reason,
+            ]);
+            echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'change_type' => 'FULL_CANCEL', 'status' => 'CANCELLED', 'new_commission_egp' => 0.0]);
+            exit;
+        }
+
+        // Lookup unified trip & unit prices (respecting explicit adult_price_eur / child_price_eur or stored voucher prices!)
+        $tripMeta = sc_erp_lookup_unified_trip($pdo, (string) (($v['unified_trip_code'] ?? '') !== '' ? $v['unified_trip_code'] : $v['trip_name']));
+        $adlEur = ((float) ($rawIn['adult_price_eur'] ?? 0)) > 0
+            ? (float) $rawIn['adult_price_eur']
+            : (((float) ($v['adult_unit_eur'] ?? 0)) > 0 ? (float) $v['adult_unit_eur'] : ($tripMeta ? (float) $tripMeta['adult_sell_eur'] : 30.0));
+        $chdEur = array_key_exists('child_price_eur', $rawIn) && (float) $rawIn['child_price_eur'] >= 0
+            ? (float) $rawIn['child_price_eur']
+            : (((float) ($v['child_unit_eur'] ?? 0)) > 0 ? (float) $v['child_unit_eur'] : ($tripMeta ? (float) $tripMeta['child_sell_eur'] : round($adlEur * 0.5, 2)));
+        $infEur = ((float) ($v['infant_unit_eur'] ?? 0)) > 0 ? (float) $v['infant_unit_eur'] : 0.0;
+
+        $deltaFromPaxEgp = round((($newAdl - $prevAdl) * $adlEur + ($newChd - $prevChd) * $chdEur + ($newInf - $prevInf) * $infEur) * $fx['EUR'], 2);
+
+        $extraAmt  = (float) ($rawIn['extra_charge_amount'] ?? 0.0);
+        $extraCurr = strtoupper(trim((string) ($rawIn['extra_charge_currency'] ?? 'EUR')));
+        $extraExplicitEgp = $extraAmt != 0.0 ? round($extraAmt * ($fx[$extraCurr] ?? $fx['EUR']), 2) : 0.0;
+
+        if (array_key_exists('override_total_egp', $rawIn) && (float) $rawIn['override_total_egp'] > 0) {
+            $newTotalEgp = round((float) $rawIn['override_total_egp'], 2);
+        } elseif (array_key_exists('adult_price_eur', $rawIn) && (float) $rawIn['adult_price_eur'] > 0) {
+            $newTotalEgp = round(max(0.0, ($newAdl * $adlEur + $newChd * $chdEur + $newInf * $infEur) * $fx['EUR']), 2);
+        } else {
+            $newTotalEgp = round(max(0.0, $prevTot + ($extraExplicitEgp != 0.0 ? $extraExplicitEgp : $deltaFromPaxEgp)), 2);
+        }
+
+        $deltaTotalEgp = round($newTotalEgp - $prevTot, 2);
+
+        // Recalculate actual supplier cost for actual Adults + Children
+        $adlCost = $tripMeta ? (float) $tripMeta['adult_cost_egp'] : 0.0;
+        $chdCost = $tripMeta ? (float) $tripMeta['child_cost_egp'] : round($adlCost * 0.5, 2);
+        $infCost = $tripMeta ? (float) $tripMeta['infant_cost_egp'] : 0.0;
+        $newSupCostEgp = $tripMeta
+            ? round($newAdl * $adlCost + $newChd * $chdCost + $newInf * $infCost, 2)
+            : round((float) ($v['supplier_cost_egp'] ?? 0.0), 2);
+
+        $depositPaid   = round((float) ($v['deposit_egp_equiv'] ?? 0.0), 2);
+        $prevCollRest  = round((float) ($v['collected_rest_egp'] ?? 0.0), 2);
+        $alreadyPaid   = round($depositPaid + $prevCollRest, 2);
+        $remainingBeforeCollect = round(max(0.0, $newTotalEgp - $alreadyPaid), 2);
+
+        $collectRestNow = !empty($rawIn['collect_rest_now']) || !empty($rawIn['collect_all_remaining_rest']);
+        $markTripDone   = array_key_exists('mark_trip_done', $rawIn)
+            ? (bool) $rawIn['mark_trip_done']
+            : (array_key_exists('mark_boarded', $rawIn) ? (bool) $rawIn['mark_boarded'] : ($collectRestNow || strtoupper((string) $v['boarding_status']) === 'BOARDED'));
+
+        $explicitColl = (float) ($rawIn['collected_amount_egp'] ?? ($rawIn['extra_collected_egp'] ?? 0.0));
+        $newlyCollectedEgp = $collectRestNow ? $remainingBeforeCollect : max(0.0, round($explicitColl, 2));
+        $newlyCollectedEgp = min($remainingBeforeCollect, $newlyCollectedEgp);
+
+        $newRestEquiv      = round(max(0.0, $remainingBeforeCollect - $newlyCollectedEgp), 2);
+        $newCollectedRest  = round($prevCollRest + $newlyCollectedEgp, 2);
+        $actualPaidTotal   = round($depositPaid + $newCollectedRest, 2);
+
+        // Determine change classification for Accounting & Owners Audit
+        if ($newInf < $prevInf && $newChd > $prevChd) {
+            $changeType = 'INFANT_TO_CHILD_UPGRADE';
+        } elseif ($deltaTotalEgp > 0.01) {
+            $changeType = 'PAX_INCREASE_EXTRA_CHARGE';
+        } elseif ($newPax < ($prevAdl + $prevChd + $prevInf)) {
+            $changeType = 'PARTIAL_CANCEL_REDUCTION';
+        } elseif ($newlyCollectedEgp > 0) {
+            $changeType = 'REST_COLLECTED_SETTLED';
+        } else {
+            $changeType = 'VOUCHER_ADJUSTMENT';
+        }
+
+        $cancelledDelta = max(0, ($prevAdl + $prevChd + $prevInf) - $newPax);
+        $newCancelledPax = (int) ($v['cancelled_pax'] ?? 0) + $cancelledDelta;
+
+        // Commission becomes EARNED_UNPAID ("Actual Due") ONLY when markTripDone == true AND newRestEquiv <= 0.01!
+        $commType   = (string) ($v['commission_type'] ?? 'INSHEET_10');
+        $sellerUser = (string) ($v['seller_username'] ?? '');
+        $isFullyDoneAndPaid = $markTripDone && ($newRestEquiv <= 0.01);
+        $newCommStatus = ($sellerUser !== '' && $commType !== 'NONE')
+            ? ($isFullyDoneAndPaid ? 'EARNED_UNPAID' : 'PENDING_EXECUTION')
+            : 'NONE';
+
+        $newCommEgp = 0.0;
+        if ($sellerUser !== '' && $commType !== 'NONE') {
+            $commMode = (str_contains($commType, 'OUT_SIDE') || str_contains($commType, 'OUTSIDE'))
+                ? 'OUT_SIDE'
+                : ($commType === 'WEBSITE_QR_10' ? 'WEBSITE_QR_10' : 'INSHEET');
+            $scChSt = $pdo->prepare('SELECT source_channel FROM seller_commissions_ledger WHERE voucher_no = ? AND LOWER(seller_username) = LOWER(?) LIMIT 1');
+            $scChSt->execute([$voNo, $sellerUser]);
+            $existingChannel = (string) ($scChSt->fetchColumn() ?: 'LIVE_MOBILE_APP');
+
+            $commRes = sc_erp_record_seller_commission($pdo, [
+                'seller_token'     => $sellerUser,
+                'sale_mode'        => $commMode,
+                'tx_date'          => (string) $v['trip_date'],
+                'voucher_no'       => $voNo,
+                'guest_name'       => (string) $v['divers_names'],
+                'product_name'     => (string) $v['trip_name'],
+                'pax'              => $newPax,
+                'gross_amount_egp' => $newTotalEgp,
+                'supplier_cost_egp'=> $commMode === 'OUT_SIDE' ? $newSupCostEgp : 0.0,
+                'status'           => $newCommStatus,
+                'source_channel'   => $existingChannel,
+                'branch_code'      => (string) $v['branch_code'],
+                'notes'            => $reason,
+            ]);
+            $newCommEgp = (float) $commRes['commission_egp'];
+            $pdo->prepare('UPDATE seller_commissions_ledger SET status = ? WHERE voucher_no = ? AND LOWER(seller_username) = LOWER(?)')
+                ->execute([$newCommStatus, $voNo, $sellerUser]);
+        }
+
+        $modSummary = sprintf(
+            '%s: %dA/%dC/%dI -> %dA/%dC/%dI | %+.0f EGP | %s',
+            $changeType, $prevAdl, $prevChd, $prevInf, $newAdl, $newChd, $newInf, $deltaTotalEgp, $reason
+        );
+
+        $newBoarding = $markTripDone ? 'BOARDED' : (string) $v['boarding_status'];
+        $newPayState = $newRestEquiv <= 0.01 ? 'PAID' : 'OPEN_REST';
+        $newWfStage  = $isFullyDoneAndPaid ? 'COMPLETED_SETTLED' : ($markTripDone ? 'EXECUTED_UNPAID_REST' : 'OPS_CONFIRMED');
+        $newRestEur  = $newRestEquiv > 0 ? round($newRestEquiv / $fx['EUR'], 2) : 0.0;
+
+        $pdo->prepare(
+            'UPDATE reservations_fact
+             SET adults = ?, children = ?, infants = ?, total_pax = ?, cancelled_pax = ?,
+                 adult_unit_eur = ?, child_unit_eur = ?,
+                 rest_egp = 0, rest_usd = 0, rest_eur = ?, rest_gbp = 0, rest_egp_equiv = ?,
+                 collected_rest_egp = ?, actual_paid_total_egp = ?,
+                 supplier_cost_egp = ?, estimated_revenue_egp = ?, estimated_cogs_egp = ?, estimated_profit_egp = ?,
+                 boarding_status = ?, payment_status = ?, workflow_stage = ?,
+                 seller_commission_egp = ?, commission_status = ?,
+                 has_modification = 1, modification_summary = ?
+             WHERE id = ?'
+        )->execute([
+            $newAdl, $newChd, $newInf, $newPax, $newCancelledPax,
+            $adlEur, $chdEur,
+            $newRestEur, $newRestEquiv,
+            $newCollectedRest, $actualPaidTotal,
+            $newSupCostEgp, $newTotalEgp, $newSupCostEgp, round($newTotalEgp - $newSupCostEgp, 2),
+            $newBoarding, $newPayState, $newWfStage,
+            $newCommEgp, $newCommStatus,
+            $modSummary,
+            $vid,
+        ]);
+
+        if ($newlyCollectedEgp > 0.0) {
+            $safeCode = clean_line($rawIn['safe_code'] ?? 'SAFE_JETTY', 32);
+            $pdo->prepare('UPDATE safes_wallets SET bal_egp = bal_egp + ?, updated_at = ? WHERE code = ?')
+                ->execute([$newlyCollectedEgp, gmdate('c'), $safeCode]);
+        }
+
+        $pdo->prepare(
+            'INSERT INTO voucher_change_audit_log
+             (created_at, voucher_no, trip_date, period_month, seller_username, changed_by_username, changed_by_role,
+              change_type, prev_adults, prev_children, prev_infants, new_adults, new_children, new_infants,
+              prev_total_egp, new_total_egp, delta_total_egp, extra_collected_egp, prev_comm_egp, new_comm_egp, reason_notes)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+        )->execute([
+            gmdate('Y-m-d\TH:i:s\Z'), $voNo, (string) $v['trip_date'], (string) $v['period_month'], $sellerUser,
+            (string) $ctx['user']['username'], (string) $ctx['user']['role_code'],
+            $changeType, $prevAdl, $prevChd, $prevInf, $newAdl, $newChd, $newInf,
+            $prevTot, $newTotalEgp, $deltaTotalEgp, $newlyCollectedEgp, $prevCom, $newCommEgp, $reason,
+        ]);
+
+        foreach (['ROLE:CHIEF_ACCOUNTANT', 'ROLE:OWNER_ADMIN'] as $admRecip) {
+            sc_erp_push_notification(
+                $pdo,
+                $admRecip,
+                'VOUCHER_MODIFIED',
+                $voNo,
+                "🔄 Voucher Modified ({$voNo}) — {$changeType}",
+                "🔄 تعديل فعلي على الحجز ({$voNo}) — {$changeType}",
+                "{$modSummary} | Collected Now: " . number_format($newlyCollectedEgp) . " EGP | Actual Total: " . number_format($newTotalEgp) . " EGP.",
+                "{$modSummary} | المحصل الآن: " . number_format($newlyCollectedEgp) . " ج.م | الإجمالي الفعلي: " . number_format($newTotalEgp) . " ج.م."
+            );
+        }
+        if ($sellerUser !== '') {
+            sc_erp_push_notification(
+                $pdo,
+                $sellerUser,
+                'VOUCHER_MODIFIED',
+                $voNo,
+                "📊 Actual Guests/Settlement Updated ({$voNo})",
+                "📊 تحديث العدد والمبلغ الفعلي للحجز ({$voNo})",
+                "{$modSummary} -> Commission: " . number_format($newCommEgp) . " EGP ({$newCommStatus}).",
+                "{$modSummary} -> العمولة الفعلية: " . number_format($newCommEgp) . " ج.م ({$newCommStatus})."
+            );
+        }
+
+        echo json_encode([
+            'ok'                    => true,
+            'voucher_no'            => $voNo,
+            'change_type'           => $changeType,
+            'prev_total_egp'        => $prevTot,
+            'new_total_egp'         => $newTotalEgp,
+            'delta_total_egp'       => $deltaTotalEgp,
+            'extra_charge_egp'      => $deltaTotalEgp,
+            'newly_collected_egp'   => $newlyCollectedEgp,
+            'actual_paid_total_egp' => $actualPaidTotal,
+            'remaining_rest_egp'    => $newRestEquiv,
+            'rest_egp_equiv'        => $newRestEquiv,
+            'new_supplier_cost_egp' => $newSupCostEgp,
+            'new_commission_egp'    => $newCommEgp,
+            'commission_status'     => $newCommStatus,
+            'workflow_stage'        => $newWfStage,
+            'workflow_status'       => $newWfStage,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'request_commission_advance') {
+        erp_require_perm($ctx, 'sales.view_own_sales', 'hr.manage_payroll', 'bi.view_executive');
+        $me = $ctx['user'];
+        $targetUser = $me['role_code'] === 'SALES_REP'
+            ? (string) $me['username']
+            : clean_line($rawIn['seller_username'] ?? $me['username'], 64);
+        $sellerRow = sc_erp_resolve_seller($pdo, $targetUser) ?: $me;
+        $sUser = (string) $sellerRow['username'];
+        $sRep  = (string) ($sellerRow['rep_scope'] ?? $sUser);
+        $amt   = round(max(0.0, (float) ($rawIn['amount_egp'] ?? 0.0)), 2);
+        $txType = in_array(($rawIn['tx_type'] ?? ''), ['ALLOWANCE_ADVANCE', 'INSTALLMENT_PAYOUT', 'MONTH_END_SETTLEMENT'], true)
+            ? (string) $rawIn['tx_type']
+            : 'ALLOWANCE_ADVANCE';
+        $notes = clean_line($rawIn['notes'] ?? 'Mid-month commission allowance request', 200);
+        if ($amt <= 0) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Amount must be greater than zero']);
+            exit;
+        }
+        $today = gmdate('Y-m-d');
+        $reqMo = (string) ($rawIn['period_month'] ?? ($rawIn['month'] ?? ''));
+        $mo    = preg_match('/^\d{4}-\d{2}$/', $reqMo) ? $reqMo : substr($today, 0, 7);
+        $autoApprove = in_array($me['role_code'], ['OWNER_ADMIN', 'CHIEF_ACCOUNTANT', 'CASHIER_TREASURY'], true) && !empty($rawIn['approve_immediately']);
+        $status = $autoApprove ? 'APPROVED_PAID' : 'REQUESTED';
+        $appBy  = $autoApprove ? (string) $me['username'] : '';
+
+        $pdo->prepare(
+            'INSERT INTO seller_commission_advances
+             (created_at, period_month, tx_date, seller_username, rep_scope, tx_type, amount_egp, status, approved_by, notes)
+             VALUES (?,?,?,?,?,?,?,?,?,?)'
+        )->execute([gmdate('Y-m-d\TH:i:s\Z'), $mo, $today, $sUser, $sRep, $txType, $amt, $status, $appBy, $notes]);
+        $advId = (int) $pdo->lastInsertId();
+
+        if (!$autoApprove) {
+            sc_erp_push_notification(
+                $pdo,
+                'ROLE:CHIEF_ACCOUNTANT',
+                'ALLOWANCE_STATUS',
+                'ADV-' . $advId,
+                "💵 Commission Allowance Request ({$sRep}: " . number_format($amt) . " EGP)",
+                "💵 طلب دفعة / سلفة من العمولة المستحقة ({$sRep}: " . number_format($amt) . " ج.م)",
+                "{$sUser} requested " . number_format($amt) . " EGP ({$notes}).",
+                "طلب المسوق {$sRep} صرف مبلغ " . number_format($amt) . " ج.م تحت حساب العمولة المستحقة ({$notes})."
+            );
+        }
+        echo json_encode(['ok' => true, 'advance_id' => $advId, 'status' => $status, 'amount_egp' => $amt]);
+        exit;
+    }
+
+    if ($action === 'decide_commission_advance') {
+        erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive', 'safe.record_tx', 'hr.manage_payroll');
+        $advId = (int) ($rawIn['advance_id'] ?? 0);
+        $rawDec = strtoupper(trim((string) ($rawIn['decision'] ?? 'APPROVED_PAID')));
+        $decision = ($rawDec === 'PAID' || $rawDec === 'APPROVED') ? 'APPROVED_PAID' : (in_array($rawDec, ['APPROVED_PAID', 'REJECTED'], true) ? $rawDec : 'APPROVED_PAID');
+        $aSt = $pdo->prepare('SELECT * FROM seller_commission_advances WHERE id = ?');
+        $aSt->execute([$advId]);
+        $adv = $aSt->fetch();
+        if (!$adv) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Allowance request not found']);
+            exit;
+        }
+        $pdo->prepare('UPDATE seller_commission_advances SET status = ?, approved_by = ? WHERE id = ?')
+            ->execute([$decision, (string) $ctx['user']['username'], $advId]);
+
+        sc_erp_push_notification(
+            $pdo,
+            (string) $adv['seller_username'],
+            'ALLOWANCE_STATUS',
+            'ADV-' . $advId,
+            $decision === 'APPROVED_PAID' ? '✅ Commission Allowance Approved & Paid' : '❌ Commission Allowance Declined',
+            $decision === 'APPROVED_PAID' ? '✅ تمت الموافقة وصرف الدفعة من عمولتك' : '❌ تم رفض طلب السلفة',
+            number_format((float) $adv['amount_egp']) . ' EGP — ' . (string) $adv['notes'],
+            number_format((float) $adv['amount_egp']) . ' ج.م — ' . (string) $adv['notes']
+        );
+        echo json_encode(['ok' => true, 'advance_id' => $advId, 'status' => $decision]);
+        exit;
+    }
+
+    if ($action === 'save_seller_targets') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        $rawTargetSeller = clean_line($rawIn['seller_username'] ?? '__GLOBAL__', 64) ?: '__GLOBAL__';
+        $targetSeller = ($rawTargetSeller === '*' || strtoupper($rawTargetSeller) === 'ALL') ? '__GLOBAL__' : $rawTargetSeller;
+        $activeKey    = array_key_exists('is_active', $rawIn) ? 'is_active' : 'is_target_active';
+        $isActive     = !empty($rawIn[$activeKey]) ? 1 : 0;
+        $dailyEgp     = max(0.0, (float) ($rawIn['target_daily_egp'] ?? ($rawIn['daily_target_egp'] ?? 15000.0)));
+        $weeklyEgp    = max(0.0, (float) ($rawIn['target_weekly_egp'] ?? ($rawIn['weekly_target_egp'] ?? 95000.0)));
+        $monthlyEgp   = max(0.0, (float) ($rawIn['target_monthly_egp'] ?? ($rawIn['monthly_target_egp'] ?? 380000.0)));
+        $monthlyTrips = max(1, (int) ($rawIn['monthly_trips_target'] ?? 65));
+
+        $pdo->prepare(
+            'INSERT OR REPLACE INTO seller_targets_config
+             (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target, updated_by, updated_at)
+             VALUES (?,?,?,?,?,?,?,?)'
+        )->execute([$targetSeller, $isActive, $dailyEgp, $weeklyEgp, $monthlyEgp, $monthlyTrips, (string) $ctx['user']['username'], gmdate('Y-m-d\TH:i:s\Z')]);
+
+        echo json_encode([
+            'ok'                => true,
+            'seller_username'   => $targetSeller,
+            'is_active'         => $isActive === 1,
+            'is_target_active'  => $isActive === 1,
+            'daily_target_egp'  => $dailyEgp,
+            'weekly_target_egp' => $weeklyEgp,
+            'monthly_target_egp'=> $monthlyEgp,
+        ]);
+        exit;
+    }
+
+    if ($action === 'mark_notifications_read') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false]);
+            exit;
+        }
+        $uName = (string) $ctx['user']['username'];
+        $roleTag = 'ROLE:' . (string) $ctx['user']['role_code'];
+        $pdo->prepare('UPDATE user_notifications SET is_read = 1 WHERE LOWER(recipient_username) = LOWER(?) OR recipient_username = ?')
+            ->execute([$uName, $roleTag]);
+        echo json_encode(['ok' => true]);
         exit;
     }
 
@@ -2165,6 +3209,7 @@ if ($method === 'POST') {
                  booking_state = 'CANCELLED',
                  boarding_status = 'CANCELLED',
                  payment_status = 'CANCELLED',
+                 workflow_stage = 'CANCELLED',
                  seller_commission_egp = 0,
                  commission_status = 'REVERSED_CANCELLED'
              WHERE id = ?"

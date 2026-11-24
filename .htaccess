@@ -58,7 +58,7 @@ AddDefaultCharset UTF-8
   # Prevent unauthorized third-party image/video hotlinking (allow empty referer, our domain, Google, Meta, Bing, Yandex, Tripadvisor)
   RewriteCond %{HTTP_REFERER} !^$
   RewriteCond %{HTTP_REFERER} !^https?://(www\.)?seacollegediveclub\.com [NC]
-  RewriteCond %{HTTP_REFERER} !^https?://([a-z0-9-]+\.)?(hostingersite\.com|google\.[a-z.]+|bing\.com|yandex\.[a-z.]+|facebook\.com|instagram\.com|tripadvisor\.[a-z.]+|tiktok\.com|youtube\.com) [NC]
+  RewriteCond %{HTTP_REFERER} !^https?://([a-z0-9-]+\.)?(hostingersite\.com|google\.[a-z.]+|bing\.com|yandex\.[a-z.]+|facebook\.com|instagram\.com|whatsapp\.com|wa\.me|t\.me|telegram\.org|tripadvisor\.[a-z.]+|tiktok\.com|youtube\.com) [NC]
   RewriteRule ^assets/(images|videos)/.*\.(jpg|jpeg|png|webp|mp4)$ - [F,L,NC]
 
   # Google Tag Gateway (First-Party Mode -> *.fps.goog via allowlisted stateless proxy)
@@ -107,6 +107,8 @@ AddDefaultCharset UTF-8
   # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/r/([a-zA-Z0-9._-]+)/?$ index.php?lang=$1&seller=$2 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2&trip=$3 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides(\.php)?/?$ guides.php?lang=$1 [L,QSA]
@@ -114,7 +116,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery(\.php)?/?$ gallery.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&section=$2&slug=$3 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&slug=$3&section=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
   # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Internal ERP Mobile App, Dive Sites & Gallery (default English)
@@ -122,6 +124,8 @@ AddDefaultCharset UTF-8
   RewriteRule ^check-in/?$ check-in.php [L,QSA]
   RewriteRule ^app/?$ erp-app.php [L,QSA]
   RewriteRule ^r/([a-zA-Z0-9._-]+)/?$ index.php?seller=$1 [L,QSA]
+  RewriteRule ^s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?seller=$1&trip=$2 [L,QSA]
+  RewriteRule ^s/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?seller=$1 [L,QSA]
   RewriteRule ^guides/?$ guides.php [L,QSA]
   RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
   RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]

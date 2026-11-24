@@ -60,6 +60,9 @@ function sc_erp_pdo(): ?PDO
 
         require_once __DIR__ . '/erp_oct2026_auto_hydrate.php';
         sc_erp_auto_hydrate_oct2026_if_needed($pdo);
+
+        require_once __DIR__ . '/erp_v3_extensions.php';
+        sc_erp_ensure_v3_extensions($pdo);
         return $pdo;
     } catch (Throwable $e) {
         error_log('SC_ERP DB connection warning: ' . $e->getMessage());
@@ -705,9 +708,11 @@ function sc_erp_ingest_website_lead(array $lead): void
                   sales_rep, executor, client_agency, rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
                   estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
                   boarding_status, payment_status, source_file,
-                  seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-                 VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?, 0,0,0,?,?, ?,?,?, 0,0,?,0,?, ?,?,?, ?,?,?,?, ?,?,?,?,?)'
+                  seller_type, seller_username, seller_commission_egp, commission_type, commission_status,
+                  booked_adults, booked_children, booked_infants, booked_total_egp, workflow_stage)
+                 VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?, 0,0,0,?,?, ?,?,?, 0,0,?,0,?, ?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?,?)'
             );
+            $wfStage = $seller ? 'AWAITING_SELLER_CONFIRM' : 'CONFIRMED_OPS';
             $vStmt->execute([
                 $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
                 $seller ? (string) ($seller['branch_scope'] ?: 'WEBSITE') : 'WEBSITE',
@@ -732,7 +737,23 @@ function sc_erp_ingest_website_lead(array $lead): void
                 $commInfo['commission_egp'],
                 $commInfo['commission_type'],
                 $commInfo['commission_status'],
+                $people, 0, 0, $revEgp, $wfStage,
             ]);
+
+            if ($seller && function_exists('sc_erp_push_notification')) {
+                $gName = (string) ($lead['name'] ?? 'Guest');
+                $tItem = substr((string) ($lead['interest'] ?? 'Trip'), 0, 80);
+                sc_erp_push_notification(
+                    $pdo,
+                    $sellerUser,
+                    'NEW_LINK_BOOKING',
+                    $voNo,
+                    "🎉 New Booking via Your QR/Link ({$voNo})",
+                    "🎉 حجز جديد عبر رابطك / الكود الخاص بك ({$voNo})",
+                    "{$gName} ({$people} PAX) booked {$tItem} for {$tripDt}. Tap to confirm & send to Reservations!",
+                    "العميل {$gName} ({$people} أفراد) حجز {$tItem} بتاريخ {$tripDt}. اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
+                );
+            }
         }
     } catch (Throwable $e) {
         error_log('SC_ERP lead sync warning: ' . $e->getMessage());
