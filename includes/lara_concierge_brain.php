@@ -97,25 +97,25 @@ function lara_classify_intent(string $text): string
     if ($low === '') {
         return 'general';
     }
-    if (preg_match('/\b(refund|complaint|angry|scam|emergency|hospital|accident|cancel my paid|استرداد|شكوى|طوارئ|возврат|жалоба)\b/u', $low)) {
+    if (preg_match('/(\b(refund|complaint|angry|scam|emergency|hospital|accident|cancel my paid)\b|استرداد|شكوى|طوارئ|возврат|жалоб|退款|投诉)/u', $low)) {
         return 'escalation';
     }
-    if (preg_match('/\b(private boat|private yacht|yacht|speedboat|vip|charter|مركب خاص|يخت|لانش|яхта|частная лодка|barca privata|privatboot|bateau privé)\b/u', $low)) {
+    if (preg_match('/(\b(private boat|private yacht|yacht|speedboat|vip|charter|barca privata|privatboot|bateau privé)\b|مركب خاص|يخت|لانش|яхт|частн|私人游艇|包船)/u', $low)) {
         return 'private_boat';
     }
-    if (preg_match('/\b(open water|owd|advanced|aowd|padi course|rescue diver|divemaster|certification|license|licence|e-learning|bundle|كورس|دورة|رخصة|курс|сертификат|corso|brevetto|tauchkurs|brevet)\b/u', $low)) {
+    if (preg_match('/(\b(open water|owd|advanced|aowd|padi course|rescue diver|divemaster|certification|license|licence|e-learning|bundle|corso|brevetto|tauchkurs|brevet)\b|كورس|دورة|رخصة|курс|сертификат|обучен|考证|课程)/u', $low)) {
         return 'courses';
     }
-    if (preg_match('/\b(first time|beginner|never dived|try dive|intro|discover scuba|dsd|bubblemaker|snorkel|snorkeling|white island|couple|non-diver|wife|husband|partner|أول مرة|مبتدئ|انترودايف|سنوركل|новичок|первый раз|интро|снорклинг|principiante|prima volta|anfänger|schnorcheln|débutant)\b/u', $low)) {
+    if (preg_match('/(\b(first time|beginner|never dived|try dive|intro|discover scuba|dsd|bubblemaker|snorkel|snorkeling|white island|couple|non-diver|wife|husband|partner|principiante|prima volta|anfänger|schnorcheln|débutant)\b|أول مرة|مبتدئ|انترودايف|سنوركل|нович|первый раз|интро|сноркл|新手|体验潜|浮潜)/u', $low)) {
         return 'beginner';
     }
-    if (preg_match('/\b(ras mohammed|ras mohamed|tiran|thistlegorm|wreck|certified|dive pack|check dive|nitrox|10 dives|6 dives|daily diving|رأس محمد|راس محمد|تيران|ثيسلجورم|غواص معتمد|рас мохаммед|тиран|тистлегорм|дейли)\b/u', $low)) {
+    if (preg_match('/(\b(ras mohammed|ras mohamed|tiran|thistlegorm|wreck|certified|dive pack|check dive|nitrox|10 dives|6 dives|daily diving)\b|رأس محمد|راس محمد|تيران|ثيسلجورم|غواص معتمد|рас мохаммед|тиран|тистлегорм|дейли|сертифицир|持证|穆罕默德|蒂朗)/u', $low)) {
         return 'certified';
     }
-    if (preg_match('/\b(pickup|pick up|transfer|hotel|zone|what time|morning|main gate|توصيل|باص|فندق|موعد التحرك|трансфер|отель|во сколько)\b/u', $low)) {
+    if (preg_match('/(\b(pickup|pick up|transfer|hotel|zone|what time|morning|main gate)\b|توصيل|باص|فندق|موعد التحرك|трансфер|отел|во сколько|接送|酒店)/u', $low)) {
         return 'hotel_pickup';
     }
-    if (preg_match('/\b(check-in|checkin|passport|egp|usd|gbp|dollar|currency|exchange rate|cash|card|جنيه|دولار|جواز|عملة|فيزا|паспорт|валюта|доллар|фунт)\b/u', $low)) {
+    if (preg_match('/(\b(check-in|checkin|passport|egp|usd|gbp|dollar|currency|exchange rate|cash|card)\b|جنيه|دولار|جواز|عملة|فيزا|паспорт|валют|доллар|фунт|护照|汇率)/u', $low)) {
         return 'checkin_currency';
     }
     return 'general';
