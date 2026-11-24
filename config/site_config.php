@@ -158,6 +158,11 @@ define('META_CATALOG_ID', sc_env('META_CATALOG_ID', '555610010235756'));     // 
 define('META_CAPI_TOKEN', sc_env('META_CAPI_TOKEN', ''));     // secret: env only (System User token)
 define('META_ACCESS_TOKEN', sc_env('META_ACCESS_TOKEN', META_CAPI_TOKEN)); // System User token for Meta Marketing & Catalog Graph API
 define('META_CAPI_TEST_CODE', sc_env('META_CAPI_TEST_CODE', ''));
+define('META_IG_ID', sc_env('META_IG_ID', '17841459801345654'));             // Instagram Business Account: @seacollege.diveclub
+define('META_WABA_ID', sc_env('META_WABA_ID', '1466166818696930'));         // WhatsApp Business Account: Sea college dive club
+define('META_WABA_PHONE_ID', sc_env('META_WABA_PHONE_ID', '1394410417097578')); // WABA Cloud Phone ID
+define('META_WEBHOOK_VERIFY_TOKEN', sc_env('META_WEBHOOK_VERIFY_TOKEN', 'sc_lara_inbox_2026'));
+define('META_APP_SECRET', sc_secret('META_APP_SECRET', ''));
 define('META_GRAPH_VERSION', 'v21.0');
 define('TIKTOK_PIXEL_ID', sc_secret('TIKTOK_PIXEL_ID', ''));
 define('MICROSOFT_UET_ID', sc_secret('MICROSOFT_UET_ID', ''));
