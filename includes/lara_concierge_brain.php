@@ -273,26 +273,36 @@ SYS;
 
     $userPrompt = "Channel: {$channel}\nSender display name: {$guestName}\n{$histBlock}Latest message from sender:\n{$guestMessage}";
 
-    $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . rawurlencode(GEMINI_API_KEY);
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_POST           => true,
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS     => json_encode([
-            'systemInstruction' => ['parts' => [['text' => $sysPrompt]]],
-            'contents'          => [['role' => 'user', 'parts' => [['text' => $userPrompt]]]],
-            'generationConfig'  => [
-                'temperature'      => 0.35,
-                'maxOutputTokens'  => 350,
-                'responseMimeType' => 'application/json',
-            ],
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 12,
-    ]);
-    $raw = (string) curl_exec($ch);
-    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    $payloadJson = json_encode([
+        'systemInstruction' => ['parts' => [['text' => $sysPrompt]]],
+        'contents'          => [['role' => 'user', 'parts' => [['text' => $userPrompt]]]],
+        'generationConfig'  => [
+            'temperature'      => 0.35,
+            'maxOutputTokens'  => 350,
+            'responseMimeType' => 'application/json',
+        ],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    $models = ['gemini-flash-lite-latest', 'gemini-flash-latest', 'gemini-3.6-flash'];
+    $raw = '';
+    $code = 0;
+    foreach ($models as $model) {
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . rawurlencode(GEMINI_API_KEY);
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+            CURLOPT_POSTFIELDS     => $payloadJson,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 10,
+        ]);
+        $raw = (string) curl_exec($ch);
+        $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($code === 200 && $raw !== '') {
+            break;
+        }
+    }
 
     if ($code !== 200 || $raw === '') {
         return null;
