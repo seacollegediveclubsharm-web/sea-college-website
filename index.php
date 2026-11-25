@@ -99,6 +99,13 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
+<section class="section section--journey" id="padi-journey-section">
+  <div class="container">
+    <?php require_once ROOT_DIR . '/includes/courses_journey.php'; ?>
+    <?= render_courses_journey($catalog, 'home') ?>
+  </div>
+</section>
+
 <section class="section section--tint">
   <div class="container">
     <div class="feature-duo">

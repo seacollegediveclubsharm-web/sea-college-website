@@ -848,16 +848,25 @@ function upgrade_product_card(array $it, string $badgeKey, array $sourceItem): s
     if ($desc !== '') {
         $html .= '<p class="pcard__desc" dir="auto">' . e($desc) . '</p>';
     }
+    $eurStr = $it['price'] === null ? '' : (string) $it['price'];
     $html .= '<div class="pcard__foot pcard__foot--upgrade">';
     $html .= '<span class="pcard__price">' . ($it['price'] !== null ? te('from') . ' ' : '') . price_html($it['price'], $it['unit'] ?? '', $it['regular_price'] ?? null) . '</span>';
     $html .= '<div class="pcard__actions pcard__actions--upgrade">';
+    $html .= '<a class="btn btn--detail btn--sm" href="' . e($href) . '" data-track="cta_click" data-placement="upgrade_details">' . te('cta_details') . '</a>';
+    $html .= '<a class="btn btn--primary btn--sm" href="' . e($qbHref) . '"'
+        . ' data-book-now'
+        . ' data-id="' . e((string) ($it['id'] ?? '')) . '"'
+        . ' data-name="' . e($title) . '"'
+        . ' data-price="' . e($eurStr) . '"'
+        . ' data-item-id="' . e((string) ($it['id'] ?? '')) . '"'
+        . ' data-item-name="' . e($title) . '"'
+        . ' data-item-eur="' . e($eurStr) . '"'
+        . ' data-track="cta_click" data-placement="upgrade_quickbook">' . te('cta_book') . '</a>';
     $html .= '<a class="btn btn--wa btn--sm btn--wa-card" href="' . e($waHref) . '" target="_blank" rel="noopener"'
         . ' data-track="whatsapp_click" data-placement="upgrade_card_wa"'
         . ' data-item-id="' . e((string) ($it['id'] ?? '')) . '"'
         . ' data-item-name="' . e($title) . '"'
-        . ' data-item-eur="' . e($it['price'] === null ? '' : (string) $it['price']) . '">' . $waSvg . '<span>' . te('upgrade_wa_cta') . '</span></a>';
-    $html .= '<a class="btn btn--primary btn--sm" href="' . e($qbHref) . '" data-track="cta_click" data-placement="upgrade_quickbook">' . te('upgrade_quickbook_cta') . '</a>';
-    $html .= add_button($it);
+        . ' data-item-eur="' . e($eurStr) . '">' . $waSvg . '<span>' . te('upgrade_wa_cta') . '</span></a>';
     $html .= '</div></div></div></article>';
 
     return $html;

@@ -109,6 +109,8 @@ require ROOT_DIR . '/includes/header.php';
     <?php if ($catKey === 'dive-packages'): ?>
       <?= render_budget_calculator($catalog, '#booking') ?>
     <?php elseif ($catKey === 'padi-courses' || $catKey === 'offers'): ?>
+      <?php require_once ROOT_DIR . '/includes/courses_journey.php'; ?>
+      <?= render_courses_journey($catalog, 'hub') ?>
       <?= render_dive_quiz($catalog) ?>
     <?php endif; ?>
 

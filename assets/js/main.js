@@ -507,7 +507,59 @@
       return;
     }
     if (e.target.closest('[data-cart-clear]')) { cart = []; saveCart(); return; }
-    if (e.target.closest('[data-print]')) { track('print_prices'); window.print(); }
+    if (e.target.closest('[data-print]')) { track('print_prices'); window.print(); return; }
+    var bookBtn = e.target.closest('[data-book-now]');
+    if (bookBtn) {
+      var bId = bookBtn.getAttribute('data-id') || '';
+      var bName = bookBtn.getAttribute('data-name') || '';
+      var bPrice = parseFloat(bookBtn.getAttribute('data-price'));
+      var bEur = isNaN(bPrice) ? 0 : bPrice;
+      if (bId && bName) {
+        var bEx = cart.filter(function (l) { return l.id === bId; })[0];
+        if (!bEx) {
+          cart.push({ id: bId, name: bName, price: isNaN(bPrice) ? null : bPrice, qty: 1 });
+          saveCart();
+        }
+        track('add_to_cart', { ecommerce: { currency: 'EUR', items: [{ item_id: bId, item_name: bName, price: bEur, quantity: 1 }] } });
+        track('begin_checkout', { value: bEur, currency: 'EUR', item_id: bId, item_name: bName });
+        if (granted() && window.fbq && bEur > 0) {
+          if (isCatId(bId)) {
+            window.fbq('track', 'AddToCart', { content_ids: [bId], content_name: bName, content_type: 'product', value: bEur, currency: 'EUR' });
+          } else {
+            window.fbq('track', 'AddToCart', { content_name: bName, content_category: 'course_or_trip', value: bEur, currency: 'EUR' });
+          }
+        }
+        if (granted() && window.ttq && bEur > 0) { window.ttq.track('AddToCart', { content_id: bId, value: bEur, currency: 'EUR' }); }
+        if (granted() && SC.uetId && window.uetq && bEur > 0) { window.uetq.push('event', 'add_to_cart', { event_category: 'ecommerce', revenue_value: bEur, currency: 'EUR' }); }
+      }
+      var bHref = bookBtn.getAttribute('href') || '';
+      if (bHref === '#booking') {
+        var bkSec = document.getElementById('booking');
+        if (bkSec) {
+          var intEl = bkSec.querySelector('[name="interest"]');
+          if (intEl && bName) { intEl.value = bName; }
+        }
+      }
+    }
+  });
+
+  /* ---------------- Interactive PADI Courses Journey Depth-Stage Filter ---------------- */
+  $$('[data-courses-journey]').forEach(function (wrap) {
+    var btns = $$('[data-journey-filter]', wrap);
+    var items = $$('[data-journey-stage]', wrap);
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var stg = btn.getAttribute('data-journey-filter') || 'all';
+        btns.forEach(function (b) {
+          var on = (b === btn);
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', String(on));
+        });
+        items.forEach(function (li) {
+          li.hidden = !(stg === 'all' || li.getAttribute('data-journey-stage') === stg);
+        });
+      });
+    });
   });
 
   /* ---------------- Tabs ---------------- */

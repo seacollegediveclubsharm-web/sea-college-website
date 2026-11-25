@@ -130,7 +130,7 @@ done
 
 echo "=== 2. Unified Tracking, GBP, Tripadvisor, YouTube, Banners, Dropdown & Home SEO Checks ==="
 html=$(fetch_body "/")
-for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
+for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "2980406819004765" "MUaOhb7KY5wwxWBDLVgRYIGRxrsU_cW2o36ihx1Kv1k" "ChIJ75cBQp5LUxQRMjrNYQx93g0" "AggregateRating" "GeoCoordinates" "data-dive-quiz" "data-courses-journey" "padi-combo" "data-book-now" "TA_cdswritereviewlgvi409" "locationId=26104236" "d26104236" "youtube.com/@seacollege.diveclub" "brand-svg--youtube" "brand-svg--tripadvisor" "promo-banner--top" "diveoneclub.com/Listing/sea-college-dive-club" "sea-college-real-guests-padi-certificates-sharm.jpg" 'hreflang="ru"' 'hreflang="it"' 'hreflang="pl"' 'hreflang="de"' 'hreflang="fr"' 'hreflang="ar"' 'hreflang="zh"' 'hreflang="x-default"'; do
   if grep -q "$needle" <<<"$html"; then
     echo "PASS [present] $needle"
     pass=$((pass + 1))
@@ -141,7 +141,7 @@ for needle in "GTM-PBVQ56XC" "G-99528RZN9Z" "AW-16728866067" "url_passthrough" "
 done
 
 ar_html=$(fetch_body "/ar/")
-for needle in 'lang="ar" dir="rtl"' "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg" 'href="/ar/prices"'; do
+for needle in 'lang="ar" dir="rtl"' "TA_cdswritereviewlgvi969" "uniq=969" "lang=ar_EG" "tripadvisor.com.eg" 'href="/ar/prices"' "data-courses-journey"; do
   if grep -q "$needle" <<<"$ar_html"; then
     echo "PASS [ar clean URL & tripadvisor] $needle"
     pass=$((pass + 1))
@@ -165,9 +165,22 @@ for lg in ru it pl de fr zh; do
   done
 done
 
-echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Upgrades, FAQ, Calculator, Dive Map & Gallery Checks ==="
+echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Upgrades, FAQ, Journey, Calculator, Dive Map & Gallery Checks ==="
+for chub in "/diving-courses-sharm-el-sheikh" "/padi-course-bundles-sharm-el-sheikh"; do
+  chub_html=$(fetch_body "$chub")
+  for needle in "data-courses-journey" "padi-combo" "data-book-now"; do
+    if grep -q "$needle" <<<"$chub_html"; then
+      echo "PASS [courses journey $chub] $needle"
+      pass=$((pass + 1))
+    else
+      echo "FAIL [courses journey $chub] $needle missing"
+      fail=$((fail + 1))
+    fi
+  done
+done
+
 course_html=$(fetch_body "/courses/padi-open-water-diver-sharm-el-sheikh")
-for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side' 'data-quick-book' 'mobile-item-bar' 'data-hotel-checker' 'id="upgrades"' 'upgrade_quickbook' 'faq-trust-pills'; do
+for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side' 'data-quick-book' 'mobile-item-bar' 'data-hotel-checker' 'id="upgrades"' 'upgrade_details' 'upgrade_quickbook' 'upgrade_card_wa' 'faq-trust-pills'; do
   if grep -q "$needle" <<<"$course_html"; then
     echo "PASS [course AEO/gallery/quick-book/upgrades] $needle"
     pass=$((pass + 1))
