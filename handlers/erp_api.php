@@ -117,6 +117,10 @@ function erp_snapshot_live_state(PDO $pdo): array
         'live_inbox_reads'    => [],
         'live_guest_accounts' => [],
         'live_guest_emails'   => [],
+        'live_suppliers'      => [],
+        'live_cost_items'     => [],
+        'live_cost_audit'     => [],
+        'live_staff_bonuses'  => [],
     ];
     try {
         $snap['custom_users'] = $pdo->query("SELECT * FROM users WHERE updated_at != ''")->fetchAll();
@@ -147,6 +151,18 @@ function erp_snapshot_live_state(PDO $pdo): array
     } catch (Throwable $e) {}
     try {
         $snap['live_guest_emails'] = $pdo->query('SELECT * FROM guest_email_dispatches')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_suppliers'] = $pdo->query("SELECT * FROM suppliers_directory WHERE updated_by != 'SYSTEM'")->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_cost_items'] = $pdo->query("SELECT * FROM trip_supplier_cost_items WHERE updated_by != 'SYSTEM'")->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_cost_audit'] = $pdo->query('SELECT * FROM trip_cost_audit_log')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_staff_bonuses'] = $pdo->query('SELECT * FROM staff_bonuses_allowances WHERE seed_key IS NULL OR decided_at != ""')->fetchAll();
     } catch (Throwable $e) {}
     return $snap;
 }
@@ -277,6 +293,25 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
     // 8) Restore verified Guest Customer Accounts & Email Dispatches
     $insertDynamic($impPdo, 'guest_customer_accounts', $snap['live_guest_accounts'] ?? [], 'OR REPLACE');
     $insertDynamic($impPdo, 'guest_email_dispatches', $snap['live_guest_emails'] ?? [], 'OR IGNORE');
+
+    // 9) Restore Accounting-customized Suppliers, Trip/Safari Cost Matrix & Staff Bonuses/Allowances
+    $insertDynamic($impPdo, 'suppliers_directory', $snap['live_suppliers'] ?? [], 'OR REPLACE', []);
+    $insertDynamic($impPdo, 'trip_supplier_cost_items', $snap['live_cost_items'] ?? [], 'OR REPLACE', []);
+    foreach (($snap['live_cost_items'] ?? []) as $ci) {
+        if (!empty($ci['linked_trip_code'])) {
+            $impPdo->prepare('UPDATE master_trips_catalog SET supplier_code = ?, adult_cost_egp = ?, child_cost_egp = ?, infant_cost_egp = ? WHERE trip_code = ?')
+                ->execute([(string) $ci['supplier_code'], (float) $ci['adult_cost_egp'], (float) $ci['child_cost_egp'], (float) $ci['infant_cost_egp'], (string) $ci['linked_trip_code']]);
+        }
+    }
+    $insertDynamic($impPdo, 'trip_cost_audit_log', $snap['live_cost_audit'] ?? [], 'OR IGNORE');
+    foreach (($snap['live_staff_bonuses'] ?? []) as $sb) {
+        if (!empty($sb['seed_key'])) {
+            $impPdo->prepare('UPDATE staff_bonuses_allowances SET status = ?, approved_by = ?, decided_at = ? WHERE seed_key = ?')
+                ->execute([(string) $sb['status'], (string) $sb['approved_by'], (string) $sb['decided_at'], (string) $sb['seed_key']]);
+        } else {
+            $insertDynamic($impPdo, 'staff_bonuses_allowances', [$sb], 'OR IGNORE');
+        }
+    }
 }
 
 /* ---------------- PUBLIC / AUTH ACTIONS ---------------- */
@@ -350,7 +385,11 @@ if ($action === 'directory_roles') {
     exit;
 }
 
-if ($method !== 'POST' && in_array($action, ['send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message', 'guest_create_booking', 'send_guest_login_email'], true)) {
+if ($method !== 'POST' && in_array($action, [
+    'send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message',
+    'guest_create_booking', 'send_guest_login_email',
+    'save_supplier', 'save_trip_cost', 'save_staff_bonus_allowance', 'decide_staff_bonus_allowance',
+], true)) {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST required']);
     exit;
@@ -570,6 +609,36 @@ if ($action === 'seller_catalog') {
         ];
     };
 
+    $liveMtcByCode = [];
+    foreach ($pdo->query('SELECT * FROM master_trips_catalog')->fetchAll() as $mr) {
+        $liveMtcByCode[(string) $mr['trip_code']] = $mr;
+    }
+    $applyLiveMtcCost = static function (array &$arr, bool $allowSellUpdate) use ($liveMtcByCode, $eurToEgp, $usdToEgp, $gbpToEgp): void {
+        foreach ($arr as &$row) {
+            $tc = (string) ($row['code'] ?? $row['id'] ?? '');
+            if ($tc !== '' && isset($liveMtcByCode[$tc])) {
+                $m = $liveMtcByCode[$tc];
+                $row['supplier_code']             = (string) ($m['supplier_code'] ?: $row['supplier_code']);
+                $row['supplier_name']             = (string) ($m['supplier_name'] ?: $row['supplier_name']);
+                $row['default_sale_mode']         = (string) ($m['sale_mode'] ?: $row['default_sale_mode']);
+                $row['adult_cost_egp']            = (float) $m['adult_cost_egp'];
+                $row['child_cost_egp']            = (float) $m['child_cost_egp'];
+                $row['infant_cost_egp']           = (float) $m['infant_cost_egp'];
+                $row['default_supplier_cost_egp'] = (float) $m['adult_cost_egp'];
+                if ($allowSellUpdate && (float) $m['adult_sell_eur'] > 0 && (int) ($m['is_website_public'] ?? 0) === 0) {
+                    $pE = (float) $m['adult_sell_eur'];
+                    $row['price_eur']       = $pE;
+                    $row['child_price_eur'] = (float) $m['child_sell_eur'];
+                    $row['infant_price_eur']= (float) $m['infant_sell_eur'];
+                    $row['price_egp']       = round($pE * $eurToEgp, 0);
+                    $row['price_usd']       = round(($pE * $eurToEgp) / $usdToEgp, 2);
+                    $row['price_gbp']       = round(($pE * $eurToEgp) / $gbpToEgp, 2);
+                }
+            }
+        }
+        unset($row);
+    };
+
     $opSkusOut = [];
     foreach ($opSkusRaw as $sku) {
         $opSkusOut[] = $formatSkuRow($sku, false);
@@ -577,6 +646,38 @@ if ($action === 'seller_catalog') {
     $excursionsOut = [];
     foreach ($appExcRaw as $exc) {
         $excursionsOut[] = $formatSkuRow($exc, true);
+    }
+    $applyLiveMtcCost($items, false);
+    $applyLiveMtcCost($opSkusOut, true);
+    $applyLiveMtcCost($excursionsOut, true);
+
+    $safariVariants = [];
+    $safFieldMap = [
+        'SAF-QUAD-SINGLE'        => 'single_quad',
+        'SAF-QUAD-DOUBLE'        => 'double_quad',
+        'SAF-BUGGY-2PAX'         => 'buggy_2pax',
+        'SAF-BUGGY-4PAX'         => 'buggy_4pax',
+        'SAF-CAMEL-WITH-SAFARI'  => 'camel_safari',
+        'SAF-CAMEL-1HR-TOUR'     => 'camel_1hr',
+        'SAF-STAR-GAZING'        => 'star_gazing',
+        'SAF-BEDOUIN-DINNER'     => 'bedouin_dinner',
+        'SAF-VIP-BEDOUIN-DINNER' => 'vip_bedouin_dinner',
+        'SAF-PRIVATE-GUIDE'      => 'private_guide',
+    ];
+    $safRows = $pdo->query("SELECT * FROM trip_supplier_cost_items WHERE category_group = 'DESERT_SAFARI' AND is_safari_component = 1 AND is_active = 1 AND item_code != 'SAF-ECO-TICKET-1USD' ORDER BY rowid ASC")->fetchAll();
+    foreach ($safRows as $sr) {
+        $ic = (string) $sr['item_code'];
+        $uEur = (float) ($sr['unit_sell_eur'] > 0 ? $sr['unit_sell_eur'] : $sr['adult_sell_eur']);
+        $safariVariants[] = [
+            'item_code'     => $ic,
+            'spec_field'    => $safFieldMap[$ic] ?? strtolower($ic),
+            'name_en'       => (string) $sr['name_en'],
+            'name_ar'       => (string) $sr['name_ar'],
+            'pricing_basis' => (string) $sr['pricing_basis'],
+            'capacity_pax'  => (int) $sr['capacity_pax'],
+            'unit_sell_eur' => $uEur,
+            'unit_sell_egp' => round($uEur * $eurToEgp, 0),
+        ];
     }
 
     $zonesMap = $hotelData['zones'] ?? [];
@@ -616,6 +717,7 @@ if ($action === 'seller_catalog') {
         'items'            => $items,
         'operational_skus' => array_merge($excursionsOut, $opSkusOut),
         'excursions'       => $excursionsOut,
+        'safari_variants'  => $safariVariants,
         'zones'            => array_values($zonesOut),
         'hotels'           => $hotelsOut,
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -2647,6 +2749,293 @@ if ($action === 'export_marketing_guests_csv') {
     exit;
 }
 
+/* ---------------- SUPPLIERS / VENDORS HUB & GRANULAR TRIP/SAFARI COST MATRIX (`suppliers_hub` — v3.5) ---------------- */
+if ($action === 'suppliers_hub') {
+    erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive', 'ops.view_manifests', 'safe.view_balances');
+    $canEditCosts = in_array('gl.view_all_ledgers', $ctx['perms'], true) || in_array('bi.view_executive', $ctx['perms'], true);
+    $fx = sc_erp_fx_rates($pdo);
+
+    $catFilter = strtoupper(trim((string) ($_GET['category'] ?? 'ALL')));
+    $supFilter = strtoupper(trim((string) ($_GET['supplier'] ?? 'ALL')));
+    $qSearch   = strtolower(trim((string) ($_GET['q'] ?? '')));
+
+    $suppliers = $pdo->query('SELECT * FROM suppliers_directory ORDER BY CASE WHEN supplier_code = "AP_BAKAR" THEN 0 WHEN supplier_code = "AP_A_SAAD" THEN 1 WHEN supplier_code = "SEA_COLLEGE" THEN 2 ELSE 3 END, name_en ASC')->fetchAll();
+
+    // Aggregate reservation volume & supplier COGS by supplier_code / executor
+    $resStats = [];
+    try {
+        $rAgg = $pdo->query(
+            "SELECT COALESCE(NULLIF(ap_supplier_code, ''), UPPER(TRIM(executor))) AS skey,
+                    COUNT(*) AS bookings_cnt,
+                    SUM(adults + children) AS pax_cnt,
+                    ROUND(SUM(CASE WHEN supplier_cost_egp > 0 THEN supplier_cost_egp ELSE estimated_cogs_egp END), 2) AS total_cogs_egp
+             FROM reservations_fact
+             WHERE booking_state != 'CANCELLED'
+             GROUP BY skey"
+        )->fetchAll();
+        foreach ($rAgg as $ra) {
+            $resStats[(string) $ra['skey']] = $ra;
+        }
+    } catch (Throwable $e) {}
+
+    // Subledger recent statement lines per supplier
+    $subMap = [];
+    try {
+        $subRows = $pdo->query("SELECT party_code, tx_date, voucher_no, description, debit_egp, credit_egp, running_balance_egp FROM subledger_lines WHERE party_code LIKE 'AP_%' ORDER BY id DESC LIMIT 250")->fetchAll();
+        foreach ($subRows as $sr) {
+            $pc = (string) $sr['party_code'];
+            if (!isset($subMap[$pc]) || count($subMap[$pc]) < 8) {
+                $subMap[$pc][] = $sr;
+            }
+        }
+    } catch (Throwable $e) {}
+
+    $supNameMap = [];
+    $netPayableEgp = 0.0;
+    foreach ($suppliers as &$sp) {
+        $sc = (string) $sp['supplier_code'];
+        $supNameMap[$sc] = ['en' => (string) $sp['name_en'], 'ar' => (string) $sp['name_ar']];
+        $tabKey = strtoupper(trim((string) ($sp['sheet_tab_name'] ?? '')));
+        $st1 = $resStats[$sc] ?? null;
+        $st2 = ($tabKey !== '' && isset($resStats[$tabKey])) ? $resStats[$tabKey] : null;
+        $sp['bookings_count']   = (int) (($st1['bookings_cnt'] ?? 0) + ($st2['bookings_cnt'] ?? 0));
+        $sp['pax_count']        = (int) (($st1['pax_cnt'] ?? 0) + ($st2['pax_cnt'] ?? 0));
+        $sp['booked_cogs_egp']  = round((float) (($st1['total_cogs_egp'] ?? 0.0) + ($st2['total_cogs_egp'] ?? 0.0)), 2);
+        $sp['recent_subledger'] = $subMap[$sc] ?? [];
+        if ((float) $sp['current_balance_egp'] < 0) {
+            $netPayableEgp += abs((float) $sp['current_balance_egp']);
+        }
+    }
+    unset($sp);
+
+    $allCosts = $pdo->query(
+        'SELECT c.*, COALESCE(s.name_en, c.supplier_code) AS supplier_name_en, COALESCE(s.name_ar, c.supplier_code) AS supplier_name_ar
+         FROM trip_supplier_cost_items c
+         LEFT JOIN suppliers_directory s ON s.supplier_code = c.supplier_code
+         ORDER BY CASE c.category_group
+             WHEN "DESERT_SAFARI" THEN 1
+             WHEN "YACHT_SNORKELING" THEN 2
+             WHEN "CAIRO_LUXOR" THEN 3
+             WHEN "SINAI_DAHAB" THEN 4
+             WHEN "DOLPHIN_SUB_DINNER" THEN 5
+             WHEN "WATERSPORTS" THEN 6
+             WHEN "DIVING_CHARTER" THEN 7
+             WHEN "BOAT_SHARING" THEN 8
+             WHEN "TRANSFERS" THEN 9
+             ELSE 10
+         END, c.is_safari_component DESC, c.item_code ASC'
+    )->fetchAll();
+
+    $filteredCosts = [];
+    $safariCount = 0;
+    foreach ($allCosts as $ci) {
+        if ((string) $ci['category_group'] === 'DESERT_SAFARI') {
+            $safariCount++;
+        }
+        if ($catFilter !== '' && $catFilter !== 'ALL' && strtoupper((string) $ci['category_group']) !== $catFilter) {
+            continue;
+        }
+        if ($supFilter !== '' && $supFilter !== 'ALL' && strtoupper((string) $ci['supplier_code']) !== $supFilter) {
+            continue;
+        }
+        if ($qSearch !== '') {
+            $hay = strtolower((string) $ci['item_code'] . ' ' . (string) $ci['name_en'] . ' ' . (string) $ci['name_ar'] . ' ' . (string) $ci['supplier_name_en'] . ' ' . (string) $ci['sheet_formula_note']);
+            if (!str_contains($hay, $qSearch)) {
+                continue;
+            }
+        }
+        $filteredCosts[] = $ci;
+    }
+
+    $auditLogs = $pdo->query('SELECT * FROM trip_cost_audit_log ORDER BY id DESC LIMIT 60')->fetchAll();
+    $masterTripsList = $pdo->query('SELECT trip_code, unified_name_en, unified_name_ar, category_code FROM master_trips_catalog ORDER BY unified_name_en ASC')->fetchAll();
+
+    echo json_encode([
+        'ok'             => true,
+        'can_edit_costs' => $canEditCosts,
+        'fx_rates'       => $fx,
+        'kpis'           => [
+            'total_suppliers'       => count($suppliers),
+            'total_cost_items'      => count($allCosts),
+            'safari_variants_count' => $safariCount,
+            'net_ap_payable_egp'    => round($netPayableEgp, 2),
+            'audit_changes_count'   => count($auditLogs),
+        ],
+        'suppliers'      => $suppliers,
+        'cost_items'     => $filteredCosts,
+        'master_trips'   => $masterTripsList,
+        'audit_logs'     => $auditLogs,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+if ($action === 'export_suppliers_costs_csv') {
+    erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive');
+    $rows = $pdo->query(
+        'SELECT c.*, COALESCE(s.name_en, c.supplier_code) AS supplier_name_en
+         FROM trip_supplier_cost_items c
+         LEFT JOIN suppliers_directory s ON s.supplier_code = c.supplier_code
+         ORDER BY c.category_group ASC, c.item_code ASC'
+    )->fetchAll();
+
+    $csvSafe = static function ($val): string {
+        $s = trim((string) ($val ?? ''));
+        if ($s !== '' && in_array($s[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'" . $s;
+        }
+        return $s;
+    };
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="sea_college_suppliers_and_trip_costs_' . gmdate('Ymd') . '.csv"');
+    $fp = fopen('php://output', 'wb');
+    fwrite($fp, "\xEF\xBB\xBF");
+    fputcsv($fp, [
+        'Item Code', 'Linked Trip Code', 'Category', 'Supplier Code', 'Supplier Name',
+        'Trip / Variant Name (EN)', 'Trip / Variant Name (AR)', 'Pricing Basis', 'Capacity PAX',
+        'Cost Currency', 'Adult Cost (Orig)', 'Child Cost (Orig)', 'Infant Cost (Orig)', 'Unit Cost (Orig)',
+        'Adult Cost (EGP)', 'Child Cost (EGP)', 'Infant Cost (EGP)', 'Unit Cost (EGP)',
+        'Adult Sell (EUR)', 'Child Sell (EUR)', 'Infant Sell (EUR)', 'Sale Mode', 'Sheet Formula Note', 'Updated By', 'Updated At',
+    ]);
+    foreach ($rows as $r) {
+        fputcsv($fp, [
+            $csvSafe($r['item_code']),
+            $csvSafe($r['linked_trip_code']),
+            $csvSafe($r['category_group']),
+            $csvSafe($r['supplier_code']),
+            $csvSafe($r['supplier_name_en']),
+            $csvSafe($r['name_en']),
+            $csvSafe($r['name_ar']),
+            $csvSafe($r['pricing_basis']),
+            (int) ($r['capacity_pax'] ?? 1),
+            $csvSafe($r['cost_currency']),
+            round((float) ($r['adult_cost_orig'] ?? 0), 2),
+            round((float) ($r['child_cost_orig'] ?? 0), 2),
+            round((float) ($r['infant_cost_orig'] ?? 0), 2),
+            round((float) ($r['unit_cost_orig'] ?? 0), 2),
+            round((float) ($r['adult_cost_egp'] ?? 0), 2),
+            round((float) ($r['child_cost_egp'] ?? 0), 2),
+            round((float) ($r['infant_cost_egp'] ?? 0), 2),
+            round((float) ($r['unit_cost_egp'] ?? 0), 2),
+            round((float) ($r['adult_sell_eur'] ?? 0), 2),
+            round((float) ($r['child_sell_eur'] ?? 0), 2),
+            round((float) ($r['infant_sell_eur'] ?? 0), 2),
+            $csvSafe($r['sale_mode']),
+            $csvSafe($r['sheet_formula_note']),
+            $csvSafe($r['updated_by']),
+            $csvSafe($r['updated_at']),
+        ]);
+    }
+    fclose($fp);
+    exit;
+}
+
+/* ---------------- STAFF BONUS & ALLOWANCE / ADVANCE HUB (`staff_bonuses_allowances` — v3.5) ---------------- */
+if ($action === 'staff_bonuses_allowances') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    $me = $ctx['user'];
+    if (($me['role_code'] ?? '') === 'GUEST_CUSTOMER') {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Staff access required']);
+        exit;
+    }
+    $canManageAll = in_array('bi.view_executive', $ctx['perms'], true)
+        || in_array('gl.view_all_ledgers', $ctx['perms'], true)
+        || in_array('hr.manage_payroll', $ctx['perms'], true)
+        || in_array('safe.record_tx', $ctx['perms'], true);
+    $canAwardBonus = in_array('bi.view_executive', $ctx['perms'], true)
+        || in_array('gl.view_all_ledgers', $ctx['perms'], true)
+        || in_array('hr.manage_payroll', $ctx['perms'], true);
+
+    $monthFilter = trim((string) ($_GET['month'] ?? 'ALL'));
+    $typeFilter  = strtoupper(trim((string) ($_GET['type'] ?? 'ALL')));
+
+    $sql = 'SELECT b.*, u.avatar_url, u.job_title_en, u.job_title_ar
+            FROM staff_bonuses_allowances b
+            LEFT JOIN users u ON LOWER(u.username) = LOWER(b.emp_username)
+            WHERE 1=1';
+    $params = [];
+    if (!$canManageAll) {
+        $sql .= ' AND LOWER(b.emp_username) = LOWER(?)';
+        $params[] = (string) $me['username'];
+    }
+    if ($monthFilter !== '' && strtoupper($monthFilter) !== 'ALL' && preg_match('/^\d{4}-\d{2}$/', $monthFilter)) {
+        $sql .= ' AND b.period_month = ?';
+        $params[] = $monthFilter;
+    }
+    if (in_array($typeFilter, ['BONUS', 'ALLOWANCE', 'ADVANCE'], true)) {
+        $sql .= ' AND b.entry_type = ?';
+        $params[] = $typeFilter;
+    }
+    $sql .= ' ORDER BY CASE WHEN b.status = "REQUESTED" THEN 0 ELSE 1 END, b.id DESC LIMIT 200';
+    $st = $pdo->prepare($sql);
+    $st->execute($params);
+    $rows = $st->fetchAll();
+
+    $totBonus = 0.0;
+    $totAllowance = 0.0;
+    $totAdvance = 0.0;
+    $pendingCnt = 0;
+    $approvedCnt = 0;
+    foreach ($rows as $r) {
+        $stRow = (string) $r['status'];
+        if ($stRow === 'REQUESTED') {
+            $pendingCnt++;
+        } elseif (in_array($stRow, ['APPROVED_PAID', 'POSTED_TO_PAYROLL'], true)) {
+            $approvedCnt++;
+            $amt = (float) $r['amount_egp'];
+            if ($r['entry_type'] === 'BONUS') {
+                $totBonus += $amt;
+            } elseif ($r['entry_type'] === 'ALLOWANCE') {
+                $totAllowance += $amt;
+            } else {
+                $totAdvance += $amt;
+            }
+        }
+    }
+
+    $staffDir = [];
+    if ($canManageAll) {
+        $staffDir = $pdo->query(
+            "SELECT username, display_name_en, display_name_ar, role_code, branch_scope, job_title_en, job_title_ar
+             FROM users
+             WHERE is_active = 1 AND role_code != 'GUEST_CUSTOMER'
+             ORDER BY display_name_en ASC"
+        )->fetchAll();
+    } else {
+        $staffDir = [[
+            'username'        => (string) $me['username'],
+            'display_name_en' => (string) $me['display_name_en'],
+            'display_name_ar' => (string) $me['display_name_ar'],
+            'role_code'       => (string) $me['role_code'],
+            'branch_scope'    => (string) $me['branch_scope'],
+            'job_title_en'    => (string) ($me['job_title_en'] ?? ''),
+            'job_title_ar'    => (string) ($me['job_title_ar'] ?? ''),
+        ]];
+    }
+
+    echo json_encode([
+        'ok'              => true,
+        'can_manage_all'  => $canManageAll,
+        'can_award_bonus' => $canAwardBonus,
+        'kpis'            => [
+            'total_bonuses_egp'    => round($totBonus, 2),
+            'total_allowances_egp' => round($totAllowance, 2),
+            'total_advances_egp'   => round($totAdvance, 2),
+            'pending_count'        => $pendingCnt,
+            'approved_count'       => $approvedCnt,
+        ],
+        'items'           => $rows,
+        'staff_directory' => $staffDir,
+        'fx_rates'        => sc_erp_fx_rates($pdo),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
 /* ---------------- MUTATING OPERATIONAL & TRIAL ACTIONS (POST + CSRF + RBAC) ---------------- */
 if ($method === 'POST') {
     $csrfTok = (string) ($rawIn['csrf_token'] ?? $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
@@ -3089,24 +3478,59 @@ if ($method === 'POST') {
         $pSt->execute([$prodCode]);
         $prod = $pSt->fetch();
 
-        $tripName   = $masterTrip ? (string) $masterTrip['unified_name_en'] : ($prod ? (string) $prod['name_en'] : $prodCode);
-        $adlEur     = $masterTrip ? (float) $masterTrip['adult_sell_eur'] : (($prod && $prod['price_eur'] !== null) ? (float) $prod['price_eur'] : 55.0);
-        $chdEur     = $masterTrip ? (float) $masterTrip['child_sell_eur'] : round($adlEur * 0.5, 2);
-        $infEur     = $masterTrip ? (float) $masterTrip['infant_sell_eur'] : 0.0;
+        // Also check direct match in `trip_supplier_cost_items` (e.g. standalone Camel 1h Tour `SAF-CAMEL-1HR-TOUR` or Petra `PETRA-JORDAN-VIP`)
+        $costItemDirect = null;
+        if (!$masterTrip) {
+            $ciSt = $pdo->prepare('SELECT c.*, COALESCE(s.name_en, c.supplier_code) AS sup_name FROM trip_supplier_cost_items c LEFT JOIN suppliers_directory s ON s.supplier_code = c.supplier_code WHERE UPPER(c.item_code) = UPPER(?) LIMIT 1');
+            $ciSt->execute([$prodCode]);
+            $costItemDirect = $ciSt->fetch() ?: null;
+        }
+
+        $rawSafariSpec = $rawIn['safari_spec'] ?? null;
+        if (is_string($rawSafariSpec) && trim($rawSafariSpec) !== '') {
+            $decodedSaf = json_decode($rawSafariSpec, true);
+            $rawSafariSpec = is_array($decodedSaf) ? $decodedSaf : null;
+        }
+        $safariCalc = is_array($rawSafariSpec)
+            ? sc_erp_compute_safari_breakdown_financials($pdo, $rawSafariSpec, $adults, $children, $infants, $fx)
+            : ['has_items' => false];
+
+        $tripName   = $masterTrip
+            ? (string) $masterTrip['unified_name_en']
+            : ($costItemDirect ? (string) $costItemDirect['name_en'] : ($prod ? (string) $prod['name_en'] : $prodCode));
+        $adlEur     = $masterTrip
+            ? (float) $masterTrip['adult_sell_eur']
+            : ($costItemDirect && (float) $costItemDirect['adult_sell_eur'] > 0 ? (float) $costItemDirect['adult_sell_eur'] : (($prod && $prod['price_eur'] !== null) ? (float) $prod['price_eur'] : 55.0));
+        $chdEur     = $masterTrip
+            ? (float) $masterTrip['child_sell_eur']
+            : ($costItemDirect ? (float) $costItemDirect['child_sell_eur'] : round($adlEur * 0.5, 2));
+        $infEur     = $masterTrip
+            ? (float) $masterTrip['infant_sell_eur']
+            : ($costItemDirect ? (float) $costItemDirect['infant_sell_eur'] : 0.0);
         $costRatio  = (float) ($prod['direct_cost_ratio'] ?? 0.38);
 
-        $catalogRevEgp = round(($adults * $adlEur + $children * $chdEur + $infants * $infEur) * $fx['EUR'], 2);
+        if (!empty($safariCalc['has_items'])) {
+            $tripName = 'Desert Safari (' . $safariCalc['sheet_activity_code'] . ')';
+            $catalogRevEgp = (float) $safariCalc['suggested_sell_egp'];
+        } else {
+            $catalogRevEgp = round(($adults * $adlEur + $children * $chdEur + $infants * $infEur) * $fx['EUR'], 2);
+        }
+
         $explicitGross = round($depositEgp + $restEq, 2);
         $grossEgp      = $explicitGross > 0.0 ? $explicitGross : $catalogRevEgp;
 
         // If deposit was 0 and rest wasn't explicitly set, automatically put remaining amount in REST EUR so pickup/Jetty knows what to collect!
         if ($explicitGross <= 0.0 && $catalogRevEgp > 0.0 && !array_key_exists('deposit_amount', $rawIn) && !array_key_exists('rest_amount', $rawIn) && !array_key_exists('rest_eur', $rawIn)) {
-            $rEur   = round($adults * $adlEur + $children * $chdEur + $infants * $infEur, 2);
+            $rEur   = !empty($safariCalc['has_items'])
+                ? (float) $safariCalc['suggested_sell_eur']
+                : round($adults * $adlEur + $children * $chdEur + $infants * $infEur, 2);
             $restEq = $catalogRevEgp;
         }
 
-        // Hidden automatic accounting mode & Adult/Child supplier cost from master_trips_catalog unless explicitly overridden
-        $defaultMode = $masterTrip ? (string) $masterTrip['sale_mode'] : 'INSHEET';
+        // Hidden automatic accounting mode & Adult/Child/Safari supplier cost from live DB unless explicitly overridden
+        $defaultMode = !empty($safariCalc['has_items'])
+            ? 'OUT_SIDE'
+            : ($masterTrip ? (string) $masterTrip['sale_mode'] : ($costItemDirect ? (string) $costItemDirect['sale_mode'] : 'INSHEET'));
         $saleModeRaw = isset($rawIn['sale_mode']) && trim((string) $rawIn['sale_mode']) !== ''
             ? strtoupper(trim((string) $rawIn['sale_mode']))
             : $defaultMode;
@@ -3114,9 +3538,17 @@ if ($method === 'POST') {
             $saleModeRaw = $defaultMode;
         }
 
-        $autoSupplierCostEgp = $masterTrip
-            ? round($adults * (float) $masterTrip['adult_cost_egp'] + $children * (float) $masterTrip['child_cost_egp'] + $infants * (float) $masterTrip['infant_cost_egp'], 2)
-            : 0.0;
+        if (!empty($safariCalc['has_items'])) {
+            $autoSupplierCostEgp = (float) $safariCalc['total_cost_egp'];
+        } elseif ($masterTrip) {
+            $autoSupplierCostEgp = round($adults * (float) $masterTrip['adult_cost_egp'] + $children * (float) $masterTrip['child_cost_egp'] + $infants * (float) $masterTrip['infant_cost_egp'], 2);
+        } elseif ($costItemDirect) {
+            $autoSupplierCostEgp = (string) $costItemDirect['pricing_basis'] === 'PER_PAX'
+                ? round($adults * (float) $costItemDirect['adult_cost_egp'] + $children * (float) $costItemDirect['child_cost_egp'] + $infants * (float) $costItemDirect['infant_cost_egp'], 2)
+                : round((float) $costItemDirect['unit_cost_egp'], 2);
+        } else {
+            $autoSupplierCostEgp = 0.0;
+        }
         $supplierCostEgp = array_key_exists('supplier_cost_egp', $rawIn) && (float) $rawIn['supplier_cost_egp'] > 0
             ? max(0.0, round((float) $rawIn['supplier_cost_egp'], 2))
             : $autoSupplierCostEgp;
@@ -3208,10 +3640,21 @@ if ($method === 'POST') {
             : ($supplierCostEgp > 0 ? $supplierCostEgp : round($grossEgp * $costRatio, 2));
         $profEgp  = round($grossEgp - $cogsEgp, 2);
 
-        $supCode  = $masterTrip ? (string) $masterTrip['supplier_code'] : 'SEA_COLLEGE';
-        $supName  = $masterTrip ? (string) $masterTrip['supplier_name'] : 'SEA COLLEGE';
+        $supCode  = !empty($safariCalc['has_items'])
+            ? (string) $safariCalc['supplier_code']
+            : ($masterTrip ? (string) $masterTrip['supplier_code'] : ($costItemDirect ? (string) $costItemDirect['supplier_code'] : 'SEA_COLLEGE'));
+        $supName  = !empty($safariCalc['has_items'])
+            ? (string) $safariCalc['supplier_name']
+            : ($masterTrip ? (string) $masterTrip['supplier_name'] : ($costItemDirect ? (string) $costItemDirect['sup_name'] : 'SEA COLLEGE'));
+
+        $safariBreakdownJson = !empty($safariCalc['has_items'])
+            ? (json_encode($safariCalc, JSON_UNESCAPED_UNICODE) ?: '')
+            : '';
 
         $commNote = $notes;
+        if (!empty($safariCalc['has_items'])) {
+            $commNote = trim($commNote . ($commNote !== '' ? ' | ' : '') . 'Safari: ' . $safariCalc['sheet_activity_code']);
+        }
         if ($discEgpOut > 0.0) {
             $dBadge = $discTypeOut === 'PERCENT' ? ("-{$discValOut}%") : ("-{$discValOut} {$discCurrOut}");
             $commNote = trim($commNote . ($commNote !== '' ? ' | ' : '') . "Discount {$dBadge} (-" . round($discEgpOut) . " EGP)");
@@ -3242,14 +3685,14 @@ if ($method === 'POST') {
               adult_unit_eur, child_unit_eur, infant_unit_eur,
               booked_adults, booked_children, booked_infants, booked_total_egp,
               list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
-              snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email,
+              snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email, safari_breakdown_json,
               sales_rep, executor, ap_supplier_code, client_agency,
               rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
               desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
               estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
               boarding_status, payment_status, booking_state, workflow_stage, source_file,
               seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
         );
         $ins->execute([
             $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
@@ -3258,7 +3701,7 @@ if ($method === 'POST') {
             $adlEur, $chdEur, $infEur,
             $adults, $children, $infants, $grossEgp,
             $listTotalEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $reqDiscReason,
-            $guest, $guestPh, $guestEm,
+            $guest, $guestPh, $guestEm, $safariBreakdownJson,
             $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', 'DIRECT',
             $rEgp, $rUsd, $rEur, $rGbp, $restEq,
             $depositEgp, $depositEgp, $depositEgp, $supplierCostEgp,
@@ -3337,6 +3780,9 @@ if ($method === 'POST') {
             'commission_egp'        => $commRes['commission_egp'],
             'commission_type'       => $commRes['commission_type'],
             'commission_status'     => $commRes['commission_status'],
+            'supplier_code'         => $supCode,
+            'supplier_cost_egp'     => $supplierCostEgp,
+            'safari_breakdown'      => !empty($safariCalc['has_items']) ? $safariCalc : null,
             'guest_account'         => $guestAcctRes,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
@@ -4797,6 +5243,383 @@ if ($method === 'POST') {
             'email_sent'     => !empty($res['email_sent']),
             'guest_account'  => $res,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    /* ---------------- SAVE SUPPLIER / VENDOR (`save_supplier` — Accounting & Owners) ---------------- */
+    if ($action === 'save_supplier') {
+        erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive');
+        $me = $ctx['user'];
+        $rawCode = strtoupper(trim((string) ($rawIn['supplier_code'] ?? '')));
+        $nameEn  = clean_line($rawIn['name_en'] ?? '', 140);
+        $nameAr  = clean_line($rawIn['name_ar'] ?? $nameEn, 140);
+        if ($nameEn === '') {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Supplier English name is required']);
+            exit;
+        }
+        if ($rawCode === '') {
+            $slug = strtoupper((string) preg_replace('/[^a-zA-Z0-9]+/', '_', $nameEn));
+            $slug = trim($slug, '_');
+            $rawCode = 'AP_' . ($slug !== '' ? substr($slug, 0, 18) : ('VENDOR_' . random_int(100, 999)));
+        }
+        $rawCode = (string) preg_replace('/[^A-Z0-9_-]/', '_', $rawCode);
+
+        $exSt = $pdo->prepare('SELECT * FROM suppliers_directory WHERE supplier_code = ? LIMIT 1');
+        $exSt->execute([$rawCode]);
+        $prev = $exSt->fetch() ?: null;
+
+        $catCode  = strtoupper(clean_line($rawIn['category_code'] ?? ($prev['category_code'] ?? 'EXCURSIONS'), 40));
+        $contact  = clean_line($rawIn['contact_person'] ?? ($prev['contact_person'] ?? ''), 100);
+        $phone    = clean_line($rawIn['phone'] ?? ($prev['phone'] ?? ''), 48);
+        $whatsapp = clean_line($rawIn['whatsapp'] ?? ($phone ?: ($prev['whatsapp'] ?? '')), 48);
+        $curr     = strtoupper(clean_line($rawIn['settlement_currency'] ?? ($prev['settlement_currency'] ?? 'EGP'), 8));
+        if (!in_array($curr, ['EGP', 'USD', 'EUR', 'GBP'], true)) {
+            $curr = 'EGP';
+        }
+        $terms    = clean_line($rawIn['payment_terms'] ?? ($prev['payment_terms'] ?? 'Monthly Statement'), 120);
+        $sheetTab = clean_line($rawIn['sheet_tab_name'] ?? ($prev['sheet_tab_name'] ?? ''), 40);
+        $openBal  = array_key_exists('opening_balance_egp', $rawIn) ? round((float) $rawIn['opening_balance_egp'], 2) : (float) ($prev['opening_balance_egp'] ?? 0.0);
+        $currBal  = array_key_exists('current_balance_egp', $rawIn) ? round((float) $rawIn['current_balance_egp'], 2) : (float) ($prev['current_balance_egp'] ?? 0.0);
+        $notes    = clean_line($rawIn['notes'] ?? ($prev['notes'] ?? ''), 400);
+        $isActive = array_key_exists('is_active', $rawIn) ? (!empty($rawIn['is_active']) ? 1 : 0) : (int) ($prev['is_active'] ?? 1);
+        $now      = gmdate('Y-m-d\TH:i:s\Z');
+
+        $pdo->prepare(
+            'INSERT OR REPLACE INTO suppliers_directory
+             (supplier_code, name_en, name_ar, category_code, contact_person, phone, whatsapp,
+              settlement_currency, payment_terms, sheet_tab_name, opening_balance_egp, current_balance_egp,
+              notes, is_active, updated_by, updated_at)
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?, ?,?,?,?)'
+        )->execute([
+            $rawCode, $nameEn, $nameAr, $catCode, $contact, $phone, $whatsapp,
+            $curr, $terms, $sheetTab, $openBal, $currBal,
+            $notes, $isActive, (string) $me['username'], $now,
+        ]);
+
+        // Also mirror into counterparties if AP_ code so Accounting GL stays unified
+        if (str_starts_with($rawCode, 'AP_')) {
+            try {
+                $cpChk = $pdo->prepare('SELECT id FROM counterparties WHERE code = ? LIMIT 1');
+                $cpChk->execute([$rawCode]);
+                if ($cpChk->fetchColumn()) {
+                    $pdo->prepare('UPDATE counterparties SET name_en = ?, name_ar = ?, opening_balance_egp = ?, current_balance_egp = ? WHERE code = ?')
+                        ->execute([$nameEn, $nameAr, $openBal, $currBal, $rawCode]);
+                } else {
+                    $pdo->prepare('INSERT INTO counterparties (code, name_en, name_ar, party_type, opening_balance_egp, total_debit_egp, total_credit_egp, current_balance_egp, source_workbook) VALUES (?,?,?,"SUPPLIER_AP",?,0,0,?,"LIVE_SUPPLIERS_HUB")')
+                        ->execute([$rawCode, $nameEn, $nameAr, $openBal, $currBal]);
+                }
+            } catch (Throwable $e) {}
+        }
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], $prev ? 'UPDATE_SUPPLIER' : 'CREATE_SUPPLIER', 'SUPPLIER', $rawCode, [
+            'name_en'             => $nameEn,
+            'category_code'       => $catCode,
+            'current_balance_egp' => $currBal,
+        ]);
+
+        $freshSt = $pdo->prepare('SELECT * FROM suppliers_directory WHERE supplier_code = ?');
+        $freshSt->execute([$rawCode]);
+        echo json_encode(['ok' => true, 'supplier' => $freshSt->fetch()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    /* ---------------- SAVE / UPDATE TRIP OR SAFARI VARIANT COST (`save_trip_cost` — Accounting & Owners) ---------------- */
+    if ($action === 'save_trip_cost') {
+        erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive');
+        $me = $ctx['user'];
+        $nameEnChk = trim((string) ($rawIn['name_en'] ?? ''));
+        $codeChk   = trim((string) ($rawIn['item_code'] ?? ''));
+        if ($nameEnChk === '' && $codeChk === '') {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Provide item_code or name_en to save trip/variant cost']);
+            exit;
+        }
+        $savedItem = sc_erp_save_trip_or_variant_cost($pdo, $rawIn, $me);
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'SAVE_TRIP_COST', 'TRIP_COST', (string) ($savedItem['item_code'] ?? ''), [
+            'supplier_code'   => $savedItem['supplier_code'] ?? '',
+            'adult_cost_egp'  => $savedItem['adult_cost_egp'] ?? 0,
+            'child_cost_egp'  => $savedItem['child_cost_egp'] ?? 0,
+            'infant_cost_egp' => $savedItem['infant_cost_egp'] ?? 0,
+            'unit_cost_egp'   => $savedItem['unit_cost_egp'] ?? 0,
+        ]);
+        echo json_encode(['ok' => true, 'item' => $savedItem], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    /* ---------------- AWARD STAFF BONUS OR RECORD / REQUEST ALLOWANCE (`save_staff_bonus_allowance` — v3.5) ---------------- */
+    if ($action === 'save_staff_bonus_allowance') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+            exit;
+        }
+        $me = $ctx['user'];
+        if (($me['role_code'] ?? '') === 'GUEST_CUSTOMER') {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Staff access required']);
+            exit;
+        }
+
+        $canManageAll = in_array('bi.view_executive', $ctx['perms'], true)
+            || in_array('gl.view_all_ledgers', $ctx['perms'], true)
+            || in_array('hr.manage_payroll', $ctx['perms'], true)
+            || in_array('safe.record_tx', $ctx['perms'], true);
+        $canAwardBonus = in_array('bi.view_executive', $ctx['perms'], true)
+            || in_array('gl.view_all_ledgers', $ctx['perms'], true)
+            || in_array('hr.manage_payroll', $ctx['perms'], true);
+
+        $entryType = strtoupper(trim((string) ($rawIn['entry_type'] ?? 'BONUS')));
+        if (!in_array($entryType, ['BONUS', 'ALLOWANCE', 'ADVANCE'], true)) {
+            $entryType = 'ALLOWANCE';
+        }
+        if ($entryType === 'BONUS' && !$canAwardBonus) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Only Owners, Admins, or Accounting/HR may award Staff Bonuses']);
+            exit;
+        }
+
+        $targetEmpUser = $canManageAll && !empty($rawIn['emp_username'])
+            ? strtolower(trim((string) $rawIn['emp_username']))
+            : strtolower((string) $me['username']);
+
+        $empSt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = ? AND role_code != 'GUEST_CUSTOMER' LIMIT 1");
+        $empSt->execute([$targetEmpUser]);
+        $empRow = $empSt->fetch();
+        if (!$empRow) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Target staff member not found']);
+            exit;
+        }
+
+        $fx = sc_erp_fx_rates($pdo);
+        $curr = strtoupper(trim((string) ($rawIn['currency'] ?? 'EGP')));
+        if (!isset($fx[$curr])) {
+            $curr = 'EGP';
+        }
+        $amtOrig = max(0.0, (float) ($rawIn['amount_orig'] ?? ($rawIn['amount_egp'] ?? ($rawIn['amount'] ?? 0.0))));
+        $amtEgp  = $curr === 'EGP' && array_key_exists('amount_egp', $rawIn)
+            ? round(max(0.0, (float) $rawIn['amount_egp']), 2)
+            : round($amtOrig * ($fx[$curr] ?? 1.0), 2);
+        if ($amtEgp <= 0.0) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Bonus / Allowance amount must be greater than zero']);
+            exit;
+        }
+
+        $txDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($rawIn['tx_date'] ?? '')) ? (string) $rawIn['tx_date'] : gmdate('Y-m-d');
+        $reqMo  = trim((string) ($rawIn['period_month'] ?? ''));
+        $periodMonth = preg_match('/^\d{4}-\d{2}$/', $reqMo) ? $reqMo : substr($txDate, 0, 7);
+        $category = strtoupper(clean_line($rawIn['category'] ?? ($entryType === 'BONUS' ? 'PERFORMANCE_BONUS' : ($entryType === 'ADVANCE' ? 'SALARY_ADVANCE' : 'TRANSPORT_ALLOWANCE')), 48));
+        $safeCode = strtoupper(clean_line($rawIn['safe_code'] ?? 'NONE_PAYROLL', 32));
+        if (!in_array($safeCode, ['NONE_PAYROLL', 'SAFE_CYRENE', 'SAFE_JETTY'], true)) {
+            $safeCode = 'NONE_PAYROLL';
+        }
+
+        $reasonEn = clean_line($rawIn['reason_en'] ?? ($rawIn['reason'] ?? ($entryType === 'BONUS' ? 'Staff Performance Bonus' : 'Staff Operational Allowance')), 240);
+        $reasonAr = clean_line($rawIn['reason_ar'] ?? $reasonEn, 240);
+        $nowIso   = gmdate('Y-m-d\TH:i:s\Z');
+
+        // Determine initial workflow status
+        if ($canManageAll) {
+            $reqStatus = strtoupper(trim((string) ($rawIn['status'] ?? 'APPROVED_PAID')));
+            $status = in_array($reqStatus, ['APPROVED_PAID', 'POSTED_TO_PAYROLL', 'REQUESTED'], true) ? $reqStatus : 'APPROVED_PAID';
+        } else {
+            $status = 'REQUESTED';
+            $safeCode = 'NONE_PAYROLL';
+        }
+
+        $approvedBy = in_array($status, ['APPROVED_PAID', 'POSTED_TO_PAYROLL'], true) ? (string) $me['username'] : '';
+        $decidedAt  = $approvedBy !== '' ? $nowIso : '';
+        $branchCode = (string) (($empRow['branch_scope'] ?? '') !== '' && $empRow['branch_scope'] !== 'ALL' ? $empRow['branch_scope'] : 'CYRENE');
+
+        $pdo->prepare(
+            'INSERT INTO staff_bonuses_allowances
+             (seed_key, created_at, tx_date, period_month, emp_username, emp_name_en, emp_name_ar,
+              role_code, branch_code, entry_type, category, amount_egp, currency, amount_orig,
+              safe_code, status, requested_by, approved_by, decided_at, reason_en, reason_ar)
+             VALUES (NULL, ?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?)'
+        )->execute([
+            $nowIso, $txDate, $periodMonth,
+            (string) $empRow['username'],
+            (string) $empRow['display_name_en'],
+            (string) ($empRow['display_name_ar'] ?: $empRow['display_name_en']),
+            (string) $empRow['role_code'],
+            $branchCode,
+            $entryType,
+            $category,
+            $amtEgp,
+            $curr,
+            $amtOrig > 0 ? $amtOrig : $amtEgp,
+            $safeCode,
+            $status,
+            (string) $me['username'],
+            $approvedBy,
+            $decidedAt,
+            $reasonEn,
+            $reasonAr,
+        ]);
+        $recordId = (int) $pdo->lastInsertId();
+
+        // Optional Safe Expense booking when paid immediately out of SAFE_CYRENE or SAFE_JETTY
+        if ($status === 'APPROVED_PAID' && in_array($safeCode, ['SAFE_CYRENE', 'SAFE_JETTY'], true)) {
+            [$wkE, $moE, $qrE, $yrE] = sc_erp_period_parts($txDate);
+            $vSeq = ($entryType === 'BONUS' ? 'BON-' : 'ALW-') . $recordId;
+            $cc   = $safeCode === 'SAFE_JETTY' ? 'JETTY' : 'CYRENE';
+            $pdo->prepare(
+                'INSERT INTO expense_vouchers_fact
+                 (exp_date, period_week, period_month, period_quarter, period_year, voucher_seq, description, cost_center, amount_le, amount_usd, amount_eur, amount_gbp, total_egp, source_file)
+                 VALUES (?,?,?,?,?,?,?,?, ?,0,0,0, ?, "LIVE_MOBILE_SAFE")'
+            )->execute([
+                $txDate, $wkE, $moE, $qrE, $yrE, $vSeq,
+                "Staff {$entryType}: {$empRow['display_name_en']} — {$reasonEn}",
+                $cc, $amtEgp, $amtEgp,
+            ]);
+        }
+
+        // Push instant notification!
+        if ($status === 'REQUESTED') {
+            sc_erp_push_notification(
+                $pdo,
+                'ROLE:CHIEF_ACCOUNTANT',
+                'ALLOWANCE_STATUS',
+                'SBA-' . $recordId,
+                "📝 Staff {$entryType} Request ({$empRow['display_name_en']}: " . number_format($amtEgp) . " EGP)",
+                "📝 طلب بدل / سلفة جديد ({$empRow['display_name_ar']}: " . number_format($amtEgp) . " ج.م)",
+                $reasonEn,
+                $reasonAr
+            );
+        } else {
+            $ico = $entryType === 'BONUS' ? '🎁🎉' : '✅💵';
+            sc_erp_push_notification(
+                $pdo,
+                (string) $empRow['username'],
+                $entryType === 'BONUS' ? 'STAFF_BONUS' : 'ALLOWANCE_STATUS',
+                'SBA-' . $recordId,
+                $entryType === 'BONUS'
+                    ? "{$ico} Congratulations! Staff Bonus Awarded: " . number_format($amtEgp) . " EGP"
+                    : "{$ico} Staff {$entryType} Approved: " . number_format($amtEgp) . " EGP",
+                $entryType === 'BONUS'
+                    ? "{$ico} مبروك! تم صرف مكافأة تشجيعية لك بقيمة " . number_format($amtEgp) . " ج.م"
+                    : "{$ico} تمت الموافقة على {$entryType} بقيمة " . number_format($amtEgp) . " ج.م",
+                $reasonEn,
+                $reasonAr
+            );
+
+            // Optional celebratory Company Inbox post for Staff Bonuses!
+            if ($entryType === 'BONUS' && !empty($rawIn['broadcast_inbox']) && in_array('bi.view_executive', $ctx['perms'], true)) {
+                $pdo->prepare(
+                    'INSERT INTO company_inbox_messages
+                     (seed_key, created_at, sender_username, sender_name_en, sender_name_ar, sender_role_code,
+                      sender_title_en, sender_title_ar, sender_avatar_url, msg_type, priority,
+                      audience_type, audience_target, spotlight_username, badge_icon,
+                      title_en, title_ar, body_en, body_ar, action_tab, is_pinned)
+                     VALUES (NULL, ?,?,?,?,?, ?,?,?, "CONGRATULATION", "HIGH", "ALL", "", ?, "🏆", ?,?,?,?, "staff_rewards", 0)'
+                )->execute([
+                    $nowIso,
+                    (string) $me['username'],
+                    (string) $me['display_name_en'],
+                    (string) ($me['display_name_ar'] ?: $me['display_name_en']),
+                    (string) $me['role_code'],
+                    (string) ($me['job_title_en'] ?? 'Management'),
+                    (string) ($me['job_title_ar'] ?? 'الإدارة'),
+                    (string) ($me['avatar_url'] ?? ''),
+                    (string) $empRow['username'],
+                    "🏆 Well-Deserved Bonus for {$empRow['display_name_en']}!",
+                    "🏆 تحية ومكافأة مستحقة للزميل {$empRow['display_name_ar']}!",
+                    "Join us in congratulating {$empRow['display_name_en']}! Reason: {$reasonEn}. Great job!",
+                    "نبارك للزميل {$empRow['display_name_ar']} تقديراً لجهوده المتميزة ({$reasonAr}). شكراً لتفانيكم!",
+                ]);
+            }
+        }
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'SAVE_STAFF_BONUS_ALLOWANCE', 'STAFF_REWARDS', 'SBA-' . $recordId, [
+            'emp_username' => $empRow['username'],
+            'entry_type'   => $entryType,
+            'amount_egp'   => $amtEgp,
+            'status'       => $status,
+        ]);
+
+        echo json_encode([
+            'ok'         => true,
+            'id'         => $recordId,
+            'entry_type' => $entryType,
+            'status'     => $status,
+            'amount_egp' => $amtEgp,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    /* ---------------- APPROVE / REJECT STAFF ALLOWANCE OR ADVANCE (`decide_staff_bonus_allowance` — v3.5) ---------------- */
+    if ($action === 'decide_staff_bonus_allowance') {
+        erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive', 'hr.manage_payroll', 'safe.record_tx');
+        $me    = $ctx['user'];
+        $id    = (int) ($rawIn['id'] ?? 0);
+        $rawDec= strtoupper(trim((string) ($rawIn['decision'] ?? 'APPROVED_PAID')));
+        $decision = match ($rawDec) {
+            'APPROVED', 'PAID', 'APPROVED_PAID' => 'APPROVED_PAID',
+            'PAYROLL', 'POSTED_TO_PAYROLL'      => 'POSTED_TO_PAYROLL',
+            'REJECTED', 'DECLINED'              => 'REJECTED',
+            default                             => 'APPROVED_PAID',
+        };
+        $safeCode = strtoupper(clean_line($rawIn['safe_code'] ?? '', 32));
+
+        $rSt = $pdo->prepare('SELECT * FROM staff_bonuses_allowances WHERE id = ? LIMIT 1');
+        $rSt->execute([$id]);
+        $row = $rSt->fetch();
+        if (!$row) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Staff bonus/allowance record not found']);
+            exit;
+        }
+
+        $finalSafe = in_array($safeCode, ['NONE_PAYROLL', 'SAFE_CYRENE', 'SAFE_JETTY'], true)
+            ? $safeCode
+            : (string) ($row['safe_code'] ?: 'NONE_PAYROLL');
+        $nowIso = gmdate('Y-m-d\TH:i:s\Z');
+
+        $pdo->prepare('UPDATE staff_bonuses_allowances SET status = ?, safe_code = ?, approved_by = ?, decided_at = ? WHERE id = ?')
+            ->execute([$decision, $finalSafe, (string) $me['username'], $nowIso, $id]);
+
+        if ($decision === 'APPROVED_PAID' && in_array($finalSafe, ['SAFE_CYRENE', 'SAFE_JETTY'], true) && (string) $row['status'] !== 'APPROVED_PAID') {
+            $txDate = (string) ($row['tx_date'] ?: gmdate('Y-m-d'));
+            [$wkE, $moE, $qrE, $yrE] = sc_erp_period_parts($txDate);
+            $vSeq = 'SBA-' . $id;
+            $cc   = $finalSafe === 'SAFE_JETTY' ? 'JETTY' : 'CYRENE';
+            $amtEgp = (float) $row['amount_egp'];
+            $pdo->prepare(
+                'INSERT INTO expense_vouchers_fact
+                 (exp_date, period_week, period_month, period_quarter, period_year, voucher_seq, description, cost_center, amount_le, amount_usd, amount_eur, amount_gbp, total_egp, source_file)
+                 VALUES (?,?,?,?,?,?,?,?, ?,0,0,0, ?, "LIVE_MOBILE_SAFE")'
+            )->execute([
+                $txDate, $wkE, $moE, $qrE, $yrE, $vSeq,
+                "Approved Staff {$row['entry_type']}: {$row['emp_name_en']} — {$row['reason_en']}",
+                $cc, $amtEgp, $amtEgp,
+            ]);
+        }
+
+        $okApprove = in_array($decision, ['APPROVED_PAID', 'POSTED_TO_PAYROLL'], true);
+        sc_erp_push_notification(
+            $pdo,
+            (string) $row['emp_username'],
+            'ALLOWANCE_STATUS',
+            'SBA-' . $id,
+            $okApprove
+                ? '✅ Staff Allowance / Advance Approved (' . number_format((float) $row['amount_egp']) . ' EGP)'
+                : '❌ Staff Allowance / Advance Declined',
+            $okApprove
+                ? '✅ تمت الموافقة وصرف البدل / السلفة (' . number_format((float) $row['amount_egp']) . ' ج.م)'
+                : '❌ تم رفض طلب البدل / السلفة',
+            (string) $row['reason_en'],
+            (string) $row['reason_ar']
+        );
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'DECIDE_STAFF_BONUS_ALLOWANCE', 'STAFF_REWARDS', 'SBA-' . $id, [
+            'decision'  => $decision,
+            'safe_code' => $finalSafe,
+        ]);
+
+        echo json_encode(['ok' => true, 'id' => $id, 'status' => $decision, 'safe_code' => $finalSafe]);
         exit;
     }
 }

@@ -23,46 +23,74 @@ $csrf = csrf_token();
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="/assets/erp/manifest.json">
-  <link rel="icon" href="/assets/images/logo.png">
-  <title>Sea College Dive Club — Unified Mobile ERP & Big-Data Command Center</title>
+  <link rel="icon" href="/assets/images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/images/logo.png">
+  <title>Sea College Dive Club — Official Ecosystem &amp; Mobile App</title>
   <style>
     :root {
-      --bg: #061526;
-      --surface: #0b2239;
-      --surface-2: #112e4a;
-      --border: rgba(125, 211, 252, 0.16);
+      --bg: #051322;
+      --surface: #0a2138;
+      --surface-2: #102e4c;
+      --border: rgba(56, 189, 248, 0.2);
       --text: #f0f9ff;
       --muted: #94a3b8;
       --cyan: #00d2ff;
       --teal: #10b981;
       --amber: #f59e0b;
+      --gold: #fbbf24;
       --rose: #f43f5e;
       --indigo: #6366f1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Cairo", Tahoma, sans-serif;
-      background: radial-gradient(circle at top right, #0e3358 0%, var(--bg) 60%);
+      background:
+        radial-gradient(circle at 88% 0%, rgba(0, 210, 255, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 10% 12%, rgba(245, 158, 11, 0.09) 0%, transparent 36%),
+        linear-gradient(180deg, #081e36 0%, var(--bg) 65%);
       color: var(--text);
       min-height: 100vh;
       padding-bottom: 84px;
     }
     .topbar {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(6, 21, 38, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
+      background: linear-gradient(90deg, rgba(5, 19, 34, 0.96) 0%, rgba(9, 33, 58, 0.94) 55%, rgba(5, 19, 34, 0.96) 100%);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 210, 255, 0.28);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+      padding: 10px 16px;
       display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-badge {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--cyan), #0284c7);
-      color: #031525; font-weight: 900; display: grid; place-items: center; font-size: 15px;
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand-crest-wrap {
+      width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+      padding: 2px;
+      background: conic-gradient(from 140deg, #00d2ff, #fbbf24, #10b981, #00d2ff);
+      box-shadow: 0 0 18px rgba(0, 210, 255, 0.38), 0 3px 10px rgba(0, 0, 0, 0.45);
+      display: grid; place-items: center;
     }
-    .brand h1 { font-size: 15px; font-weight: 800; letter-spacing: 0.2px; }
-    .brand p { font-size: 11px; color: var(--muted); }
+    .brand-crest-img {
+      width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background: #fff;
+    }
+    .brand-overline {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      font-size: 10px; font-weight: 900; letter-spacing: 0.9px; text-transform: uppercase;
+      color: #fde68a; margin-bottom: 2px;
+    }
+    .brand h1 { font-size: 15.5px; font-weight: 900; letter-spacing: 0.25px; color: #f8fafc; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .brand p { font-size: 11px; color: #93c5fd; }
+    .login-hero-brand {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 14px 12px 14px; margin-bottom: 12px; border-radius: 14px;
+      background: linear-gradient(145deg, rgba(0, 210, 255, 0.13), rgba(245, 158, 11, 0.09), rgba(6, 21, 38, 0.85));
+      border: 1px solid rgba(0, 210, 255, 0.32);
+    }
+    .login-hero-crest {
+      width: 84px; height: 84px; border-radius: 50%; padding: 3px; margin-bottom: 8px;
+      background: conic-gradient(from 140deg, #00d2ff, #fbbf24, #10b981, #00d2ff);
+      box-shadow: 0 0 26px rgba(0, 210, 255, 0.42);
+    }
+    .login-hero-crest img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #fff; display: block; }
     .container { max-width: 1280px; margin: 0 auto; padding: 16px; }
     .btn {
       border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
@@ -300,10 +328,16 @@ $csrf = csrf_token();
 
 <header class="topbar">
   <div class="brand">
-    <div class="brand-badge">SC</div>
+    <div class="brand-crest-wrap" title="Sea College Dive Club — Official Sharm El Sheikh Crest">
+      <img src="/assets/images/erp-brand-crest.webp" onerror="this.onerror=null;this.src='/assets/images/logo.png';" alt="Sea College Dive Club Logo" class="brand-crest-img" width="44" height="44">
+    </div>
     <div>
-      <h1 id="appTitle">Sea College Dive Club — Unified Ecosystem App <span class="pill" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">🚀 v3.2 LIVE</span></h1>
-      <p id="appSub">Smart Tablet Concierge • Company Inbox • Real-Time Accounting &amp; Awards</p>
+      <div class="brand-overline">
+        <span>⚓ PADI 5★ DIVE RESORT • CDWS SHARM EL SHEIKH</span>
+        <span class="pill" style="padding:1px 7px;font-size:10px;background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.45);">🚀 v3.5 LIVE</span>
+      </div>
+      <h1 id="appTitle">SEA COLLEGE DIVE CLUB — Ecosystem &amp; Concierge</h1>
+      <p id="appSub">Cyrene • Travco Jetty • Luxury Fleet • Suppliers &amp; Staff Rewards</p>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
@@ -320,8 +354,16 @@ $csrf = csrf_token();
 <main class="container">
   <!-- ================= LOGIN VIEW (1-TAP EASY PHOTO LOGIN FOR SELLERS & STAFF) ================= -->
   <section id="loginView" class="login-box card" style="display:none;max-width:560px;">
+    <div class="login-hero-brand">
+      <div class="login-hero-crest">
+        <img src="/assets/images/erp-brand-crest.webp" onerror="this.onerror=null;this.src='/assets/images/logo.png';" alt="Sea College Dive Club Official Emblem" width="80" height="80">
+      </div>
+      <div style="font-size:10.5px;font-weight:900;letter-spacing:1.1px;color:#fde68a;text-transform:uppercase;">⚓ EST. SHARM EL SHEIKH • PADI 5★ DIVE RESORT</div>
+      <div style="font-size:19px;font-weight:900;color:#f8fafc;margin-top:2px;">SEA COLLEGE DIVE CLUB</div>
+      <div style="font-size:11.5px;color:#93c5fd;margin-top:2px;">نادي سي كوليدج للغوص والرحلات البحرية والسفاري — شرم الشيخ</div>
+    </div>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-      <h2 style="font-size:19px;" id="loginHeading">👋 تسجيل الدخول السريع • Staff &amp; Verified Guest Sign In</h2>
+      <h2 style="font-size:17.5px;" id="loginHeading">👋 تسجيل الدخول السريع • Staff &amp; Verified Guest Sign In</h2>
       <button type="button" class="btn" onclick="toggleLang()">🌍 عربي / EN</button>
     </div>
     <p style="font-size:12.5px;color:var(--muted);margin-bottom:8px;" id="loginDesc">
@@ -369,6 +411,7 @@ $csrf = csrf_token();
       </div>
       <div id="roleBannerExtraBtns" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div id="roleBannerStaffQuickBtns" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-amber" id="btnBannerRewards" onclick="openStaffRewardsTab()">🎁 Bonus &amp; Allowances</button>
           <button type="button" class="btn" id="btnBannerInbox" onclick="openCompanyInboxTab()">📨 Inbox</button>
           <button type="button" class="btn" onclick="STATE.activeTab='my_profile';renderApp();">👤 My Profile</button>
           <button type="button" class="btn" id="btnBannerTeamDir" onclick="STATE.activeTab='team_profiles';renderApp();">👥 Team Directory</button>
@@ -680,6 +723,13 @@ $csrf = csrf_token();
           </div>
         </div>
       </div>
+      <div id="fbkSafariBuilderRow" style="display:none;grid-column:1/-1;padding:11px 12px;border-radius:12px;background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(0,210,255,0.08));border:1px solid rgba(251,191,36,0.4);">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+          <label style="margin:0;font-weight:900;color:#fde68a;font-size:12.5px;">🏜️ خيارات السفاري السريعة (موتوسيكل / باجي / جمل / نجوم / عشاء) • Safari Vehicles &amp; Add-Ons</label>
+          <button type="button" class="btn" style="padding:3px 8px;font-size:10.5px;" onclick="resetFastBookSafariSpec()">↺ Reset</button>
+        </div>
+        <div id="fbkSafariBuilderGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:7px;"></div>
+      </div>
       <div id="fbkDiscountRow" style="grid-column:1/-1;padding:10px 12px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.32);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
           <label style="margin:0;color:#fde68a;font-weight:800;">🎁 خصم خاص للضيف • Special Discount</label>
@@ -905,6 +955,316 @@ $csrf = csrf_token();
   </div>
 </div>
 
+<!-- Accounting Trip & Safari Variant Cost Create / Edit Modal -->
+<div id="tripCostModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:640px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="tcmTitle">💰 Update Trip / Safari Variant Supplier Cost</h3>
+      <button type="button" class="btn" onclick="document.getElementById('tripCostModal').style.display='none'">✕</button>
+    </div>
+    <form onsubmit="submitTripCostForm(event)" class="grid grid-2" style="gap:10px;">
+      <div>
+        <label>Item Code (Unique Cost SKU) *</label>
+        <input type="text" id="tcmItemCode" required placeholder="e.g. SAF-QUAD-SINGLE">
+      </div>
+      <div>
+        <label>Linked Master Trip (Optional Sync)</label>
+        <select id="tcmLinkedTrip"></select>
+      </div>
+      <div>
+        <label>Trip / Variant Name (English) *</label>
+        <input type="text" id="tcmNameEn" required placeholder="e.g. Single Quad Bike Safari (1 Rider)">
+      </div>
+      <div>
+        <label>الاسم بالعربي (Arabic Name) *</label>
+        <input type="text" id="tcmNameAr" dir="rtl" required placeholder="مثال: سفاري موتوسيكل فردي">
+      </div>
+      <div>
+        <label>Category Group *</label>
+        <select id="tcmCatGrp">
+          <option value="DESERT_SAFARI">🏜️ Desert Safari &amp; Bedouin (Quad/Buggy/Camel/Star/Dinner)</option>
+          <option value="YACHT_SNORKELING">🏝️ Yacht &amp; Snorkeling Cruises</option>
+          <option value="CAIRO_LUXOR">✈️ Cairo, Luxor &amp; Petra</option>
+          <option value="SINAI_DAHAB">⛰️ St. Catherine, Moses, Dahab &amp; Ras Mohammed Bus</option>
+          <option value="DOLPHIN_SUB_DINNER">🐬 Dolphin, Submarine &amp; Dinner Cruise</option>
+          <option value="WATERSPORTS">🪂 Watersports &amp; Speedboats</option>
+          <option value="DIVING_CHARTER">🤿 Diving &amp; SS Thistlegorm</option>
+          <option value="BOAT_SHARING">⛵ External Boat Sharing (Sphinx / El-Nahas)</option>
+          <option value="TRANSFERS">🚐 Bus &amp; Hotel Transfers</option>
+          <option value="DIVING_COURSES">🎓 PADI Courses &amp; Packages</option>
+        </select>
+      </div>
+      <div>
+        <label>Assigned Supplier / Vendor *</label>
+        <select id="tcmSupplier"></select>
+      </div>
+      <div>
+        <label>Pricing Basis (PAX vs Safari Vehicle / Add-On) *</label>
+        <select id="tcmBasis" onchange="syncTripCostBasisFields()">
+          <option value="PER_PAX">👨‍👩‍👧 Per PAX (Adult / Child / Infant)</option>
+          <option value="SINGLE_QUAD">🏍️ Single Quad (1 Rider Vehicle)</option>
+          <option value="DOUBLE_QUAD">🏍️🏍️ Double Quad (2 Riders Vehicle)</option>
+          <option value="BUGGY_2PAX">🏎️ Buggy for 2 People (Double Buggy)</option>
+          <option value="BUGGY_4PAX">🚙 Buggy for 4 People (Family Buggy)</option>
+          <option value="CAMEL_ADDON">🐪 Camel Riding with Safari (Add-On per PAX)</option>
+          <option value="CAMEL_1HR">🐪⏱️ Camel Riding 1-Hour Standalone Tour</option>
+          <option value="STAR_GAZING">🔭 Star Gazing Safari (Per PAX)</option>
+          <option value="BEDOUIN_DINNER">🍖 Standard Bedouin Dinner (Per PAX)</option>
+          <option value="VIP_BEDOUIN_DINNER">👑 VIP Bedouin Dinner (Per PAX)</option>
+          <option value="PRIVATE_GROUP">🧭 Private Safari Guide Surcharge</option>
+          <option value="PER_UNIT">🎯 Per Activity / Charter Unit</option>
+          <option value="PER_VEHICLE_LEG">🚐 Per Transfer Bus / Van Leg</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Capacity (PAX)</label>
+          <input type="number" id="tcmCapPax" min="1" max="60" value="1">
+        </div>
+        <div>
+          <label>Cost Currency</label>
+          <select id="tcmCurr">
+            <option value="EGP">EGP (ج.م)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1;padding:10px 12px;border-radius:11px;background:rgba(0,210,255,0.08);border:1px solid rgba(0,210,255,0.32);">
+        <div style="font-size:12px;font-weight:900;color:var(--cyan);margin-bottom:8px;">💵 Supplier Cost Input (In Selected Cost Currency — Auto-Converts to EGP)</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;">
+          <div>
+            <label>👤 Adult Cost *</label>
+            <input type="number" step="0.01" min="0" id="tcmAdultCost" value="0" required>
+          </div>
+          <div>
+            <label>🧒 Child Cost</label>
+            <input type="number" step="0.01" min="0" id="tcmChildCost" value="0">
+          </div>
+          <div>
+            <label>👶 Infant Cost</label>
+            <input type="number" step="0.01" min="0" id="tcmInfantCost" value="0">
+          </div>
+          <div>
+            <label>🏍️/🚙 Vehicle/Unit Cost</label>
+            <input type="number" step="0.01" min="0" id="tcmUnitCost" value="0">
+          </div>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1;padding:10px 12px;border-radius:11px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);">
+        <div style="font-size:12px;font-weight:900;color:#34d399;margin-bottom:8px;">🏷️ Guest Selling Tariff Reference (EUR) &amp; Commission Formula</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;">
+          <div>
+            <label>Adult / Unit Sell (€)</label>
+            <input type="number" step="0.5" min="0" id="tcmAdultEur" value="0">
+          </div>
+          <div>
+            <label>Child Sell (€)</label>
+            <input type="number" step="0.5" min="0" id="tcmChildEur" value="0">
+          </div>
+          <div>
+            <label>Infant Sell (€)</label>
+            <input type="number" step="0.5" min="0" id="tcmInfantEur" value="0">
+          </div>
+          <div>
+            <label>Accounting Mode</label>
+            <select id="tcmSaleMode">
+              <option value="OUT_SIDE">OUT_SIDE (25% Net)</option>
+              <option value="INSHEET">INSHEET (10% Gross)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <label style="display:inline-flex;align-items:center;gap:7px;margin:0;cursor:pointer;color:#fde68a;font-weight:700;">
+          <input type="checkbox" id="tcmIsSafariComp" style="width:auto;">
+          🏜️ Show as Modular Option in Seller Safari Builder
+        </label>
+      </div>
+
+      <div>
+        <label>Spreadsheet Formula / Note</label>
+        <input type="text" id="tcmFormulaNote" placeholder="e.g. BAKAR Sheet Col SGL = 400 EGP">
+      </div>
+      <div>
+        <label>Audit Reason for Cost Update *</label>
+        <input type="text" id="tcmReason" required value="Accounting supplier tariff update">
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('tripCostModal').style.display='none'">Cancel</button>
+        <button type="submit" class="btn btn-emerald" style="padding:10px 18px;font-weight:900;">💾 Save Supplier Cost &amp; Sync ERP</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Supplier / Vendor Directory Create / Edit Modal -->
+<div id="supplierEditModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:560px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="semTitle">🏭 Add / Edit Supplier or Vendor</h3>
+      <button type="button" class="btn" onclick="document.getElementById('supplierEditModal').style.display='none'">✕</button>
+    </div>
+    <form onsubmit="submitSupplierForm(event)" class="grid grid-2" style="gap:10px;">
+      <div>
+        <label>Supplier Code (AP_*) *</label>
+        <input type="text" id="semCode" placeholder="e.g. AP_BAKAR (auto if blank)">
+      </div>
+      <div>
+        <label>Category *</label>
+        <select id="semCat">
+          <option value="DESERT_SAFARI">🏜️ Desert Safari &amp; Horse</option>
+          <option value="CAIRO_SINAI">⛰️ Cairo, St. Catherine &amp; Dahab</option>
+          <option value="AVIATION_VIP">✈️ Flight Excursions (Cairo/Luxor/Petra)</option>
+          <option value="DOLPHIN_SUB_DINNER">🐬 Dolphin, Submarine &amp; Dinner Boat</option>
+          <option value="WATERSPORTS">🪂 Watersports &amp; Glass Boat</option>
+          <option value="DIVING_CHARTER">🤿 Diving &amp; Wreck Charter</option>
+          <option value="BOAT_SHARING">⛵ External Boat Sharing</option>
+          <option value="BEACH_ACCESS">🏖️ Reef &amp; Beach Entry</option>
+          <option value="TRANSFERS">🚐 Bus &amp; Van Transfers</option>
+          <option value="INHOUSE_FLEET">⚓ In-House Sea College Fleet</option>
+        </select>
+      </div>
+      <div>
+        <label>Supplier Name (English) *</label>
+        <input type="text" id="semNameEn" required placeholder="e.g. Bakar Desert Safari Center">
+      </div>
+      <div>
+        <label>اسم المورد بالعربي *</label>
+        <input type="text" id="semNameAr" dir="rtl" required placeholder="مثال: بكار للسفاري والعشاء البدوي">
+      </div>
+      <div>
+        <label>Contact Person</label>
+        <input type="text" id="semContact" placeholder="e.g. Capt. Bakar">
+      </div>
+      <div>
+        <label>📞 Phone / WhatsApp</label>
+        <input type="tel" id="semPhone" placeholder="+20 100 450 9911">
+      </div>
+      <div>
+        <label>Settlement Currency</label>
+        <select id="semCurr">
+          <option value="EGP">EGP</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+      </div>
+      <div>
+        <label>Accounting Sheet Tab Name</label>
+        <input type="text" id="semSheetTab" placeholder="e.g. BAKAR">
+      </div>
+      <div>
+        <label>Opening Balance (EGP)</label>
+        <input type="number" step="0.01" id="semOpenBal" value="0">
+      </div>
+      <div>
+        <label>Current Ledger Balance (EGP, - = Payable)</label>
+        <input type="number" step="0.01" id="semCurrBal" value="0">
+      </div>
+      <div style="grid-column:1/-1;">
+        <label>Payment Terms &amp; Contracted Rates Summary</label>
+        <input type="text" id="semNotes" placeholder="Contracted rates, settlement day, bank/cash notes">
+      </div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('supplierEditModal').style.display='none'">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="padding:10px 18px;font-weight:900;">💾 Save Supplier</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Staff Bonus & Allowance / Advance Modal -->
+<div id="staffRewardModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:540px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="srmTitle">🎁 Staff Bonus &amp; Allowance</h3>
+      <button type="button" class="btn" onclick="document.getElementById('staffRewardModal').style.display='none'">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="srmPresetBar">
+      <button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="applyStaffRewardPreset('BONUS','PERFORMANCE_BONUS','Outstanding Performance & Guest Care Bonus','مكافأة أداء متميز وخدمة ضيوف رائعة')">🏆 Performance Bonus</button>
+      <button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="applyStaffRewardPreset('BONUS','GUEST_REVIEW_5STAR','5-Star Guest Review Recognition Bonus','مكافأة تقييم 5 نجوم من الضيوف')">⭐ 5★ Review Bonus</button>
+      <button type="button" class="btn btn-emerald" style="padding:4px 9px;font-size:11px;" onclick="applyStaffRewardPreset('ALLOWANCE','TRANSPORT_ALLOWANCE','Hotel / Jetty Transport Allowance','بدل انتقالات التشغيل والفنادق')">🚐 Transport Allowance</button>
+      <button type="button" class="btn btn-emerald" style="padding:4px 9px;font-size:11px;" onclick="applyStaffRewardPreset('ALLOWANCE','MEAL_ALLOWANCE','Extra Shift & Meal Allowance','بدل وجبة وساعات عمل إضافية')">🍽️ Meal / Shift Allowance</button>
+      <button type="button" class="btn" style="padding:4px 9px;font-size:11px;" onclick="applyStaffRewardPreset('ADVANCE','SALARY_ADVANCE','Mid-Month Salary Advance','سلفة موظف على المرتب الشهري')">💵 Salary Advance</button>
+    </div>
+    <form onsubmit="submitStaffRewardForm(event)" class="grid grid-2" style="gap:10px;">
+      <div id="srmEmpWrap">
+        <label>👤 Staff Member *</label>
+        <select id="srmEmpUser"></select>
+      </div>
+      <div>
+        <label>Entry Type *</label>
+        <select id="srmEntryType" onchange="syncStaffRewardTypeUI()">
+          <option value="BONUS">🎁 Bonus / Reward (مكافأة تشجيعية)</option>
+          <option value="ALLOWANCE">🍱 Allowance (بدل انتقال / وجبة / إقامة)</option>
+          <option value="ADVANCE">💵 Salary Advance (سلفة على المرتب)</option>
+        </select>
+      </div>
+      <div>
+        <label>Category</label>
+        <select id="srmCategory">
+          <option value="PERFORMANCE_BONUS">🏆 Performance Bonus</option>
+          <option value="GUEST_REVIEW_5STAR">⭐ 5-Star Guest Review</option>
+          <option value="TARGET_ACHIEVEMENT">🎯 Target Achievement</option>
+          <option value="TRANSPORT_ALLOWANCE">🚐 Transport Allowance (بدل انتقال)</option>
+          <option value="MEAL_ALLOWANCE">🍽️ Meal / Shift Allowance (بدل وجبة / إضافي)</option>
+          <option value="HOUSING_ALLOWANCE">🏠 Housing / Mobile Allowance (بدل سكن / اتصالات)</option>
+          <option value="SALARY_ADVANCE">💵 Salary Advance (سلفة)</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1.3fr 0.9fr;gap:6px;">
+        <div>
+          <label>💵 Amount *</label>
+          <input type="number" step="50" min="50" id="srmAmount" required placeholder="e.g. 1500">
+        </div>
+        <div>
+          <label>Currency</label>
+          <select id="srmCurr">
+            <option value="EGP">EGP</option>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+      </div>
+      <div id="srmSafeWrap">
+        <label>🏦 Payout Source / Safe</label>
+        <select id="srmSafeCode">
+          <option value="NONE_PAYROLL">📋 Add to Monthly Payroll Sheet</option>
+          <option value="SAFE_CYRENE">💵 Pay Cash — Cyrene Safe</option>
+          <option value="SAFE_JETTY">💵 Pay Cash — Jetty Safe</option>
+        </select>
+      </div>
+      <div>
+        <label>📅 Date</label>
+        <input type="date" id="srmDate" value="<?= gmdate('Y-m-d') ?>">
+      </div>
+      <div style="grid-column:1/-1;">
+        <label>📝 Reason / Note (English &amp; Arabic) *</label>
+        <input type="text" id="srmReasonEn" required placeholder="e.g. Great guest service & extra effort this week">
+      </div>
+      <div style="grid-column:1/-1;">
+        <input type="text" id="srmReasonAr" dir="rtl" placeholder="مثال: مكافأة التميز والمجهود الرائع مع الضيوف">
+      </div>
+      <div id="srmInboxCelebrateWrap" style="grid-column:1/-1;padding:8px 11px;border-radius:10px;background:rgba(245,158,11,0.12);border:1px solid rgba(251,191,36,0.38);">
+        <label style="display:inline-flex;align-items:center;gap:8px;margin:0;cursor:pointer;color:#fde68a;font-weight:800;">
+          <input type="checkbox" id="srmBroadcastInbox" style="width:auto;" checked>
+          🎉 Post Congratulations in Company Inbox so the whole team celebrates!
+        </label>
+      </div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('staffRewardModal').style.display='none'">Cancel</button>
+        <button type="submit" id="srmSubmitBtn" class="btn btn-primary" style="padding:10px 18px;font-weight:900;">✅ Save Bonus / Allowance</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <nav id="mobileBottomNav" class="bottom-dock"></nav>
 
 <div id="toast" class="toast"></div>
@@ -923,6 +1283,15 @@ let STATE = {
   reportMonth: '2026-10',
   walletMonth: '2026-10',
   walletSeller: '',
+  suppliersHub: null,
+  suppliersSubTab: 'costs',
+  suppliersCat: 'ALL',
+  suppliersFilterSup: 'ALL',
+  suppliersSearch: '',
+  staffRewards: null,
+  staffRewardsType: 'ALL',
+  staffRewardsMonth: 'ALL',
+  fbkSafariSpec: {},
   pnlViewMode: 'consolidated',
   bankViewMode: 'all3',
   pitchLang: 'en',
@@ -1460,6 +1829,12 @@ function buildTabsForUser() {
   if (hasPerm('gl.view_all_ledgers')) {
     tabs.push({ id: 'accounting_gl', ico: '📚', short: 'Accounting', label: ar ? '📚 الحسابات والتسويات والمرتبات' : '📚 Accounting, Settlements & Payroll' });
   }
+  if (hasPerm('gl.view_all_ledgers', 'bi.view_executive', 'ops.view_manifests')) {
+    tabs.push({ id: 'suppliers_costs_hub', ico: '🏭', short: ar ? 'الموردين والتكلفة' : 'Suppliers', label: ar ? '🏭 الموردين وتكلفة الرحلات والسفاري' : '🏭 Suppliers & Trip Cost Matrix' });
+  }
+  if (hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'hr.manage_payroll', 'safe.record_tx')) {
+    tabs.push({ id: 'staff_rewards', ico: '🎁', short: ar ? 'مكافآت وبدلات' : 'Bonuses', label: ar ? '🎁 مكافآت وبدلات وسلف الموظفين' : '🎁 Staff Bonus & Allowances' });
+  }
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'profitability', ico: '🏆', short: 'ROI', label: ar ? '🏆 الأعلى مبيعاً وربحية الرحلات والمراكب' : '🏆 Best Sellers, Trips & Boats ROI' });
     tabs.push({ id: 'exports_hub', ico: '📥', short: 'Exports', label: ar ? '📥 تصدير الشيتات والتقارير' : '📥 Export Sheets (.xlsx / .csv)' });
@@ -1554,8 +1929,13 @@ function renderApp() {
   syncNotifBadge();
   const ibTop = document.getElementById('inboxTopBtn');
   if (ibTop && guestMode) ibTop.style.display = 'none';
+  const btnBanRew = document.getElementById('btnBannerRewards');
   const btnBanInb = document.getElementById('btnBannerInbox');
   const btnBanDir = document.getElementById('btnBannerTeamDir');
+  if (btnBanRew) {
+    btnBanRew.style.display = guestMode ? 'none' : 'inline-flex';
+    btnBanRew.innerHTML = ar ? '🎁 المكافآت والبدلات' : '🎁 Bonus &amp; Allowances';
+  }
   if (btnBanInb) btnBanInb.style.display = guestMode ? 'none' : 'inline-flex';
   if (btnBanDir) btnBanDir.style.display = guestMode ? 'none' : 'inline-flex';
 
@@ -1585,7 +1965,8 @@ function renderApp() {
     document.getElementById('welcomeContacts').innerHTML = `
       <a class="btn btn-emerald" style="padding:6px 11px;font-size:12px;" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips with me: ' + myBrochureUrl)}" target="_blank" rel="noopener">💬 ${ar ? 'ابعت الكتالوج واتساب' : 'WhatsApp My Trips'}</a>
       <button type="button" class="btn btn-primary" style="padding:6px 11px;font-size:12px;" onclick="STATE.activeTab='seller_wallet';renderApp();">📱 ${ar ? 'باركودي وفلوسي' : 'My QR & Cash'}</button>
-      <button type="button" class="btn btn-amber" style="padding:6px 11px;font-size:12px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'الرسائل' : 'Inbox'}${STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : ''}</button>
+      <button type="button" class="btn btn-amber" style="padding:6px 11px;font-size:12px;" onclick="openStaffRewardsTab()">🎁 ${ar ? 'مكافآتي وبدلاتي' : 'Bonuses & Allowances'}</button>
+      <button type="button" class="btn" style="padding:6px 11px;font-size:12px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'الرسائل' : 'Inbox'}${STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : ''}</button>
     `;
     document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('');
   } else {
@@ -1616,7 +1997,8 @@ function renderApp() {
   }
 
   const tabs = buildTabsForUser();
-  if (!STATE.activeTab || !tabs.some((t) => t.id === STATE.activeTab)) {
+  const allowSecondaryStaffRewards = !guestMode && STATE.activeTab === 'staff_rewards';
+  if (!STATE.activeTab || (!tabs.some((t) => t.id === STATE.activeTab) && !allowSecondaryStaffRewards)) {
     STATE.activeTab = tabs[0] ? tabs[0].id : '';
   }
   renderPinnedInboxBanner(ar);
@@ -1637,7 +2019,27 @@ function renderApp() {
   }
 
   const box = document.getElementById('tabContent');
-  if (STATE.activeTab === 'guest_book_trips') {
+  if (STATE.activeTab === 'suppliers_costs_hub') {
+    if (STATE.suppliersHub) {
+      box.innerHTML = renderSuppliersCostsHubTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل الموردين ومصفوفة تكاليف الرحلات والسفاري...' : 'Loading Suppliers & Trip/Safari Cost Matrix...'}</div>`;
+    return apiGet({ action: 'suppliers_hub', category: STATE.suppliersCat || 'ALL', supplier: STATE.suppliersFilterSup || 'ALL', q: STATE.suppliersSearch || '' }).then((res) => {
+      if (res && res.ok) STATE.suppliersHub = res;
+      box.innerHTML = renderSuppliersCostsHubTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'staff_rewards') {
+    if (STATE.staffRewards) {
+      box.innerHTML = renderStaffRewardsTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل المكافآت والبدلات وسلف الموظفين...' : 'Loading Staff Bonuses, Allowances & Advances...'}</div>`;
+    return apiGet({ action: 'staff_bonuses_allowances', type: STATE.staffRewardsType || 'ALL', month: STATE.staffRewardsMonth || 'ALL' }).then((res) => {
+      if (res && res.ok) STATE.staffRewards = res;
+      box.innerHTML = renderStaffRewardsTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'guest_book_trips') {
     if (STATE.guestCatalog) {
       box.innerHTML = renderGuestBookTripsTab(ar);
       return;
@@ -4279,12 +4681,94 @@ function selectQuickPitchHotel(hName, pickWin) {
   renderApp();
 }
 
+function isSafariPitchItem(item) {
+  if (!item) return false;
+  const cg = String(item.category_group || item.category_key || '').toLowerCase();
+  const cd = String(item.code || item.id || '').toLowerCase();
+  return (cg.includes('safari') || cd.includes('safari')) && !cd.includes('horse');
+}
+
+function getActiveSafariSpecFromState() {
+  const sp = STATE.fbkSafariSpec || {};
+  const out = {};
+  let hasAny = false;
+  Object.keys(sp).forEach((k) => {
+    const q = Math.max(0, Math.floor(Number(sp[k] || 0)));
+    if (q > 0) {
+      out[k] = q;
+      hasAny = true;
+    }
+  });
+  return hasAny ? out : null;
+}
+
+function renderFastBookSafariBuilder() {
+  const row = document.getElementById('fbkSafariBuilderRow');
+  const grid = document.getElementById('fbkSafariBuilderGrid');
+  if (!row || !grid) return;
+  if (!isSafariPitchItem(CURRENT_FBK_ITEM)) {
+    row.style.display = 'none';
+    return;
+  }
+  row.style.display = 'block';
+  const cat = STATE.sellerCatalog || {};
+  const variants = cat.safari_variants || [];
+  const ar = STATE.lang === 'ar';
+  const icons = {
+    single_quad: '🏍️',
+    double_quad: '🏍️🏍️',
+    buggy_2pax: '🏎️',
+    buggy_4pax: '🚙',
+    camel_safari: '🐪',
+    camel_1hr: '🐪⏱️',
+    star_gazing: '🔭',
+    bedouin_dinner: '🍖',
+    vip_bedouin_dinner: '👑',
+    private_guide: '🧭'
+  };
+  grid.innerHTML = variants.map((v) => {
+    const fld = String(v.spec_field || '');
+    const qty = Math.max(0, Number((STATE.fbkSafariSpec || {})[fld] || 0));
+    const lbl = ar
+      ? String(v.name_ar || v.name_en).split('(')[0].trim()
+      : String(v.name_en || v.item_code).split('(')[0].trim();
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:9px;background:${qty > 0 ? 'rgba(245,158,11,0.18)' : 'rgba(6,21,38,0.75)'};border:1px solid ${qty > 0 ? 'rgba(251,191,36,0.6)' : 'var(--border)'};">
+        <div style="min-width:0;">
+          <div style="font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${icons[fld] || '🏜️'} ${esc(lbl)}</div>
+          <div style="font-size:10.5px;color:#7dd3fc;">€${fmt(v.unit_sell_eur, 0)}</div>
+        </div>
+        <div class="stepper-wrap" style="padding:1px 3px;">
+          <button type="button" class="stepper-btn" style="width:26px;height:26px;font-size:14px;" onclick="stepFastBookSafari('${esc(fld)}', -1)">−</button>
+          <span style="min-width:20px;text-align:center;font-size:12.5px;font-weight:900;">${qty}</span>
+          <button type="button" class="stepper-btn" style="width:26px;height:26px;font-size:14px;" onclick="stepFastBookSafari('${esc(fld)}', 1)">+</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function stepFastBookSafari(field, delta) {
+  if (!STATE.fbkSafariSpec) STATE.fbkSafariSpec = {};
+  const next = Math.max(0, Math.min(30, Number(STATE.fbkSafariSpec[field] || 0) + delta));
+  STATE.fbkSafariSpec[field] = next;
+  renderFastBookSafariBuilder();
+  recalcFastBookGuestTotal(true);
+}
+
+function resetFastBookSafariSpec() {
+  STATE.fbkSafariSpec = {};
+  renderFastBookSafariBuilder();
+  recalcFastBookGuestTotal(true);
+}
+
 function openFastBookModal(itemCode) {
   const cat = STATE.sellerCatalog || {};
   const all = getUnifiedPitchItems(cat);
   const item = all.find((x) => String(x.code || x.id) === String(itemCode)) || all[0];
   if (!item) return;
   CURRENT_FBK_ITEM = item;
+  STATE.fbkSafariSpec = {};
   document.getElementById('fbkResultBox').style.display = 'none';
   document.getElementById('fbkTitle').textContent = `⚡ Guest Booking: ${item.name || item.name_en}`;
   document.getElementById('fbkProdCode').value = String(item.code || item.id);
@@ -4308,6 +4792,7 @@ function openFastBookModal(itemCode) {
   document.getElementById('fbkDiscVal').value = pol.is_enabled && STATE.pitchDiscType !== 'NONE' ? String(STATE.pitchDiscVal || 0) : '0';
   document.getElementById('fbkDiscReason').value = '';
 
+  renderFastBookSafariBuilder();
   recalcFastBookGuestTotal(true);
   document.getElementById('fastBookModal').style.display = 'flex';
 }
@@ -4323,6 +4808,20 @@ function getFastBookComputedDiscount() {
   const ch = Math.max(0, Number(document.getElementById('fbkCh').value || 0));
   const dType = document.getElementById('fbkDiscType') ? document.getElementById('fbkDiscType').value : 'NONE';
   const dVal = document.getElementById('fbkDiscVal') ? Number(document.getElementById('fbkDiscVal').value || 0) : 0;
+
+  const activeSaf = getActiveSafariSpecFromState();
+  if (activeSaf && isSafariPitchItem(CURRENT_FBK_ITEM)) {
+    const variants = (STATE.sellerCatalog && STATE.sellerCatalog.safari_variants) || [];
+    let safEur = 0;
+    variants.forEach((v) => {
+      const q = Number(activeSaf[v.spec_field] || 0);
+      if (q > 0) safEur += q * Number(v.unit_sell_eur || 0);
+    });
+    if (safEur > 0) {
+      const synthItem = Object.assign({}, CURRENT_FBK_ITEM, { price_eur: safEur, child_price_eur: 0 });
+      return calcClientDiscountForTrip(synthItem, 1, 0, cur, dType, dVal);
+    }
+  }
   return calcClientDiscountForTrip(CURRENT_FBK_ITEM, adl, ch, cur, dType, dVal);
 }
 
@@ -4363,12 +4862,24 @@ function recalcFastBookSummaryBox() {
   const dCalc = getFastBookComputedDiscount();
   const dep = Math.max(0, Number(document.getElementById('fbkDepAmt').value || 0));
   const rest = Math.max(0, Number(document.getElementById('fbkRestAmt').value || 0));
+  const activeSaf = getActiveSafariSpecFromState();
+  let safLine = '';
+  if (activeSaf && isSafariPitchItem(CURRENT_FBK_ITEM)) {
+    const variants = (STATE.sellerCatalog && STATE.sellerCatalog.safari_variants) || [];
+    const parts = [];
+    variants.forEach((v) => {
+      const q = Number(activeSaf[v.spec_field] || 0);
+      if (q > 0) parts.push(`${q}× ${String(v.name_en || v.item_code).split('(')[0].trim()}`);
+    });
+    if (parts.length) safLine = `<div style="color:#fde68a;font-weight:800;">🏜️ Safari Selection: ${esc(parts.join(' + '))}</div>`;
+  }
   const priceLine = dCalc.discInCurr > 0
     ? ` = <s style="opacity:0.65;">${u.sym}${fmt(dCalc.listTotal, 1)}</s> <b class="pos">${u.sym}${fmt(dCalc.netTotal, 1)} ${esc(cur)}</b> <span style="color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)} Special Offer!)</span>`
     : ` = <b>${u.sym}${fmt(dCalc.netTotal, 1)} ${esc(cur)}</b>`;
   document.getElementById('fbkGuestSummary').innerHTML =
-    `🌊 <b>Trip Summary:</b> ${adl} Adult (${u.sym}${fmt(u.adult, 0)})`
-    + (ch > 0 ? ` + ${ch} Child (${u.sym}${fmt(u.child, 0)})` : '')
+    safLine
+    + `🌊 <b>Trip Summary:</b> ${adl} Adult` + (!activeSaf ? ` (${u.sym}${fmt(u.adult, 0)})` : '')
+    + (ch > 0 ? ` + ${ch} Child` + (!activeSaf ? ` (${u.sym}${fmt(u.child, 0)})` : '') : '')
     + ` + ${inf} Infant (<span class="pos">FREE &lt;3 yrs</span>)`
     + `${priceLine}<br>`
     + `✅ Deposit Paid Now: <b class="pos">${fmt(dep, 1)} ${esc(cur)}</b> • Remaining at Pickup Time: <b style="color:${rest > 0 ? '#fcd34d' : '#34d399'};">${fmt(rest, 1)} ${esc(restCur)}</b>`;
@@ -4392,7 +4903,8 @@ async function submitFastBookForm(e) {
     const depNow = Number(document.getElementById('fbkDepAmt').value || 0);
     const restLater = Number(document.getElementById('fbkRestAmt').value || 0);
     const restCurr = document.getElementById('fbkRestCur').value;
-    const res = await apiPost({
+    const activeSaf = isSafariPitchItem(CURRENT_FBK_ITEM) ? getActiveSafariSpecFromState() : null;
+    const payload = {
       action: 'create_voucher',
       guest_name: guestName,
       guest_phone: guestPhone,
@@ -4415,7 +4927,11 @@ async function submitFastBookForm(e) {
       deposit_currency: cur,
       rest_amount: restLater,
       rest_currency: restCurr
-    });
+    };
+    if (activeSaf) {
+      payload.safari_spec = activeSaf;
+    }
+    const res = await apiPost(payload);
     if (!res.ok) {
       alert(res.error || 'Could not create voucher');
       return;
@@ -5782,6 +6298,634 @@ function renderGuestCrmVaultTab(ar) {
       </div>
     </div>
   `;
+}
+
+/* ================= v3.5 SUPPLIERS / VENDORS HUB & GRANULAR TRIP/SAFARI COST MATRIX ================= */
+async function reloadSuppliersHub() {
+  const res = await apiGet({
+    action: 'suppliers_hub',
+    category: STATE.suppliersCat || 'ALL',
+    supplier: STATE.suppliersFilterSup || 'ALL',
+    q: STATE.suppliersSearch || ''
+  });
+  if (res && res.ok) {
+    STATE.suppliersHub = res;
+  }
+  renderApp();
+}
+
+function setSuppliersFilter(cat, sup) {
+  if (cat !== null && cat !== undefined) STATE.suppliersCat = cat;
+  if (sup !== null && sup !== undefined) STATE.suppliersFilterSup = sup;
+  reloadSuppliersHub();
+}
+
+function renderSuppliersCostsHubTab(ar) {
+  const d = STATE.suppliersHub || {};
+  const k = d.kpis || {};
+  const canEdit = !!d.can_edit_costs;
+  const suppliers = d.suppliers || [];
+  const costs = d.cost_items || [];
+  const audits = d.audit_logs || [];
+  const sub = STATE.suppliersSubTab || 'costs';
+
+  const cats = [
+    ['ALL', ar ? '🌐 كل الرحلات' : '🌐 All Trips & Variants'],
+    ['DESERT_SAFARI', ar ? '🏜️ سفاري (موتوسيكل/باجي/جمل/نجوم/عشاء)' : '🏜️ Safari (Quad/Buggy/Camel/Star/Dinner)'],
+    ['YACHT_SNORKELING', ar ? '🏝️ اليخوت والسنوركل' : '🏝️ Yachts & Snorkeling'],
+    ['CAIRO_LUXOR', ar ? '✈️ القاهرة والأقصر والبتراء' : '✈️ Cairo, Luxor & Petra'],
+    ['SINAI_DAHAB', ar ? '⛰️ كاترين ودهب ورأس محمد بر' : '⛰️ Catherine, Dahab & RM Bus'],
+    ['DOLPHIN_SUB_DINNER', ar ? '🐬 الدولفين والغواصة والعشاء' : '🐬 Dolphin, Sub & Dinner Boat'],
+    ['WATERSPORTS', ar ? '🪂 الألعاب المائية والباراشوت' : '🪂 Watersports & Parasailing'],
+    ['DIVING_CHARTER', ar ? '🤿 الغوص وسيسل جورم' : '🤿 Diving & SS Thistlegorm'],
+    ['BOAT_SHARING', ar ? '⛵ شيرنج المراكب' : '⛵ Boat Sharing'],
+    ['TRANSFERS', ar ? '🚐 الترانسفير والباصات' : '🚐 Transfers'],
+    ['DIVING_COURSES', ar ? '🎓 دورات PADI' : '🎓 PADI Courses']
+  ];
+
+  const basisLabel = (b, cap) => {
+    const map = {
+      PER_PAX: ar ? '👨‍👩‍👧 للفرد (بالغ/طفل/رضيع)' : '👨‍👩‍👧 Per PAX (Adl/Ch/Inf)',
+      SINGLE_QUAD: ar ? '🏍️ موتوسيكل فردي (1 راكب)' : '🏍️ Single Quad (1P)',
+      DOUBLE_QUAD: ar ? '🏍️🏍️ موتوسيكل زوجي (2 راكب)' : '🏍️🏍️ Double Quad (2P)',
+      BUGGY_2PAX: ar ? '🏎️ باجي كار لشخصين (2P)' : '🏎️ Buggy 2-People',
+      BUGGY_4PAX: ar ? '🚙 باجي عائلي 4 أفراد (4P)' : '🚙 Buggy 4-People',
+      CAMEL_ADDON: ar ? '🐪 جمل مع السفاري (للفرد)' : '🐪 Camel w/ Safari',
+      CAMEL_1HR: ar ? '🐪⏱️ جولة جمل ساعة' : '🐪⏱️ Camel 1h Tour',
+      STAR_GAZING: ar ? '🔭 مراقبة النجوم' : '🔭 Star Gazing',
+      BEDOUIN_DINNER: ar ? '🍖 عشاء بدوي عادي' : '🍖 Bedouin Dinner',
+      VIP_BEDOUIN_DINNER: ar ? '👑 عشاء بدوي VIP' : '👑 VIP Bedouin Dinner',
+      PRIVATE_GROUP: ar ? '🧭 جروب سفاري خاص' : '🧭 Private Guide',
+      ECO_FEE_PAX: ar ? '🎫 رسم بيئة 1$ للفرد' : '🎫 $1/PAX Eco Fee',
+      PER_UNIT: ar ? `🎯 للوحدة (${cap || 1} أفراد)` : `🎯 Per Unit (${cap || 1}P)`,
+      PER_VEHICLE_LEG: ar ? `🚐 للباص / النقلة (${cap || 14} راكب)` : `🚐 Per Shuttle (${cap || 14}P)`
+    };
+    return map[b] || b;
+  };
+
+  let bodyHtml = '';
+  if (sub === 'costs') {
+    bodyHtml = `
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+          ${cats.map(([cId, cLbl]) => `
+            <button type="button" class="btn ${(STATE.suppliersCat || 'ALL') === cId ? 'btn-primary' : ''}" style="padding:6px 10px;font-size:11.5px;" onclick="setSuppliersFilter('${cId}', null)">${esc(cLbl)}</button>
+          `).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;align-items:center;">
+          <select onchange="setSuppliersFilter(null, this.value)">
+            <option value="ALL">${ar ? '🏭 كل الموردين (All Suppliers)' : '🏭 All Suppliers / Vendors'}</option>
+            ${suppliers.map((s) => `<option value="${esc(s.supplier_code)}" ${(STATE.suppliersFilterSup || 'ALL') === s.supplier_code ? 'selected' : ''}>${esc(ar ? (s.name_ar || s.name_en) : s.name_en)} (${esc(s.supplier_code)})</option>`).join('')}
+          </select>
+          <div style="display:flex;gap:6px;">
+            <input type="search" id="supCostSearchInp" value="${esc(STATE.suppliersSearch || '')}" placeholder="${ar ? 'ابحث باسم الرحلة أو Quad أو Buggy أو Camel...' : 'Search Quad, Buggy, Camel, Star, Cairo, Supplier...'}" onkeydown="if(event.key==='Enter'){STATE.suppliersSearch=this.value;reloadSuppliersHub();}">
+            <button type="button" class="btn" onclick="STATE.suppliersSearch=document.getElementById('supCostSearchInp').value;reloadSuppliersHub();">🔍</button>
+          </div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
+            ${canEdit ? `<button type="button" class="btn btn-emerald" onclick="openTripCostModal(null)">➕ ${ar ? 'إضافة تكلفة رحلة / سفاري' : 'Add Trip / Safari Cost'}</button>` : ''}
+            ${canEdit ? `<a class="btn" href="/handlers/erp_api.php?action=export_suppliers_costs_csv">📥 CSV</a>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <h3 style="font-size:15px;">📋 ${ar ? 'مصفوفة تكاليف الرحلات والسفاري المعتمدة من شيتات الحجز والحسابات' : 'Audited Trip & Desert Safari Supplier Cost Matrix'} (${costs.length})</h3>
+          <span style="font-size:11.5px;color:#fde68a;">${canEdit ? (ar ? '✅ صلاحية المحاسبة مفعّلة: اضغط ✏️ لتحديث أي تكلفة فوراً' : '✅ Accounting Authority Active: Tap ✏️ Edit to update any cost live') : (ar ? '👁️ عرض فقط (التعديل متاح لقسم الحسابات والإدارة)' : '👁️ Read-Only (Cost updates restricted to Accounting & Owners)')}</span>
+        </div>
+        <div class="table-wrap" style="max-height:560px;">
+          <table>
+            <thead>
+              <tr>
+                <th>${ar ? 'الرحلة / نوع السفاري' : 'Trip / Safari Variant'}</th>
+                <th>${ar ? 'المورد' : 'Supplier'}</th>
+                <th>${ar ? 'وحدة التسعير' : 'Pricing Basis'}</th>
+                <th class="num">${ar ? 'تكلفة البالغ / الوحدة' : 'Adult / Unit Cost'}</th>
+                <th class="num">${ar ? 'تكلفة الطفل' : 'Child Cost'}</th>
+                <th class="num">${ar ? 'تكلفة الرضيع' : 'Infant Cost'}</th>
+                <th class="num">${ar ? 'سعر البيع (€)' : 'Sell Tariff (€)'}</th>
+                <th>${ar ? 'نظام العمولة' : 'Mode'}</th>
+                ${canEdit ? `<th>${ar ? 'تحديث المحاسبة' : 'Update'}</th>` : ''}
+              </tr>
+            </thead>
+            <tbody>
+              ${!costs.length ? `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:18px;">No matching cost items found.</td></tr>` : costs.map((c) => {
+                const origBadge = c.cost_currency && c.cost_currency !== 'EGP'
+                  ? `<div style="font-size:10.5px;color:#7dd3fc;">(${fmt(c.adult_cost_orig || c.unit_cost_orig, 1)} ${esc(c.cost_currency)})</div>`
+                  : '';
+                const mainCostEgp = Number(c.pricing_basis !== 'PER_PAX' && Number(c.unit_cost_egp) > 0 ? c.unit_cost_egp : c.adult_cost_egp);
+                const encoded = encodeURIComponent(JSON.stringify(c));
+                return `
+                  <tr>
+                    <td>
+                      <div style="font-weight:800;color:#f8fafc;">${esc(ar ? (c.name_ar || c.name_en) : c.name_en)}</div>
+                      <div style="font-size:10.5px;color:var(--muted);"><code>${esc(c.item_code)}</code> ${c.sheet_formula_note ? '• ' + esc(c.sheet_formula_note) : ''}</div>
+                    </td>
+                    <td>
+                      <span class="pill" style="font-size:10.5px;">${esc(ar ? (c.supplier_name_ar || c.supplier_name_en) : c.supplier_name_en)}</span>
+                    </td>
+                    <td style="font-size:11.5px;font-weight:700;color:#fde68a;">${esc(basisLabel(c.pricing_basis, c.capacity_pax))}</td>
+                    <td class="num"><b style="color:#fca5a5;">${fmt(mainCostEgp)} EGP</b>${origBadge}</td>
+                    <td class="num">${Number(c.child_cost_egp) > 0 ? `${fmt(c.child_cost_egp)} EGP` : '<span style="color:var(--muted);">0</span>'}</td>
+                    <td class="num">${Number(c.infant_cost_egp) > 0 ? `${fmt(c.infant_cost_egp)} EGP` : '<span class="pos">FREE (0)</span>'}</td>
+                    <td class="num"><b class="pos">€${fmt(c.adult_sell_eur || c.unit_sell_eur, 0)}</b>${Number(c.child_sell_eur) > 0 ? `<div style="font-size:10px;color:var(--muted);">Ch €${fmt(c.child_sell_eur, 0)}</div>` : ''}</td>
+                    <td><span class="pill" style="${c.sale_mode === 'OUT_SIDE' ? 'border-color:#f59e0b;color:#fde68a;' : ''}">${esc(c.sale_mode)}</span></td>
+                    ${canEdit ? `<td><button type="button" class="btn btn-amber" style="padding:5px 10px;font-size:11.5px;" onclick="openTripCostModal('${encoded}')">✏️ ${ar ? 'تعديل' : 'Edit'}</button></td>` : ''}
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  } else if (sub === 'vendors') {
+    bodyHtml = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <h3 style="font-size:15px;">🏭 ${ar ? 'دليل الموردين وشركات التنفيذ وحساباتهم (شيت الموردين 2026)' : 'Active Suppliers & Excursion Vendors Directory (2026 الموردين)'} (${suppliers.length})</h3>
+        ${canEdit ? `<button type="button" class="btn btn-primary" onclick="openSupplierModal(null)">➕ ${ar ? 'إضافة مورد جديد' : 'Add New Supplier'}</button>` : ''}
+      </div>
+      <div class="grid grid-2">
+        ${suppliers.map((s) => {
+          const bal = Number(s.current_balance_egp || 0);
+          const wd = waDigits(s.whatsapp || s.phone || '');
+          const encS = encodeURIComponent(JSON.stringify(s));
+          return `
+            <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                  <div>
+                    <div style="font-size:15px;font-weight:900;color:#f8fafc;">${esc(ar ? (s.name_ar || s.name_en) : s.name_en)}</div>
+                    <div style="font-size:11px;color:var(--cyan);"><code>${esc(s.supplier_code)}</code> • Sheet Tab: <b>${esc(s.sheet_tab_name || '—')}</b> • Currency: <b>${esc(s.settlement_currency || 'EGP')}</b></div>
+                  </div>
+                  <span class="pill">${esc(s.category_code)}</span>
+                </div>
+                <div style="font-size:12px;color:#cbd5e1;margin-top:8px;line-height:1.45;">${esc(s.notes || '—')}</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;padding:8px;border-radius:10px;background:rgba(6,21,38,0.68);border:1px solid var(--border);">
+                  <div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'رصيد الحساب (EGP)' : 'Ledger Balance'}</div>
+                    <div style="font-size:13.5px;font-weight:900;color:${bal < 0 ? '#fda4af' : '#34d399'};">${fmt(bal)} EGP</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'حجوزات منفذة' : 'Executed Trips'}</div>
+                    <div style="font-size:13.5px;font-weight:900;">${fmt(s.bookings_count || 0)} (${fmt(s.pax_count || 0)} PAX)</div>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'إجمالي التكلفة' : 'Booked COGS'}</div>
+                    <div style="font-size:13.5px;font-weight:900;color:#fde68a;">${fmt(s.booked_cogs_egp || 0)} EGP</div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  ${s.phone ? `<a class="btn" style="padding:4px 9px;font-size:11px;" href="tel:${esc(s.phone)}">📞 ${esc(s.contact_person || s.phone)}</a>` : ''}
+                  ${wd.length >= 8 ? `<a class="btn btn-emerald" style="padding:4px 9px;font-size:11px;" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
+                  <button type="button" class="btn" style="padding:4px 9px;font-size:11px;" onclick="STATE.suppliersSubTab='costs';setSuppliersFilter('ALL','${esc(s.supplier_code)}');">📋 ${ar ? 'أسعار المورد' : 'View Rates'}</button>
+                </div>
+                ${canEdit ? `<button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="openSupplierModal('${encS}')">✏️ ${ar ? 'تعديل المورد' : 'Edit'}</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    bodyHtml = `
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px;">🛡️ ${ar ? 'سجل الرقابة المحاسبية لتعديلات تكاليف الرحلات والموردين' : 'Immutable Accounting Cost Update Audit Log'} (${audits.length})</h3>
+        <div class="table-wrap" style="max-height:480px;">
+          <table>
+            <thead>
+              <tr>
+                <th>UTC Timestamp</th>
+                <th>Changed By</th>
+                <th>Item / Trip</th>
+                <th>Supplier</th>
+                <th class="num">Adult / Unit Cost (Prev → New)</th>
+                <th class="num">Child Cost (Prev → New)</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${!audits.length ? `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:16px;">No cost changes logged yet — initial tariff seeded from 2026 الموردين &amp; RESERVATION sheets.</td></tr>` : audits.map((a) => `
+                <tr>
+                  <td>${esc(String(a.changed_at || '').slice(0, 19).replace('T', ' '))}</td>
+                  <td><b>@${esc(a.changed_by)}</b> <span style="font-size:10px;color:var(--muted);">(${esc(a.changed_by_role)})</span></td>
+                  <td><b>${esc(a.item_name_en || a.item_code)}</b><div style="font-size:10px;color:var(--muted);"><code>${esc(a.item_code)}</code></div></td>
+                  <td><span class="pill">${esc(a.supplier_code)}</span></td>
+                  <td class="num">${fmt(a.prev_adult_cost_egp || a.prev_unit_cost_egp)} → <b class="pos">${fmt(a.new_adult_cost_egp || a.new_unit_cost_egp)} EGP</b></td>
+                  <td class="num">${fmt(a.prev_child_cost_egp)} → <b>${fmt(a.new_child_cost_egp)} EGP</b></td>
+                  <td>${esc(a.reason_notes || '')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">🏭 ${ar ? 'الموردين المعتمدين' : 'Active Suppliers & Vendors'}</div>
+        <div class="kpi-val">${fmt(k.total_suppliers || 0)}</div>
+        <div class="kpi-sub">Bakar Safari • A.Saad • One Tour • Dolphin • Sub • Sharmina</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">📋 ${ar ? 'بنود تكلفة الرحلات' : 'Trip & Variant Cost SKUs'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.total_cost_items || 0)}</div>
+        <div class="kpi-sub">${ar ? 'بالغ / طفل / رضيع + وحدات السفاري' : 'Adult / Child / Infant + Vehicle Units'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">🏜️ ${ar ? 'خيارات السفاري والبدوي' : 'Safari & Bedouin Variants'}</div>
+        <div class="kpi-val" style="color:#fde68a;">${fmt(k.safari_variants_count || 0)}</div>
+        <div class="kpi-sub">1S/2D Quad • Buggy 2P/4P • Camel • 1h • Star • VIP Dinner</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">💳 ${ar ? 'إجمالي مستحقات الموردين (AP)' : 'Net Suppliers Payable (AP)'}</div>
+        <div class="kpi-val" style="color:#fda4af;">${fmt(k.net_ap_payable_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? 'مربوط بشيت الموردين والحسابات' : 'Synced with AP Counterparties'}</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <button type="button" class="btn ${sub === 'costs' ? 'btn-primary' : ''}" onclick="STATE.suppliersSubTab='costs';renderApp();">🏜️🛥️ ${ar ? 'مصفوفة تكاليف الرحلات والسفاري (تحديث المحاسبة)' : 'Trip & Safari Cost Matrix (Accounting Editable)'}</button>
+      <button type="button" class="btn ${sub === 'vendors' ? 'btn-primary' : ''}" onclick="STATE.suppliersSubTab='vendors';renderApp();">🏭 ${ar ? 'دليل وحسابات الموردين' : 'Suppliers & Vendors Directory'} (${suppliers.length})</button>
+      <button type="button" class="btn ${sub === 'audit' ? 'btn-primary' : ''}" onclick="STATE.suppliersSubTab='audit';renderApp();">🛡️ ${ar ? 'سجل تعديلات التكلفة' : 'Cost Update Audit Log'} (${audits.length})</button>
+    </div>
+
+    ${bodyHtml}
+  `;
+}
+
+function syncTripCostBasisFields() {
+  const b = document.getElementById('tcmBasis').value;
+  const capEl = document.getElementById('tcmCapPax');
+  if (b === 'DOUBLE_QUAD' || b === 'BUGGY_2PAX') capEl.value = '2';
+  else if (b === 'BUGGY_4PAX') capEl.value = '4';
+  else if (b === 'SINGLE_QUAD' || b === 'PER_PAX' || b === 'CAMEL_ADDON' || b === 'CAMEL_1HR' || b === 'STAR_GAZING' || b === 'BEDOUIN_DINNER' || b === 'VIP_BEDOUIN_DINNER') capEl.value = '1';
+}
+
+function openTripCostModal(encodedRow) {
+  const d = STATE.suppliersHub || {};
+  const sups = d.suppliers || [];
+  const mt = d.master_trips || [];
+  const row = encodedRow ? JSON.parse(decodeURIComponent(encodedRow)) : null;
+
+  const supSel = document.getElementById('tcmSupplier');
+  supSel.innerHTML = sups.map((s) => `<option value="${esc(s.supplier_code)}">${esc(s.name_en)} (${esc(s.supplier_code)})</option>`).join('');
+
+  const mtSel = document.getElementById('tcmLinkedTrip');
+  mtSel.innerHTML = `<option value="">— Standalone Safari Variant / Add-On (No Master Link) —</option>`
+    + mt.map((m) => `<option value="${esc(m.trip_code)}">${esc(m.unified_name_en)} [${esc(m.trip_code)}]</option>`).join('');
+
+  document.getElementById('tcmTitle').textContent = row
+    ? `✏️ Update Supplier Cost: ${row.name_en}`
+    : '➕ Add New Trip or Safari Variant Cost';
+
+  document.getElementById('tcmItemCode').value = row ? row.item_code : '';
+  document.getElementById('tcmItemCode').readOnly = !!row;
+  mtSel.value = row ? (row.linked_trip_code || '') : '';
+  document.getElementById('tcmNameEn').value = row ? row.name_en : '';
+  document.getElementById('tcmNameAr').value = row ? row.name_ar : '';
+  document.getElementById('tcmCatGrp').value = row ? row.category_group : 'DESERT_SAFARI';
+  supSel.value = row ? row.supplier_code : 'AP_BAKAR';
+  document.getElementById('tcmBasis').value = row ? row.pricing_basis : 'PER_PAX';
+  document.getElementById('tcmCapPax').value = String(row ? (row.capacity_pax || 1) : 1);
+  document.getElementById('tcmCurr').value = row ? (row.cost_currency || 'EGP') : 'EGP';
+
+  const curr = row ? (row.cost_currency || 'EGP') : 'EGP';
+  document.getElementById('tcmAdultCost').value = String(row ? (curr !== 'EGP' && Number(row.adult_cost_orig) > 0 ? row.adult_cost_orig : row.adult_cost_egp) : 0);
+  document.getElementById('tcmChildCost').value = String(row ? (curr !== 'EGP' && Number(row.child_cost_orig) > 0 ? row.child_cost_orig : row.child_cost_egp) : 0);
+  document.getElementById('tcmInfantCost').value = String(row ? (curr !== 'EGP' && Number(row.infant_cost_orig) > 0 ? row.infant_cost_orig : row.infant_cost_egp) : 0);
+  document.getElementById('tcmUnitCost').value = String(row ? (curr !== 'EGP' && Number(row.unit_cost_orig) > 0 ? row.unit_cost_orig : row.unit_cost_egp) : 0);
+
+  document.getElementById('tcmAdultEur').value = String(row ? (row.adult_sell_eur || row.unit_sell_eur || 0) : 0);
+  document.getElementById('tcmChildEur').value = String(row ? (row.child_sell_eur || 0) : 0);
+  document.getElementById('tcmInfantEur').value = String(row ? (row.infant_sell_eur || 0) : 0);
+  document.getElementById('tcmSaleMode').value = row ? (row.sale_mode || 'OUT_SIDE') : 'OUT_SIDE';
+  document.getElementById('tcmIsSafariComp').checked = row ? Number(row.is_safari_component || 0) === 1 : false;
+  document.getElementById('tcmFormulaNote').value = row ? (row.sheet_formula_note || '') : '';
+  document.getElementById('tcmReason').value = 'Updated by Accounting per latest supplier tariff';
+
+  document.getElementById('tripCostModal').style.display = 'flex';
+}
+
+async function submitTripCostForm(e) {
+  e.preventDefault();
+  const curr = document.getElementById('tcmCurr').value || 'EGP';
+  const adVal = Number(document.getElementById('tcmAdultCost').value || 0);
+  const chVal = Number(document.getElementById('tcmChildCost').value || 0);
+  const inVal = Number(document.getElementById('tcmInfantCost').value || 0);
+  const unVal = Number(document.getElementById('tcmUnitCost').value || adVal);
+  const payload = {
+    action: 'save_trip_cost',
+    item_code: document.getElementById('tcmItemCode').value.trim(),
+    linked_trip_code: document.getElementById('tcmLinkedTrip').value,
+    name_en: document.getElementById('tcmNameEn').value.trim(),
+    name_ar: document.getElementById('tcmNameAr').value.trim(),
+    category_group: document.getElementById('tcmCatGrp').value,
+    supplier_code: document.getElementById('tcmSupplier').value,
+    pricing_basis: document.getElementById('tcmBasis').value,
+    capacity_pax: Number(document.getElementById('tcmCapPax').value || 1),
+    cost_currency: curr,
+    adult_cost_orig: adVal,
+    child_cost_orig: chVal,
+    infant_cost_orig: inVal,
+    unit_cost_orig: unVal,
+    adult_sell_eur: Number(document.getElementById('tcmAdultEur').value || 0),
+    child_sell_eur: Number(document.getElementById('tcmChildEur').value || 0),
+    infant_sell_eur: Number(document.getElementById('tcmInfantEur').value || 0),
+    unit_sell_eur: Number(document.getElementById('tcmAdultEur').value || 0),
+    sale_mode: document.getElementById('tcmSaleMode').value,
+    is_safari_component: document.getElementById('tcmIsSafariComp').checked ? 1 : 0,
+    sheet_formula_note: document.getElementById('tcmFormulaNote').value.trim(),
+    reason_notes: document.getElementById('tcmReason').value.trim()
+  };
+  if (curr === 'EGP') {
+    payload.adult_cost_egp = adVal;
+    payload.child_cost_egp = chVal;
+    payload.infant_cost_egp = inVal;
+    payload.unit_cost_egp = unVal;
+  }
+  const res = await apiPost(payload);
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Failed to save supplier cost');
+    return;
+  }
+  document.getElementById('tripCostModal').style.display = 'none';
+  STATE.sellerCatalog = null; // refresh live catalog costs too!
+  showToast('✅ Supplier cost saved & synced across ERP!');
+  await reloadSuppliersHub();
+}
+
+function openSupplierModal(encodedSup) {
+  const s = encodedSup ? JSON.parse(decodeURIComponent(encodedSup)) : null;
+  document.getElementById('semTitle').textContent = s ? `✏️ Edit Supplier: ${s.name_en}` : '➕ Add New Supplier / Vendor';
+  document.getElementById('semCode').value = s ? s.supplier_code : '';
+  document.getElementById('semCode').readOnly = !!s;
+  document.getElementById('semCat').value = s ? (s.category_code || 'DESERT_SAFARI') : 'DESERT_SAFARI';
+  document.getElementById('semNameEn').value = s ? s.name_en : '';
+  document.getElementById('semNameAr').value = s ? s.name_ar : '';
+  document.getElementById('semContact').value = s ? (s.contact_person || '') : '';
+  document.getElementById('semPhone').value = s ? (s.phone || '') : '';
+  document.getElementById('semCurr').value = s ? (s.settlement_currency || 'EGP') : 'EGP';
+  document.getElementById('semSheetTab').value = s ? (s.sheet_tab_name || '') : '';
+  document.getElementById('semOpenBal').value = String(s ? (s.opening_balance_egp || 0) : 0);
+  document.getElementById('semCurrBal').value = String(s ? (s.current_balance_egp || 0) : 0);
+  document.getElementById('semNotes').value = s ? (s.notes || '') : '';
+  document.getElementById('supplierEditModal').style.display = 'flex';
+}
+
+async function submitSupplierForm(e) {
+  e.preventDefault();
+  const res = await apiPost({
+    action: 'save_supplier',
+    supplier_code: document.getElementById('semCode').value.trim(),
+    category_code: document.getElementById('semCat').value,
+    name_en: document.getElementById('semNameEn').value.trim(),
+    name_ar: document.getElementById('semNameAr').value.trim(),
+    contact_person: document.getElementById('semContact').value.trim(),
+    phone: document.getElementById('semPhone').value.trim(),
+    settlement_currency: document.getElementById('semCurr').value,
+    sheet_tab_name: document.getElementById('semSheetTab').value.trim(),
+    opening_balance_egp: Number(document.getElementById('semOpenBal').value || 0),
+    current_balance_egp: Number(document.getElementById('semCurrBal').value || 0),
+    notes: document.getElementById('semNotes').value.trim()
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Failed to save supplier');
+    return;
+  }
+  document.getElementById('supplierEditModal').style.display = 'none';
+  showToast('🏭 Supplier saved to directory & AP ledger!');
+  await reloadSuppliersHub();
+}
+
+/* ================= v3.5 STAFF BONUS & ALLOWANCE / ADVANCE MODULE ================= */
+async function openStaffRewardsTab() {
+  STATE.activeTab = 'staff_rewards';
+  STATE.staffRewards = null;
+  return renderApp();
+}
+
+async function reloadStaffRewards() {
+  const res = await apiGet({
+    action: 'staff_bonuses_allowances',
+    type: STATE.staffRewardsType || 'ALL',
+    month: STATE.staffRewardsMonth || 'ALL'
+  });
+  if (res && res.ok) {
+    STATE.staffRewards = res;
+  }
+  renderApp();
+}
+
+function renderStaffRewardsTab(ar) {
+  const d = STATE.staffRewards || {};
+  const k = d.kpis || {};
+  const canManage = !!d.can_manage_all;
+  const canBonus = !!d.can_award_bonus;
+  const rows = d.items || [];
+  const tf = STATE.staffRewardsType || 'ALL';
+
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card" style="border-color:rgba(251,191,36,0.4);">
+        <div class="kpi-label">🎁 ${ar ? 'إجمالي المكافآت المعتمدة (Bonuses)' : 'Approved Staff Bonuses'}</div>
+        <div class="kpi-val" style="color:#fde68a;">${fmt(k.total_bonuses_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? 'مكافآت التميز والتارجت وتقييم الضيوف' : 'Performance, 5★ Reviews & Target Rewards'}</div>
+      </div>
+      <div class="card" style="border-color:rgba(16,185,129,0.4);">
+        <div class="kpi-label">🍱 ${ar ? 'البدلات المعتمدة (Allowances)' : 'Approved Staff Allowances'}</div>
+        <div class="kpi-val" style="color:#34d399;">${fmt(k.total_allowances_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? 'بدل انتقالات • وجبات • سكن • شيفت إضافي' : 'Transport • Meals • Housing • Extra Shifts'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">💵 ${ar ? 'السلف المنصرفة (Advances)' : 'Approved Salary Advances'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.total_advances_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? 'مرتبطة تلقائياً بشيت المرتبات والخزينة' : 'Linked to Monthly Payroll & Cash Safe'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">⏳ ${ar ? 'طلبات بانتظار الاعتماد' : 'Pending Staff Requests'}</div>
+        <div class="kpi-val" style="color:${Number(k.pending_count || 0) > 0 ? '#f59e0b' : '#94a3b8'};">${fmt(k.pending_count || 0)}</div>
+        <div class="kpi-sub">${fmt(k.approved_count || 0)} ${ar ? 'عملية معتمدة' : 'approved records'}</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button type="button" class="btn ${tf === 'ALL' ? 'btn-primary' : ''}" onclick="STATE.staffRewardsType='ALL';reloadStaffRewards();">${ar ? 'الكل' : 'All'}</button>
+        <button type="button" class="btn ${tf === 'BONUS' ? 'btn-primary' : ''}" onclick="STATE.staffRewardsType='BONUS';reloadStaffRewards();">🎁 ${ar ? 'المكافآت (Bonus)' : 'Bonuses'}</button>
+        <button type="button" class="btn ${tf === 'ALLOWANCE' ? 'btn-primary' : ''}" onclick="STATE.staffRewardsType='ALLOWANCE';reloadStaffRewards();">🍱 ${ar ? 'البدلات (Allowance)' : 'Allowances'}</button>
+        <button type="button" class="btn ${tf === 'ADVANCE' ? 'btn-primary' : ''}" onclick="STATE.staffRewardsType='ADVANCE';reloadStaffRewards();">💵 ${ar ? 'السلف (Advance)' : 'Advances'}</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${canBonus ? `<button type="button" class="btn btn-amber" onclick="openStaffRewardModal('BONUS')">🏆 ${ar ? '+ صرف مكافأة لموظف (Bonus)' : '+ Award Staff Bonus'}</button>` : ''}
+        <button type="button" class="btn btn-emerald" onclick="openStaffRewardModal('ALLOWANCE')">🍱 ${canManage ? (ar ? '+ تسجيل بدل / سلفة موظف' : '+ Record Allowance / Advance') : (ar ? '+ طلب بدل أو سلفة' : '+ Request Allowance / Advance')}</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:10px;">📋 ${canManage ? (ar ? 'سجل مكافآت وبدلات وسلف جميع الموظفين' : 'All Staff Bonuses, Allowances & Salary Advances Ledger') : (ar ? 'سجل مكافآتي وبدلاتي الخاصة' : 'My Personal Bonuses & Allowances')} (${rows.length})</h3>
+      <div class="table-wrap" style="max-height:520px;">
+        <table>
+          <thead>
+            <tr>
+              <th>${ar ? 'التاريخ' : 'Date'}</th>
+              <th>${ar ? 'الموظف' : 'Staff Member'}</th>
+              <th>${ar ? 'النوع' : 'Type'}</th>
+              <th>${ar ? 'التصنيف والسبب' : 'Category & Reason'}</th>
+              <th class="num">${ar ? 'المبلغ (EGP)' : 'Amount (EGP)'}</th>
+              <th>${ar ? 'طريقة الصرف' : 'Payout Safe'}</th>
+              <th>${ar ? 'الحالة' : 'Status'}</th>
+              ${canManage ? `<th>${ar ? 'اعتماد المحاسبة' : 'Action'}</th>` : ''}
+            </tr>
+          </thead>
+          <tbody>
+            ${!rows.length ? `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px;">${ar ? 'لا توجد مكافآت أو بدلات مسجلة بعد.' : 'No staff bonuses or allowances recorded yet.'}</td></tr>` : rows.map((r) => {
+              const isPend = r.status === 'REQUESTED';
+              const isRej = r.status === 'REJECTED';
+              const typeBadge = r.entry_type === 'BONUS'
+                ? `<span class="pill" style="background:rgba(245,158,11,0.18);border-color:#f59e0b;color:#fde68a;">🎁 BONUS</span>`
+                : (r.entry_type === 'ALLOWANCE'
+                    ? `<span class="pill" style="background:rgba(16,185,129,0.16);border-color:#10b981;color:#34d399;">🍱 ALLOWANCE</span>`
+                    : `<span class="pill">💵 ADVANCE</span>`);
+              return `
+                <tr>
+                  <td><b>${esc(r.tx_date)}</b><div style="font-size:10px;color:var(--muted);">${esc(r.period_month)}</div></td>
+                  <td>
+                    <div style="font-weight:800;">${esc(ar ? (r.emp_name_ar || r.emp_name_en) : r.emp_name_en)}</div>
+                    <div style="font-size:10.5px;color:var(--muted);">@${esc(r.emp_username)} • ${esc(r.branch_code)}</div>
+                  </td>
+                  <td>${typeBadge}</td>
+                  <td>
+                    <div style="font-size:11px;font-weight:800;color:#7dd3fc;">${esc(r.category)}</div>
+                    <div style="font-size:12px;">${esc(ar ? (r.reason_ar || r.reason_en) : r.reason_en)}</div>
+                  </td>
+                  <td class="num"><b style="font-size:14px;color:${r.entry_type === 'BONUS' ? '#fde68a' : '#34d399'};">${fmt(r.amount_egp)} EGP</b></td>
+                  <td style="font-size:11.5px;">${esc(r.safe_code === 'NONE_PAYROLL' ? (ar ? 'شيت المرتبات' : 'Monthly Payroll') : r.safe_code)}</td>
+                  <td>
+                    <span class="pill" style="${isPend ? 'border-color:#f59e0b;color:#fde68a;' : (isRej ? 'border-color:#f43f5e;color:#fda4af;' : 'border-color:#10b981;color:#34d399;')}">
+                      ${esc(r.status)}
+                    </span>
+                    ${r.approved_by ? `<div style="font-size:10px;color:var(--muted);">by @${esc(r.approved_by)}</div>` : ''}
+                  </td>
+                  ${canManage ? `
+                    <td>
+                      ${isPend ? `
+                        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                          <button type="button" class="btn btn-emerald" style="padding:4px 8px;font-size:11px;" onclick="decideStaffReward(${Number(r.id)}, 'APPROVED_PAID', '${esc(r.safe_code || 'SAFE_CYRENE')}')">✅ Pay</button>
+                          <button type="button" class="btn" style="padding:4px 8px;font-size:11px;" onclick="decideStaffReward(${Number(r.id)}, 'POSTED_TO_PAYROLL', 'NONE_PAYROLL')">📋 Payroll</button>
+                          <button type="button" class="btn" style="padding:4px 8px;font-size:11px;border-color:#f43f5e;color:#fda4af;" onclick="decideStaffReward(${Number(r.id)}, 'REJECTED', 'NONE_PAYROLL')">✕</button>
+                        </div>
+                      ` : '<span style="font-size:11px;color:var(--muted);">✓ Done</span>'}
+                    </td>
+                  ` : ''}
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function syncStaffRewardTypeUI() {
+  const d = STATE.staffRewards || {};
+  const canManage = !!d.can_manage_all;
+  const canBonus = !!d.can_award_bonus;
+  const tEl = document.getElementById('srmEntryType');
+  if (!canBonus && tEl.value === 'BONUS') {
+    tEl.value = 'ALLOWANCE';
+  }
+  const isBonus = tEl.value === 'BONUS';
+  const celWrap = document.getElementById('srmInboxCelebrateWrap');
+  if (celWrap) {
+    celWrap.style.display = (isBonus && hasPerm('bi.view_executive')) ? 'block' : 'none';
+  }
+  const safeWrap = document.getElementById('srmSafeWrap');
+  if (safeWrap) {
+    safeWrap.style.display = canManage ? 'block' : 'none';
+  }
+}
+
+function applyStaffRewardPreset(eType, cat, rEn, rAr) {
+  const d = STATE.staffRewards || {};
+  if (eType === 'BONUS' && !d.can_award_bonus) return;
+  document.getElementById('srmEntryType').value = eType;
+  document.getElementById('srmCategory').value = cat;
+  document.getElementById('srmReasonEn').value = rEn;
+  document.getElementById('srmReasonAr').value = rAr;
+  syncStaffRewardTypeUI();
+}
+
+function openStaffRewardModal(defaultType) {
+  const d = STATE.staffRewards || {};
+  const canManage = !!d.can_manage_all;
+  const canBonus = !!d.can_award_bonus;
+  const staff = d.staff_directory || [];
+  const empSel = document.getElementById('srmEmpUser');
+  empSel.innerHTML = staff.map((s) => `<option value="${esc(s.username)}">${esc(s.display_name_en)} (${esc(s.role_code)} • ${esc(s.branch_scope || 'ALL')})</option>`).join('');
+  document.getElementById('srmEmpWrap').style.display = canManage ? 'block' : 'none';
+
+  const typeSel = document.getElementById('srmEntryType');
+  Array.from(typeSel.options).forEach((opt) => {
+    if (opt.value === 'BONUS') opt.disabled = !canBonus;
+  });
+  typeSel.value = (defaultType === 'BONUS' && canBonus) ? 'BONUS' : 'ALLOWANCE';
+  document.getElementById('srmPresetBar').style.display = canManage ? 'flex' : 'none';
+  document.getElementById('srmAmount').value = typeSel.value === 'BONUS' ? '1500' : '800';
+  document.getElementById('srmReasonEn').value = typeSel.value === 'BONUS' ? 'Performance & Guest Care Bonus' : 'Operational Transport / Shift Allowance';
+  document.getElementById('srmReasonAr').value = typeSel.value === 'BONUS' ? 'مكافأة تميز وأداء رائع مع الضيوف' : 'بدل انتقالات وتشغيل';
+  document.getElementById('srmTitle').textContent = canManage
+    ? (typeSel.value === 'BONUS' ? '🏆 Award Staff Bonus (صرف مكافأة موظف)' : '🍱 Record Staff Allowance / Advance')
+    : '📝 Request Staff Allowance / Salary Advance';
+  syncStaffRewardTypeUI();
+  document.getElementById('staffRewardModal').style.display = 'flex';
+}
+
+async function submitStaffRewardForm(e) {
+  e.preventDefault();
+  const payload = {
+    action: 'save_staff_bonus_allowance',
+    emp_username: document.getElementById('srmEmpUser').value,
+    entry_type: document.getElementById('srmEntryType').value,
+    category: document.getElementById('srmCategory').value,
+    amount_orig: Number(document.getElementById('srmAmount').value || 0),
+    currency: document.getElementById('srmCurr').value,
+    safe_code: document.getElementById('srmSafeCode').value,
+    tx_date: document.getElementById('srmDate').value,
+    reason_en: document.getElementById('srmReasonEn').value.trim(),
+    reason_ar: document.getElementById('srmReasonAr').value.trim(),
+    broadcast_inbox: document.getElementById('srmBroadcastInbox').checked ? 1 : 0
+  };
+  const res = await apiPost(payload);
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Could not save staff bonus/allowance');
+    return;
+  }
+  document.getElementById('staffRewardModal').style.display = 'none';
+  STATE.inboxData = null;
+  showToast(res.status === 'REQUESTED' ? '📝 Request sent to Accounting for approval!' : '🎉 Staff Bonus / Allowance saved!');
+  await reloadStaffRewards();
+}
+
+async function decideStaffReward(id, decision, safeCode) {
+  const res = await apiPost({
+    action: 'decide_staff_bonus_allowance',
+    id,
+    decision,
+    safe_code: safeCode
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Failed to update status');
+    return;
+  }
+  showToast(`✅ Updated: ${res.status}`);
+  await reloadStaffRewards();
 }
 
 boot();

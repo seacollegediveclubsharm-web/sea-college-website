@@ -206,10 +206,13 @@ if ($activePromoToken !== '') {
   <header class="hero">
     <div class="hero-inner">
       <div class="rep-badge">
-        <div class="rep-avatar"><?= htmlspecialchars(mb_strtoupper(mb_substr($sellerNameEn, 0, 1)), ENT_QUOTES) ?></div>
+        <div style="width:52px;height:52px;border-radius:50%;padding:2px;background:conic-gradient(from 140deg,#00d2ff,#fbbf24,#10b981,#00d2ff);box-shadow:0 0 16px rgba(0,210,255,.38);flex-shrink:0;">
+          <img src="/assets/images/erp-brand-crest.webp" onerror="this.onerror=null;this.src='/assets/images/logo.png';" alt="Sea College Dive Club" style="width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;display:block;" width="48" height="48">
+        </div>
         <div>
-          <div class="rep-title">🌊 <?= htmlspecialchars($isRtl ? ('مستشارك الشخصي: ' . $sellerNameAr) : ('Your Personal Concierge: ' . $sellerNameEn), ENT_QUOTES) ?></div>
-          <div class="rep-sub"><?= htmlspecialchars($isRtl ? 'سي كوليدج شرم الشيخ — احجز الآن وادفع عند التحرك من الفندق · الرضع مجانًا' : 'Sea College Sharm El Sheikh — Confirm Now, Pay at Hotel Pickup · Infants <3 Free', ENT_QUOTES) ?></div>
+          <div style="font-size:10px;font-weight:900;letter-spacing:.9px;color:#fde68a;text-transform:uppercase;margin-bottom:1px;">⚓ SEA COLLEGE DIVE CLUB • PADI 5★ DIVE RESORT SHARM EL SHEIKH</div>
+          <div class="rep-title"><?= htmlspecialchars($isRtl ? ('مستشارك الشخصي: ' . $sellerNameAr) : ('Your Personal Concierge: ' . $sellerNameEn), ENT_QUOTES) ?></div>
+          <div class="rep-sub"><?= htmlspecialchars($isRtl ? 'احجز الآن وادفع عند التحرك من الفندق · الأطفال بنصف السعر والرضع مجانًا' : 'Confirm Now, Pay at Hotel Pickup · Kids Half Price & Infants <3 Free', ENT_QUOTES) ?></div>
         </div>
       </div>
       <div class="controls">

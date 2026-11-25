@@ -78,6 +78,7 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
         'guest_phone'            => "TEXT NOT NULL DEFAULT ''",
         'guest_email'            => "TEXT NOT NULL DEFAULT ''",
         'guest_account_username' => "TEXT NOT NULL DEFAULT ''",
+        'safari_breakdown_json'  => "TEXT NOT NULL DEFAULT ''",
     ];
     foreach ($resAddCols as $col => $ddl) {
         if (!isset($haveResCols[$col])) {
@@ -276,7 +277,101 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
             body_preview TEXT NOT NULL,
             transport_ok INTEGER NOT NULL DEFAULT 1
         );
-        CREATE INDEX IF NOT EXISTS idx_ged_user ON guest_email_dispatches(guest_username, id DESC);"
+        CREATE INDEX IF NOT EXISTS idx_ged_user ON guest_email_dispatches(guest_username, id DESC);
+        CREATE TABLE IF NOT EXISTS suppliers_directory (
+            supplier_code TEXT PRIMARY KEY,
+            name_en TEXT NOT NULL,
+            name_ar TEXT NOT NULL,
+            category_code TEXT NOT NULL DEFAULT 'EXCURSIONS',
+            contact_person TEXT NOT NULL DEFAULT '',
+            phone TEXT NOT NULL DEFAULT '',
+            whatsapp TEXT NOT NULL DEFAULT '',
+            settlement_currency TEXT NOT NULL DEFAULT 'EGP',
+            payment_terms TEXT NOT NULL DEFAULT 'Monthly / Weekly Statement',
+            sheet_tab_name TEXT NOT NULL DEFAULT '',
+            opening_balance_egp REAL NOT NULL DEFAULT 0,
+            current_balance_egp REAL NOT NULL DEFAULT 0,
+            notes TEXT NOT NULL DEFAULT '',
+            is_active INTEGER NOT NULL DEFAULT 1,
+            updated_by TEXT NOT NULL DEFAULT 'SYSTEM',
+            updated_at TEXT NOT NULL DEFAULT ''
+        );
+        CREATE TABLE IF NOT EXISTS trip_supplier_cost_items (
+            item_code TEXT PRIMARY KEY,
+            linked_trip_code TEXT NOT NULL DEFAULT '',
+            category_group TEXT NOT NULL DEFAULT 'DESERT_SAFARI',
+            supplier_code TEXT NOT NULL DEFAULT 'AP_BAKAR',
+            name_en TEXT NOT NULL,
+            name_ar TEXT NOT NULL,
+            pricing_basis TEXT NOT NULL DEFAULT 'PER_PAX',
+            capacity_pax INTEGER NOT NULL DEFAULT 1,
+            cost_currency TEXT NOT NULL DEFAULT 'EGP',
+            adult_cost_orig REAL NOT NULL DEFAULT 0,
+            child_cost_orig REAL NOT NULL DEFAULT 0,
+            infant_cost_orig REAL NOT NULL DEFAULT 0,
+            unit_cost_orig REAL NOT NULL DEFAULT 0,
+            adult_cost_egp REAL NOT NULL DEFAULT 0,
+            child_cost_egp REAL NOT NULL DEFAULT 0,
+            infant_cost_egp REAL NOT NULL DEFAULT 0,
+            unit_cost_egp REAL NOT NULL DEFAULT 0,
+            adult_sell_eur REAL NOT NULL DEFAULT 0,
+            child_sell_eur REAL NOT NULL DEFAULT 0,
+            infant_sell_eur REAL NOT NULL DEFAULT 0,
+            unit_sell_eur REAL NOT NULL DEFAULT 0,
+            sale_mode TEXT NOT NULL DEFAULT 'OUT_SIDE',
+            is_safari_component INTEGER NOT NULL DEFAULT 0,
+            sheet_formula_note TEXT NOT NULL DEFAULT '',
+            is_active INTEGER NOT NULL DEFAULT 1,
+            updated_by TEXT NOT NULL DEFAULT 'SYSTEM',
+            updated_at TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_tsci_cat_sup ON trip_supplier_cost_items(category_group, supplier_code, is_active);
+        CREATE TABLE IF NOT EXISTS trip_cost_audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            changed_at TEXT NOT NULL,
+            changed_by TEXT NOT NULL,
+            changed_by_role TEXT NOT NULL,
+            action_type TEXT NOT NULL DEFAULT 'UPDATE_COST',
+            item_code TEXT NOT NULL,
+            item_name_en TEXT NOT NULL DEFAULT '',
+            supplier_code TEXT NOT NULL DEFAULT '',
+            prev_adult_cost_egp REAL NOT NULL DEFAULT 0,
+            new_adult_cost_egp REAL NOT NULL DEFAULT 0,
+            prev_child_cost_egp REAL NOT NULL DEFAULT 0,
+            new_child_cost_egp REAL NOT NULL DEFAULT 0,
+            prev_infant_cost_egp REAL NOT NULL DEFAULT 0,
+            new_infant_cost_egp REAL NOT NULL DEFAULT 0,
+            prev_unit_cost_egp REAL NOT NULL DEFAULT 0,
+            new_unit_cost_egp REAL NOT NULL DEFAULT 0,
+            reason_notes TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_tcal_item ON trip_cost_audit_log(item_code, id DESC);
+        CREATE TABLE IF NOT EXISTS staff_bonuses_allowances (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            seed_key TEXT DEFAULT NULL UNIQUE,
+            created_at TEXT NOT NULL,
+            tx_date TEXT NOT NULL,
+            period_month TEXT NOT NULL,
+            emp_username TEXT NOT NULL,
+            emp_name_en TEXT NOT NULL,
+            emp_name_ar TEXT NOT NULL,
+            role_code TEXT NOT NULL DEFAULT 'STAFF',
+            branch_code TEXT NOT NULL DEFAULT 'CYRENE',
+            entry_type TEXT NOT NULL DEFAULT 'BONUS',
+            category TEXT NOT NULL DEFAULT 'PERFORMANCE_BONUS',
+            amount_egp REAL NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'EGP',
+            amount_orig REAL NOT NULL DEFAULT 0,
+            safe_code TEXT NOT NULL DEFAULT 'NONE_PAYROLL',
+            status TEXT NOT NULL DEFAULT 'APPROVED_PAID',
+            requested_by TEXT NOT NULL DEFAULT '',
+            approved_by TEXT NOT NULL DEFAULT '',
+            decided_at TEXT NOT NULL DEFAULT '',
+            reason_en TEXT NOT NULL DEFAULT '',
+            reason_ar TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_sba_month_status ON staff_bonuses_allowances(period_month, status, entry_type);
+        CREATE INDEX IF NOT EXISTS idx_sba_emp ON staff_bonuses_allowances(emp_username, period_month);"
     );
 
     sc_erp_seed_default_inbox_messages($pdo);
@@ -285,6 +380,9 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
     if ($tripCnt < 30) {
         sc_erp_sync_master_trips_catalog($pdo);
     }
+
+    sc_erp_seed_suppliers_and_cost_matrix($pdo);
+    sc_erp_seed_staff_bonuses_allowances($pdo);
 }
 
 /**
@@ -1666,6 +1764,535 @@ function sc_erp_sync_guest_account_on_voucher_change(PDO $pdo, array $voucherRow
     }
     return null;
 }
+
+/**
+ * Seed `suppliers_directory` and `trip_supplier_cost_items` idempotently (`INSERT OR IGNORE`)
+ * using exact figures audited from `2026 الموردين.xlsx` (`BAKAR`, `A.SAAD`, `DOLPHIN`, `DINNER`,
+ * `HORSE`, `SHARMINA`, `SUBMARINE`, `THISTLE GORM`, `ONE TOUR`, `ELNAHAS`, `SPHINX`, `MILLINIOM`,
+ * `HADY-FANAR`, `TRANSFER`, `S.C H.S`) and `RESERVATION` sheets.
+ */
+function sc_erp_seed_suppliers_and_cost_matrix(PDO $pdo): void
+{
+    $supCount = (int) $pdo->query('SELECT COUNT(*) FROM suppliers_directory')->fetchColumn();
+    if ($supCount < 15) {
+        // Pull live ledger balances from counterparties if present
+        $cpBalances = [];
+        try {
+            $cpRows = $pdo->query("SELECT code, opening_balance_egp, current_balance_egp FROM counterparties WHERE code LIKE 'AP_%'")->fetchAll();
+            foreach ($cpRows as $cr) {
+                $cpBalances[(string) $cr['code']] = [
+                    'open' => (float) ($cr['opening_balance_egp'] ?? 0.0),
+                    'curr' => (float) ($cr['current_balance_egp'] ?? 0.0),
+                ];
+            }
+        } catch (Throwable $e) {}
+
+        $suppliers = [
+            ['SEA_COLLEGE', 'Sea College Fleet & PADI 5★ Center', 'أسطول ومراكز سي كوليدج (أوشينو / عمر 4 / نزار / سحس / يوانا)', 'INHOUSE_FLEET', 'Capt. Haitham & Ahmed Nasr', '+201001106266', '+201001106266', 'EGP', 'Internal Fleet Settlement', 'CENTER', 0.0, 0.0, 'In-house luxury yachts (M/Y Oceano, Omar 4, Nizar, Sohs), Zodiac Youana & PADI 5★ Dive Center'],
+            ['AP_BAKAR', 'Bakar Desert Safari Center', 'بكار للسفاري والبيتش باجي والعشاء البدوي', 'DESERT_SAFARI', 'Capt. Bakar (Safari Ops)', '+201004509911', '+201004509911', 'EGP', 'Monthly Cyrene & Jaz Statement', 'BAKAR', 160192.5, -95925.0, 'Single Quad 400 EGP, Double Quad 450 EGP, Buggy 2-Pax 800 EGP, Family Buggy 4-Pax 1100 EGP, Camel w/ Safari 80 EGP, Camel 1h 300 EGP, Bedouin Dinner 200 EGP, VIP Dinner 300 EGP, Star Gazing 200 EGP, Private Guide 400 EGP + $1/PAX Eco Ticket'],
+            ['AP_A_SAAD', 'Ahmed Saad Cairo & Sinai Tours', 'أحمد سعد لرحلات القاهرة وسانت كاترين ودهب', 'CAIRO_SINAI', 'Mr. Ahmed Saad', '+201005112288', '+201005112288', 'EGP', 'Monthly Statement', 'A.SAAD', 136502.5, -61715.0, 'Cairo Bus Old Museum 2000 EGP, Grand Egyptian Museum (GEM) 4000 EGP, St. Catherine 1050 EGP, Mount Moses 1000 EGP, Dahab & Grand Canyon 450 EGP (+200 Moto), Ras Mohammed Bus 500 EGP'],
+            ['AP_ONE_TOUR', 'One Tour Aviation & VIP Historical', 'ون تور لطيران القاهرة والأقصر والبتراء والقدس', 'AVIATION_VIP', 'One Tour Aviation Desk', '+201009887744', '+201009887744', 'USD', 'Per-Flight USD Settlement', 'ONE TOUR ', 0.0, 2130.0, 'Cairo by Plane $245, Luxor by Plane $235, Petra $225, Jerusalem $160'],
+            ['AP_DOLPHIN', 'Dolphina Park Sharm (Desouky)', 'عرض وسباحة الدولفين — دسوقي', 'DOLPHIN_SUB_DINNER', 'Mr. Desouky', '+201003344112', '+201003344112', 'USD', 'Same-Week USD Settlement', 'DOLPHIN', 0.0, 5217.0, 'Dolphin Show $12 Adult / $6 Child; Interactive Swim w/ Dolphins $62'],
+            ['AP_SUBMARINE', 'United Royal Seascope Submarine', 'الغواصة الملكية (يونايتد)', 'DOLPHIN_SUB_DINNER', 'United Marine Desk', '+201002299881', '+201002299881', 'USD', 'Weekly USD / EGP Statement', 'SUBMARINE', 0.0, -18751.0, 'Foreign Adult $25, Arab Adult $20, Egyptian Adult 600 EGP, Child $5, Infant Free'],
+            ['AP_DINNER', 'Luxury Dinner Cruise Fleet', 'يخت سهرة العشاء البحري (Luxury Cruise)', 'DOLPHIN_SUB_DINNER', 'Luxury Cruise Reservations', '+201007766554', '+201007766554', 'EGP', 'Monthly Statement', 'DINNER ', 0.0, -6100.0, 'Romantic Seafood & Grill Dinner Boat: 1,000 EGP Adult, 500 EGP Child, Infant Free'],
+            ['AP_HORSE', 'Sahara Stable Horse Riding', 'إسطبل الخيل العربي بالشاطئ والصحراء', 'DESERT_SAFARI', 'Sahara Stable Captain', '+201006655321', '+201006655321', 'EGP', 'Monthly Statement', 'HORSE ', 46500.0, -29600.0, '1-Hour Beach & Desert Horse Riding: 800 EGP + $10 Transfer (~1,290 EGP) or 700 EGP w/o Transfer'],
+            ['AP_SHARMINA', 'Sharmina & Hilton Watersports', 'شارمينيا وهيلتون للألعاب المائية والباراشوت والجلاس بوت', 'WATERSPORTS', 'Sharmina Beach Ops', '+201008811223', '+201008811223', 'EGP', 'Bi-Weekly Statement', 'SHARMINA ', 9400.0, -19800.0, 'Single Parasailing 600 EGP, Double Parasailing 700 EGP, Triple 800 EGP, Glass Boat 300 EGP Adult / 150 EGP Child, Banana/Tube 200 EGP'],
+            ['AP_THISTLE_GORM', 'SS Thistlegorm Wreck Charter (Capt. Ahmed Ali)', 'رحلات حطام سيسل جورم — ك/أحمد علي', 'DIVING_CHARTER', 'Capt. Ahmed Ali', '+201004411990', '+201004411990', 'EUR', 'Per-Trip EUR Settlement', 'THISTLE GORM ', 0.0, -830.0, 'Diver w/ Guide €100, Diver w/o Guide €120, Snorkeler €45, 3rd Dive +€5–€10'],
+            ['AP_HANY_KHADR', 'Hany Khadr Bus & Jetty Transfers', 'هاني خضر لباصات وترانسفير السقالة', 'TRANSFERS', 'Mr. Hany Khadr', '+201003118877', '+201003118877', 'EGP', 'Weekly Bus Statement', 'TRANSFER ', 58600.0, -66500.0, 'Jetty Shuttle 650 EGP One-Way / 1,300 EGP Round-Trip; Ras Mohammed Land Bus Charter 2,000 EGP'],
+            ['AP_EL_ARAYSHI', 'El-Arayshi Hotel Transfers', 'العرايشي للترانسفير الداخلي', 'TRANSFERS', 'Mr. El-Arayshi', '+201002994455', '+201002994455', 'EGP', 'Weekly Statement', 'TRANSFER ', 20700.0, -28200.0, 'Cyrene / Fanar / Jaz / Dolphin / Naama Shuttle 250–350 EGP One-Way, 500–700 EGP Round-Trip'],
+            ['AP_S_C_H_S', 'Sea College HiAce Van Shuttle', 'هاي إس سي كوليدج للترانسفير', 'TRANSFERS', 'Operations Dispatch', '+201001106266', '+201001106266', 'EGP', 'Monthly Lease & Leg Log', 'S.C H.S', 0.0, 8075.0, 'HiAce Shuttle 325–650 EGP One-Way / 1,300 EGP Jetty Round-Trip (30,000 EGP Monthly Lease)'],
+            ['AP_ELNAHAS', 'El-Nahas Boat Sharing', 'شيرنج مراكب النحاس', 'BOAT_SHARING', 'El-Nahas Marine', '+201005544332', '+201005544332', 'EGP', 'Monthly Sharing Statement', 'ELNAHAS ', 0.0, -41300.0, 'Snorkel 1,250 EGP, 1x Intro 1,600 EGP, 2x Intro 1,950 EGP, Certified Diver (2 Dives) 2,000–3,000 EGP, Gear Rent 100 EGP'],
+            ['AP_SPHINX', 'Sphinx Center Boat Sharing (M. Abdallah)', 'شيرنج سنتر سفنكس — محمد عبدالله', 'BOAT_SHARING', 'Mr. Mohamed Abdallah', '+201007722119', '+201007722119', 'EGP', 'Monthly Sharing Statement', 'SPHINX', 0.0, -9298.0, 'White Island / Tiran Sharing: Snorkel 1,000 EGP, 1x Intro 1,350 EGP, 2x Intro 1,650 EGP, Certified Diver 3,000 EGP, Gear 200 EGP'],
+            ['AP_MILLINIOM', 'Millennium Beach Dive Center', 'سنتر ميلينيوم — دخول شاطئ وغطس', 'BEACH_ACCESS', 'Millennium Desk', '+201006119922', '+201006119922', 'EGP', 'Monthly Statement', 'MILLINIOM', 2000.0, -803.0, 'Beach Entry 100 EGP, Snorkel 200 EGP, Short Intro 400 EGP, Long Intro 650 EGP'],
+            ['AP_HADY_FANAR', 'Hady Al-Fanar Reef Beach', 'هادي شاطئ الفنار — دخول وسنوركل وانترو', 'BEACH_ACCESS', 'Mr. Hady Fanar', '+201006228833', '+201006228833', 'EGP', 'Monthly Statement', 'HADY-FANAR', 0.0, 1218.0, 'Fanar Reef Entry 200 EGP, Snorkel 200 EGP, Short Intro 400 EGP, Long Intro 650 EGP'],
+            ['AP_INFINITY', 'Infinity Excursions Sharm', 'إنفينيتي للرحلات السياحية', 'CAIRO_SINAI', 'Infinity Ops', '+201009114477', '+201009114477', 'EGP', 'Monthly Statement', 'INFINITY', 0.0, -67375.0, 'Partner excursion & Sinai canyon overflow supplier'],
+        ];
+
+        $insSup = $pdo->prepare(
+            'INSERT OR IGNORE INTO suppliers_directory
+             (supplier_code, name_en, name_ar, category_code, contact_person, phone, whatsapp,
+              settlement_currency, payment_terms, sheet_tab_name, opening_balance_egp, current_balance_egp,
+              notes, is_active, updated_by, updated_at)
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?, ?,1,"SYSTEM","2026-11-01T00:00:00Z")'
+        );
+        foreach ($suppliers as $s) {
+            $code = $s[0];
+            $openBal = isset($cpBalances[$code]) && $cpBalances[$code]['open'] != 0.0 ? $cpBalances[$code]['open'] : $s[10];
+            $currBal = isset($cpBalances[$code]) && $cpBalances[$code]['curr'] != 0.0 ? $cpBalances[$code]['curr'] : $s[11];
+            $insSup->execute([
+                $code, $s[1], $s[2], $s[3], $s[4], $s[5], $s[6],
+                $s[7], $s[8], $s[9], $openBal, $currBal, $s[12],
+            ]);
+        }
+    }
+
+    $costCount = (int) $pdo->query('SELECT COUNT(*) FROM trip_supplier_cost_items')->fetchColumn();
+    if ($costCount < 25) {
+        $fx = sc_erp_fx_rates($pdo);
+        $usdRate = $fx['USD'] ?? 50.0;
+        $eurRate = $fx['EUR'] ?? 57.0;
+
+        $insCost = $pdo->prepare(
+            'INSERT OR IGNORE INTO trip_supplier_cost_items
+             (item_code, linked_trip_code, category_group, supplier_code, name_en, name_ar,
+              pricing_basis, capacity_pax, cost_currency,
+              adult_cost_orig, child_cost_orig, infant_cost_orig, unit_cost_orig,
+              adult_cost_egp, child_cost_egp, infant_cost_egp, unit_cost_egp,
+              adult_sell_eur, child_sell_eur, infant_sell_eur, unit_sell_eur,
+              sale_mode, is_safari_component, sheet_formula_note, is_active, updated_by, updated_at)
+             VALUES (?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?, 1, "SYSTEM", "2026-11-01T00:00:00Z")'
+        );
+
+        // 1) GRANULAR DESERT SAFARI & BEDOUIN MATRIX (EXACT FROM `BAKAR` & `HORSE` SHEETS!)
+        $safariItems = [
+            // [item_code, linked_trip_code, cat, sup, name_en, name_ar, basis, cap, curr, ad_orig, ch_orig, inf_orig, unit_orig, ad_egp, ch_egp, inf_egp, unit_egp, ad_eur, ch_eur, inf_eur, unit_eur, mode, is_saf_comp, note]
+            ['SAF-QUAD-SINGLE', 'exc-safari-quad-single', 'DESERT_SAFARI', 'AP_BAKAR', 'Single Quad Bike Safari (1 Rider Moto)', 'سفاري موتوسيكل / بيتش باجي فردي (Single Quad — راكب واحد)', 'SINGLE_QUAD', 1, 'EGP', 400, 400, 0, 400, 400, 400, 0, 400, 25, 15, 0, 25, 'OUT_SIDE', 1, 'BAKAR Sheet Col SGL = 400 EGP per Single Quad (+$1/PAX desert ticket)'],
+            ['SAF-QUAD-DOUBLE', 'exc-safari-quad-double', 'DESERT_SAFARI', 'AP_BAKAR', 'Double Quad Bike Safari (2 Riders Sharing 1 Quad)', 'سفاري موتوسيكل / بيتش باجي زوجي لشخصين (Double Quad)', 'DOUBLE_QUAD', 2, 'EGP', 450, 225, 0, 450, 450, 225, 0, 450, 35, 15, 0, 35, 'OUT_SIDE', 1, 'BAKAR Sheet Col DBL = 450 EGP per Double Quad (2 people sharing)'],
+            ['SAF-BUGGY-2PAX', 'ops-safari-dune-buggy', 'DESERT_SAFARI', 'AP_BAKAR', 'Dune Buggy for 2 People (Double Car Buggy)', 'باجي كار صحراوي لشخصين (Buggy D — 2 People)', 'BUGGY_2PAX', 2, 'EGP', 800, 400, 0, 800, 800, 400, 0, 800, 40, 20, 0, 40, 'OUT_SIDE', 1, 'BAKAR Sheet Col BUGGY D = 800 EGP per 2-person Dune Buggy'],
+            ['SAF-BUGGY-4PAX', 'exc-safari-family-buggy', 'DESERT_SAFARI', 'AP_BAKAR', 'Family Buggy for 4 People (4-Seater Buggy)', 'باجي عائلي 4 أفراد (Buggy F — Family 4 People)', 'BUGGY_4PAX', 4, 'EGP', 1100, 0, 0, 1100, 1100, 0, 0, 1100, 65, 0, 0, 65, 'OUT_SIDE', 1, 'BAKAR Sheet Col BUGGY F = 1,100 EGP per 4-person Family Buggy'],
+            ['SAF-CAMEL-WITH-SAFARI', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Camel Riding Add-On (With Safari)', 'ركوب الجمل مع السفاري (Camel Add-On per PAX)', 'CAMEL_ADDON', 1, 'EGP', 80, 80, 0, 80, 80, 80, 0, 80, 5, 5, 0, 5, 'OUT_SIDE', 1, 'BAKAR Sheet Col CAMEL = 80 EGP per person added to Quad/Buggy Safari'],
+            ['SAF-CAMEL-1HR-TOUR', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Camel Riding 1-Hour Standalone Desert Tour', 'جولة ركوب الجمل لمدة ساعة كاملة (Camel Only 1-Hour Tour)', 'CAMEL_1HR', 1, 'EGP', 300, 150, 0, 300, 300, 150, 0, 300, 20, 12, 0, 20, 'OUT_SIDE', 1, 'BAKAR Sheet Aug 2026 Col CAMEL ONLY = 300 EGP Adult / 150 EGP Child'],
+            ['SAF-STAR-GAZING', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Desert Star Gazing & Telescope Experience', 'مراقبة النجوم بالتليسكوب في صحراء سيناء (Star Gazing)', 'STAR_GAZING', 1, 'EGP', 200, 100, 0, 200, 200, 100, 0, 200, 15, 10, 0, 15, 'OUT_SIDE', 1, 'BAKAR Sheet Col STAR = 200 EGP Adult / 100 EGP Child'],
+            ['SAF-BEDOUIN-DINNER', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Standard Bedouin Dinner & Oriental Show', 'عشاء بدوي وحفلة شرقية (Standard Bedouin Dinner)', 'BEDOUIN_DINNER', 1, 'EGP', 200, 100, 0, 200, 200, 100, 0, 200, 15, 10, 0, 15, 'OUT_SIDE', 1, 'BAKAR Sheet Col DINNER = 200 EGP Adult / 100 EGP Child'],
+            ['SAF-VIP-BEDOUIN-DINNER', 'exc-safari-vip-bedouin-dinner', 'DESERT_SAFARI', 'AP_BAKAR', 'VIP Bedouin BBQ Dinner & Show', 'عشاء بدوي VIP مشويات وحفلة (VIP Bedouin Dinner)', 'VIP_BEDOUIN_DINNER', 1, 'EGP', 300, 150, 0, 300, 300, 150, 0, 300, 20, 12, 0, 20, 'OUT_SIDE', 1, 'BAKAR Sheet Col DINNER VIP = 300 EGP Adult (+Quad 400 + Camel 80 + $1 Eco = ~830 EGP Full VIP Combo)'],
+            ['SAF-PRIVATE-GUIDE', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Private Safari Convoy Guide Surcharge', 'مرافق / جروب سفاري خاص (Private Guide)', 'PRIVATE_GROUP', 1, 'EGP', 400, 0, 0, 400, 400, 0, 0, 400, 15, 0, 0, 15, 'OUT_SIDE', 1, 'BAKAR Sheet Col PRIVET = 400 EGP flat per private safari group'],
+            ['SAF-ECO-TICKET-1USD', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Sinai Desert Eco / Protectorate Ticket ($1/PAX)', 'رسم بيئة السفاري 1 دولار للفرد (1$ PAX)', 'ECO_FEE_PAX', 1, 'USD', 1, 0, 0, 1, round(1 * $usdRate, 0), 0, 0, round(1 * $usdRate, 0), 1, 0, 0, 1, 'OUT_SIDE', 1, 'BAKAR Sheet Col 1$ PAX = $1 per Adult (~50 EGP)'],
+            ['SAF-HORSE-1HR-BEACH', 'exc-horse-riding-beach', 'DESERT_SAFARI', 'AP_HORSE', 'Arabian Horse Riding 1-Hour (Beach & Desert w/ Transfer)', 'ركوب الخيل العربي ساعة بالشاطئ والصحراء شامل الترانسفير', 'PER_PAX', 1, 'EGP', 1290, 650, 0, 1290, 1290, 650, 0, 1290, 35, 20, 0, 35, 'OUT_SIDE', 0, 'HORSE Sheet = 800 EGP + $10 Transfer (~1,290 EGP Adult); 700 EGP w/o transfer'],
+            ['SAF-HORSE-1HR-DESERT', '', 'DESERT_SAFARI', 'AP_BAKAR', 'Desert Horse Riding 1-Hour (Bakar Camp)', 'ركوب الخيل بالصحراء ساعة (مخيم بكار بدون ترانسفير خارجي)', 'PER_PAX', 1, 'EGP', 300, 200, 0, 300, 300, 200, 0, 300, 25, 15, 0, 25, 'OUT_SIDE', 0, 'BAKAR Sheet Aug 2026 Col HORSE = 300 EGP'],
+        ];
+
+        // 2) EXCURSIONS, BOATS, CAIRO/SINAI, DOLPHIN, SUBMARINE, WATERSPORTS, BOAT SHARING & TRANSFERS (PER PAX ADULT / CHILD / INFANT & PER UNIT)
+        $otherItems = [
+            // Boat & Snorkeling
+            ['BOAT-WHITE-ISLAND', 'exc-white-island-yacht', 'YACHT_SNORKELING', 'SEA_COLLEGE', 'White Island & Ras Mohammed Yacht Cruise (Snorkeling & Lunch)', 'رحلة يخت الجزيرة البيضاء ومحمية رأس محمد (سنوركل وغداء)', 'PER_PAX', 1, 'EGP', 1000, 500, 0, 1000, 1000, 500, 0, 1000, 30, 15, 0, 30, 'INSHEET', 0, 'Sea College Yacht / Sphinx benchmark: Adult 1,000 EGP, Child 500 EGP, Infant <3 Free'],
+            ['BOAT-TIRAN-ISLAND', 'exc-tiran-island-yacht', 'YACHT_SNORKELING', 'SEA_COLLEGE', 'Tiran Island Coral Lagoon Yacht Cruise (Snorkeling & Lunch)', 'رحلة يخت جزيرة تيران والشعاب المرجانية (سنوركل وغداء)', 'PER_PAX', 1, 'EGP', 1000, 500, 0, 1000, 1000, 500, 0, 1000, 35, 18, 0, 35, 'INSHEET', 0, 'Adult 1,000 EGP, Child 500 EGP, Infant Free'],
+            ['BOAT-DINNER-CRUISE', 'exc-romantic-dinner-cruise', 'DOLPHIN_SUB_DINNER', 'AP_DINNER', 'Romantic Seafood & Mixed Grill Dinner Cruise', 'سهرة عشاء اليخت البحري الرومانسية (Dinner Boat)', 'PER_PAX', 1, 'EGP', 1000, 500, 0, 1000, 1000, 500, 0, 1000, 35, 18, 0, 35, 'OUT_SIDE', 0, 'DINNER Sheet Header: Adult = 1,000 EGP, Child = 500 EGP, Infant = 0'],
+            // Cairo, Luxor & Sinai (A.SAAD & ONE TOUR)
+            ['CAI-BUS-CLASSIC', 'exc-cairo-by-bus', 'CAIRO_LUXOR', 'AP_A_SAAD', 'Cairo 1-Day Excursion by VIP Bus (Pyramids & Museum)', 'رحلة القاهرة بالباص السياحي (الأهرامات والمتحف والغداء)', 'PER_PAX', 1, 'EGP', 2000, 1000, 0, 2000, 2000, 1000, 0, 2000, 65, 35, 0, 65, 'OUT_SIDE', 0, 'A.SAAD Sheet Aug 2026 CAIRO BUS = 2,000 EGP Adult, 1,000 EGP Child (0.5 PAX), Infant Free'],
+            ['CAI-BUS-GEM', 'exc-cairo-grand-museum-bus', 'CAIRO_LUXOR', 'AP_A_SAAD', 'Cairo VIP Bus + New Grand Egyptian Museum (GEM)', 'رحلة القاهرة والمتحف المصري الكبير الجديد (GEM) بالباص', 'PER_PAX', 1, 'EGP', 4000, 2000, 0, 4000, 4000, 2000, 0, 4000, 95, 50, 0, 95, 'OUT_SIDE', 0, 'A.SAAD Sheet Aug 2026 GRAND MUSEUM = 4,000 EGP Adult, 2,000 EGP Child'],
+            ['CAI-PLANE-VIP', 'exc-cairo-by-plane', 'CAIRO_LUXOR', 'AP_ONE_TOUR', 'Cairo 1-Day VIP Trip by Plane (Flights, Pyramids & Museum)', 'رحلة القاهرة يوم واحد بالطائرة (شاملة الطيران والأهرامات)', 'PER_PAX', 1, 'USD', 245, 220, 40, 245, round(245 * $usdRate, 0), round(220 * $usdRate, 0), round(40 * $usdRate, 0), round(245 * $usdRate, 0), 295, 260, 50, 295, 'OUT_SIDE', 0, 'ONE TOUR Sheet Aug 2026 CAIRO PLANE = $245 Adult (~12,250 EGP)'],
+            ['LUX-PLANE-VIP', 'exc-luxor-by-plane', 'CAIRO_LUXOR', 'AP_ONE_TOUR', 'Luxor 1-Day VIP Trip by Plane (Valley of Kings & Karnak)', 'رحلة الأقصر يوم واحد بالطائرة (وادي الملوك والكرنك)', 'PER_PAX', 1, 'USD', 235, 210, 40, 235, round(235 * $usdRate, 0), round(210 * $usdRate, 0), round(40 * $usdRate, 0), round(235 * $usdRate, 0), 275, 240, 50, 275, 'OUT_SIDE', 0, 'ONE TOUR Sheet Aug 2026 LUXOR = $235 Adult'],
+            ['PETRA-JORDAN-VIP', '', 'CAIRO_LUXOR', 'AP_ONE_TOUR', 'Petra Jordan 1-Day Excursion (Ferry & Guided Tour)', 'رحلة البتراء الأردن يوم واحد (ون تور)', 'PER_PAX', 1, 'USD', 225, 195, 35, 225, round(225 * $usdRate, 0), round(195 * $usdRate, 0), round(35 * $usdRate, 0), round(225 * $usdRate, 0), 265, 230, 45, 265, 'OUT_SIDE', 0, 'ONE TOUR Sheet Aug 2026 PETRA = $225 Adult'],
+            ['SINAI-ST-CATHERINE', 'exc-mount-moses-st-catherine', 'SINAI_DAHAB', 'AP_A_SAAD', 'Mount Moses Sunrise & St. Catherine Monastery', 'شروق جبل موسى ودير سانت كاترين', 'PER_PAX', 1, 'EGP', 1050, 525, 0, 1050, 1050, 525, 0, 1050, 40, 20, 0, 40, 'OUT_SIDE', 0, 'A.SAAD Sheet SAINT CATREN = 1,050 EGP / MOUSSA MOUNT = 1,000 EGP Adult, Child 50%'],
+            ['SINAI-DAHAB-CANYON', 'exc-dahab-canyon-bluehole', 'SINAI_DAHAB', 'AP_A_SAAD', 'Dahab Blue Hole, Colored Canyon & Quad Super Safari', 'مغامرة دهب والبلو هول والجراند كانيون والموتوسيكل', 'PER_PAX', 1, 'EGP', 650, 325, 0, 650, 650, 325, 0, 650, 35, 18, 0, 35, 'OUT_SIDE', 0, 'A.SAAD Sheet GRAND CANYON 450 EGP + MOTO 200 EGP = 650 EGP Adult, Child 0.5 PAX'],
+            ['SINAI-RAS-MOHAMMED-BUS', 'exc-ras-mohammed-bus', 'SINAI_DAHAB', 'AP_A_SAAD', 'Ras Mohammed National Park Land Tour by Bus (Half Day)', 'رحلة محمية رأس محمد البرية بالباص والبحيرة المسحورة', 'PER_PAX', 1, 'EGP', 500, 250, 0, 500, 500, 250, 0, 500, 25, 13, 0, 25, 'OUT_SIDE', 0, 'A.SAAD Sheet R.M. = 500 EGP Adult, 250 EGP Child (0.5 PAX), Infant Free'],
+            // Dolphin, Submarine & Glass Boat
+            ['DOLPHIN-SHOW-PAX', 'exc-dolphin-show', 'DOLPHIN_SUB_DINNER', 'AP_DOLPHIN', 'Dolphin Show Family Ticket + Transfers', 'تذكرة عرض الدولفين شاملة الانتقالات', 'PER_PAX', 1, 'USD', 12, 6, 0, 12, round(12 * $usdRate, 0), round(6 * $usdRate, 0), 0, round(12 * $usdRate, 0), 25, 13, 0, 25, 'OUT_SIDE', 0, 'DOLPHIN Sheet Aug 2026 SHOW = $12 Adult (~600 EGP), $6 Child (~300 EGP), Infant Free'],
+            ['DOLPHIN-SWIM-PAX', 'exc-dolphin-swim', 'DOLPHIN_SUB_DINNER', 'AP_DOLPHIN', 'Interactive Swim with Dolphins (15–30m)', 'السباحة التفاعلية المباشرة مع الدلافين', 'PER_PAX', 1, 'USD', 62, 62, 0, 62, round(62 * $usdRate, 0), round(62 * $usdRate, 0), 0, round(62 * $usdRate, 0), 80, 80, 0, 80, 'OUT_SIDE', 0, 'DOLPHIN Sheet Aug 2026 SWIM = $62 per swimmer (~3,100 EGP)'],
+            ['SUB-ROYAL-SEASCOPE', 'exc-royal-submarine', 'DOLPHIN_SUB_DINNER', 'AP_SUBMARINE', 'Royal Seascope Semi-Submarine Cruise', 'رحلة الغواصة الملكية البانورامية (Submarine)', 'PER_PAX', 1, 'USD', 25, 5, 0, 25, round(25 * $usdRate, 0), round(5 * $usdRate, 0), 0, round(25 * $usdRate, 0), 40, 20, 0, 40, 'OUT_SIDE', 0, 'SUBMARINE Sheet: Foreign Adult $25, Child $5, Arab $20, Egyptian 600 EGP'],
+            ['BOAT-GLASS-BOTTOM', 'exc-glass-bottom-boat', 'WATERSPORTS', 'AP_SHARMINA', 'Glass-Bottom Coral Reef Boat Tour', 'نزهة القارب الزجاجي لمشاهدة الشعاب (Glass Boat)', 'PER_PAX', 1, 'EGP', 300, 150, 0, 300, 300, 150, 0, 300, 20, 10, 0, 20, 'OUT_SIDE', 0, 'SHARMINA Sheet Col GLASS = 300 EGP Adult, 150 EGP Child (0.5 PAX)'],
+            // Watersports
+            ['WS-PARASAIL-SINGLE', '', 'WATERSPORTS', 'AP_SHARMINA', 'Single Parasailing Flight (1 Flyer)', 'باراشوت طيران فردي فوق البحر (Single Parasailing)', 'PER_UNIT', 1, 'EGP', 600, 600, 0, 600, 600, 600, 0, 600, 30, 25, 0, 30, 'OUT_SIDE', 0, 'SHARMINA Sheet Aug 2026 S.PARSILING = 600 EGP'],
+            ['WS-PARASAIL-DOUBLE', 'ops-parasailing-double', 'WATERSPORTS', 'AP_SHARMINA', 'Double Parasailing Flight (2 Flyers Tandem)', 'باراشوت طيران مزدوج لشخصين (Double Parasailing)', 'PER_UNIT', 2, 'EGP', 700, 350, 0, 700, 700, 350, 0, 700, 40, 20, 0, 40, 'OUT_SIDE', 0, 'SHARMINA Sheet Aug 2026 D.PARSILING = 700 EGP per tandem flight'],
+            ['WS-BANANA-TUBE', 'ops-banana-boat', 'WATERSPORTS', 'AP_SHARMINA', 'Banana Boat / Tube Sofa Ride', 'بنانا بوت أو تيوب صوفا المائية', 'PER_PAX', 1, 'EGP', 200, 150, 0, 200, 200, 150, 0, 200, 25, 15, 0, 25, 'OUT_SIDE', 0, 'SHARMINA Sheet EXTRA / Watersports = 200 EGP per rider'],
+            ['WS-ZODIAC-YOUANA-1H', 'ops-zodiac-youana-1h', 'WATERSPORTS', 'SEA_COLLEGE', 'Zodiac "Youana" Private Speedboat 1h Charter (Up to 6 PAX)', 'زودياك «يوانا» الخاص ساعة كاملة لشعاب تيران (حتى 6 أفراد)', 'PER_UNIT', 6, 'EGP', 2000, 0, 0, 2000, 2000, 0, 0, 2000, 80, 0, 0, 80, 'INSHEET', 0, 'Fuel & Captain internal cost = 2,000 EGP per 1h charter'],
+            // Diving & Boat Sharing
+            ['DIVE-THISTLEGORM-2D', 'dive-thistlegorm-2', 'DIVING_CHARTER', 'AP_THISTLE_GORM', 'SS Thistlegorm Wreck 2-Dive Charter (With Guide)', 'رحلة غوص حطام سيسل جورم غطستان بالمرشد', 'PER_PAX', 1, 'EUR', 100, 45, 0, 100, round(100 * $eurRate, 0), round(45 * $eurRate, 0), 0, round(100 * $eurRate, 0), 175, 65, 0, 175, 'INSHEET', 0, 'THISTLE GORM Sheet: Diver w/ Guide €100, Diver No Guide €120, Snorkeler €45'],
+            ['SHARE-SPHINX-SNK', '', 'BOAT_SHARING', 'AP_SPHINX', 'External Boat Sharing — Snorkeler Berth (Sphinx / El-Nahas)', 'شيرنج مراكب خارجية — فرد سنوركل (سفنكس / النحاس)', 'PER_PAX', 1, 'EGP', 1000, 500, 0, 1000, 1000, 500, 0, 1000, 30, 15, 0, 30, 'INSHEET', 0, 'SPHINX = 1,000 EGP / ELNAHAS = 1,250 EGP Adult, Child 50%'],
+            ['SHARE-SPHINX-INTRO1', '', 'BOAT_SHARING', 'AP_SPHINX', 'External Boat Sharing — 1x Intro Dive Berth', 'شيرنج مراكب خارجية — غطسة انترو واحدة', 'PER_PAX', 1, 'EGP', 1350, 1000, 0, 1350, 1350, 1000, 0, 1350, 45, 35, 0, 45, 'INSHEET', 0, 'SPHINX = 1,350 EGP / ELNAHAS = 1,600 EGP'],
+            ['SHARE-SPHINX-INTRO2', '', 'BOAT_SHARING', 'AP_SPHINX', 'External Boat Sharing — 2x Intro Dives Berth', 'شيرنج مراكب خارجية — غطستين انترو', 'PER_PAX', 1, 'EGP', 1650, 1350, 0, 1650, 1650, 1350, 0, 1650, 65, 50, 0, 65, 'INSHEET', 0, 'SPHINX = 1,650 EGP / ELNAHAS = 1,950 EGP'],
+            ['SHARE-SPHINX-DIVER2', '', 'BOAT_SHARING', 'AP_SPHINX', 'External Boat Sharing — Certified Diver (2 Dives)', 'شيرنج مراكب خارجية — غواص معتمد غطستين', 'PER_PAX', 1, 'EGP', 3000, 3000, 0, 3000, 3000, 3000, 0, 3000, 80, 80, 0, 80, 'INSHEET', 0, 'SPHINX / ELNAHAS Certified Diver = 3,000 EGP (+100–200 EGP Gear Rent)'],
+            // Transfers
+            ['TRN-JETTY-ROUNDTRIP', '', 'TRANSFERS', 'AP_HANY_KHADR', 'Jetty Bus Shuttle (Round-Trip Go & Return)', 'باص ترانسفير السقالة ذهاب وعودة (هاني خضر / هاي إس)', 'PER_VEHICLE_LEG', 14, 'EGP', 1300, 0, 0, 1300, 1300, 0, 0, 1300, 0, 0, 0, 0, 'INSHEET', 0, 'TRANSFER Sheet: 650 EGP Go + 650 EGP Return = 1,300 EGP Round-Trip'],
+            ['TRN-HOTEL-INNER-RT', '', 'TRANSFERS', 'AP_EL_ARAYSHI', 'Hotel-to-Center / Beach Inner Shuttle (Round-Trip)', 'ترانسفير داخلي بين الفندق والسنتر ذهاب وعودة (العرايشي)', 'PER_VEHICLE_LEG', 10, 'EGP', 650, 0, 0, 650, 650, 0, 0, 650, 0, 0, 0, 0, 'INSHEET', 0, 'TRANSFER El-Arayshi: 250–350 EGP One-Way / 500–700 EGP Round-Trip'],
+        ];
+
+        foreach (array_merge($safariItems, $otherItems) as $it) {
+            $insCost->execute($it);
+        }
+
+        // Also import any remaining master_trips_catalog items (PADI courses, packages, intro dives) so Accounting can update EVERY trip's Adult/Child/Infant cost!
+        $existingLinked = array_flip(array_filter(array_column(
+            $pdo->query("SELECT linked_trip_code FROM trip_supplier_cost_items WHERE linked_trip_code != ''")->fetchAll(),
+            'linked_trip_code'
+        )));
+        $allMaster = $pdo->query('SELECT * FROM master_trips_catalog ORDER BY category_code, trip_code')->fetchAll();
+        foreach ($allMaster as $m) {
+            $tc = (string) $m['trip_code'];
+            if (isset($existingLinked[$tc])) {
+                continue;
+            }
+            $catRaw = strtolower((string) $m['category_code']);
+            $catGrp = match (true) {
+                str_contains($catRaw, 'safari') => 'DESERT_SAFARI',
+                str_contains($catRaw, 'snork') || str_contains($catRaw, 'yacht') => 'YACHT_SNORKELING',
+                str_contains($catRaw, 'cairo') => 'CAIRO_LUXOR',
+                str_contains($catRaw, 'sinai') => 'SINAI_DAHAB',
+                str_contains($catRaw, 'dolphin') => 'DOLPHIN_SUB_DINNER',
+                str_contains($catRaw, 'water') => 'WATERSPORTS',
+                default => 'DIVING_COURSES',
+            };
+            $sup = (string) ($m['supplier_code'] ?: 'SEA_COLLEGE');
+            if ($sup === 'AP_THISTLEGORM') {
+                $sup = 'AP_THISTLE_GORM';
+            } elseif ($sup === 'AP_WATERSPORTS_SAFARI') {
+                $sup = 'AP_SHARMINA';
+            }
+            $aCost = (float) $m['adult_cost_egp'];
+            $cCost = (float) $m['child_cost_egp'];
+            $iCost = (float) $m['infant_cost_egp'];
+            $aEur  = (float) $m['adult_sell_eur'];
+            $cEur  = (float) $m['child_sell_eur'];
+            $iEur  = (float) $m['infant_sell_eur'];
+            $insCost->execute([
+                'MTC-' . strtoupper((string) preg_replace('/[^a-zA-Z0-9_-]/', '-', $tc)),
+                $tc,
+                $catGrp,
+                $sup,
+                (string) $m['unified_name_en'],
+                (string) $m['unified_name_ar'],
+                'PER_PAX',
+                1,
+                'EGP',
+                $aCost, $cCost, $iCost, $aCost,
+                $aCost, $cCost, $iCost, $aCost,
+                $aEur, $cEur, $iEur, $aEur,
+                (string) ($m['sale_mode'] ?: 'INSHEET'),
+                0,
+                'Synced from Sea College Master Trips Catalog — Editable by Accounting',
+            ]);
+        }
+    }
+}
+
+/**
+ * Seed initial real-world Staff Bonus & Allowance records idempotently (`seed_key` UNIQUE).
+ */
+function sc_erp_seed_staff_bonuses_allowances(PDO $pdo): void
+{
+    $cnt = (int) $pdo->query('SELECT COUNT(*) FROM staff_bonuses_allowances')->fetchColumn();
+    if ($cnt > 0) {
+        return;
+    }
+    $seeds = [
+        [
+            'seed_bonus_fady_top_seller',
+            '2026-10-28T16:00:00Z', '2026-10-28', '2026-10',
+            'fady.sales', 'Fady (Cyrene Desk)', 'فادي — مبيعات سيرين', 'SALES_REP', 'CYRENE',
+            'BONUS', 'TARGET_ACHIEVEMENT', 5000.0, 'EGP', 5000.0, 'SAFE_CYRENE', 'APPROVED_PAID',
+            'islam.samir', 'islam.samir', '2026-10-28T16:00:00Z',
+            'Top Monthly Excursion & Safari Revenue Champion Bonus (Audited SALERY Sheet)',
+            'مكافأة المركز الأول في تحقيق التارجت ومبيعات السفاري والرحلات الخارجية',
+        ],
+        [
+            'seed_bonus_dorgham_5star',
+            '2026-10-25T14:30:00Z', '2026-10-25', '2026-10',
+            'capt.haitham', 'Capt. Haitham El-Aydy', 'كابتن هيثم العايدي — المدير الفني', 'DIVE_INSTRUCTOR', 'CYRENE',
+            'BONUS', 'GUEST_REVIEW_5STAR', 2500.0, 'EGP', 2500.0, 'NONE_PAYROLL', 'APPROVED_PAID',
+            'eng.sayed', 'nadia.acc', '2026-10-25T15:00:00Z',
+            'Outstanding PADI Course Safety & Verified 5-Star Guest Reviews Bonus',
+            'مكافأة تميز التدريب وتقييمات 5 نجوم من ضيوف دورات الغوص',
+        ],
+        [
+            'seed_allowance_nasr_ops',
+            '2026-10-22T11:00:00Z', '2026-10-22', '2026-10',
+            'ahmed.nasr', 'Ahmed Nasr (Operations)', 'أحمد نصر — مدير التشغيل والحجز', 'OPS_DISPATCHER', 'CYRENE',
+            'ALLOWANCE', 'TRANSPORT_ALLOWANCE', 1500.0, 'EGP', 1500.0, 'SAFE_CYRENE', 'APPROVED_PAID',
+            'ahmed.nasr', 'nadia.acc', '2026-10-22T12:15:00Z',
+            'Early-Morning Jetty Dispatch & Mobile Communications Allowance',
+            'بدل انتقالات واتصالات متابعة باصات السقالة والرحلات الصباحية',
+        ],
+        [
+            'seed_allowance_mansour_crew',
+            '2026-10-24T17:00:00Z', '2026-10-24', '2026-10',
+            'capt.mansour', 'Capt. Mansour (M/Y Oceano)', 'ريس منصور — يخت أوشينو', 'BOAT_CAPTAIN', 'JETTY',
+            'ALLOWANCE', 'MEAL_ALLOWANCE', 1200.0, 'EGP', 1200.0, 'SAFE_JETTY', 'APPROVED_PAID',
+            'capt.mansour', 'nadia.acc', '2026-10-24T17:20:00Z',
+            'VIP Charter Crew Extra Shift & Catering Allowance (M/Y Oceano)',
+            'بدل وجبات وساعات تشغيل إضافية لطاقم يخت أوشينو VIP',
+        ],
+        [
+            'seed_req_adel_transport',
+            '2026-10-29T10:00:00Z', '2026-10-29', '2026-10',
+            'adel.sales', 'Adel (Dreams & Fayrouz)', 'عادل — مبيعات دريمز والفيروز', 'SALES_REP', 'JETTY',
+            'ALLOWANCE', 'TRANSPORT_ALLOWANCE', 800.0, 'EGP', 800.0, 'SAFE_JETTY', 'REQUESTED',
+            'adel.sales', '', '',
+            'Naama Bay / Dreams Resort evening guest follow-up transport allowance',
+            'بدل انتقالات متابعة حجوزات فنادق نعمة باي ودريمز المسائية',
+        ],
+    ];
+
+    $st = $pdo->prepare(
+        'INSERT OR IGNORE INTO staff_bonuses_allowances
+         (seed_key, created_at, tx_date, period_month, emp_username, emp_name_en, emp_name_ar,
+          role_code, branch_code, entry_type, category, amount_egp, currency, amount_orig,
+          safe_code, status, requested_by, approved_by, decided_at, reason_en, reason_ar)
+         VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?)'
+    );
+    foreach ($seeds as $s) {
+        $st->execute($s);
+    }
+}
+
+/**
+ * Compute exact Bakar Safari / Excursion modular cost & suggested EUR sell price from live DB `trip_supplier_cost_items`.
+ *
+ * Accepts `$safariSpec` array with optional counts:
+ *   `single_quad`, `double_quad`, `buggy_2pax`, `buggy_4pax`, `camel_safari`, `camel_1hr`,
+ *   `star_gazing`, `bedouin_dinner`, `vip_bedouin_dinner`, `private_guide`, `include_eco_tax`
+ *
+ * @param array<string,mixed> $safariSpec
+ * @param array<string,float> $fx
+ * @return array<string,mixed>
+ */
+function sc_erp_compute_safari_breakdown_financials(PDO $pdo, array $safariSpec, int $adults, int $children, int $infants, array $fx): array
+{
+    $mapKeys = [
+        'single_quad'        => 'SAF-QUAD-SINGLE',
+        'double_quad'        => 'SAF-QUAD-DOUBLE',
+        'buggy_2pax'         => 'SAF-BUGGY-2PAX',
+        'buggy_4pax'         => 'SAF-BUGGY-4PAX',
+        'camel_safari'       => 'SAF-CAMEL-WITH-SAFARI',
+        'camel_1hr'          => 'SAF-CAMEL-1HR-TOUR',
+        'star_gazing'        => 'SAF-STAR-GAZING',
+        'bedouin_dinner'     => 'SAF-BEDOUIN-DINNER',
+        'vip_bedouin_dinner' => 'SAF-VIP-BEDOUIN-DINNER',
+        'private_guide'      => 'SAF-PRIVATE-GUIDE',
+    ];
+
+    $rowsByCode = [];
+    $allRows = $pdo->query("SELECT * FROM trip_supplier_cost_items WHERE category_group = 'DESERT_SAFARI'")->fetchAll();
+    foreach ($allRows as $r) {
+        $rowsByCode[(string) $r['item_code']] = $r;
+    }
+
+    $lines = [];
+    $totalCostEgp = 0.0;
+    $totalSellEur = 0.0;
+    $summaryParts = [];
+
+    foreach ($mapKeys as $field => $itemCode) {
+        $qty = max(0, (int) ($safariSpec[$field] ?? 0));
+        if ($qty <= 0 || !isset($rowsByCode[$itemCode])) {
+            continue;
+        }
+        $r = $rowsByCode[$itemCode];
+        $uCostEgp = (float) ($r['unit_cost_egp'] > 0 ? $r['unit_cost_egp'] : $r['adult_cost_egp']);
+        $uSellEur = (float) ($r['unit_sell_eur'] > 0 ? $r['unit_sell_eur'] : $r['adult_sell_eur']);
+        $lineCost = round($qty * $uCostEgp, 2);
+        $lineEur  = round($qty * $uSellEur, 2);
+        $totalCostEgp += $lineCost;
+        $totalSellEur += $lineEur;
+
+        $shortLbl = match ($field) {
+            'single_quad'        => "{$qty}S MOTO",
+            'double_quad'        => "{$qty}D MOTO",
+            'buggy_2pax'         => "{$qty} BUGGY 2P",
+            'buggy_4pax'         => "{$qty} BUGGY FAMILY 4P",
+            'camel_safari'       => "{$qty} CAMEL",
+            'camel_1hr'          => "{$qty} CAMEL 1H",
+            'star_gazing'        => "{$qty} STAR",
+            'bedouin_dinner'     => "{$qty} DINNER",
+            'vip_bedouin_dinner' => "{$qty} DINNER VIP",
+            'private_guide'      => 'PRIVATE',
+            default              => "{$qty}x {$itemCode}",
+        };
+        $summaryParts[] = $shortLbl;
+        $lines[] = [
+            'field'         => $field,
+            'item_code'     => $itemCode,
+            'name_en'       => (string) $r['name_en'],
+            'name_ar'       => (string) $r['name_ar'],
+            'qty'           => $qty,
+            'unit_cost_egp' => $uCostEgp,
+            'line_cost_egp' => $lineCost,
+            'unit_sell_eur' => $uSellEur,
+            'line_sell_eur' => $lineEur,
+        ];
+    }
+
+    // Add $1/Adult Sinai Safari Eco Fee (`1$ PAX` column in BAKAR sheet) when any vehicle/safari is selected unless explicitly disabled
+    $includeEco = !array_key_exists('include_eco_tax', $safariSpec) || !empty($safariSpec['include_eco_tax']);
+    if ($lines && $includeEco && $adults > 0 && isset($rowsByCode['SAF-ECO-TICKET-1USD'])) {
+        $eco = $rowsByCode['SAF-ECO-TICKET-1USD'];
+        $ecoUnitEgp = (float) ($eco['unit_cost_egp'] > 0 ? $eco['unit_cost_egp'] : round(1.0 * ($fx['USD'] ?? 50.0), 0));
+        $ecoLineCost = round($adults * $ecoUnitEgp, 2);
+        $totalCostEgp += $ecoLineCost;
+        $lines[] = [
+            'field'         => 'eco_tax_pax',
+            'item_code'     => 'SAF-ECO-TICKET-1USD',
+            'name_en'       => 'Sinai Safari $1/PAX Eco Ticket',
+            'name_ar'       => 'رسم بيئة السفاري 1$ للفرد البالغ',
+            'qty'           => $adults,
+            'unit_cost_egp' => $ecoUnitEgp,
+            'line_cost_egp' => $ecoLineCost,
+            'unit_sell_eur' => 0.0,
+            'line_sell_eur' => 0.0,
+        ];
+    }
+
+    return [
+        'has_items'           => count($lines) > 0,
+        'lines'               => $lines,
+        'sheet_activity_code' => implode(' + ', $summaryParts),
+        'total_cost_egp'      => round($totalCostEgp, 2),
+        'suggested_sell_eur'  => round($totalSellEur, 2),
+        'suggested_sell_egp'  => round($totalSellEur * ($fx['EUR'] ?? 57.0), 2),
+        'supplier_code'       => 'AP_BAKAR',
+        'supplier_name'       => 'Bakar Desert Safari Center',
+    ];
+}
+
+/**
+ * Create or update a Trip / Safari Variant Cost row (Authorized for Accounting `gl.view_all_ledgers` & Owners `bi.view_executive`),
+ * automatically syncing linked `master_trips_catalog` supplier costs & recording an immutable audit log entry.
+ *
+ * @param array<string,mixed> $in
+ * @param array<string,mixed> $actorUser
+ * @return array<string,mixed>
+ */
+function sc_erp_save_trip_or_variant_cost(PDO $pdo, array $in, array $actorUser): array
+{
+    $fx = sc_erp_fx_rates($pdo);
+    $rawCode = strtoupper(trim((string) ($in['item_code'] ?? '')));
+    if ($rawCode === '') {
+        $rawCode = 'COST-' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', (string) ($in['name_en'] ?? 'ITEM')), 0, 12)) . '-' . random_int(100, 999);
+    }
+    $rawCode = (string) preg_replace('/[^A-Z0-9_-]/', '-', $rawCode);
+
+    $exSt = $pdo->prepare('SELECT * FROM trip_supplier_cost_items WHERE item_code = ? LIMIT 1');
+    $exSt->execute([$rawCode]);
+    $prev = $exSt->fetch() ?: null;
+
+    $linkedTrip = trim((string) ($in['linked_trip_code'] ?? ($prev['linked_trip_code'] ?? '')));
+    $catGrp     = strtoupper(trim((string) ($in['category_group'] ?? ($prev['category_group'] ?? 'EXCURSIONS'))));
+    $supCode    = strtoupper(trim((string) ($in['supplier_code'] ?? ($prev['supplier_code'] ?? 'SEA_COLLEGE'))));
+    $nameEn     = trim((string) ($in['name_en'] ?? ($prev['name_en'] ?? $rawCode)));
+    $nameAr     = trim((string) ($in['name_ar'] ?? ($prev['name_ar'] ?? $nameEn)));
+    $basis      = strtoupper(trim((string) ($in['pricing_basis'] ?? ($prev['pricing_basis'] ?? 'PER_PAX'))));
+    $capPax     = max(1, min(60, (int) ($in['capacity_pax'] ?? ($prev['capacity_pax'] ?? 1))));
+    $curr       = strtoupper(trim((string) ($in['cost_currency'] ?? ($prev['cost_currency'] ?? 'EGP'))));
+    if (!isset($fx[$curr])) {
+        $curr = 'EGP';
+    }
+    $rateToEgp = $fx[$curr] ?? 1.0;
+
+    $adOrig   = array_key_exists('adult_cost_orig', $in) ? max(0.0, (float) $in['adult_cost_orig']) : (array_key_exists('adult_cost_egp', $in) && $curr === 'EGP' ? max(0.0, (float) $in['adult_cost_egp']) : (float) ($prev['adult_cost_orig'] ?? 0.0));
+    $chOrig   = array_key_exists('child_cost_orig', $in) ? max(0.0, (float) $in['child_cost_orig']) : (array_key_exists('child_cost_egp', $in) && $curr === 'EGP' ? max(0.0, (float) $in['child_cost_egp']) : (float) ($prev['child_cost_orig'] ?? 0.0));
+    $inOrig   = array_key_exists('infant_cost_orig', $in) ? max(0.0, (float) $in['infant_cost_orig']) : (array_key_exists('infant_cost_egp', $in) && $curr === 'EGP' ? max(0.0, (float) $in['infant_cost_egp']) : (float) ($prev['infant_cost_orig'] ?? 0.0));
+    $unOrig   = array_key_exists('unit_cost_orig', $in) ? max(0.0, (float) $in['unit_cost_orig']) : (array_key_exists('unit_cost_egp', $in) && $curr === 'EGP' ? max(0.0, (float) $in['unit_cost_egp']) : ($adOrig > 0 ? $adOrig : (float) ($prev['unit_cost_orig'] ?? 0.0)));
+
+    // Allow explicit EGP override or auto-convert from cost_currency (`EGP`, `USD`, `EUR`, `GBP`)
+    $adEgp = array_key_exists('adult_cost_egp', $in) && ($curr === 'EGP' || !array_key_exists('adult_cost_orig', $in))
+        ? max(0.0, round((float) $in['adult_cost_egp'], 2))
+        : round($adOrig * $rateToEgp, 2);
+    $chEgp = array_key_exists('child_cost_egp', $in) && ($curr === 'EGP' || !array_key_exists('child_cost_orig', $in))
+        ? max(0.0, round((float) $in['child_cost_egp'], 2))
+        : round($chOrig * $rateToEgp, 2);
+    $inEgp = array_key_exists('infant_cost_egp', $in) && ($curr === 'EGP' || !array_key_exists('infant_cost_orig', $in))
+        ? max(0.0, round((float) $in['infant_cost_egp'], 2))
+        : round($inOrig * $rateToEgp, 2);
+    $unEgp = array_key_exists('unit_cost_egp', $in) && ($curr === 'EGP' || !array_key_exists('unit_cost_orig', $in))
+        ? max(0.0, round((float) $in['unit_cost_egp'], 2))
+        : round($unOrig * $rateToEgp, 2);
+
+    // Keep unit_cost_egp & adult_cost_egp mutually populated for single-rider/per-unit Safari items so both PAX and Unit formulas stay accurate
+    if ($basis !== 'PER_PAX' && $unEgp > 0.0 && !array_key_exists('adult_cost_egp', $in) && !array_key_exists('adult_cost_orig', $in)) {
+        $adEgp  = $unEgp;
+        $adOrig = $unOrig;
+    } elseif ($basis === 'PER_PAX' && $adEgp > 0.0 && !array_key_exists('unit_cost_egp', $in) && !array_key_exists('unit_cost_orig', $in)) {
+        $unEgp  = $adEgp;
+        $unOrig = $adOrig;
+    }
+
+    $adEur = array_key_exists('adult_sell_eur', $in) ? max(0.0, (float) $in['adult_sell_eur']) : (float) ($prev['adult_sell_eur'] ?? 0.0);
+    $chEur = array_key_exists('child_sell_eur', $in) ? max(0.0, (float) $in['child_sell_eur']) : (float) ($prev['child_sell_eur'] ?? 0.0);
+    $inEur = array_key_exists('infant_sell_eur', $in) ? max(0.0, (float) $in['infant_sell_eur']) : (float) ($prev['infant_sell_eur'] ?? 0.0);
+    $unEur = array_key_exists('unit_sell_eur', $in) ? max(0.0, (float) $in['unit_sell_eur']) : ($adEur > 0 ? $adEur : (float) ($prev['unit_sell_eur'] ?? 0.0));
+
+    $saleMode = in_array(strtoupper((string) ($in['sale_mode'] ?? ($prev['sale_mode'] ?? 'OUT_SIDE'))), ['INSHEET', 'OUT_SIDE'], true)
+        ? strtoupper((string) ($in['sale_mode'] ?? ($prev['sale_mode'] ?? 'OUT_SIDE')))
+        : 'OUT_SIDE';
+    $isSafComp = array_key_exists('is_safari_component', $in)
+        ? (!empty($in['is_safari_component']) ? 1 : 0)
+        : (int) ($prev['is_safari_component'] ?? ($catGrp === 'DESERT_SAFARI' && $basis !== 'PER_PAX' ? 1 : 0));
+    $formulaNote = trim((string) ($in['sheet_formula_note'] ?? ($prev['sheet_formula_note'] ?? '')));
+    $isActive    = array_key_exists('is_active', $in) ? (!empty($in['is_active']) ? 1 : 0) : (int) ($prev['is_active'] ?? 1);
+    $reasonNotes = trim((string) ($in['reason_notes'] ?? 'Accounting supplier cost update'));
+    $now         = gmdate('Y-m-d\TH:i:s\Z');
+    $actorName   = (string) ($actorUser['username'] ?? 'nadia.acc');
+    $actorRole   = (string) ($actorUser['role_code'] ?? 'CHIEF_ACCOUNTANT');
+
+    $pdo->prepare(
+        'INSERT OR REPLACE INTO trip_supplier_cost_items
+         (item_code, linked_trip_code, category_group, supplier_code, name_en, name_ar,
+          pricing_basis, capacity_pax, cost_currency,
+          adult_cost_orig, child_cost_orig, infant_cost_orig, unit_cost_orig,
+          adult_cost_egp, child_cost_egp, infant_cost_egp, unit_cost_egp,
+          adult_sell_eur, child_sell_eur, infant_sell_eur, unit_sell_eur,
+          sale_mode, is_safari_component, sheet_formula_note, is_active, updated_by, updated_at)
+         VALUES (?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?)'
+    )->execute([
+        $rawCode, $linkedTrip, $catGrp, $supCode, $nameEn, $nameAr,
+        $basis, $capPax, $curr,
+        $adOrig, $chOrig, $inOrig, $unOrig,
+        $adEgp, $chEgp, $inEgp, $unEgp,
+        $adEur, $chEur, $inEur, $unEur,
+        $saleMode, $isSafComp, $formulaNote, $isActive, $actorName, $now,
+    ]);
+
+    // Sync supplier name + Adult/Child/Infant EGP costs into `master_trips_catalog` if linked (preserving website public EUR parity!)
+    if ($linkedTrip !== '') {
+        $supNameSt = $pdo->prepare('SELECT name_en FROM suppliers_directory WHERE supplier_code = ? LIMIT 1');
+        $supNameSt->execute([$supCode]);
+        $supName = (string) ($supNameSt->fetchColumn() ?: $supCode);
+
+        $mtSt = $pdo->prepare('SELECT is_website_public FROM master_trips_catalog WHERE trip_code = ? LIMIT 1');
+        $mtSt->execute([$linkedTrip]);
+        $mtRow = $mtSt->fetch();
+        if ($mtRow) {
+            if ((int) ($mtRow['is_website_public'] ?? 0) === 1) {
+                // Public diving item: update costs & supplier ONLY so public 3-way EUR sell price parity (`T3_22`) stays intact
+                $pdo->prepare(
+                    'UPDATE master_trips_catalog
+                     SET supplier_code = ?, supplier_name = ?, sale_mode = ?,
+                         adult_cost_egp = ?, child_cost_egp = ?, infant_cost_egp = ?
+                     WHERE trip_code = ?'
+                )->execute([$supCode, $supName, $saleMode, $adEgp, $chEgp, $inEgp, $linkedTrip]);
+            } else {
+                $pdo->prepare(
+                    'UPDATE master_trips_catalog
+                     SET supplier_code = ?, supplier_name = ?, sale_mode = ?,
+                         adult_cost_egp = ?, child_cost_egp = ?, infant_cost_egp = ?,
+                         adult_sell_eur = CASE WHEN ? > 0 THEN ? ELSE adult_sell_eur END,
+                         child_sell_eur = CASE WHEN ? >= 0 AND ? > 0 THEN ? ELSE child_sell_eur END,
+                         infant_sell_eur = ?
+                     WHERE trip_code = ?'
+                )->execute([
+                    $supCode, $supName, $saleMode,
+                    $adEgp, $chEgp, $inEgp,
+                    $adEur, $adEur,
+                    $chEur, $adEur, $chEur,
+                    $inEur,
+                    $linkedTrip,
+                ]);
+            }
+        }
+    }
+
+    // Immutable Accounting Audit Log
+    $pdo->prepare(
+        'INSERT INTO trip_cost_audit_log
+         (changed_at, changed_by, changed_by_role, action_type, item_code, item_name_en, supplier_code,
+          prev_adult_cost_egp, new_adult_cost_egp, prev_child_cost_egp, new_child_cost_egp,
+          prev_infant_cost_egp, new_infant_cost_egp, prev_unit_cost_egp, new_unit_cost_egp, reason_notes)
+         VALUES (?,?,?,?,?,?,?, ?,?,?,?, ?,?,?,?, ?)'
+    )->execute([
+        $now, $actorName, $actorRole,
+        $prev ? 'UPDATE_COST' : 'CREATE_COST_ITEM',
+        $rawCode, $nameEn, $supCode,
+        (float) ($prev['adult_cost_egp'] ?? 0.0), $adEgp,
+        (float) ($prev['child_cost_egp'] ?? 0.0), $chEgp,
+        (float) ($prev['infant_cost_egp'] ?? 0.0), $inEgp,
+        (float) ($prev['unit_cost_egp'] ?? 0.0), $unEgp,
+        $reasonNotes,
+    ]);
+
+    $freshSt = $pdo->prepare('SELECT * FROM trip_supplier_cost_items WHERE item_code = ?');
+    $freshSt->execute([$rawCode]);
+    return $freshSt->fetch() ?: ['item_code' => $rawCode];
+}
+
 
 
 
