@@ -187,6 +187,50 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
          VALUES ('__GLOBAL__', 1, 15000, 95000, 380000, 65, 1, 20, 50, 'SYSTEM', '2026-10-01T00:00:00Z')"
     );
 
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS company_inbox_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            seed_key TEXT DEFAULT NULL UNIQUE,
+            created_at TEXT NOT NULL,
+            sender_username TEXT NOT NULL,
+            sender_name_en TEXT NOT NULL,
+            sender_name_ar TEXT NOT NULL,
+            sender_role_code TEXT NOT NULL,
+            sender_title_en TEXT NOT NULL DEFAULT '',
+            sender_title_ar TEXT NOT NULL DEFAULT '',
+            sender_avatar_url TEXT NOT NULL DEFAULT '',
+            msg_type TEXT NOT NULL DEFAULT 'ANNOUNCEMENT',
+            priority TEXT NOT NULL DEFAULT 'NORMAL',
+            audience_type TEXT NOT NULL DEFAULT 'ALL',
+            audience_target TEXT NOT NULL DEFAULT '',
+            spotlight_username TEXT NOT NULL DEFAULT '',
+            badge_icon TEXT NOT NULL DEFAULT '📣',
+            title_en TEXT NOT NULL,
+            title_ar TEXT NOT NULL,
+            body_en TEXT NOT NULL,
+            body_ar TEXT NOT NULL,
+            action_tab TEXT NOT NULL DEFAULT '',
+            is_pinned INTEGER NOT NULL DEFAULT 0,
+            is_deleted INTEGER NOT NULL DEFAULT 0,
+            deleted_by TEXT NOT NULL DEFAULT '',
+            deleted_at TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_cim_active_pin ON company_inbox_messages(is_deleted, is_pinned DESC, id DESC);
+        CREATE INDEX IF NOT EXISTS idx_cim_audience ON company_inbox_messages(is_deleted, audience_type, audience_target);
+        CREATE TABLE IF NOT EXISTS company_inbox_reads (
+            message_id INTEGER NOT NULL,
+            username TEXT NOT NULL,
+            read_at TEXT NOT NULL DEFAULT '',
+            reaction_emoji TEXT NOT NULL DEFAULT '',
+            reacted_at TEXT NOT NULL DEFAULT '',
+            PRIMARY KEY (message_id, username),
+            FOREIGN KEY (message_id) REFERENCES company_inbox_messages(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_cir_user_read ON company_inbox_reads(username, read_at);"
+    );
+
+    sc_erp_seed_default_inbox_messages($pdo);
+
     $tripCnt = (int) $pdo->query('SELECT COUNT(*) FROM master_trips_catalog')->fetchColumn();
     if ($tripCnt < 30) {
         sc_erp_sync_master_trips_catalog($pdo);
@@ -209,7 +253,10 @@ function sc_erp_sync_master_trips_catalog(PDO $pdo): void
          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
     );
 
-    $pdo->beginTransaction();
+    $startedTx = !$pdo->inTransaction();
+    if ($startedTx) {
+        $pdo->beginTransaction();
+    }
     try {
         if (is_file(ROOT_DIR . '/data/app_excursions_catalog.php')) {
             $excs = require ROOT_DIR . '/data/app_excursions_catalog.php';
@@ -305,9 +352,11 @@ function sc_erp_sync_master_trips_catalog(PDO $pdo): void
                 }
             }
         }
-        $pdo->commit();
+        if ($startedTx && $pdo->inTransaction()) {
+            $pdo->commit();
+        }
     } catch (Throwable $e) {
-        if ($pdo->inTransaction()) {
+        if ($startedTx && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         error_log('SC_ERP master_trips_catalog sync warning: ' . $e->getMessage());
@@ -789,4 +838,310 @@ function sc_erp_verify_promo_token(string $token, string $expectedSellerSlug = '
         'expires_at'        => $exp,
     ];
 }
+
+/**
+ * Allowed 1-tap celebration / acknowledgment reactions on Company Inbox messages.
+ *
+ * @return list<string>
+ */
+function sc_erp_allowed_inbox_reactions(): array
+{
+    return ['👏', '🎉', '🔥', '❤️', '🏆', '🫡', '👍'];
+}
+
+/**
+ * Seed default welcome, congratulations, and seller award motivation messages idempotently via `seed_key`.
+ */
+function sc_erp_seed_default_inbox_messages(PDO $pdo): void
+{
+    $ins = $pdo->prepare(
+        'INSERT OR IGNORE INTO company_inbox_messages
+         (seed_key, created_at, sender_username, sender_name_en, sender_name_ar, sender_role_code,
+          sender_title_en, sender_title_ar, sender_avatar_url, msg_type, priority,
+          audience_type, audience_target, spotlight_username, badge_icon,
+          title_en, title_ar, body_en, body_ar, action_tab, is_pinned)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+    );
+
+    $seeds = [
+        [
+            'SEED_WELCOME_ALL_V32',
+            '2026-11-24T08:00:00Z',
+            'islam.samir',
+            'Islam Samir',
+            'إسلام سمير',
+            'OWNER_ADMIN',
+            'Founder & Managing Owner',
+            'المؤسس والشريك المالك',
+            '/assets/erp/avatars/islam-samir.jpg',
+            'ANNOUNCEMENT',
+            'IMPORTANT',
+            'ALL',
+            '',
+            '',
+            '🌊',
+            'Welcome to Sea College Inbox & Fast Easy Mode!',
+            'أهلاً بكل أبطال سي كوليدج في صندوق الرسائل والواجهة السريعة!',
+            'Every team member now has a direct Inbox for official announcements, recognition awards, and updates from Management. Tap any emoji below to acknowledge in 1 second!',
+            'دلوقتي كل فرد في الفريق عنده صندوق رسائل مباشر لاستلام التهاني، المكافآت، وأهم التحديثات من الإدارة بلمسة واحدة وبأسهل طريقة بدون تعقيد!',
+            '',
+            1,
+        ],
+        [
+            'SEED_CONGRATS_OCT2026_TEAM',
+            '2026-11-24T09:15:00Z',
+            'eng.sayed',
+            'Eng. Sayed Elsharqawy',
+            'م. سيد الشرقاوي',
+            'OWNER_ADMIN',
+            'Co-Founder & Managing Owner',
+            'الشريك المؤسس والمدير العام',
+            '/assets/erp/avatars/sayed-elsharqawy.jpg',
+            'CONGRATULATIONS',
+            'CELEBRATION',
+            'ALL',
+            '',
+            'fady.sales',
+            '🏆',
+            'Congratulations to Our Top Sellers, Boat Crew & Operations!',
+            'ألف مبروك لأبطال المبيعات وطاقم المراكب والتشغيل!',
+            'Thank you to our entire sales, jetty, boat, and operations family for outstanding guest care and teamwork. Daily, Weekly, Monthly & Yearly Best-Seller Awards are live!',
+            'شكراً من القلب لكل رجال المبيعات والسقالة والمراكب والتشغيل على المجهود الرائع مع الضيوف. جوائز نجم اليوم وبطل الأسبوع وملك الشهر شغالة دلوقتي في حساباتكم!',
+            'seller_wallet',
+            1,
+        ],
+        [
+            'SEED_TARGET_SELLERS_V32',
+            '2026-11-24T10:00:00Z',
+            'tarek.cfo',
+            'Tarek El-Masry',
+            'طارق المصري',
+            'OWNER_ADMIN',
+            'Chief Financial Officer (CFO)',
+            'المدير المالي',
+            '',
+            'TARGET_ALERT',
+            'IMPORTANT',
+            'ROLE',
+            'SALES_REP',
+            '',
+            '🎯',
+            'Easy 1-Tap Booking, WhatsApp Brochure & Mid-Month Cash Allowance',
+            'حجز بلمسة واحدة، رابط واتساب لعميلك، وسلفة فورية من عمولتك!',
+            'Use the new big buttons to pick language, currency, guest count, or special discount in 1 tap. Share your /s/ link on WhatsApp — when your guest books, you get an instant alert!',
+            'استخدم الأزرار الكبيرة الجديدة لاختيار اللغة والعملة وعدد الضيوف أو الخصم بلمسة واحدة بدون كتابة كتير. ابعت رابطك على الواتساب للعميل وأي حجز هينزل باسمك فوراً!',
+            'seller_pitch',
+            0,
+        ],
+    ];
+
+    foreach ($seeds as $s) {
+        $ins->execute($s);
+    }
+}
+
+/**
+ * Strictly verify whether `$user` is authorized to view `$msg` (prevents horizontal IDOR on DIRECT, ROLE, and BRANCH).
+ *
+ * @param array<string,mixed> $msg
+ * @param array<string,mixed> $user
+ * @param list<string>        $perms
+ */
+function sc_erp_can_user_see_inbox_message(array $msg, array $user, array $perms): bool
+{
+    if ((int) ($msg['is_deleted'] ?? 0) !== 0) {
+        return false;
+    }
+    $uLower  = strtolower(trim((string) ($user['username'] ?? '')));
+    $role    = strtoupper(trim((string) ($user['role_code'] ?? '')));
+    $branch  = strtoupper(trim((string) ($user['branch_scope'] ?? 'ALL')));
+    $isExec  = in_array('bi.view_executive', $perms, true);
+
+    $senderLower = strtolower(trim((string) ($msg['sender_username'] ?? '')));
+    if ($uLower !== '' && $senderLower === $uLower) {
+        return true;
+    }
+
+    $audType   = strtoupper(trim((string) ($msg['audience_type'] ?? 'ALL')));
+    $audTarget = trim((string) ($msg['audience_target'] ?? ''));
+
+    if ($audType === 'ALL') {
+        return true;
+    }
+    if ($audType === 'DIRECT') {
+        return $uLower !== '' && strtolower($audTarget) === $uLower;
+    }
+    if ($audType === 'ROLE') {
+        return $isExec || strtoupper($audTarget) === $role;
+    }
+    if ($audType === 'BRANCH') {
+        if ($role === 'FLEET_PARTNER') {
+            return false;
+        }
+        return $isExec || $branch === 'ALL' || strtoupper($audTarget) === $branch;
+    }
+    return false;
+}
+
+/**
+ * Fetch visible Company Inbox messages, unread count, reaction tallies, and top pinned banner for `$user`.
+ *
+ * @param array<string,mixed> $user
+ * @param list<string>        $perms
+ * @return array{unread_count:int, pinned_banner:?array<string,mixed>, messages:list<array<string,mixed>>}
+ */
+function sc_erp_fetch_inbox_for_user(PDO $pdo, array $user, array $perms, string $filter = 'all', int $limit = 50): array
+{
+    $uLower = strtolower(trim((string) ($user['username'] ?? '')));
+    $limit  = max(1, min(100, $limit));
+    $filter = strtolower(trim($filter));
+
+    $rawMsgs = $pdo->query(
+        'SELECT * FROM company_inbox_messages
+         WHERE is_deleted = 0
+         ORDER BY is_pinned DESC, id DESC
+         LIMIT 200'
+    )->fetchAll();
+
+    $visible = [];
+    $msgIds  = [];
+    $spotUsers = [];
+    foreach ($rawMsgs as $m) {
+        if (!sc_erp_can_user_see_inbox_message($m, $user, $perms)) {
+            continue;
+        }
+        $visible[] = $m;
+        $msgIds[]  = (int) $m['id'];
+        $sp = strtolower(trim((string) ($m['spotlight_username'] ?? '')));
+        if ($sp !== '') {
+            $spotUsers[$sp] = true;
+        }
+    }
+
+    $readsByMsg = [];
+    if ($msgIds) {
+        $ph = implode(',', array_fill(0, count($msgIds), '?'));
+        $rSt = $pdo->prepare("SELECT message_id, username, read_at, reaction_emoji FROM company_inbox_reads WHERE message_id IN ({$ph})");
+        $rSt->execute($msgIds);
+        foreach ($rSt->fetchAll() as $rr) {
+            $mid = (int) $rr['message_id'];
+            if (!isset($readsByMsg[$mid])) {
+                $readsByMsg[$mid] = [
+                    'read_count' => 0,
+                    'my_read_at' => '',
+                    'my_reaction'=> '',
+                    'reactions'  => [],
+                ];
+            }
+            if ((string) ($rr['read_at'] ?? '') !== '') {
+                $readsByMsg[$mid]['read_count']++;
+            }
+            $em = (string) ($rr['reaction_emoji'] ?? '');
+            if ($em !== '') {
+                $readsByMsg[$mid]['reactions'][$em] = ($readsByMsg[$mid]['reactions'][$em] ?? 0) + 1;
+            }
+            if (strtolower((string) ($rr['username'] ?? '')) === $uLower) {
+                $readsByMsg[$mid]['my_read_at']  = (string) ($rr['read_at'] ?? '');
+                $readsByMsg[$mid]['my_reaction'] = $em;
+            }
+        }
+    }
+
+    $spotMap = [];
+    if ($spotUsers) {
+        $spList = array_keys($spotUsers);
+        $phSp   = implode(',', array_fill(0, count($spList), '?'));
+        $spSt   = $pdo->prepare("SELECT username, display_name_en, display_name_ar, job_title_en, job_title_ar, avatar_url, branch_scope FROM users WHERE LOWER(username) IN ({$phSp})");
+        $spSt->execute($spList);
+        foreach ($spSt->fetchAll() as $su) {
+            $spotMap[strtolower((string) $su['username'])] = $su;
+        }
+    }
+
+    $unreadCount  = 0;
+    $pinnedBanner = null;
+    $enrichedAll  = [];
+
+    foreach ($visible as $m) {
+        $mid  = (int) $m['id'];
+        $meta = $readsByMsg[$mid] ?? ['read_count' => 0, 'my_read_at' => '', 'my_reaction' => '', 'reactions' => []];
+        $isSender = strtolower((string) ($m['sender_username'] ?? '')) === $uLower;
+        $isRead   = $isSender || ($meta['my_read_at'] !== '');
+        if (!$isRead) {
+            $unreadCount++;
+        }
+        $reactTotal = 0;
+        foreach ($meta['reactions'] as $cnt) {
+            $reactTotal += (int) $cnt;
+        }
+        $spKey = strtolower(trim((string) ($m['spotlight_username'] ?? '')));
+        $item = [
+            'id'                 => $mid,
+            'created_at'         => (string) $m['created_at'],
+            'sender_username'    => (string) $m['sender_username'],
+            'sender_name_en'     => (string) $m['sender_name_en'],
+            'sender_name_ar'     => (string) $m['sender_name_ar'],
+            'sender_role_code'   => (string) $m['sender_role_code'],
+            'sender_title_en'    => (string) $m['sender_title_en'],
+            'sender_title_ar'    => (string) $m['sender_title_ar'],
+            'sender_avatar_url'  => (string) $m['sender_avatar_url'],
+            'msg_type'           => (string) $m['msg_type'],
+            'priority'           => (string) $m['priority'],
+            'audience_type'      => (string) $m['audience_type'],
+            'audience_target'    => (string) $m['audience_target'],
+            'spotlight_username' => (string) $m['spotlight_username'],
+            'spotlight_user'     => $spKey !== '' && isset($spotMap[$spKey]) ? $spotMap[$spKey] : null,
+            'badge_icon'         => (string) $m['badge_icon'],
+            'title_en'           => (string) $m['title_en'],
+            'title_ar'           => (string) $m['title_ar'],
+            'body_en'            => (string) $m['body_en'],
+            'body_ar'            => (string) $m['body_ar'],
+            'action_tab'         => (string) $m['action_tab'],
+            'is_pinned'          => ((int) $m['is_pinned']) === 1,
+            'is_read'            => $isRead,
+            'read_at'            => $meta['my_read_at'],
+            'my_reaction'        => $meta['my_reaction'],
+            'reactions_summary'  => $meta['reactions'],
+            'reactions_total'    => $reactTotal,
+            'read_count'         => (int) $meta['read_count'],
+        ];
+        if ($pinnedBanner === null && $item['is_pinned']) {
+            $pinnedBanner = $item;
+        }
+        $enrichedAll[] = $item;
+    }
+
+    $filteredOut = [];
+    foreach ($enrichedAll as $it) {
+        if ($filter === 'unread' && $it['is_read']) {
+            continue;
+        }
+        if ($filter === 'pinned' && !$it['is_pinned']) {
+            continue;
+        }
+        if ($filter === 'congratulations' && $it['msg_type'] !== 'CONGRATULATIONS') {
+            continue;
+        }
+        if ($filter === 'target_alerts' && $it['msg_type'] !== 'TARGET_ALERT') {
+            continue;
+        }
+        if ($filter === 'direct' && $it['audience_type'] !== 'DIRECT') {
+            continue;
+        }
+        if ($filter === 'sent' && strtolower($it['sender_username']) !== $uLower) {
+            continue;
+        }
+        $filteredOut[] = $it;
+        if (count($filteredOut) >= $limit) {
+            break;
+        }
+    }
+
+    return [
+        'unread_count'  => $unreadCount,
+        'pinned_banner' => $pinnedBanner,
+        'messages'      => $filteredOut,
+    ];
+}
+
 

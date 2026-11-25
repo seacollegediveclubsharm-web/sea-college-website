@@ -219,25 +219,80 @@ $csrf = csrf_token();
     }
     .bottom-dock {
       display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 85;
-      background: rgba(6, 21, 38, 0.96); backdrop-filter: blur(14px);
+      background: rgba(6, 21, 38, 0.98); backdrop-filter: blur(14px);
       border-top: 1px solid var(--border); padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
       justify-content: space-around; gap: 4px;
     }
     .dock-btn {
       flex: 1; border: none; background: transparent; color: var(--muted);
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
-      font-size: 10.5px; font-weight: 700; padding: 5px 4px; border-radius: 10px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 2px; position: relative;
+      font-size: 11px; font-weight: 800; padding: 6px 4px; border-radius: 11px; cursor: pointer;
     }
-    .dock-btn.active { background: rgba(0,210,255,0.16); color: var(--cyan); }
-    .dock-btn .ico { font-size: 17px; line-height: 1.1; }
+    .dock-btn.active { background: rgba(0,210,255,0.18); color: var(--cyan); }
+    .dock-btn .ico { font-size: 19px; line-height: 1.1; }
+    .stepper-wrap {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(6,21,38,0.92); border: 1px solid var(--border); border-radius: 11px; padding: 3px;
+    }
+    .stepper-btn {
+      width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgba(125,211,252,0.28);
+      background: var(--surface-2); color: #fff; font-size: 19px; font-weight: 900;
+      display: inline-grid; place-items: center; cursor: pointer; user-select: none; line-height: 1;
+    }
+    .stepper-btn:active { transform: scale(0.95); background: var(--cyan); color: #041322; }
+    .easy-cat-strip {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;
+      scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+    }
+    .easy-cat-tile {
+      min-width: 96px; padding: 8px 10px; border-radius: 13px; border: 1px solid var(--border);
+      background: rgba(11,34,57,0.92); color: var(--text); cursor: pointer; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+      font-size: 11.5px; font-weight: 800; transition: 0.14s;
+    }
+    .easy-cat-tile .ico { font-size: 21px; line-height: 1.1; }
+    .easy-cat-tile.active {
+      background: linear-gradient(135deg, #00d2ff, #0284c7); color: #041322;
+      border-color: transparent; box-shadow: 0 6px 18px rgba(0,210,255,0.28);
+    }
+    .seller-login-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 8px;
+    }
+    .seller-login-tile {
+      padding: 9px 8px; border-radius: 12px; border: 1px solid var(--border);
+      background: rgba(6,21,38,0.82); color: var(--text); cursor: pointer;
+      display: flex; align-items: center; gap: 8px; text-align: start; transition: 0.14s;
+    }
+    .seller-login-tile:hover, .seller-login-tile.selected {
+      border-color: var(--cyan); background: rgba(0,210,255,0.15);
+    }
+    .react-chip {
+      border: 1px solid var(--border); background: rgba(6,21,38,0.85); color: var(--text);
+      padding: 5px 10px; border-radius: 999px; font-size: 13px; font-weight: 800;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: 0.12s;
+    }
+    .react-chip.active {
+      border-color: var(--cyan); background: rgba(0,210,255,0.22); color: #fff; transform: scale(1.04);
+    }
+    .trip-mobile-card {
+      background: rgba(11,34,57,0.94); border: 1px solid var(--border); border-radius: 14px;
+      padding: 13px; display: grid; gap: 9px;
+    }
+    body.role-seller #appSub,
+    body.role-seller #permPills,
+    body.role-seller #roleBannerExtraBtns,
+    body.role-seller #fabFeedback { display: none !important; }
+    body.role-seller #roleBanner { padding: 10px 13px; margin-bottom: 10px; }
     @media (max-width: 920px) {
       .bottom-dock.ready { display: flex; }
       body { padding-bottom: 104px; }
+      body.role-seller #navTabs { display: none; }
       #fabFeedback { bottom: 72px !important; }
     }
     @media (max-width: 640px) {
       .kpi-val { font-size: 18px; }
       .container { padding: 10px; }
+      body.role-seller #siteBtn, body.role-seller #installTopBtn { display: none; }
     }
   </style>
 </head>
@@ -247,66 +302,71 @@ $csrf = csrf_token();
   <div class="brand">
     <div class="brand-badge">SC</div>
     <div>
-      <h1 id="appTitle">Sea College Dive Club — Unified Ecosystem App <span class="pill" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">🚀 v3.0 LIVE</span></h1>
-      <p id="appSub">Smart Tablet Concierge • Multi-Stage Reservations • Real-Time Accounting &amp; Awards</p>
+      <h1 id="appTitle">Sea College Dive Club — Unified Ecosystem App <span class="pill" style="background:rgba(16,185,129,0.2);color:#34d399;border-color:rgba(16,185,129,0.4);">🚀 v3.2 LIVE</span></h1>
+      <p id="appSub">Smart Tablet Concierge • Company Inbox • Real-Time Accounting &amp; Awards</p>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+    <button type="button" id="inboxTopBtn" class="btn" style="display:none;position:relative;border-color:rgba(251,191,36,0.45);" onclick="openCompanyInboxTab()">📨 <span id="inboxTopLbl">Inbox</span> <span id="inboxCountBadge" class="notif-badge" style="display:none;">0</span></button>
     <button type="button" id="notifBtn" class="btn" style="display:none;position:relative;" onclick="openNotificationsModal()">🔔 <span id="notifCountBadge" class="notif-badge" style="display:none;">0</span></button>
     <button type="button" id="userBadge" class="btn" style="display:none;padding:5px 11px;border-radius:999px;" onclick="STATE.activeTab='my_profile';renderApp();"></button>
-    <button type="button" class="btn btn-emerald" onclick="triggerInstallApp()">📲 Install App</button>
-    <button type="button" class="btn" id="langBtn" onclick="toggleLang()">العربية RTL</button>
+    <button type="button" id="installTopBtn" class="btn btn-emerald" onclick="triggerInstallApp()">📲 Install</button>
+    <button type="button" class="btn" id="langBtn" style="font-weight:900;border-color:rgba(0,210,255,0.45);" onclick="toggleLang()">🇪🇬 عربي / AR</button>
     <a href="/" class="btn" id="siteBtn">🌐 Website</a>
     <button type="button" class="btn btn-amber" id="logoutBtn" style="display:none;" onclick="doLogout()">Logout</button>
   </div>
 </header>
 
 <main class="container">
-  <!-- ================= LOGIN VIEW ================= -->
-  <section id="loginView" class="login-box card" style="display:none;">
-    <h2 style="font-size:18px;margin-bottom:6px;" id="loginHeading">Employee & Owner Sign In (Trial Pilot v1.0)</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;" id="loginDesc">
-      Sign in with your assigned Sea College role account. Test vouchers & safe entries are prefixed with <b>TRIAL-</b> so your team can test freely without affecting closed accounting ledgers!
+  <!-- ================= LOGIN VIEW (1-TAP EASY PHOTO LOGIN FOR SELLERS & STAFF) ================= -->
+  <section id="loginView" class="login-box card" style="display:none;max-width:560px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+      <h2 style="font-size:19px;" id="loginHeading">👋 تسجيل الدخول السريع • Staff &amp; Seller Sign In</h2>
+      <button type="button" class="btn" onclick="toggleLang()">🌍 عربي / EN</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;" id="loginDesc">
+      اضغط على اسمك بالأسفل ثم اكتب كلمة المرور فقط • Tap your name below, enter password &amp; start!
     </p>
-    <form onsubmit="doLogin(event)" class="grid" style="gap:12px;">
+    <form onsubmit="doLogin(event)" class="grid" style="gap:11px;">
       <div>
-        <label id="lblUser">Username</label>
-        <input type="text" id="inpUser" required autocomplete="username" placeholder="e.g. islam.samir, eng.sayed, nadia.acc">
+        <label id="lblUser" style="font-weight:700;color:var(--text);">👤 اسم المستخدم • Username</label>
+        <input type="text" id="inpUser" required autocomplete="username" style="font-size:15px;padding:11px;font-weight:700;" placeholder="Tap your name below or type username">
       </div>
       <div>
-        <label id="lblPass">Password</label>
-        <input type="password" id="inpPass" required autocomplete="current-password" placeholder="••••••••••••">
+        <label id="lblPass" style="font-weight:700;color:var(--text);">🔑 كلمة المرور • Password</label>
+        <div style="display:flex;gap:6px;">
+          <input type="password" id="inpPass" required autocomplete="current-password" style="font-size:15px;padding:11px;" placeholder="••••••••••••">
+          <button type="button" class="btn" style="padding:0 13px;font-size:15px;" onclick="const p=document.getElementById('inpPass');p.type=p.type==='password'?'text':'password';" title="Show / Hide Password">👁️</button>
+        </div>
       </div>
-      <div id="loginErr" style="color:var(--rose);font-size:12px;display:none;"></div>
-      <button type="submit" class="btn btn-primary" style="justify-content:center;padding:11px;font-size:14px;" id="btnSignIn">
-        🔐 Sign In to Role Dashboard
+      <div id="loginErr" style="color:var(--rose);font-size:13px;font-weight:700;display:none;"></div>
+      <button type="submit" class="btn btn-primary" style="justify-content:center;padding:13px;font-size:15px;font-weight:900;border-radius:12px;" id="btnSignIn">
+        🔐 دخول الآن • Sign In
       </button>
     </form>
 
-    <details style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px;">
-      <summary style="cursor:pointer;font-size:12px;color:var(--cyan);font-weight:700;">
-        👥 Quick Role Directory (Select Employee / Owner Profile)
-      </summary>
-      <p style="font-size:11px;color:var(--muted);margin:6px 0;">
-        Tap any profile below to pre-fill username during onboarding:
-      </p>
-      <div id="roleDirectoryList" style="display:grid;gap:6px;max-height:280px;overflow-y:auto;margin-top:8px;"></div>
-    </details>
+    <div style="margin-top:15px;border-top:1px solid var(--border);padding-top:12px;">
+      <div style="font-size:12.5px;color:var(--cyan);font-weight:800;margin-bottom:8px;">
+        ⚡ اضغط على اسمك للدخول السريع • 1-Tap Select Your Account:
+      </div>
+      <div id="roleDirectoryList" style="display:grid;gap:8px;max-height:310px;overflow-y:auto;"></div>
+    </div>
   </section>
 
   <!-- ================= AUTHENTICATED APP SHELL ================= -->
   <section id="appView" style="display:none;">
-    <div id="roleBanner" class="card" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:linear-gradient(90deg,rgba(0,210,255,0.12),rgba(16,185,129,0.08));">
-      <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap;">
+    <div id="roleBanner" class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:linear-gradient(90deg,rgba(0,210,255,0.12),rgba(16,185,129,0.08));">
+      <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;">
         <div id="welcomeAvatar"></div>
         <div>
-          <div style="font-size:17px;font-weight:800;" id="welcomeName"></div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="welcomeScope"></div>
-          <div id="welcomeContacts" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;"></div>
+          <div style="font-size:16px;font-weight:800;" id="welcomeName"></div>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:2px;" id="welcomeScope"></div>
+          <div id="welcomeContacts" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;"></div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <div id="roleBannerExtraBtns" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn" onclick="openCompanyInboxTab()">📨 Inbox</button>
           <button type="button" class="btn" onclick="STATE.activeTab='my_profile';renderApp();">👤 My Profile</button>
           <button type="button" class="btn" onclick="STATE.activeTab='team_profiles';renderApp();">👥 Team Directory</button>
         </div>
@@ -314,6 +374,7 @@ $csrf = csrf_token();
       </div>
     </div>
 
+    <div id="pinnedInboxBannerSlot"></div>
     <nav id="navTabs" class="tabs"></nav>
     <div id="tabContent"></div>
   </section>
@@ -533,7 +594,7 @@ $csrf = csrf_token();
 
 <!-- 1-Tap Guest-Safe Tablet Booking Modal (Zero Commission Shown to Guest) -->
 <div id="fastBookModal" class="modal-backdrop">
-  <div class="card" style="width:100%;max-width:580px;max-height:92vh;overflow-y:auto;">
+  <div class="card" style="width:100%;max-width:600px;max-height:92vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <h3 style="font-size:16px;" id="fbkTitle">⚡ Guest Booking &amp; Instant Boarding Pass</h3>
       <button type="button" class="btn" onclick="document.getElementById('fastBookModal').style.display='none'">✕</button>
@@ -541,57 +602,85 @@ $csrf = csrf_token();
     <form onsubmit="submitFastBookForm(event)" class="grid grid-2" style="gap:10px;">
       <input type="hidden" id="fbkProdCode" value="">
       <div>
-        <label>Guest Full Name *</label>
-        <input type="text" id="fbkGuest" required placeholder="e.g. Marco Rossi">
+        <label style="font-weight:700;color:var(--text);">👤 اسم الضيف • Guest Name *</label>
+        <input type="text" id="fbkGuest" required style="padding:10px;font-size:14px;font-weight:700;" placeholder="e.g. Marco Rossi">
       </div>
       <div>
-        <label>Guest WhatsApp / Phone</label>
-        <input type="tel" id="fbkPhone" placeholder="+39 333 1234567">
+        <label style="font-weight:700;color:var(--text);">📱 واتساب / تليفون • WhatsApp</label>
+        <input type="tel" id="fbkPhone" style="padding:10px;font-size:14px;" placeholder="+39 333 1234567">
       </div>
       <div>
-        <label>Trip Date *</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:4px;">
+          <label style="margin:0;font-weight:700;color:var(--text);">📅 الموعد • Date</label>
+          <div style="display:flex;gap:4px;">
+            <button type="button" class="btn" style="padding:3px 7px;font-size:11px;" onclick="setFastBookQuickDate(0)">☀️ Today</button>
+            <button type="button" class="btn btn-primary" style="padding:3px 7px;font-size:11px;" onclick="setFastBookQuickDate(1)">🌅 Tomorrow</button>
+          </div>
+        </div>
         <input type="date" id="fbkDate" required value="<?= gmdate('Y-m-d') ?>">
       </div>
       <div>
-        <label>Nationality</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:3px;margin-bottom:4px;flex-wrap:wrap;">
+          <label style="margin:0;">🌍 Nationality</label>
+          <div style="display:flex;gap:3px;">
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='ITALY'">🇮🇹</button>
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='RUSSIA'">🇷🇺</button>
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='UK'">🇬🇧</button>
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='GERMANY'">🇩🇪</button>
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='POLAND'">🇵🇱</button>
+            <button type="button" class="btn" style="padding:2px 5px;font-size:12px;" onclick="document.getElementById('fbkNat').value='EGYPT'">🇪🇬</button>
+          </div>
+        </div>
         <input type="text" id="fbkNat" value="ITALY">
       </div>
       <div>
-        <label>Sharm Hotel / Resort (Auto Pickup Time)</label>
+        <label style="font-weight:700;color:var(--text);">🏨 الفندق • Hotel (Auto Pickup)</label>
         <select id="fbkHotel" onchange="const o=this.selectedOptions[0];if(o&&o.dataset.pick)document.getElementById('fbkPick').value=o.dataset.pick;"></select>
       </div>
       <div>
-        <label>Room # &amp; Pickup Time</label>
+        <label style="font-weight:700;color:var(--text);">🚪 الغرفة والتحرك • Room &amp; Pickup</label>
         <div style="display:flex;gap:6px;">
           <input type="text" id="fbkRoom" placeholder="Room 312">
           <input type="text" id="fbkPick" value="07:55–08:10">
         </div>
       </div>
-      <div style="grid-column:1/-1;">
-        <label>Guests Breakdown — Adults / Children (3–11 yrs) / Infants (&lt;3 yrs FREE)</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-          <div>
-            <span style="font-size:11px;color:var(--muted);">👤 Adults</span>
-            <input type="number" id="fbkAdl" value="2" min="1" max="60" oninput="recalcFastBookGuestTotal(true)">
+      <div style="grid-column:1/-1;padding:10px;border-radius:12px;background:rgba(6,21,38,0.72);border:1px solid var(--border);">
+        <label style="font-weight:800;color:var(--cyan);margin-bottom:7px;">👨‍👩‍👧 عدد الضيوف بلمسة واحدة • Tap − / + for Guests (Infants &lt;3 FREE)</label>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+            <span style="font-size:12px;font-weight:800;">👤 كبار Adults</span>
+            <div class="stepper-wrap">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkAdl',-1,1,true)">−</button>
+              <input type="number" id="fbkAdl" value="2" min="1" max="60" style="width:46px;text-align:center;padding:5px;border:none;font-weight:900;" oninput="recalcFastBookGuestTotal(true)">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkAdl',1,1,true)">+</button>
+            </div>
           </div>
-          <div>
-            <span style="font-size:11px;color:var(--muted);">🧒 Children</span>
-            <input type="number" id="fbkCh" value="0" min="0" max="40" oninput="recalcFastBookGuestTotal(true)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+            <span style="font-size:12px;font-weight:800;">🧒 أطفال Kids</span>
+            <div class="stepper-wrap">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkCh',-1,0,true)">−</button>
+              <input type="number" id="fbkCh" value="0" min="0" max="40" style="width:46px;text-align:center;padding:5px;border:none;font-weight:900;" oninput="recalcFastBookGuestTotal(true)">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkCh',1,0,true)">+</button>
+            </div>
           </div>
-          <div>
-            <span style="font-size:11px;color:var(--teal);">👶 Infants (&lt;3 Free)</span>
-            <input type="number" id="fbkInf" value="0" min="0" max="20" oninput="recalcFastBookGuestTotal(false)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+            <span style="font-size:12px;font-weight:800;color:var(--teal);">👶 رضع Free</span>
+            <div class="stepper-wrap">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkInf',-1,0,false)">−</button>
+              <input type="number" id="fbkInf" value="0" min="0" max="20" style="width:46px;text-align:center;padding:5px;border:none;font-weight:900;" oninput="recalcFastBookGuestTotal(false)">
+              <button type="button" class="stepper-btn" onclick="stepFastBookField('fbkInf',1,0,false)">+</button>
+            </div>
           </div>
         </div>
       </div>
       <div id="fbkDiscountRow" style="grid-column:1/-1;padding:10px 12px;border-radius:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.32);">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
-          <label style="margin:0;color:#fde68a;">🎁 Special Guest Discount (By Percentage % or Fixed Amount)</label>
-          <div style="display:flex;gap:4px;flex-wrap:wrap;">
-            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('NONE', 0)">None</button>
-            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 5)">-5%</button>
-            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 10)">-10%</button>
-            <button type="button" class="btn" style="padding:3px 8px;font-size:11px;" onclick="setFastBookPresetDiscount('PERCENT', 15)">-15%</button>
+          <label style="margin:0;color:#fde68a;font-weight:800;">🎁 خصم خاص للضيف • Special Discount</label>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;">
+            <button type="button" class="btn" style="padding:4px 9px;font-size:11.5px;" onclick="setFastBookPresetDiscount('NONE', 0)">بدون 0%</button>
+            <button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11.5px;" onclick="setFastBookPresetDiscount('PERCENT', 5)">-5%</button>
+            <button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11.5px;" onclick="setFastBookPresetDiscount('PERCENT', 10)">-10%</button>
+            <button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11.5px;" onclick="setFastBookPresetDiscount('PERCENT', 15)">-15%</button>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1.1fr 0.9fr 1.4fr;gap:7px;">
@@ -605,7 +694,14 @@ $csrf = csrf_token();
         </div>
       </div>
       <div>
-        <label>Deposit Paid Now</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+          <label style="margin:0;font-weight:700;color:var(--text);">💵 المدفوع الآن • Deposit Now</label>
+          <div style="display:flex;gap:3px;">
+            <button type="button" class="btn btn-emerald" style="padding:2px 6px;font-size:10.5px;" onclick="setFastBookQuickDeposit('FULL')">Full</button>
+            <button type="button" class="btn" style="padding:2px 6px;font-size:10.5px;" onclick="setFastBookQuickDeposit(20)">20</button>
+            <button type="button" class="btn" style="padding:2px 6px;font-size:10.5px;" onclick="setFastBookQuickDeposit(0)">0 (At Bus)</button>
+          </div>
+        </div>
         <div style="display:flex;gap:6px;">
           <input type="number" step="0.01" min="0" id="fbkDepAmt" value="40" oninput="recalcFastBookRestFromDeposit()">
           <select id="fbkDepCur" style="width:92px;" onchange="syncFastBookCurrency(this.value)">
@@ -617,7 +713,7 @@ $csrf = csrf_token();
         </div>
       </div>
       <div>
-        <label>Remaining Balance at Pickup Time</label>
+        <label style="font-weight:700;color:var(--text);">🚐 الباقي عند الباص • Rest at Pickup</label>
         <div style="display:flex;gap:6px;">
           <input type="number" step="0.01" min="0" id="fbkRestAmt" value="0" oninput="recalcFastBookSummaryBox()">
           <select id="fbkRestCur" style="width:92px;" onchange="recalcFastBookSummaryBox()">
@@ -632,7 +728,7 @@ $csrf = csrf_token();
       <div id="fbkResultBox" style="display:none;grid-column:1/-1;padding:12px;border-radius:12px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.45);text-align:center;"></div>
       <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
         <button type="button" class="btn" onclick="document.getElementById('fastBookModal').style.display='none'">Close</button>
-        <button type="submit" id="fbkSubmitBtn" class="btn btn-primary">🎫 Confirm Guest Booking &amp; Issue QR Pass</button>
+        <button type="submit" id="fbkSubmitBtn" class="btn btn-primary" style="padding:11px 18px;font-size:14px;font-weight:900;">🎫 تأكيد الحجز وإصدار الباركود • Confirm Booking</button>
       </div>
     </form>
   </div>
@@ -773,6 +869,8 @@ let STATE = {
   pitchCat: 'ALL',
   pitchQuery: '',
   pitchHotel: 'Cyrene Sharm Hotel',
+  pitchHotelSearch: '',
+  pitchDrawerOpen: false,
   pitchPickup: '07:55–08:10',
   pitchSaleMode: 'INSHEET',
   pitchSupplierCost: 0,
@@ -790,6 +888,24 @@ let STATE = {
   sellerBi: null,
   notifications: [],
   unreadNotifs: 0,
+  inboxData: null,
+  inboxFilter: 'all',
+  unreadInbox: 0,
+  dismissedPinId: 0,
+  inboxDraft: {
+    msg_type: 'CONGRATULATIONS',
+    priority: 'CELEBRATION',
+    audience_type: 'ALL',
+    audience_target: '',
+    spotlight_username: '',
+    badge_icon: '🎉',
+    title_en: '',
+    title_ar: '',
+    body_en: '',
+    body_ar: '',
+    action_tab: '',
+    is_pinned: true
+  },
   bi: null,
   ws: null,
   sellerCatalog: null,
@@ -798,8 +914,17 @@ let STATE = {
   directory: []
 };
 
+function isSalesRepUser() {
+  const u = STATE.user || {};
+  return u.role_code === 'SALES_REP' || (
+    hasPerm('sales.create_voucher', 'sales.view_own_sales') &&
+    !hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'ops.view_manifests', 'safe.view_balances', 'bi.view_partner_fleet', 'crew.view_own_manifest')
+  );
+}
+
 function fillAccount(uname) {
   document.getElementById('inpUser').value = uname;
+  renderDirectory();
   const pw = document.getElementById('inpPass');
   pw.value = '';
   pw.focus();
@@ -830,9 +955,9 @@ function toggleLang() {
   const root = document.getElementById('htmlRoot');
   root.lang = STATE.lang;
   root.dir = STATE.lang === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('langBtn').textContent = STATE.lang === 'ar' ? 'English LTR' : 'العربية RTL';
+  document.getElementById('langBtn').textContent = STATE.lang === 'ar' ? '🇬🇧 English' : '🇪🇬 عربي / AR';
   document.getElementById('appTitle').textContent = STATE.lang === 'ar'
-    ? 'سي كولدج دايف كلوب — التطبيق الموحد للشركة والملاك'
+    ? 'سي كولدج دايف كلوب — التطبيق السريع للمبيعات والإدارة'
     : 'Sea College Dive Club — Unified Ecosystem App';
   return renderApp();
 }
@@ -867,6 +992,7 @@ async function boot() {
   if (me && me.authenticated) {
     STATE.user = me.user;
     STATE.perms = me.permissions || [];
+    STATE.unreadInbox = Number(me.unread_inbox_count || 0);
     await loadUserData();
   } else {
     document.getElementById('loginView').style.display = 'block';
@@ -891,18 +1017,35 @@ function waDigits(phone) {
 function renderDirectory() {
   const box = document.getElementById('roleDirectoryList');
   if (!box) return;
-  box.innerHTML = STATE.directory.map((a) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 9px;border-radius:8px;background:rgba(6,21,38,0.7);border:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:9px;min-width:0;">
-        ${renderAvatarHtml(a, 36)}
-        <div style="min-width:0;">
-          <div style="font-size:12px;font-weight:700;">${esc(STATE.lang === 'ar' ? (a.display_name_ar || a.display_name_en) : (a.display_name_en || a.username))}</div>
-          <div style="font-size:11px;color:var(--muted);">@${esc(a.username)} • ${esc(STATE.lang === 'ar' ? (a.job_title_ar || a.role_code) : (a.job_title_en || a.role_code))} (${esc(a.branch_scope || 'ALL')})</div>
+  const curVal = (document.getElementById('inpUser') && document.getElementById('inpUser').value) || '';
+  const sellers = STATE.directory.filter((a) => a.role_code === 'SALES_REP');
+  const others = STATE.directory.filter((a) => a.role_code !== 'SALES_REP');
+  const tileHtml = (a) => {
+    const shortEn = String(a.display_name_en || a.username).replace(/\s*\(.*?\)\s*/g, '');
+    const shortAr = String(a.display_name_ar || '').replace(/\s*\(.*?\)\s*/g, '');
+    const sel = curVal && curVal.toLowerCase() === String(a.username || '').toLowerCase();
+    return `
+      <button type="button" class="seller-login-tile ${sel ? 'selected' : ''}" onclick="fillAccount('${esc(a.username)}')">
+        ${renderAvatarHtml(a, 38)}
+        <div style="min-width:0;overflow:hidden;">
+          <div style="font-size:12.5px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(STATE.lang === 'ar' ? (shortAr || shortEn) : shortEn)}</div>
+          <div style="font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${esc(a.username)}</div>
         </div>
-      </div>
-      <button type="button" class="btn" onclick="fillAccount('${esc(a.username)}')">Select</button>
-    </div>
-  `).join('');
+      </button>
+    `;
+  };
+  box.innerHTML = `
+    ${sellers.length ? `
+      <div style="font-size:11.5px;font-weight:800;color:#34d399;margin-bottom:2px;">💼 ${STATE.lang === 'ar' ? 'فريق المبيعات (اضغط على اسمك):' : 'Sales Team (Tap Your Name):'}</div>
+      <div class="seller-login-grid">${sellers.map(tileHtml).join('')}</div>
+    ` : ''}
+    ${others.length ? `
+      <details style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">
+        <summary style="cursor:pointer;font-size:12px;font-weight:800;color:var(--cyan);">👑 ${STATE.lang === 'ar' ? 'الملاك والحسابات والتشغيل والمراكب' : 'Owners, Accounting, Ops & Boat Crew'} (${others.length})</summary>
+        <div class="seller-login-grid" style="margin-top:8px;">${others.map(tileHtml).join('')}</div>
+      </details>
+    ` : ''}
+  `;
 }
 
 async function doLogin(e) {
@@ -924,6 +1067,7 @@ async function doLogin(e) {
   STATE.sellerCatalog = null;
   STATE.sellerWallet = null;
   STATE.monthlyPack = null;
+  STATE.inboxData = null;
   await loadUserData();
 }
 
@@ -937,29 +1081,58 @@ async function doLogout() {
   STATE.sellerCatalog = null;
   STATE.sellerWallet = null;
   STATE.monthlyPack = null;
+  STATE.inboxData = null;
   STATE.notifications = [];
   STATE.unreadNotifs = 0;
+  STATE.unreadInbox = 0;
+  if (document.body) document.body.className = '';
   document.getElementById('userBadge').style.display = 'none';
   document.getElementById('notifBtn').style.display = 'none';
+  const ib = document.getElementById('inboxTopBtn');
+  if (ib) ib.style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
   document.getElementById('fabFeedback').style.display = 'none';
   document.getElementById('mobileBottomNav').className = 'bottom-dock';
   document.getElementById('appView').style.display = 'none';
   document.getElementById('loginView').style.display = 'block';
+  renderDirectory();
 }
 
 function syncNotifBadge() {
   const nb = document.getElementById('notifBtn');
   const badge = document.getElementById('notifCountBadge');
-  if (!nb || !badge) return;
+  const ib = document.getElementById('inboxTopBtn');
+  const ibLbl = document.getElementById('inboxTopLbl');
+  const ibBadge = document.getElementById('inboxCountBadge');
   if (!STATE.user) {
-    nb.style.display = 'none';
+    if (nb) nb.style.display = 'none';
+    if (ib) ib.style.display = 'none';
     return;
   }
-  nb.style.display = 'inline-flex';
-  const cnt = Number(STATE.unreadNotifs || 0);
-  badge.textContent = String(cnt);
-  badge.style.display = cnt > 0 ? 'inline-block' : 'none';
+  if (nb && badge) {
+    nb.style.display = 'inline-flex';
+    const cnt = Number(STATE.unreadNotifs || 0);
+    badge.textContent = String(cnt);
+    badge.style.display = cnt > 0 ? 'inline-block' : 'none';
+  }
+  if (ib && ibBadge) {
+    ib.style.display = 'inline-flex';
+    if (ibLbl) ibLbl.textContent = STATE.lang === 'ar' ? 'الرسائل' : 'Inbox';
+    const icnt = Number(STATE.unreadInbox || 0);
+    ibBadge.textContent = String(icnt);
+    ibBadge.style.display = icnt > 0 ? 'inline-block' : 'none';
+  }
+}
+
+async function openCompanyInboxTab() {
+  STATE.activeTab = 'company_inbox';
+  const res = await apiGet({ action: 'inbox_messages', filter: STATE.inboxFilter || 'all' });
+  if (res && res.ok) {
+    STATE.inboxData = res;
+    STATE.unreadInbox = Number(res.unread_count || 0);
+    syncNotifBadge();
+  }
+  return renderApp();
 }
 
 async function openNotificationsModal() {
@@ -967,6 +1140,7 @@ async function openNotificationsModal() {
   if (res && res.ok) {
     STATE.notifications = res.notifications || [];
     STATE.unreadNotifs = Number(res.unread_count || 0);
+    if (res.unread_inbox_count !== undefined) STATE.unreadInbox = Number(res.unread_inbox_count || 0);
     syncNotifBadge();
   }
   const box = document.getElementById('notifListBox');
@@ -978,6 +1152,7 @@ async function openNotificationsModal() {
       const unread = Number(n.is_read || 0) === 0;
       const vno = String(n.related_voucher_no || '');
       const isNewLink = String(n.notif_type || '') === 'NEW_LINK_BOOKING';
+      const isInboxMsg = String(n.notif_type || '').startsWith('INBOX_');
       return `
         <div style="padding:11px 12px;border-radius:11px;background:${unread ? 'rgba(0,210,255,0.11)' : 'rgba(6,21,38,0.68)'};border:1px solid ${unread ? 'rgba(0,210,255,0.45)' : 'var(--border)'};">
           <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
@@ -988,6 +1163,7 @@ async function openNotificationsModal() {
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
             ${isNewLink && vno ? `<button type="button" class="btn btn-emerald" onclick="sellerConfirmByVoucher('${esc(vno)}')">✅ Confirm Booking to Reservations</button>` : ''}
             ${vno ? `<button type="button" class="btn" onclick="document.getElementById('notifModal').style.display='none';STATE.activeTab='vouchers_ops';renderApp();">🎫 Open Voucher ${esc(vno)}</button>` : ''}
+            ${isInboxMsg ? `<button type="button" class="btn btn-amber" onclick="document.getElementById('notifModal').style.display='none';openCompanyInboxTab();">📨 Open Inbox</button>` : ''}
           </div>
         </div>
       `;
@@ -1022,6 +1198,13 @@ async function loadUserData() {
         STATE.ws = r;
         STATE.notifications = r.notifications || [];
         STATE.unreadNotifs = Number(r.unread_notifications_count || 0);
+        if (r.unread_inbox_count !== undefined) STATE.unreadInbox = Number(r.unread_inbox_count || 0);
+      }
+    }),
+    apiGet({ action: 'inbox_messages', filter: STATE.inboxFilter || 'all' }).then((r) => {
+      if (r && r.ok) {
+        STATE.inboxData = r;
+        STATE.unreadInbox = Number(r.unread_count || 0);
       }
     })
   ];
@@ -1142,19 +1325,16 @@ function exportUrl(report, format, extra = {}) {
 
 function buildTabsForUser() {
   const ar = STATE.lang === 'ar';
-  const u = STATE.user || {};
-  const isSalesRepPrimary = u.role_code === 'SALES_REP' || (
-    hasPerm('sales.create_voucher', 'sales.view_own_sales') &&
-    !hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'ops.view_manifests', 'safe.view_balances', 'bi.view_partner_fleet', 'crew.view_own_manifest')
-  );
+  const isSalesRepPrimary = isSalesRepUser();
+  const inbBadgeTxt = STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : '';
 
   if (isSalesRepPrimary) {
     return [
-      { id: 'seller_pitch', ico: '⚡', short: ar ? 'العرض' : 'Pitch', label: ar ? '⚡ عرض العميل والحجز السريع (Pitch)' : '⚡ Seller Pitch & Fast Book' },
-      { id: 'seller_wallet', ico: '🏆', short: ar ? 'حسابي' : 'My Account', label: ar ? '🏆 حسابي، باركود QR وعمولاتي' : '🏆 My Profile, QR & Commissions' },
-      { id: 'vouchers_ops', ico: '🎫', short: ar ? 'حجوزاتي' : 'My Trips', label: ar ? '🎫 حجوزاتي وتأكيداتها' : '🎫 My Trips & Confirmations' },
-      { id: 'my_profile', ico: '👤', short: ar ? 'صورتي' : 'Settings', label: ar ? '👤 ملفي الشخصي وصورتي' : '👤 My Photo & Settings' },
-      { id: 'team_profiles', ico: '👥', short: ar ? 'الفريق' : 'Team', label: ar ? '👥 دليل أرقام الفريق' : '👥 Team Contacts' }
+      { id: 'seller_pitch', ico: '⚡', short: ar ? 'بيع رحلة' : 'Pitch', label: ar ? '⚡ بيع رحلة للضيف (Pitch)' : '⚡ Seller Pitch & Fast Book' },
+      { id: 'seller_wallet', ico: '💰', short: ar ? 'عمولتي و QR' : 'QR & Cash', label: ar ? '💰 عمولتي وباركود QR' : '💰 My QR & Commissions' },
+      { id: 'vouchers_ops', ico: '🎫', short: ar ? 'حجوزاتي' : 'My Trips', label: ar ? '🎫 حجوزاتي وتأكيدها' : '🎫 My Trips & Confirmations' },
+      { id: 'company_inbox', ico: '📨', short: ar ? 'الرسائل' : 'Inbox', badge: STATE.unreadInbox, label: (ar ? '📨 رسائل الإدارة والتهاني' : '📨 Inbox & Announcements') + inbBadgeTxt },
+      { id: 'my_profile', ico: '👤', short: ar ? 'حسابي' : 'Profile', label: ar ? '👤 صورتي وأرقام الفريق' : '👤 My Photo & Settings' }
     ];
   }
 
@@ -1162,6 +1342,7 @@ function buildTabsForUser() {
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'exec_bi', ico: '📊', short: 'Owner BI', label: ar ? '📊 لوحة الملاك وأداء المناديب' : '📊 Owner BI & Seller Awards' });
   }
+  tabs.push({ id: 'company_inbox', ico: '📨', short: ar ? 'الرسائل' : 'Inbox', badge: STATE.unreadInbox, label: (ar ? '📨 صندوق الرسائل وإعلانات الإدارة' : '📨 Company Inbox & Broadcasts') + inbBadgeTxt });
   if (hasPerm('bi.view_executive', 'gl.view_all_ledgers')) {
     tabs.push({ id: 'monthly_reports', ico: '📑', short: 'Monthly', label: ar ? '📑 التقارير الشهرية الختامية (Monthly)' : '📑 Monthly Reports Pack' });
   }
@@ -1207,40 +1388,95 @@ function buildTabsForUser() {
   return tabs;
 }
 
+function renderPinnedInboxBanner(ar) {
+  const slot = document.getElementById('pinnedInboxBannerSlot');
+  if (!slot) return;
+  // Never display internal company announcements on guest-facing seller_pitch tab!
+  if (STATE.activeTab === 'seller_pitch' || STATE.activeTab === 'company_inbox') {
+    slot.innerHTML = '';
+    return;
+  }
+  const pin = (STATE.inboxData && STATE.inboxData.pinned_banner) || (STATE.ws && STATE.ws.inbox_pinned_banner) || null;
+  if (!pin || Number(pin.id) === Number(STATE.dismissedPinId)) {
+    slot.innerHTML = '';
+    return;
+  }
+  const title = ar ? (pin.title_ar || pin.title_en) : (pin.title_en || pin.title_ar);
+  const body = ar ? (pin.body_ar || pin.body_en) : (pin.body_en || pin.body_ar);
+  const sName = ar ? (pin.sender_name_ar || pin.sender_name_en) : (pin.sender_name_en || pin.sender_name_ar);
+  const quickReacts = ['👏', '🎉', '🔥', '❤️', '👍'];
+  slot.innerHTML = `
+    <div class="card" style="margin-bottom:12px;padding:11px 14px;background:linear-gradient(135deg,rgba(245,158,11,0.16),rgba(0,210,255,0.11));border-color:rgba(251,191,36,0.5);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:220px;">
+          <span style="font-size:24px;line-height:1;">${esc(pin.badge_icon || '🎉')}</span>
+          <div style="min-width:0;">
+            <div style="font-size:13.5px;font-weight:900;color:#fde68a;">${esc(title)}</div>
+            <div style="font-size:12px;color:#e2e8f0;margin-top:2px;">${esc(String(body || '').slice(0, 140))} <span style="color:var(--muted);">— ${esc(sName)}</span></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+          ${quickReacts.map((em) => `<button type="button" class="react-chip ${pin.my_reaction === em ? 'active' : ''}" style="padding:4px 8px;font-size:12px;" onclick="reactToInboxMessage(${Number(pin.id)}, '${em}')">${em}</button>`).join('')}
+          <button type="button" class="btn btn-amber" style="padding:5px 10px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'افتح الرسائل' : 'Inbox'}</button>
+          <button type="button" class="btn" style="padding:5px 8px;" onclick="STATE.dismissedPinId=${Number(pin.id)};renderPinnedInboxBanner(STATE.lang==='ar');">✕</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderApp() {
   if (!STATE.user) {
     renderDirectory();
     return;
   }
-  syncNotifBadge();
   const ar = STATE.lang === 'ar';
   const u = STATE.user;
+  const sellerMode = isSalesRepUser();
+  if (document.body) {
+    document.body.className = sellerMode ? 'role-seller' : '';
+  }
+  syncNotifBadge();
   const dispName = ar ? (u.display_name_ar || u.display_name_en || u.username || '') : (u.display_name_en || u.username || '');
   document.getElementById('userBadge').innerHTML = `${renderAvatarHtml(u, 24)} <span>${esc(dispName)}</span>`;
-  document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, 62);
+  document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, sellerMode ? 44 : 62);
   document.getElementById('welcomeName').textContent = dispName;
-  const titleTxt = ar
-    ? (u.job_title_ar || u.role_name_ar || u.job_title_en || u.role_code || '')
-    : (u.job_title_en || u.role_name_en || u.role_code || '');
-  document.getElementById('welcomeScope').textContent =
-    `${titleTxt} • Role: ${u.role_code || 'STAFF'} • Branch: ${u.branch_scope || 'ALL'} • Vessels: ${u.vessel_scope || 'ALL'}`;
 
-  const cChips = [];
-  if (u.phone) {
-    cChips.push(`<a class="contact-chip" href="tel:${esc(String(u.phone).replace(/\s+/g, ''))}">📞 ${esc(u.phone)}</a>`);
-    const wd = waDigits(u.phone);
-    if (wd.length >= 8) {
-      cChips.push(`<a class="contact-chip" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
+  if (sellerMode) {
+    const slug = u.referral_code || String(u.username || 'fady').replace(/\.sales$/i, '');
+    const myBrochureUrl = 'https://seacollegediveclub.com/s/' + encodeURIComponent(slug);
+    document.getElementById('welcomeScope').textContent = ar
+      ? `مندوب مبيعات معتمد • فرع ${u.branch_scope || 'CYRENE'}`
+      : `Official Concierge Seller • ${u.branch_scope || 'CYRENE'}`;
+    document.getElementById('welcomeContacts').innerHTML = `
+      <a class="btn btn-emerald" style="padding:6px 11px;font-size:12px;" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips with me: ' + myBrochureUrl)}" target="_blank" rel="noopener">💬 ${ar ? 'ابعت الكتالوج واتساب' : 'WhatsApp My Trips'}</a>
+      <button type="button" class="btn btn-primary" style="padding:6px 11px;font-size:12px;" onclick="STATE.activeTab='seller_wallet';renderApp();">📱 ${ar ? 'باركودي وفلوسي' : 'My QR & Cash'}</button>
+      <button type="button" class="btn btn-amber" style="padding:6px 11px;font-size:12px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'الرسائل' : 'Inbox'}${STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : ''}</button>
+    `;
+  } else {
+    const titleTxt = ar
+      ? (u.job_title_ar || u.role_name_ar || u.job_title_en || u.role_code || '')
+      : (u.job_title_en || u.role_name_en || u.role_code || '');
+    document.getElementById('welcomeScope').textContent =
+      `${titleTxt} • Role: ${u.role_code || 'STAFF'} • Branch: ${u.branch_scope || 'ALL'} • Vessels: ${u.vessel_scope || 'ALL'}`;
+
+    const cChips = [];
+    if (u.phone) {
+      cChips.push(`<a class="contact-chip" href="tel:${esc(String(u.phone).replace(/\s+/g, ''))}">📞 ${esc(u.phone)}</a>`);
+      const wd = waDigits(u.phone);
+      if (wd.length >= 8) {
+        cChips.push(`<a class="contact-chip" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
+      }
     }
+    if (u.email) {
+      cChips.push(`<a class="contact-chip" href="mailto:${esc(u.email)}">✉️ ${esc(u.email)}</a>`);
+    }
+    if (u.referral_code) {
+      const myBrochureUrl = 'https://seacollegediveclub.com/s/' + encodeURIComponent(u.referral_code);
+      cChips.push(`<a class="contact-chip" href="${esc(myBrochureUrl)}" target="_blank" rel="noopener" style="border-color:rgba(16,185,129,0.5);color:#34d399;">📲 Share All-Trips Link: ${esc(myBrochureUrl)}</a>`);
+    }
+    document.getElementById('welcomeContacts').innerHTML = cChips.join('');
   }
-  if (u.email) {
-    cChips.push(`<a class="contact-chip" href="mailto:${esc(u.email)}">✉️ ${esc(u.email)}</a>`);
-  }
-  if (u.referral_code) {
-    const myBrochureUrl = 'https://seacollegediveclub.com/s/' + encodeURIComponent(u.referral_code);
-    cChips.push(`<a class="contact-chip" href="${esc(myBrochureUrl)}" target="_blank" rel="noopener" style="border-color:rgba(16,185,129,0.5);color:#34d399;">📲 Share All-Trips Link: ${esc(myBrochureUrl)}</a>`);
-  }
-  document.getElementById('welcomeContacts').innerHTML = cChips.join('');
 
   document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('')
     + (STATE.perms.length > 5 ? `<span class="pill">+${STATE.perms.length - 5} more</span>` : '');
@@ -1249,6 +1485,8 @@ function renderApp() {
   if (!STATE.activeTab || !tabs.some((t) => t.id === STATE.activeTab)) {
     STATE.activeTab = tabs[0] ? tabs[0].id : '';
   }
+  renderPinnedInboxBanner(ar);
+
   document.getElementById('navTabs').innerHTML = tabs.map((t) => `
     <button type="button" class="tab-btn ${STATE.activeTab === t.id ? 'active' : ''}" onclick="STATE.activeTab='${t.id}';renderApp();">${esc(t.label)}</button>
   `).join('');
@@ -1258,14 +1496,28 @@ function renderApp() {
     dock.className = 'bottom-dock ready';
     dock.innerHTML = tabs.slice(0, 5).map((t) => `
       <button type="button" class="dock-btn ${STATE.activeTab === t.id ? 'active' : ''}" onclick="STATE.activeTab='${t.id}';renderApp();">
-        <span class="ico">${esc(t.ico || '•')}</span>
+        <span class="ico">${esc(t.ico || '•')}${Number(t.badge || 0) > 0 ? `<span class="notif-badge" style="position:absolute;top:2px;right:14%;font-size:9.5px;padding:0 5px;">${Number(t.badge)}</span>` : ''}</span>
         <span>${esc(t.short || t.label.slice(0, 9))}</span>
       </button>
     `).join('');
   }
 
   const box = document.getElementById('tabContent');
-  if (STATE.activeTab === 'seller_pitch') {
+  if (STATE.activeTab === 'company_inbox') {
+    if (STATE.inboxData) {
+      box.innerHTML = renderCompanyInboxTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري فتح صندوق الرسائل والتهاني...' : 'Loading Company Inbox & Recognition Feed...'}</div>`;
+    return apiGet({ action: 'inbox_messages', filter: STATE.inboxFilter || 'all' }).then((res) => {
+      if (res && res.ok) {
+        STATE.inboxData = res;
+        STATE.unreadInbox = Number(res.unread_count || 0);
+        syncNotifBadge();
+      }
+      box.innerHTML = renderCompanyInboxTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'seller_pitch') {
     if (STATE.sellerCatalog) {
       box.innerHTML = renderSellerPitchTab(ar);
       return;
@@ -1308,7 +1560,7 @@ function renderApp() {
   } else if (STATE.activeTab === 'team_profiles') {
     box.innerHTML = renderTeamProfilesTab(ar);
   } else if (STATE.activeTab === 'my_profile') {
-    box.innerHTML = renderMyProfileTab(ar);
+    box.innerHTML = renderMyProfileTab(ar) + (sellerMode ? `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="btn btn-primary" onclick="STATE.activeTab='team_profiles';renderApp();">👥 ${ar ? 'دليل أرقام الفريق والإدارة' : 'Open Team Phone Directory'}</button><button type="button" class="btn" onclick="openFeedbackModal()">🧪 ${ar ? 'إرسال ملاحظة للإدارة' : 'Send Note / Idea'}</button></div>` : '');
   } else if (STATE.activeTab === 'trial_pilot') {
     box.innerHTML = renderTrialPilotTab(ar);
   } else if (STATE.activeTab === 'exports_hub') {
@@ -1330,6 +1582,405 @@ function renderApp() {
   } else if (STATE.activeTab === 'website_crm') {
     box.innerHTML = renderWebsiteCrm(ar);
   }
+}
+
+/* ================= COMPANY-WIDE INBOX, CONGRATULATIONS & BROADCAST STUDIO ================= */
+function applyInboxPreset(presetKey) {
+  const d = STATE.inboxDraft;
+  if (presetKey === 'CONGRATS_SELLER') {
+    d.msg_type = 'CONGRATULATIONS';
+    d.priority = 'CELEBRATION';
+    d.audience_type = 'ROLE';
+    d.audience_target = 'SALES_REP';
+    d.badge_icon = '🏆';
+    d.title_en = '🏆 Congratulations to Our Star Seller — Outstanding Performance!';
+    d.title_ar = '🏆 ألف مبروك لنجم المبيعات — أداء مشرّف ومجهود رائع!';
+    d.body_en = 'Proud of your energy, honesty with guests, and strong bookings! Keep shining — your bonus & Best-Seller medal are active in your wallet.';
+    d.body_ar = 'فخورين جداً بمجهودك وأمانتك مع الضيوف وأرقام مبيعاتك القوية! استمر بنفس الحماس — وسام التفوق وعمولتك جاهزين في حسابك.';
+    d.action_tab = 'seller_wallet';
+    d.is_pinned = true;
+  } else if (presetKey === 'ANNOUNCE_ALL') {
+    d.msg_type = 'ANNOUNCEMENT';
+    d.priority = 'IMPORTANT';
+    d.audience_type = 'ALL';
+    d.audience_target = '';
+    d.spotlight_username = '';
+    d.badge_icon = '📢';
+    d.title_en = '📢 Important Update from Sea College Management';
+    d.title_ar = '📢 إعلان هام من إدارة سي كوليدج لكل الفريق';
+    d.body_en = 'Please review today’s schedule and pickup windows carefully so every guest enjoys a smooth 5-star Red Sea experience.';
+    d.body_ar = 'يرجى مراجعة مواعيد التحرك والتشغيل اليوم بدقة عشان نضمن لكل ضيف رحلة ممتازة وتجربة 5 نجوم.';
+    d.action_tab = '';
+    d.is_pinned = true;
+  } else if (presetKey === 'TARGET_BONUS') {
+    d.msg_type = 'TARGET_ALERT';
+    d.priority = 'IMPORTANT';
+    d.audience_type = 'ROLE';
+    d.audience_target = 'SALES_REP';
+    d.spotlight_username = '';
+    d.badge_icon = '🎯';
+    d.title_en = '🎯 Special Sales Target & Extra Bonus Challenge!';
+    d.title_ar = '🎯 تحدي المبيعات ومكافأة إضافية لأبطال الحجز!';
+    d.body_en = 'Special reward unlocked this week for top Safari, White Island & Diving bookings! Check your live rank and progress bar in your account.';
+    d.body_ar = 'مكافأة خاصة هذا الأسبوع لأعلى مبيعات في رحلات السفاري، وايت أيلاند والغطس! تابع ترتيبك والتارجت في حسابك الآن.';
+    d.action_tab = 'seller_wallet';
+    d.is_pinned = true;
+  } else if (presetKey === 'URGENT_OPS') {
+    d.msg_type = 'POLICY_UPDATE';
+    d.priority = 'URGENT';
+    d.audience_type = 'ALL';
+    d.audience_target = '';
+    d.spotlight_username = '';
+    d.badge_icon = '🚨';
+    d.title_en = '🚨 Urgent Operations & Jetty Schedule Notice';
+    d.title_ar = '🚨 تنبيه عاجل بخصوص مواعيد السقالة والتحرك';
+    d.body_en = 'Please check updated boat and transfer assignments immediately with Operations.';
+    d.body_ar = 'يرجى مراجعة تحديث توزيع المراكب والباصات فوراً مع قسم التشغيل.';
+    d.action_tab = 'vouchers_ops';
+    d.is_pinned = false;
+  }
+  renderApp();
+}
+
+function openQuickCongratsToSeller(username, nameEn, nameAr) {
+  STATE.inboxDraft = {
+    msg_type: 'CONGRATULATIONS',
+    priority: 'CELEBRATION',
+    audience_type: 'ROLE',
+    audience_target: 'SALES_REP',
+    spotlight_username: username,
+    badge_icon: '🏆',
+    title_en: `🎉 Congratulations ${nameEn} — Star Seller Recognition!`,
+    title_ar: `🎉 ألف مبروك يا ${nameAr || nameEn} — تكريم خاص من الإدارة!`,
+    body_en: `Big applause from Management to ${nameEn} for outstanding guest bookings and teamwork! Keep leading by example!`,
+    body_ar: `تحية كبيرة وشكر خاص من الإدارة للزميل ${nameAr || nameEn} على الأداء المميز والمبيعات القوية! استمر يا بطل!`,
+    action_tab: 'seller_wallet',
+    is_pinned: true
+  };
+  openCompanyInboxTab();
+}
+
+async function changeInboxFilter(flt) {
+  STATE.inboxFilter = flt;
+  const res = await apiGet({ action: 'inbox_messages', filter: flt });
+  if (res && res.ok) {
+    STATE.inboxData = res;
+    STATE.unreadInbox = Number(res.unread_count || 0);
+    syncNotifBadge();
+  }
+  renderApp();
+}
+
+async function submitCompanyInboxMessage(e) {
+  e.preventDefault();
+  const audSel = document.getElementById('inbAudQuick').value;
+  let audType = 'ALL';
+  let audTarget = '';
+  if (audSel === 'ALL_SELLERS') {
+    audType = 'ROLE';
+    audTarget = 'SALES_REP';
+  } else if (audSel.startsWith('ROLE:')) {
+    audType = 'ROLE';
+    audTarget = audSel.slice(5);
+  } else if (audSel.startsWith('BRANCH:')) {
+    audType = 'BRANCH';
+    audTarget = audSel.slice(7);
+  } else if (audSel === 'DIRECT_USER') {
+    audType = 'DIRECT';
+    audTarget = document.getElementById('inbDirectUser').value;
+  }
+  const msgType = document.getElementById('inbMsgType').value;
+  const spotUser = document.getElementById('inbSpotlightUser') ? document.getElementById('inbSpotlightUser').value : '';
+  const titleTxt = document.getElementById('inbTitleEn').value.trim();
+  const titleAr = document.getElementById('inbTitleAr').value.trim() || titleTxt;
+  const bodyTxt = document.getElementById('inbBodyEn').value.trim();
+  const bodyAr = document.getElementById('inbBodyAr').value.trim() || bodyTxt;
+  const isPin = document.getElementById('inbPinChk').checked ? 1 : 0;
+
+  const res = await apiPost({
+    action: 'send_inbox_message',
+    msg_type: msgType,
+    priority: msgType === 'CONGRATULATIONS' ? 'CELEBRATION' : 'IMPORTANT',
+    audience_type: audType,
+    audience_target: audTarget,
+    spotlight_username: spotUser,
+    title_en: titleTxt || titleAr,
+    title_ar: titleAr,
+    body_en: bodyTxt || bodyAr,
+    body_ar: bodyAr,
+    is_pinned: isPin
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Could not send message');
+    return;
+  }
+  showToast(STATE.lang === 'ar' ? '🚀 تم إرسال الرسالة لصندوق الفريق فوراً!' : '🚀 Sent to Staff Inbox!');
+  STATE.inboxDraft.title_en = '';
+  STATE.inboxDraft.title_ar = '';
+  STATE.inboxDraft.body_en = '';
+  STATE.inboxDraft.body_ar = '';
+  await openCompanyInboxTab();
+}
+
+async function reactToInboxMessage(messageId, emoji) {
+  const res = await apiPost({ action: 'react_inbox_message', message_id: messageId, emoji });
+  if (res && res.ok) {
+    const fresh = await apiGet({ action: 'inbox_messages', filter: STATE.inboxFilter || 'all' });
+    if (fresh && fresh.ok) {
+      STATE.inboxData = fresh;
+      STATE.unreadInbox = Number(fresh.unread_count || 0);
+      syncNotifBadge();
+    }
+    renderApp();
+  }
+}
+
+async function markSingleInboxRead(messageId) {
+  const res = await apiPost({ action: 'mark_inbox_read', message_id: messageId });
+  if (res && res.ok) {
+    STATE.unreadInbox = Number(res.unread_count || 0);
+    if (STATE.inboxData && Array.isArray(STATE.inboxData.messages)) {
+      STATE.inboxData.messages = STATE.inboxData.messages.map((m) => (Number(m.id) === Number(messageId) ? { ...m, is_read: true } : m));
+    }
+    syncNotifBadge();
+    renderApp();
+  }
+}
+
+async function markAllInboxRead() {
+  const res = await apiPost({ action: 'mark_inbox_read', mark_all: 1 });
+  if (res && res.ok) {
+    STATE.unreadInbox = 0;
+    if (STATE.inboxData && Array.isArray(STATE.inboxData.messages)) {
+      STATE.inboxData.messages = STATE.inboxData.messages.map((m) => ({ ...m, is_read: true }));
+    }
+    syncNotifBadge();
+    showToast(STATE.lang === 'ar' ? '✓ تم تعليم كل الرسائل كمقروءة' : '✓ All messages marked read');
+    renderApp();
+  }
+}
+
+async function togglePinInboxMsg(messageId) {
+  const res = await apiPost({ action: 'toggle_pin_inbox_message', message_id: messageId });
+  if (res && res.ok) {
+    showToast(res.is_pinned ? '📌 Message pinned to top' : 'Unpinned message');
+    await openCompanyInboxTab();
+  }
+}
+
+async function deleteInboxMsg(messageId) {
+  if (!confirm('Delete this message from Company Inbox?')) return;
+  const res = await apiPost({ action: 'delete_inbox_message', message_id: messageId });
+  if (res && res.ok) {
+    showToast('🗑️ Message deleted');
+    await openCompanyInboxTab();
+  }
+}
+
+function renderCompanyInboxTab(ar) {
+  const data = STATE.inboxData || { can_send: hasPerm('bi.view_executive'), messages: [], allowed_reactions: ['👏', '🎉', '🔥', '❤️', '🏆', '🫡', '👍'], recipients_directory: { users: [], roles: [], branches: [] } };
+  const canSend = Boolean(data.can_send);
+  const canPinDel = Boolean(data.can_pin_delete);
+  const msgs = data.messages || [];
+  const reacts = data.allowed_reactions || ['👏', '🎉', '🔥', '❤️', '🏆', '🫡', '👍'];
+  const dirUsers = (data.recipients_directory && data.recipients_directory.users) || [];
+  const d = STATE.inboxDraft || {};
+
+  const curAudQuick = d.audience_type === 'DIRECT'
+    ? 'DIRECT_USER'
+    : (d.audience_type === 'ROLE' && d.audience_target === 'SALES_REP'
+        ? 'ALL_SELLERS'
+        : (d.audience_type === 'ROLE' ? 'ROLE:' + d.audience_target : (d.audience_type === 'BRANCH' ? 'BRANCH:' + d.audience_target : 'ALL')));
+
+  const filters = [
+    ['all', ar ? '📬 كل الرسائل' : '📬 All Messages'],
+    ['unread', ar ? `🔴 غير مقروء (${STATE.unreadInbox || 0})` : `🔴 Unread (${STATE.unreadInbox || 0})`],
+    ['congratulations', ar ? '🎉 التهاني والجوائز' : '🎉 Congratulations'],
+    ['target_alerts', ar ? '🎯 التارجت والمكافآت' : '🎯 Targets & Bonuses'],
+    ['direct', ar ? '💌 رسائل خاصة لي' : '💌 Direct to Me']
+  ];
+
+  const audBadgeLabel = (m) => {
+    if (m.audience_type === 'ALL') return ar ? '🌍 لكل الشركة (34)' : '🌍 Everyone (All Staff)';
+    if (m.audience_type === 'DIRECT') return ar ? `💌 رسالة خاصة (@${m.audience_target})` : `💌 Private Direct (@${m.audience_target})`;
+    if (m.audience_type === 'ROLE' && m.audience_target === 'SALES_REP') return ar ? '💼 كل المناديب (18)' : '💼 All 18 Sellers';
+    if (m.audience_type === 'ROLE') return `🏢 ${m.audience_target}`;
+    if (m.audience_type === 'BRANCH') return `🏨 ${m.audience_target}`;
+    return m.audience_type;
+  };
+
+  return `
+    ${canSend ? `
+      <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(245,158,11,0.14),rgba(0,210,255,0.1));border-color:rgba(251,191,36,0.42);">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+          <div>
+            <h3 style="font-size:16px;color:#fde68a;">👑 ${ar ? 'إرسال تهنئة، مكافأة أو إعلان رسمي من الملاك والإدارة' : 'Owner & Admin Broadcast, Congratulations & Direct Message Studio'}</h3>
+            <p style="font-size:11.5px;color:var(--muted);">${ar ? 'اختر قالباً جاهزاً بلمسة واحدة أو اكتب رسالتك لكل الشركة أو للمناديب أو لموظف محدد' : 'Pick a 1-tap preset below or send an announcement / personal recognition to Everyone, All Sellers, a Branch, or 1 Person.'}</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-amber" onclick="applyInboxPreset('CONGRATS_SELLER')">🎉 ${ar ? 'قالب تهنئة نجم' : 'Congrats Preset'}</button>
+            <button type="button" class="btn btn-primary" onclick="applyInboxPreset('ANNOUNCE_ALL')">📢 ${ar ? 'قالب إعلان عام' : 'Announcement'}</button>
+            <button type="button" class="btn btn-emerald" onclick="applyInboxPreset('TARGET_BONUS')">🎯 ${ar ? 'قالب مكافأة وتارجت' : 'Bonus Alert'}</button>
+            <button type="button" class="btn" onclick="applyInboxPreset('URGENT_OPS')">🚨 ${ar ? 'تنبيه عاجل' : 'Urgent Notice'}</button>
+          </div>
+        </div>
+
+        <form onsubmit="submitCompanyInboxMessage(event)" class="grid grid-2" style="gap:10px;">
+          <div>
+            <label style="font-weight:700;color:var(--text);">🎯 ${ar ? 'لمن ترسل الرسالة؟' : 'Send To Audience'}</label>
+            <select id="inbAudQuick" onchange="document.getElementById('inbDirectWrap').style.display=this.value==='DIRECT_USER'?'block':'none';">
+              <option value="ALL" ${curAudQuick === 'ALL' ? 'selected' : ''}>🌍 ${ar ? 'كل الموظفين والشركاء (34 حساب)' : 'Everyone — All 34 Staff & Partners'}</option>
+              <option value="ALL_SELLERS" ${curAudQuick === 'ALL_SELLERS' ? 'selected' : ''}>💼 ${ar ? 'كل مناديب المبيعات فقط (18 مندوب)' : 'All 18 Sales Representatives Only'}</option>
+              <option value="DIRECT_USER" ${curAudQuick === 'DIRECT_USER' ? 'selected' : ''}>👤 ${ar ? 'رسالة خاصة لموظف واحد بالاسم' : 'Specific Person (Private Direct Message)'}</option>
+              <option value="BRANCH:CYRENE" ${curAudQuick === 'BRANCH:CYRENE' ? 'selected' : ''}>🏨 Branch: Cyrene</option>
+              <option value="BRANCH:DREAMS_FAYROUZ" ${curAudQuick === 'BRANCH:DREAMS_FAYROUZ' ? 'selected' : ''}>🏨 Branch: Dreams &amp; Fayrouz</option>
+              <option value="BRANCH:JETTY" ${curAudQuick === 'BRANCH:JETTY' ? 'selected' : ''}>🛥️ Branch: Travco Jetty</option>
+              <option value="ROLE:OPERATIONS_MANAGER" ${curAudQuick === 'ROLE:OPERATIONS_MANAGER' ? 'selected' : ''}>🚐 Role: Operations &amp; Dispatch</option>
+              <option value="ROLE:DIVE_INSTRUCTOR" ${curAudQuick === 'ROLE:DIVE_INSTRUCTOR' ? 'selected' : ''}>🤿 Role: Dive Instructors &amp; Boat Captains</option>
+              <option value="ROLE:CASHIER_TREASURY" ${curAudQuick === 'ROLE:CASHIER_TREASURY' ? 'selected' : ''}>💵 Role: Cashiers &amp; Safe</option>
+            </select>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label style="font-weight:700;color:var(--text);">🏷️ ${ar ? 'نوع الرسالة' : 'Message Type'}</label>
+              <select id="inbMsgType">
+                <option value="CONGRATULATIONS" ${d.msg_type === 'CONGRATULATIONS' ? 'selected' : ''}>🎉 Congratulations / Award</option>
+                <option value="ANNOUNCEMENT" ${d.msg_type === 'ANNOUNCEMENT' ? 'selected' : ''}>📢 Official Announcement</option>
+                <option value="TARGET_ALERT" ${d.msg_type === 'TARGET_ALERT' ? 'selected' : ''}>🎯 Sales Target / Bonus</option>
+                <option value="POLICY_UPDATE" ${d.msg_type === 'POLICY_UPDATE' ? 'selected' : ''}>📋 Price / Policy Update</option>
+                <option value="DIRECT" ${d.msg_type === 'DIRECT' ? 'selected' : ''}>💌 Personal Note</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-weight:700;color:#fde68a;">🌟 ${ar ? 'تكريم اسم موظف (اختياري)' : 'Spotlight Star (Optional)'}</label>
+              <select id="inbSpotlightUser">
+                <option value="">— ${ar ? 'بدون تحديد' : 'None'} —</option>
+                ${dirUsers.map((u) => `<option value="${esc(u.username)}" ${d.spotlight_username === u.username ? 'selected' : ''}>${esc(ar ? (u.display_name_ar || u.display_name_en) : u.display_name_en)} (@${esc(u.username)})</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div id="inbDirectWrap" style="display:${curAudQuick === 'DIRECT_USER' ? 'block' : 'none'};grid-column:1/-1;">
+            <label style="font-weight:700;color:var(--cyan);">👤 ${ar ? 'اختر الموظف المستلم للرسالة الخاصة:' : 'Choose Direct Recipient:'}</label>
+            <select id="inbDirectUser">
+              ${dirUsers.map((u) => `<option value="${esc(u.username)}" ${d.audience_target === u.username ? 'selected' : ''}>${esc(ar ? (u.display_name_ar || u.display_name_en) : u.display_name_en)} — ${esc(u.role_code)} (@${esc(u.username)})</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label>${ar ? 'العنوان (إنجليزي أو عربي) *' : 'Headline (English or Arabic) *'}</label>
+            <input type="text" id="inbTitleEn" required value="${esc(d.title_en || '')}" placeholder="e.g. 🎉 Bravo Fady — #1 Seller Today!">
+          </div>
+          <div>
+            <label>${ar ? 'العنوان بالعربي (اختياري — يُملأ تلقائياً)' : 'Arabic Headline (Optional — auto-fills if blank)'}</label>
+            <input type="text" id="inbTitleAr" dir="rtl" value="${esc(d.title_ar || '')}" placeholder="مثال: 🎉 ألف مبروك يا فادي — نجم مبيعات اليوم!">
+          </div>
+          <div>
+            <label>${ar ? 'نص الرسالة *' : 'Message Text *'}</label>
+            <input type="text" id="inbBodyEn" required value="${esc(d.body_en || '')}" placeholder="Write a short, clear message...">
+          </div>
+          <div>
+            <label>${ar ? 'النص بالعربي (اختياري)' : 'Arabic Message (Optional)'}</label>
+            <input type="text" id="inbBodyAr" dir="rtl" value="${esc(d.body_ar || '')}" placeholder="اكتب رسالة قصيرة وواضحة للفريق...">
+          </div>
+
+          <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <label style="margin:0;display:inline-flex;align-items:center;gap:7px;color:#fde68a;font-weight:800;cursor:pointer;">
+              <input type="checkbox" id="inbPinChk" style="width:auto;" ${d.is_pinned ? 'checked' : ''}>
+              📌 ${ar ? 'تثبيت الرسالة في أعلى شاشة الموظفين' : 'Pin at Top of Staff Screens'}
+            </label>
+            <button type="submit" class="btn btn-primary" style="padding:11px 22px;font-size:14px;font-weight:900;">🚀 ${ar ? 'إرسال الرسالة الآن' : 'Send to Inbox Now'}</button>
+          </div>
+        </form>
+      </div>
+    ` : ''}
+
+    <div class="horizon-bar" style="margin-bottom:12px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${filters.map(([fk, flbl]) => `<button type="button" class="btn ${(STATE.inboxFilter || 'all') === fk ? 'btn-primary' : ''}" onclick="changeInboxFilter('${fk}')">${esc(flbl)}</button>`).join('')}
+      </div>
+      <button type="button" class="btn btn-emerald" onclick="markAllInboxRead()">✓ ${ar ? 'تعليم الكل كمقروء' : 'Mark All Read'}</button>
+    </div>
+
+    ${!msgs.length ? `
+      <div class="card" style="text-align:center;padding:28px;color:var(--muted);">
+        📭 ${ar ? 'لا توجد رسائل في هذا القسم حالياً.' : 'No messages in this filter right now.'}
+      </div>
+    ` : `
+      <div style="display:grid;gap:12px;">
+        ${msgs.map((m) => {
+          const isCeleb = m.msg_type === 'CONGRATULATIONS' || m.priority === 'CELEBRATION';
+          const isUrg = m.priority === 'URGENT';
+          const borderCol = isCeleb ? 'rgba(251,191,36,0.55)' : (isUrg ? 'rgba(244,63,94,0.55)' : (!m.is_read ? 'rgba(0,210,255,0.55)' : 'var(--border)'));
+          const bgGrad = isCeleb
+            ? 'linear-gradient(135deg,rgba(245,158,11,0.14),rgba(11,34,57,0.95))'
+            : (!m.is_read ? 'linear-gradient(135deg,rgba(0,210,255,0.13),rgba(11,34,57,0.95))' : 'rgba(11,34,57,0.92)');
+          const mTitle = ar ? (m.title_ar || m.title_en) : (m.title_en || m.title_ar);
+          const mBody = ar ? (m.body_ar || m.body_en) : (m.body_en || m.body_ar);
+          const sName = ar ? (m.sender_name_ar || m.sender_name_en) : (m.sender_name_en || m.sender_name_ar);
+          const sTitle = ar ? (m.sender_title_ar || m.sender_title_en) : (m.sender_title_en || m.sender_title_ar);
+          const sp = m.spotlight_user;
+          return `
+            <article class="card" style="border-color:${borderCol};background:${bgGrad};" onclick="if(${!m.is_read ? 'true' : 'false'})markSingleInboxRead(${Number(m.id)})">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  ${renderAvatarHtml({ display_name_en: m.sender_name_en, avatar_url: m.sender_avatar_url }, 42)}
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                      <b style="font-size:13.5px;">${esc(sName)}</b>
+                      <span class="pill" style="font-size:10.5px;">👑 ${esc(sTitle || m.sender_role_code)}</span>
+                      <span class="pill" style="background:rgba(16,185,129,0.14);color:#34d399;border-color:rgba(16,185,129,0.35);font-size:10.5px;">${esc(audBadgeLabel(m))}</span>
+                      ${m.is_pinned ? `<span class="award-medal" style="padding:2px 8px;font-size:10.5px;">📌 ${ar ? 'مثبت' : 'Pinned'}</span>` : ''}
+                      ${!m.is_read ? `<span class="notif-badge">${ar ? 'جديد' : 'NEW'}</span>` : ''}
+                    </div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">🕒 ${esc(String(m.created_at || '').slice(0, 16).replace('T', ' '))}</div>
+                  </div>
+                </div>
+                ${canPinDel ? `
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <span class="pill" title="Staff who opened this message">👁️ ${fmt(m.read_count || 0)}</span>
+                    <button type="button" class="btn" style="padding:4px 8px;font-size:11px;" onclick="event.stopPropagation();togglePinInboxMsg(${Number(m.id)})">${m.is_pinned ? 'Unpin' : '📌 Pin'}</button>
+                    <button type="button" class="btn" style="padding:4px 8px;font-size:11px;border-color:var(--rose);color:#fda4af;" onclick="event.stopPropagation();deleteInboxMsg(${Number(m.id)})">🗑️</button>
+                  </div>
+                ` : ''}
+              </div>
+
+              ${sp ? `
+                <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border-radius:12px;background:rgba(245,158,11,0.16);border:1px solid rgba(251,191,36,0.45);margin-bottom:8px;">
+                  ${renderAvatarHtml(sp, 34)}
+                  <div>
+                    <div style="font-size:11px;color:#fde68a;font-weight:800;">🌟 ${ar ? 'لوحة الشرف والتكريم' : 'Star Recognition Spotlight'}</div>
+                    <div style="font-size:13px;font-weight:900;">${esc(ar ? (sp.display_name_ar || sp.display_name_en) : sp.display_name_en)}</div>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div style="font-size:16px;font-weight:900;line-height:1.35;margin-bottom:5px;color:${isCeleb ? '#fde68a' : 'var(--text)'};">
+                ${esc(m.badge_icon || '📢')} ${esc(mTitle)}
+              </div>
+              <p style="font-size:13.5px;line-height:1.6;color:#e2e8f0;white-space:pre-line;">${esc(mBody)}</p>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:11px;padding-top:9px;border-top:1px solid rgba(148,163,184,0.14);">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                  <span style="font-size:11.5px;color:var(--muted);font-weight:700;">${ar ? 'تفاعل بلمسة:' : 'Tap to react:'}</span>
+                  ${reacts.map((em) => {
+                    const cnt = Number((m.reactions_summary && m.reactions_summary[em]) || 0);
+                    const active = m.my_reaction === em;
+                    return `<button type="button" class="react-chip ${active ? 'active' : ''}" onclick="event.stopPropagation();reactToInboxMessage(${Number(m.id)}, '${em}')">${em}${cnt > 0 ? ` <span style="font-size:11.5px;">${cnt}</span>` : ''}</button>`;
+                  }).join('')}
+                </div>
+                <div style="display:flex;gap:6px;">
+                  ${m.action_tab ? `<button type="button" class="btn btn-primary" onclick="event.stopPropagation();markSingleInboxRead(${Number(m.id)});STATE.activeTab='${esc(m.action_tab)}';renderApp();">🚀 ${ar ? 'افتح القسم' : 'Open Now'}</button>` : ''}
+                  ${!m.is_read ? `<button type="button" class="btn btn-emerald" onclick="event.stopPropagation();markSingleInboxRead(${Number(m.id)})">✓ ${ar ? 'تمت القراءة' : 'Got It'}</button>` : ''}
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    `}
+  `;
 }
 
 function renderHorizonBar(ar) {
@@ -1466,13 +2117,15 @@ function renderOwnerSellerCommandCenter(ar) {
               <th>Actual Total (EGP)</th><th>🎁 Discounts</th><th>Collected Paid</th><th>Open REST</th>
               <th>Actual Due Comm</th><th>Allowances Paid</th><th>Net Payable</th>
               ${tCfg.is_active ? '<th>Target %</th>' : ''}
-              <th>Inspect</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             ${rows.map((s) => {
               const medals = (s.awards || []).map((a) => `<span title="${esc(a.title_en)}">${esc(a.icon)}</span>`).join(' ');
               const dGrant = Number(s.discounts_granted_egp || 0);
+              const cleanEn = String(s.display_name_en || s.username).replace(/\s*\(.*?\)\s*/g, '');
+              const cleanAr = String(s.display_name_ar || '').replace(/\s*\(.*?\)\s*/g, '');
               return `
                 <tr>
                   <td class="num"><b>#${s.rank || '—'}</b></td>
@@ -1494,7 +2147,10 @@ function renderOwnerSellerCommandCenter(ar) {
                   <td class="num neg">${fmt(s.allowances_paid_egp)}</td>
                   <td class="num" style="color:var(--cyan);"><b>${fmt(s.net_payable_comm_egp)}</b></td>
                   ${tCfg.is_active ? `<td class="num"><span class="pill">${fmt(s.target_pct, 1)}%</span></td>` : ''}
-                  <td><button type="button" class="btn" onclick="STATE.walletSeller='${esc(s.username)}';STATE.sellerWallet=null;STATE.activeTab='seller_wallet';renderApp();">🔍 Wallet</button></td>
+                  <td style="display:flex;gap:5px;">
+                    <button type="button" class="btn btn-amber" style="padding:5px 8px;font-size:11px;" onclick="openQuickCongratsToSeller('${esc(s.username)}', '${esc(cleanEn)}', '${esc(cleanAr)}')">🎉 ${ar ? 'تهنئة' : 'Congrats'}</button>
+                    <button type="button" class="btn" style="padding:5px 8px;font-size:11px;" onclick="STATE.walletSeller='${esc(s.username)}';STATE.sellerWallet=null;STATE.activeTab='seller_wallet';renderApp();">🔍 Wallet</button>
+                  </td>
                 </tr>
               `;
             }).join('')}
@@ -2201,8 +2857,62 @@ function renderVouchersOps(ar) {
   const ws = STATE.ws || {};
   const list = ws.vouchers || [];
   const myStats = ws.my_sales_stats;
+  const sellerOnlyView = isSalesRepUser();
   const canAdjust = hasPerm('ops.view_manifests', 'ops.assign_boat_driver', 'jetty.scan_boarding_collect_rest', 'safe.record_tx', 'gl.view_all_ledgers', 'bi.view_executive');
   const canOpsConfirm = hasPerm('ops.view_manifests', 'ops.assign_boat_driver', 'bi.view_executive');
+
+  if (sellerOnlyView) {
+    const waitingConfirm = list.filter((v) => String(v.workflow_status || '') === 'AWAITING_SELLER_CONFIRM').length;
+    return `
+      <div class="grid grid-3" style="margin-bottom:12px;">
+        <div class="card" style="padding:12px;"><div class="kpi-label">${ar ? 'إجمالي حجوزاتي' : 'My Bookings'}</div><div class="kpi-val">${fmt(myStats ? myStats.total_vouchers : list.length)}</div></div>
+        <div class="card" style="padding:12px;"><div class="kpi-label">${ar ? 'بانتظار تأكيدي' : 'Need My Confirm'}</div><div class="kpi-val" style="color:${waitingConfirm > 0 ? '#fcd34d' : 'var(--teal)'};">${fmt(waitingConfirm)}</div></div>
+        <div class="card" style="padding:12px;"><div class="kpi-label">${ar ? 'إجمالي مبيعاتي المنفذة' : 'Completed Sales'}</div><div class="kpi-val pos">${fmt(myStats ? myStats.est_rev_egp : 0)} EGP</div></div>
+      </div>
+
+      ${!list.length ? `<div class="card" style="text-align:center;padding:24px;color:var(--muted);">🎫 ${ar ? 'لا توجد حجوزات مسجلة بعد — ابدأ الحجز من شاشة بيع رحلة!' : 'No bookings yet — tap Pitch to book your first trip!'}</div>` : `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;">
+          ${list.map((v) => {
+            const wf = String(v.workflow_status || v.boarding_status || 'CONFIRMED');
+            const adl = Number(v.adults ?? v.total_pax ?? 1);
+            const ch = Number(v.children ?? 0);
+            const inf = Number(v.infants ?? 0);
+            const totEgp = Number(v.actual_total_egp || v.gross_amount_egp || (Number(v.paid_egp_equiv || 0) + Number(v.rest_egp_equiv || 0)));
+            const paidEgp = Number(v.paid_egp_equiv || 0);
+            const restEgp = Number(v.rest_egp_equiv || 0);
+            const needsMe = wf === 'AWAITING_SELLER_CONFIRM';
+            const isDone = (v.boarding_status === 'BOARDED' || v.boarding_status === 'EXECUTED') && restEgp <= 0.5;
+            const statusHuman = needsMe
+              ? (ar ? '🔔 حجز جديد من الرابط — اضغط تأكيد!' : '🔔 New Link Booking — Tap Confirm!')
+              : (isDone ? (ar ? '✅ تمت الرحلة ومحصّلة بالكامل' : '✅ Trip Done & 100% Paid') : (ar ? '⏳ مؤكد وبانتظار التنفيذ/الباقي' : '⏳ Confirmed (Waiting Trip/Rest)'));
+            return `
+              <div class="trip-mobile-card" style="border-color:${needsMe ? '#f59e0b' : (isDone ? 'rgba(16,185,129,0.5)' : 'var(--border)')};background:${needsMe ? 'rgba(245,158,11,0.12)' : 'rgba(11,34,57,0.94)'};">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                  <span style="font-size:13px;font-weight:900;color:var(--cyan);">🎫 ${esc(v.voucher_no)}</span>
+                  <span class="pill" style="${needsMe ? 'border-color:#f59e0b;color:#fde68a;' : (isDone ? 'border-color:#10b981;color:#34d399;' : '')}">${esc(statusHuman)}</span>
+                </div>
+                <div style="font-size:15px;font-weight:900;">${esc(v.trip_name)}</div>
+                <div style="font-size:12.5px;color:#e2e8f0;">
+                  👤 <b>${esc(v.guest_name || 'Guest')}</b> • 🏨 ${esc(v.hotel_name)} ${v.room_no ? '#' + esc(v.room_no) : ''}<br>
+                  📅 ${esc(v.trip_date)} • 👨‍👩‍👧 ${adl} ${ar ? 'كبار' : 'Adults'}${ch > 0 ? ` + ${ch} ${ar ? 'أطفال' : 'Kids'}` : ''}${inf > 0 ? ` + ${inf} Free` : ''}
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid rgba(148,163,184,0.14);font-size:12.5px;">
+                  <span>💵 ${ar ? 'مدفوع:' : 'Paid:'} <b class="pos">${fmt(paidEgp)}</b> / <b>${fmt(totEgp)} EGP</b></span>
+                  <span class="${restEgp > 0.5 ? 'neg' : 'pos'}" style="font-weight:900;">${restEgp > 0.5 ? (ar ? `الباقي: ${fmt(restEgp)} ج` : `Rest: ${fmt(restEgp)} EGP`) : '✅ PAID'}</span>
+                </div>
+                ${needsMe ? `
+                  <button type="button" class="btn btn-emerald" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:900;" onclick="sellerConfirmBooking(${Number(v.id)})">
+                    ✅ ${ar ? 'تأكيد الحجز وإرساله للتشغيل الآن' : 'Confirm Booking to Reservations Now'}
+                  </button>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `}
+    `;
+  }
+
   return `
     ${myStats ? `
       <div class="grid grid-3" style="margin-bottom:14px;">
@@ -3315,12 +4025,53 @@ async function sharePitchWhatsApp(itemCode) {
 }
 
 let CURRENT_FBK_ITEM = null;
+function setFastBookQuickDate(offsetDays) {
+  const dt = new Date(Date.now() + Number(offsetDays || 0) * 86400000);
+  const iso = dt.toISOString().slice(0, 10);
+  const el = document.getElementById('fbkDate');
+  if (el) el.value = iso;
+}
+
+function stepFastBookField(elId, delta, minVal = 0, resetDeposit = true) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const nxt = Math.max(minVal, Math.min(60, Number(el.value || 0) + delta));
+  el.value = String(nxt);
+  recalcFastBookGuestTotal(resetDeposit);
+}
+
+function setFastBookQuickDeposit(mode) {
+  if (!CURRENT_FBK_ITEM) return;
+  const dCalc = getFastBookComputedDiscount();
+  const depEl = document.getElementById('fbkDepAmt');
+  if (!depEl) return;
+  if (mode === 'FULL') {
+    depEl.value = String(dCalc.netTotal);
+  } else {
+    depEl.value = String(Math.min(dCalc.netTotal, Math.max(0, Number(mode || 0))));
+  }
+  recalcFastBookRestFromDeposit();
+}
+
 function setFastBookPresetDiscount(dType, dVal) {
   const tEl = document.getElementById('fbkDiscType');
   const vEl = document.getElementById('fbkDiscVal');
   if (tEl) tEl.value = dType;
   if (vEl) vEl.value = String(dVal);
   recalcFastBookGuestTotal(true);
+}
+
+function stepPitchPax(kind, delta) {
+  if (kind === 'adl') STATE.pitchPax = Math.max(1, Math.min(40, Number(STATE.pitchPax || 2) + delta));
+  if (kind === 'ch') STATE.pitchChildren = Math.max(0, Math.min(30, Number(STATE.pitchChildren || 0) + delta));
+  if (kind === 'inf') STATE.pitchInfants = Math.max(0, Math.min(15, Number(STATE.pitchInfants || 0) + delta));
+  renderApp();
+}
+
+function selectQuickPitchHotel(hName, pickWin) {
+  STATE.pitchHotel = hName;
+  if (pickWin) STATE.pitchPickup = pickWin;
+  renderApp();
 }
 
 function openFastBookModal(itemCode) {
@@ -3424,15 +4175,24 @@ async function submitFastBookForm(e) {
   try {
     const dCalc = getFastBookComputedDiscount();
     const cur = document.getElementById('fbkDepCur').value || 'EUR';
+    const guestName = document.getElementById('fbkGuest').value.trim();
+    const guestPhone = document.getElementById('fbkPhone').value.trim();
+    const tripDate = document.getElementById('fbkDate').value;
+    const hotelName = document.getElementById('fbkHotel').value;
+    const roomNo = document.getElementById('fbkRoom').value.trim();
+    const pickWin = document.getElementById('fbkPick').value.trim();
+    const depNow = Number(document.getElementById('fbkDepAmt').value || 0);
+    const restLater = Number(document.getElementById('fbkRestAmt').value || 0);
+    const restCurr = document.getElementById('fbkRestCur').value;
     const res = await apiPost({
       action: 'create_voucher',
-      guest_name: document.getElementById('fbkGuest').value.trim(),
-      guest_phone: document.getElementById('fbkPhone').value.trim(),
-      trip_date: document.getElementById('fbkDate').value,
+      guest_name: guestName,
+      guest_phone: guestPhone,
+      trip_date: tripDate,
       nationality: document.getElementById('fbkNat').value.trim(),
-      hotel_name: document.getElementById('fbkHotel').value,
-      room_no: document.getElementById('fbkRoom').value.trim(),
-      pickup_time: document.getElementById('fbkPick').value.trim(),
+      hotel_name: hotelName,
+      room_no: roomNo,
+      pickup_time: pickWin,
       product_code: document.getElementById('fbkProdCode').value,
       adults: Number(document.getElementById('fbkAdl').value || 1),
       children: Number(document.getElementById('fbkCh').value || 0),
@@ -3441,10 +4201,10 @@ async function submitFastBookForm(e) {
       discount_value: dCalc.appliedVal,
       discount_currency: cur,
       discount_reason: document.getElementById('fbkDiscReason') ? document.getElementById('fbkDiscReason').value.trim() : '',
-      deposit_amount: Number(document.getElementById('fbkDepAmt').value || 0),
+      deposit_amount: depNow,
       deposit_currency: cur,
-      rest_amount: Number(document.getElementById('fbkRestAmt').value || 0),
-      rest_currency: document.getElementById('fbkRestCur').value
+      rest_amount: restLater,
+      rest_currency: restCurr
     });
     if (!res.ok) {
       alert(res.error || 'Could not create voucher');
@@ -3454,12 +4214,20 @@ async function submitFastBookForm(e) {
     const qrSvg = (window.SCQR && typeof window.SCQR.toSvg === 'function')
       ? `<div class="qr-box" style="margin:8px auto;">${window.SCQR.toSvg(String(res.qr_token || res.voucher_no), { size: 150 })}</div>`
       : '';
+    const waDigitsGuest = waDigits(guestPhone);
+    const passMsg = `🌊 *Sea College Sharm El Sheikh — Official Boarding Voucher*\n`
+      + `🎫 Voucher: *${res.voucher_no}* (${res.qr_token})\n`
+      + `✨ Trip: *${(CURRENT_FBK_ITEM && (CURRENT_FBK_ITEM.name || CURRENT_FBK_ITEM.name_en)) || 'Sharm Trip'}*\n`
+      + `📅 Date: *${tripDate}* • 🚐 Pickup: *${pickWin}* (${hotelName}${roomNo ? ' #' + roomNo : ''})\n`
+      + `💵 Paid Deposit: *${fmt(depNow, 1)} ${cur}* • Balance at Pickup: *${fmt(restLater, 1)} ${restCurr}*`;
+    const waHref = `https://wa.me/${waDigitsGuest.length >= 8 ? waDigitsGuest : ''}?text=${encodeURIComponent(passMsg)}`;
     rBox.style.display = 'block';
     rBox.innerHTML = `
       <div style="font-size:15px;font-weight:900;color:var(--teal);">✅ Booking Confirmed — Voucher ${esc(res.voucher_no)}</div>
-      <div style="font-size:12px;margin-top:4px;">Pickup Window: <b>${esc(document.getElementById('fbkPick').value)}</b> • Guests: <b>${Number(res.adults || 1)} Adults${Number(res.children || 0) > 0 ? ` + ${res.children} Kids` : ''}${Number(res.infants || 0) > 0 ? ` + ${res.infants} Infants` : ''}</b>${Number(res.discount_egp || 0) > 0 ? ` • <span style="color:#fcd34d;">🎁 Special Discount Applied</span>` : ''}</div>
+      <div style="font-size:12px;margin-top:4px;">Pickup Window: <b>${esc(pickWin)}</b> • Guests: <b>${Number(res.adults || 1)} Adults${Number(res.children || 0) > 0 ? ` + ${res.children} Kids` : ''}${Number(res.infants || 0) > 0 ? ` + ${res.infants} Infants` : ''}</b>${Number(res.discount_egp || 0) > 0 ? ` • <span style="color:#fcd34d;">🎁 Special Discount Applied</span>` : ''}</div>
       ${qrSvg}
-      <div style="font-size:11px;color:var(--muted);">Digital Boarding Pass: ${esc(res.qr_token)}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Digital Boarding Pass: ${esc(res.qr_token)}</div>
+      <a href="${esc(waHref)}" target="_blank" rel="noopener" class="btn btn-emerald" style="justify-content:center;padding:10px 16px;font-size:13.5px;font-weight:900;">💬 Send Boarding Pass on WhatsApp</a>
     `;
     showToast(`✅ Booking ${res.voucher_no} Confirmed!`);
     STATE.sellerWallet = null;
@@ -3469,7 +4237,7 @@ async function submitFastBookForm(e) {
     apiGet({ action: 'role_workspace' }).then((w) => { if (w && w.ok) STATE.ws = w; });
   } finally {
     btn.disabled = false;
-    btn.textContent = '🎫 Confirm Guest Booking & Issue QR Pass';
+    btn.textContent = '🎫 تأكيد الحجز وإصدار الباركود • Confirm Booking';
   }
 }
 
@@ -3481,7 +4249,6 @@ function setPitchDiscount(dType, dVal) {
 
 function renderSellerPitchTab(ar) {
   const cat = STATE.sellerCatalog || {};
-  const fx = cat.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
   const hotels = cat.hotels || [];
   const langs = cat.languages || ['en', 'ru', 'it', 'pl', 'de', 'fr', 'ar', 'zh'];
   const langLabels = { en: '🇬🇧 EN', ru: '🇷🇺 RU', it: '🇮🇹 IT', pl: '🇵🇱 PL', de: '🇩🇪 DE', fr: '🇫🇷 FR', ar: '🇪🇬 AR', zh: '🇨🇳 ZH' };
@@ -3492,18 +4259,18 @@ function renderSellerPitchTab(ar) {
 
   const combined = getUnifiedPitchItems(cat);
 
-  const catChips = [
-    ['ALL', ar ? `🌟 كل الرحلات (${combined.length})` : `🌟 All Trips (${combined.length})`],
-    ['snorkeling', ar ? '🏝️ مراكب، الجزيرة البيضاء وتيران' : '🏝️ Boat, White Island & Tiran'],
-    ['intro-diving', ar ? '🤿 غطس تجريبي للمبتدئين' : '🤿 Intro Diving'],
-    ['daily-diving', ar ? '🚤 غطس يومي للمحترفين' : '🚤 Certified Boat Dives'],
-    ['padi-courses', ar ? '🎓 كورسات PADI' : '🎓 PADI Courses'],
-    ['desert-safari', ar ? '🏜️ سفاري بيتش باجي، جمال وعشاء بدوي' : '🏜️ Quad Safari, Camel & Bedouin'],
-    ['cairo-luxor', ar ? '✈️ القاهرة والأقصر (طيران / باص)' : '✈️ Cairo & Luxor (Plane / Bus)'],
-    ['sinai-dahab', ar ? '⛰️ سانت كاترين وجبل موسى ودهب' : '⛰️ St. Catherine, Moses & Dahab'],
-    ['marine-family', ar ? '🐬 دولفين، غواصة، جلاس بوت وعشاء' : '🐬 Dolphin, Submarine & Dinner'],
-    ['watersports', ar ? '🪂 براشوت وألعاب مائية' : '🪂 Parasailing & Watersports'],
-    ['equipment', ar ? '🤿 معدات وتأمين الغوص' : '🤿 Dive Gear & Insurance']
+  const catTiles = [
+    ['ALL', '🌟', ar ? `الكل (${combined.length})` : `All (${combined.length})`],
+    ['snorkeling', '🏝️', ar ? 'مراكب ووايت' : 'Boat & White'],
+    ['desert-safari', '🏜️', ar ? 'سفاري وباجي' : 'Quad Safari'],
+    ['intro-diving', '🤿', ar ? 'غطس مبتدئ' : 'Intro Dive'],
+    ['cairo-luxor', '✈️', ar ? 'القاهرة والأقصر' : 'Cairo & Luxor'],
+    ['sinai-dahab', '⛰️', ar ? 'كاترين ودهب' : 'Moses & Dahab'],
+    ['marine-family', '🐬', ar ? 'دولفين وغواصة' : 'Dolphin & Sub'],
+    ['watersports', '🪂', ar ? 'ألعاب مائية' : 'Watersports'],
+    ['daily-diving', '🚤', ar ? 'غطس محترفين' : 'Pro Dives'],
+    ['padi-courses', '🎓', ar ? 'كورسات PADI' : 'PADI Courses'],
+    ['equipment', '🤿', ar ? 'معدات الغوص' : 'Dive Gear']
   ];
 
   const qLow = String(STATE.pitchQuery || '').trim().toLowerCase();
@@ -3521,95 +4288,109 @@ function renderSellerPitchTab(ar) {
   const chCount = Math.max(0, Number(STATE.pitchChildren || 0));
   const infCount = Math.max(0, Number(STATE.pitchInfants || 0));
 
+  const quickHotels = hotels.filter((h) => /cyrene|dreams|fayrouz|jaz|sunrise|rixos/i.test(String(h.name || ''))).slice(0, 5);
+  const hQueryLow = String(STATE.pitchHotelSearch || '').trim().toLowerCase();
+  const visibleHotels = hQueryLow
+    ? hotels.filter((h) => String(h.name || '').toLowerCase().includes(hQueryLow))
+    : hotels;
+
   return `
-    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(0,210,255,0.15),rgba(16,185,129,0.1));">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-        <div>
-          <h2 style="font-size:18px;">🌊 ${ar ? 'كتالوج رحلات شرم الشيخ والبحر الأحمر — عرض تفاعلي للضيف' : 'Sharm El Sheikh Diving, Boat & Safari Concierge Showcase'}</h2>
-          <p style="font-size:12px;color:var(--muted);">
-            ${ar ? 'مصمم للتابلت والموبايل أمام الضيف مباشرةً — صور حقيقية، فيديوهات، مواعيد التحرك من الفندق، وحجز فوري بالعربون أو كامل المبلغ.' : 'Guest-friendly tablet showcase in 8 languages & 4 currencies — crisp photos, hotel pickup times, and instant deposit or full booking.'}
-          </p>
+    <!-- ZERO-SCROLL COMPACT CONCIERGE BAR (Trips Appear Immediately Above the Fold!) -->
+    <div class="card" style="padding:11px 13px;margin-bottom:10px;background:linear-gradient(135deg,rgba(0,210,255,0.14),rgba(16,185,129,0.09));">
+      <!-- Row 1: Guest Language Flags + Currency + 1-Tap WhatsApp Brochure -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <div class="seg-group" style="gap:2px;">
+          ${langs.map((lg) => `<button type="button" class="seg-btn ${STATE.pitchLang === lg ? 'active' : ''}" style="padding:5px 8px;font-size:11.5px;" onclick="changePitchLang('${esc(lg)}')">${langLabels[lg] || esc(lg.toUpperCase())}</button>`).join('')}
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;">
-          <button type="button" class="btn btn-emerald" onclick="shareNativeOrCopy('${esc(brochureUrl)}', 'Sea College Sharm Trips')">📲 ${ar ? 'إرسال رابط كل الرحلات للعميل' : 'Send Full Brochure Link'} (/s/${esc(slug)})</button>
-          <a class="btn" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Boat, Diving, Safari & Cairo Trips and confirm your booking anytime with me: ' + brochureUrl)}" target="_blank" rel="noopener">💬 WhatsApp Brochure</a>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <div class="seg-group">
+            ${['EUR', 'USD', 'GBP', 'EGP'].map((c) => `<button type="button" class="seg-btn ${STATE.pitchCurr === c ? 'active' : ''}" style="padding:5px 9px;font-size:11.5px;" onclick="STATE.pitchCurr='${c}';renderApp();">${c}</button>`).join('')}
+          </div>
+          <a class="btn btn-emerald" style="padding:6px 11px;" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Boat, Diving, Safari & Cairo Trips and confirm your booking anytime with me: ' + brochureUrl)}" target="_blank" rel="noopener">💬 ${ar ? 'إرسال الكتالوج واتساب' : 'WhatsApp All Trips'}</a>
         </div>
       </div>
 
-      <div class="grid grid-3" style="gap:10px;margin-bottom:12px;">
-        <div>
-          <label>🌍 ${ar ? 'لغة الضيف (8 لغات)' : 'Guest Language (8 Languages)'}</label>
-          <div class="seg-group" style="width:100%;justify-content:space-between;">
-            ${langs.map((lg) => `<button type="button" class="seg-btn ${STATE.pitchLang === lg ? 'active' : ''}" style="padding:5px 7px;font-size:11px;" onclick="changePitchLang('${esc(lg)}')">${langLabels[lg] || esc(lg.toUpperCase())}</button>`).join('')}
+      <!-- Row 2: 1-Tap Summary Pills + Special Discount Presets + Expandable Hotel/Guest Touch Drawer -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn ${STATE.pitchDrawerOpen ? 'btn-primary' : ''}" style="padding:6px 11px;font-size:12px;" onclick="STATE.pitchDrawerOpen=!STATE.pitchDrawerOpen;renderApp();">
+            🏨 ${esc(selectedHotelObj.name)} (🕒 ${esc(STATE.pitchPickup)}) • 👨‍👩‍👧 ${adlCount}A${chCount > 0 ? `+${chCount}C` : ''}${infCount > 0 ? `+${infCount}I` : ''} ▾
+          </button>
+          <div class="stepper-wrap">
+            <button type="button" class="stepper-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepPitchPax('adl', -1)">−</button>
+            <span style="font-size:12px;font-weight:900;padding:0 4px;">👤 ${adlCount}</span>
+            <button type="button" class="stepper-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepPitchPax('adl', 1)">+</button>
+          </div>
+          <div class="stepper-wrap">
+            <button type="button" class="stepper-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepPitchPax('ch', -1)">−</button>
+            <span style="font-size:12px;font-weight:900;padding:0 4px;">🧒 ${chCount}</span>
+            <button type="button" class="stepper-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepPitchPax('ch', 1)">+</button>
           </div>
         </div>
 
-        <div>
-          <label>💱 ${ar ? 'عملة العرض للضيف' : 'Guest Display Currency'}</label>
-          <div class="seg-group" style="width:100%;">
-            ${['EUR', 'USD', 'GBP', 'EGP'].map((c) => `<button type="button" class="seg-btn ${STATE.pitchCurr === c ? 'active' : ''}" style="flex:1;" onclick="STATE.pitchCurr='${c}';renderApp();">${c}</button>`).join('')}
+        ${discPol.is_enabled ? `
+          <div id="pitchSpecialDiscountBar" style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+            <span style="font-size:11.5px;font-weight:800;color:#fde68a;">🎁 ${ar ? 'خصم سريع:' : 'Offer:'}</span>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'NONE' ? 'btn-primary' : ''}" style="padding:4px 9px;font-size:11.5px;" onclick="setPitchDiscount('NONE', 0)">${ar ? 'عادي' : '0%'}</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 5 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11.5px;" onclick="setPitchDiscount('PERCENT', 5)">🎁 -5%</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 10 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11.5px;" onclick="setPitchDiscount('PERCENT', 10)">🎁 -10%</button>
+            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 15 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11.5px;" onclick="setPitchDiscount('PERCENT', 15)">🎁 -15%</button>
           </div>
-        </div>
-
-        <div>
-          <label>🚐 ${ar ? 'فندق الإقامة وموعد الباص (72 فندق)' : 'Guest Hotel & Pickup Window (72 Resorts)'}</label>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <select onchange="STATE.pitchHotel=this.value;const o=this.selectedOptions[0];if(o&&o.dataset.pick)STATE.pitchPickup=o.dataset.pick;renderApp();">
-              ${hotels.map((h) => `<option value="${esc(h.name)}" data-pick="${esc(h.pickup_window)}" ${h.name === selectedHotelObj.name ? 'selected' : ''}>${esc(h.name)}</option>`).join('')}
-            </select>
-            <span class="pill" style="white-space:nowrap;padding:7px 10px;">🕒 ${esc(STATE.pitchPickup)}</span>
-          </div>
-        </div>
+        ` : ''}
       </div>
 
-      <!-- Guest-Safe Family / Group Calculator Bar -->
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;background:rgba(6,21,38,0.78);border:1px solid var(--border);">
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:12px;font-weight:800;color:var(--cyan);">👨‍👩‍👧 ${ar ? 'عدد الضيوف لحساب إجمالي الرحلة:' : 'Guest Group Calculator:'}</span>
-          <label style="margin:0;display:inline-flex;align-items:center;gap:5px;color:var(--text);">👤 Adults:
-            <input type="number" min="1" max="40" value="${adlCount}" style="width:62px;padding:5px;" oninput="STATE.pitchPax=Math.max(1,Number(this.value||1));renderApp();">
-          </label>
-          <label style="margin:0;display:inline-flex;align-items:center;gap:5px;color:var(--text);">🧒 Kids (3–11):
-            <input type="number" min="0" max="30" value="${chCount}" style="width:62px;padding:5px;" oninput="STATE.pitchChildren=Math.max(0,Number(this.value||0));renderApp();">
-          </label>
-          <label style="margin:0;display:inline-flex;align-items:center;gap:5px;color:var(--teal);">👶 Infants (&lt;3 FREE):
-            <input type="number" min="0" max="15" value="${infCount}" style="width:58px;padding:5px;" oninput="STATE.pitchInfants=Math.max(0,Number(this.value||0));renderApp();">
-          </label>
-        </div>
-        <div style="font-size:12px;color:#cbd5e1;">
-          ✅ <b>Book with Deposit Now</b> &amp; pay remaining balance easily at hotel pickup!
-        </div>
-      </div>
+      ${STATE.pitchDrawerOpen ? `
+        <div style="margin-top:10px;padding:11px;border-radius:12px;background:rgba(6,21,38,0.88);border:1px solid var(--border);display:grid;gap:10px;">
+          <div>
+            <label style="font-weight:800;color:var(--cyan);">🏨 ${ar ? 'اختر الفندق بلمسة أو من القائمة (72 فندق):' : 'Quick Select Hotel & Pickup Window (72 Resorts):'}</label>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;">
+              ${quickHotels.map((qh) => `<button type="button" class="btn ${qh.name === selectedHotelObj.name ? 'btn-primary' : ''}" style="padding:4px 9px;font-size:11px;" onclick="selectQuickPitchHotel('${esc(qh.name)}', '${esc(qh.pickup_window)}')">🏨 ${esc(qh.name)} (${esc(qh.pickup_window)})</button>`).join('')}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:7px;">
+              <input type="search" placeholder="${ar ? 'ابحث باسم الفندق...' : 'Filter hotel name...'}" value="${esc(STATE.pitchHotelSearch || '')}" oninput="STATE.pitchHotelSearch=this.value;renderApp();">
+              <select onchange="STATE.pitchHotel=this.value;const o=this.selectedOptions[0];if(o&&o.dataset.pick)STATE.pitchPickup=o.dataset.pick;renderApp();">
+                ${(visibleHotels.length ? visibleHotels : hotels).map((h) => `<option value="${esc(h.name)}" data-pick="${esc(h.pickup_window)}" ${h.name === selectedHotelObj.name ? 'selected' : ''}>${esc(h.name)} (${esc(h.pickup_window)})</option>`).join('')}
+              </select>
+            </div>
+          </div>
 
-      ${discPol.is_enabled ? `
-        <div id="pitchSpecialDiscountBar" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:11px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.34);">
-          <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
-            <span style="font-size:12px;font-weight:800;color:#fde68a;">🎁 ${ar ? 'خصم خاص للضيف (% أو مبلغ):' : 'Special Guest Discount:'}</span>
-            <select style="width:auto;padding:5px 8px;" onchange="STATE.pitchDiscType=this.value;if(this.value==='NONE')STATE.pitchDiscVal=0;else if(!STATE.pitchDiscVal)STATE.pitchDiscVal=10;renderApp();">
-              <option value="NONE" ${STATE.pitchDiscType === 'NONE' ? 'selected' : ''}>${ar ? 'بدون خصم' : 'Standard Price'}</option>
-              <option value="PERCENT" ${STATE.pitchDiscType === 'PERCENT' ? 'selected' : ''}>${ar ? 'نسبة مئوية (%)' : 'Percentage (%)'}</option>
-              <option value="AMOUNT" ${STATE.pitchDiscType === 'AMOUNT' ? 'selected' : ''}>${ar ? `مبلغ ثابت (${STATE.pitchCurr})` : `Fixed Amount (${STATE.pitchCurr})`}</option>
-            </select>
-            ${STATE.pitchDiscType !== 'NONE' ? `
-              <input type="number" step="0.5" min="0" value="${Number(STATE.pitchDiscVal || 0)}" style="width:82px;padding:5px;" onchange="STATE.pitchDiscVal=Math.max(0,Number(this.value||0));renderApp();">
-              <span style="font-size:11.5px;color:#fde68a;font-weight:800;">${STATE.pitchDiscType === 'PERCENT' ? `% (Max ${discPol.max_discount_pct}%)` : esc(STATE.pitchCurr)}</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:12px;font-weight:800;color:var(--teal);">👶 ${ar ? 'رضع تحت 3 سنوات (مجاناً):' : 'Infants <3 yrs (FREE):'}</span>
+              <div class="stepper-wrap">
+                <button type="button" class="stepper-btn" style="width:32px;height:32px;" onclick="stepPitchPax('inf', -1)">−</button>
+                <span style="font-size:13px;font-weight:900;padding:0 6px;">${infCount}</span>
+                <button type="button" class="stepper-btn" style="width:32px;height:32px;" onclick="stepPitchPax('inf', 1)">+</button>
+              </div>
+            </div>
+
+            ${discPol.is_enabled ? `
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                <span style="font-size:11.5px;color:#fde68a;font-weight:800;">🎁 ${ar ? 'خصم مخصص (% أو مبلغ):' : 'Custom Discount:'}</span>
+                <select style="width:auto;padding:5px 8px;" onchange="STATE.pitchDiscType=this.value;if(this.value==='NONE')STATE.pitchDiscVal=0;else if(!STATE.pitchDiscVal)STATE.pitchDiscVal=10;renderApp();">
+                  <option value="NONE" ${STATE.pitchDiscType === 'NONE' ? 'selected' : ''}>Standard</option>
+                  <option value="PERCENT" ${STATE.pitchDiscType === 'PERCENT' ? 'selected' : ''}>% (Max ${discPol.max_discount_pct}%)</option>
+                  <option value="AMOUNT" ${STATE.pitchDiscType === 'AMOUNT' ? 'selected' : ''}>Fixed (${esc(STATE.pitchCurr)})</option>
+                </select>
+                ${STATE.pitchDiscType !== 'NONE' ? `<input type="number" step="0.5" min="0" value="${Number(STATE.pitchDiscVal || 0)}" style="width:80px;padding:5px;" onchange="STATE.pitchDiscVal=Math.max(0,Number(this.value||0));renderApp();">` : ''}
+              </div>
             ` : ''}
-          </div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;">
-            <button type="button" class="btn ${STATE.pitchDiscType === 'NONE' ? 'btn-primary' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('NONE', 0)">Standard</button>
-            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 5 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 5)">🎁 -5%</button>
-            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 10 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 10)">🎁 -10%</button>
-            <button type="button" class="btn ${STATE.pitchDiscType === 'PERCENT' && Number(STATE.pitchDiscVal) === 15 ? 'btn-amber' : ''}" style="padding:4px 9px;font-size:11px;" onclick="setPitchDiscount('PERCENT', 15)">🎁 -15%</button>
           </div>
         </div>
       ` : ''}
     </div>
 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        ${catChips.map(([ck, cl]) => `<button type="button" class="btn ${STATE.pitchCat === ck ? 'btn-primary' : ''}" onclick="STATE.pitchCat='${ck}';renderApp();">${esc(cl)}</button>`).join('')}
+    <!-- Single-Row Swipeable Big Visual Category Tiles + Instant Search -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+      <div class="easy-cat-strip" style="flex:1;min-width:240px;">
+        ${catTiles.map(([ck, ico, cl]) => `
+          <button type="button" class="easy-cat-tile ${STATE.pitchCat === ck ? 'active' : ''}" onclick="STATE.pitchCat='${ck}';renderApp();">
+            <span class="ico">${ico}</span>
+            <span>${esc(cl)}</span>
+          </button>
+        `).join('')}
       </div>
-      <input type="search" style="max-width:290px;" placeholder="${ar ? 'ابحث: وايت أيلاند، سفاري، سانت كاترين، القاهرة، دولفين...' : 'Search White Island, Quad Safari, Cairo, Moses, Dolphin...'}" value="${esc(STATE.pitchQuery)}" oninput="STATE.pitchQuery=this.value;renderApp();">
+      <input type="search" style="max-width:240px;padding:9px 11px;" placeholder="${ar ? '🔍 ابحث سريعاً: وايت، سفاري، القاهرة...' : '🔍 Quick search trip...'}" value="${esc(STATE.pitchQuery)}" oninput="STATE.pitchQuery=this.value;renderApp();">
     </div>
 
     <div class="pitch-grid">
@@ -3634,9 +4415,9 @@ function renderSellerPitchTab(ar) {
                 <span class="pitch-cat-tag">${esc(it.category_label || 'Sharm Experience')}</span>
                 <span class="pitch-price-tag">${esc(unitCurrTxt)}</span>
               </div>
-              <div style="padding:13px;">
-                <div style="font-size:15px;font-weight:800;line-height:1.3;">${esc(it.name || it.name_en)}</div>
-                <p style="font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45;">${esc(String(it.summary || '').slice(0, 145))}</p>
+              <div style="padding:12px 13px;">
+                <div style="font-size:15.5px;font-weight:900;line-height:1.3;">${esc(it.name || it.name_en)}</div>
+                <p style="font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.42;">${esc(String(it.summary || '').slice(0, 120))}</p>
 
                 <div class="info-badges">
                   ${isGear ? `
@@ -3656,25 +4437,25 @@ function renderSellerPitchTab(ar) {
                   `}
                 </div>
 
-                <details style="margin-top:8px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);padding:7px 9px;">
-                  <summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--cyan);">🎬 Watch Experience Video Preview</summary>
+                <details style="margin-top:6px;border-radius:9px;background:rgba(6,21,38,0.72);border:1px solid var(--border);padding:6px 9px;">
+                  <summary style="cursor:pointer;font-size:11.5px;font-weight:800;color:var(--cyan);">🎬 ${ar ? 'شاهد فيديو الرحلة' : 'Watch Video Preview'}</summary>
                   <video controls preload="none" playsinline poster="${esc(vidPoster)}" src="${esc(vidSrc)}" style="width:100%;max-height:240px;border-radius:8px;margin-top:8px;background:#000;"></video>
                 </details>
               </div>
             </div>
 
             <div style="padding:10px 13px 13px;border-top:1px solid rgba(148,163,184,0.14);background:rgba(6,21,38,0.5);">
-              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:8px;gap:6px;flex-wrap:wrap;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:8px;gap:6px;flex-wrap:wrap;">
                 <span>${isGear ? `Total (${adlCount} ${adlCount === 1 ? 'Diver' : 'Divers'}):` : `Group (${adlCount}A${chCount > 0 ? `+${chCount}C` : ''}${infCount > 0 ? `+${infCount}I` : ''}):`}</span>
                 ${dCalc.discInCurr > 0
-                  ? `<span><s style="opacity:0.65;font-size:11.5px;margin-right:4px;">${esc(listGroupTxt)}</s><b style="font-size:14px;color:#34d399;">${esc(netGroupTxt)}</b> <span style="font-size:11px;color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)})</span></span>`
-                  : `<b style="font-size:14px;color:var(--cyan);">${esc(netGroupTxt)}</b>`
+                  ? `<span><s style="opacity:0.65;font-size:11.5px;margin-right:4px;">${esc(listGroupTxt)}</s><b style="font-size:15px;color:#34d399;">${esc(netGroupTxt)}</b> <span style="font-size:11px;color:#fcd34d;font-weight:800;">(${esc(dCalc.badge)})</span></span>`
+                  : `<b style="font-size:15px;color:var(--cyan);">${esc(netGroupTxt)}</b>`
                 }
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button type="button" class="btn btn-primary" style="flex:1.3;justify-content:center;" onclick="openFastBookModal('${esc(code)}')">⚡ Book Now</button>
-                <button type="button" class="btn" onclick="openProductQrModal('${esc(code)}')">📱 QR / Social</button>
-                <button type="button" class="btn btn-emerald" onclick="sharePitchWhatsApp('${esc(code)}')">💬 WhatsApp</button>
+                <button type="button" class="btn btn-primary" style="flex:1.5;justify-content:center;padding:10px 12px;font-size:13.5px;font-weight:900;" onclick="openFastBookModal('${esc(code)}')">⚡ ${ar ? 'احجز الآن' : 'Book Now'}</button>
+                <button type="button" class="btn" style="padding:10px 11px;" onclick="openProductQrModal('${esc(code)}')">📱 QR</button>
+                <button type="button" class="btn btn-emerald" style="padding:10px 11px;" onclick="sharePitchWhatsApp('${esc(code)}')">💬 ${ar ? 'واتساب' : 'WhatsApp'}</button>
               </div>
             </div>
           </article>
@@ -3792,7 +4573,7 @@ function renderSellerWalletTab(ar) {
   const qrTargetUrl = STATE.walletPromoUrl || qrUrl;
   const locUrls = prof.localized_brochure_urls || prof.localized_urls || { en: baseBrochureUrl };
   const svgQr = (window.SCQR && typeof window.SCQR.toSvg === 'function')
-    ? window.SCQR.toSvg(qrTargetUrl, { size: 204 })
+    ? window.SCQR.toSvg(qrTargetUrl, { size: 196 })
     : `<div style="color:#041322;padding:14px;font-weight:800;">${esc(qrTargetUrl)}</div>`;
 
   const expParams = new URLSearchParams({
@@ -3809,37 +4590,73 @@ function renderSellerWalletTab(ar) {
   const settledAndAllowances = Number(brk.settled_and_allowances_egp ?? Number(k.payroll_deductions_egp || 0));
   const netDueNow = Number(brk.net_due_now_egp ?? Math.max(0, actualDueComm - settledAndAllowances));
   const waitingRestOrTrip = Number(brk.waiting_rest_or_trip_comm_egp ?? Number(k.pending_commission_egp || 0));
+  const urgentConfirms = myTrips.filter((t) => String(t.workflow_status || '') === 'AWAITING_SELLER_CONFIRM');
 
   return `
-    <div class="horizon-bar" style="margin-bottom:14px;">
+    ${urgentConfirms.length ? `
+      <div class="card" style="margin-bottom:12px;border-color:#f59e0b;background:rgba(245,158,11,0.14);">
+        <div style="font-size:14px;font-weight:900;color:#fde68a;margin-bottom:8px;">🔔 ${ar ? `لديك (${urgentConfirms.length}) حجز جديد من الرابط يحتاج ضغطة تأكيد الآن!` : `${urgentConfirms.length} New Client Link Booking(s) Need Your 1-Tap Confirm!`}</div>
+        <div style="display:grid;gap:8px;">
+          ${urgentConfirms.map((ut) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 11px;border-radius:10px;background:rgba(6,21,38,0.8);border:1px solid var(--border);">
+              <div><b>${esc(ut.voucher_no)}</b> • ${esc(ut.guest_name)} — ${esc(ut.trip_name)} (${esc(ut.trip_date)})</div>
+              <button type="button" class="btn btn-emerald" style="padding:8px 14px;font-size:13px;font-weight:900;" onclick="sellerConfirmBooking(${Number(ut.id)})">✅ ${ar ? 'تأكيد الحجز الآن' : 'Confirm Now'}</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    <div class="horizon-bar" style="margin-bottom:12px;">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <span style="font-weight:800;color:var(--cyan);">🏆 ${ar ? 'حسابي الخاص، باركود QR، عمولاتي الفعلية والجوائز' : 'My Private Account, Shareable QR, Actual Commissions & Awards'}</span>
+        <span style="font-weight:900;color:var(--cyan);">💰 ${ar ? 'عمولتي وباركود QR والجوائز' : 'My Cash Wallet, QR & Awards'}</span>
         ${allSellers.length ? `
           <select style="width:auto;" onchange="changeWalletFilter(null, this.value)">
             ${allSellers.map((s) => `<option value="${esc(s.username)}" ${s.username === prof.username ? 'selected' : ''}>${esc(s.display_name_en)} (@${esc(s.username)} • ${esc(s.branch_scope)})</option>`).join('')}
           </select>
         ` : ''}
         <select style="width:auto;" onchange="changeWalletFilter(this.value, null)">
-          ${monthsOpts.map((m) => `<option value="${esc(m)}" ${(w.month || STATE.walletMonth) === m ? 'selected' : ''}>${m === 'ALL' ? (ar ? 'كل الشهور (تراكمي)' : 'All Months (Cumulative)') : esc(m)}</option>`).join('')}
+          ${monthsOpts.map((m) => `<option value="${esc(m)}" ${(w.month || STATE.walletMonth) === m ? 'selected' : ''}>${m === 'ALL' ? (ar ? 'كل الشهور' : 'All Months') : esc(m)}</option>`).join('')}
         </select>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button type="button" class="btn btn-amber" onclick="openAllowanceModal()">💸 ${ar ? 'طلب سلفة / دفعة عمولة خلال الشهر' : 'Request Mid-Month Allowance'}</button>
-        <a class="btn btn-emerald" href="${esc(walletExportHref)}">⬇ Export Commissions (.xlsx)</a>
+        <button type="button" class="btn btn-amber" style="padding:9px 14px;font-weight:900;" onclick="openAllowanceModal()">💸 ${ar ? 'اطلب سلفة / دفعة عمولة' : 'Request Cash Allowance'}</button>
+        <a class="btn btn-emerald" href="${esc(walletExportHref)}">⬇ .xlsx</a>
+      </div>
+    </div>
+
+    <!-- 3 GIANT COLOR-CODED PLAIN-LANGUAGE MONEY CARDS (Zero Accounting Jargon!) -->
+    <div class="grid grid-3" style="margin-bottom:12px;">
+      <div class="card" style="border-color:rgba(16,185,129,0.55);background:linear-gradient(135deg,rgba(16,185,129,0.16),rgba(11,34,57,0.95));">
+        <div class="kpi-label" style="color:#6ee7b7;font-weight:800;">🟢 ${ar ? 'جاهز للصرف الآن (بعد السلف)' : 'Ready Cash to Take Now'}</div>
+        <div class="kpi-val pos" style="font-size:26px;">${fmt(netDueNow)} <span style="font-size:12px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">${ar ? `السلف المسحوبة: ${fmt(settledAndAllowances)} ج` : `Past Allowances Taken: ${fmt(settledAndAllowances)} EGP`}</div>
+      </div>
+
+      <div class="card" style="border-color:rgba(245,158,11,0.5);background:linear-gradient(135deg,rgba(245,158,11,0.13),rgba(11,34,57,0.95));">
+        <div class="kpi-label" style="color:#fde68a;font-weight:800;">🟡 ${ar ? 'عمولة منتظرة (الرحلة أو الباقي)' : 'Waiting Guest Trip or Rest'}</div>
+        <div class="kpi-val" style="color:#fcd34d;font-size:26px;">${fmt(waitingRestOrTrip)} <span style="font-size:12px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">${ar ? 'تنزل في الجاهز فور انتهاء الرحلة وتحصيل الباقي' : 'Unlocks automatically once guest completes trip & pays rest'}</div>
+      </div>
+
+      <div class="card" style="border-color:rgba(0,210,255,0.5);">
+        <div class="kpi-label" style="color:var(--cyan);font-weight:800;">🔵 ${ar ? 'إجمالي عمولتي المؤكدة' : 'Total Confirmed Commission'}</div>
+        <div class="kpi-val" style="color:var(--cyan);font-size:26px;">${fmt(actualDueComm)} <span style="font-size:12px;color:var(--muted);">EGP</span></div>
+        <div class="kpi-sub">${fmt(k.entries_count)} ${ar ? 'رحلة' : 'Trips'} • ${ar ? 'مبيعات:' : 'Sales:'} ${fmt(k.gross_sales_egp)} EGP</div>
       </div>
     </div>
 
     <!-- Gamification XP, Earned Best-Seller Awards & Toggleable Target Bar -->
-    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(0,210,255,0.1));">
+    <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(0,210,255,0.1));">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <span class="xp-pill">⚡ ${esc(prof.level_title || '🌊 Rising Star')} • ${fmt(prof.xp_points || 0)} XP</span>
           ${myAwards.length
             ? myAwards.map((a) => `<span class="award-medal">${esc(a.icon)} ${esc(ar ? a.title_ar : a.title_en)}</span>`).join('')
-            : `<span class="pill" style="opacity:0.85;">🎯 Keep booking to unlock 🥇 Daily / 🏆 Weekly / 👑 Monthly Best Seller Medals!</span>`
+            : `<span class="pill" style="opacity:0.9;">🎯 ${ar ? 'احجز أكثر لتفوز بوسام نجم اليوم 🥇 وبطل الأسبوع 🏆!' : 'Book trips to win 🥇 Daily & 🏆 Weekly Best-Seller Medals!'}</span>`
           }
         </div>
-        <span style="font-size:11.5px;color:var(--muted);">🔒 Private Seller Account — Never shown to guests during pitch</span>
+        <span style="font-size:11.5px;color:var(--muted);">🎁 ${ar ? 'خصومات ممنوحة:' : 'Discounts:'} ${fmt(discSum.total_discount_egp || 0)} EGP</span>
       </div>
 
       ${tgt && tgt.is_active ? `
@@ -3853,84 +4670,48 @@ function renderSellerWalletTab(ar) {
       ` : ''}
     </div>
 
-    <div class="grid grid-2" style="margin-bottom:14px;">
-      <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-        <div class="qr-box">${svgQr}</div>
-        <div style="flex:1;min-width:220px;">
-          <span class="pill">${esc(prof.branch_scope || 'CYRENE')} • REP: ${esc(prof.rep_scope || slug.toUpperCase())}</span>
-          <h3 style="font-size:18px;margin-top:6px;">${esc(ar ? (prof.display_name_ar || prof.display_name_en) : (prof.display_name_en || prof.username))}</h3>
-          <div style="font-size:11.5px;color:#34d399;word-break:break-all;margin:5px 0 2px;font-weight:800;">📲 Shareable Brochure Link: ${esc(activeShareBrochure)}</div>
-          <div style="font-size:11px;color:var(--cyan);word-break:break-all;margin-bottom:6px;">🤿 Diving QR Link: ${esc(qrUrl)}</div>
+    <!-- Shareable Personal QR & 1-Tap WhatsApp Brochure Card -->
+    <div class="card" style="margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <div class="qr-box">${svgQr}</div>
+      <div style="flex:1;min-width:230px;">
+        <span class="pill">${esc(prof.branch_scope || 'CYRENE')} • REP: ${esc(prof.rep_scope || slug.toUpperCase())}</span>
+        <h3 style="font-size:18px;margin-top:5px;">${esc(ar ? (prof.display_name_ar || prof.display_name_en) : (prof.display_name_en || prof.username))}</h3>
+        <div style="font-size:11.5px;color:#34d399;word-break:break-all;margin:4px 0 2px;font-weight:800;">📲 ${ar ? 'رابط كل الرحلات لعميلك:' : 'All-Trips Client Link:'} ${esc(activeShareBrochure)}</div>
+        <div style="font-size:11px;color:var(--cyan);word-break:break-all;margin-bottom:8px;">🤿 Diving QR: ${esc(qrUrl)}</div>
 
-          ${discPol.is_enabled ? `
-            <div style="margin:8px 0 10px;padding:8px 10px;border-radius:10px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.34);">
-              <div style="font-size:11px;font-weight:800;color:#fde68a;margin-bottom:5px;">🎁 ${ar ? 'إنشاء رابط خصم خاص موثّق لعملائك (% أو مبلغ €):' : 'Create Personal VIP Discount Share Link & QR (% or €):'}</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-                <select id="walPromoType" style="width:auto;padding:5px 7px;font-size:11.5px;">
-                  <option value="PERCENT" ${STATE.walletPromoType === 'PERCENT' ? 'selected' : ''}>Percentage (%) — Max ${discPol.max_discount_pct}%</option>
-                  <option value="AMOUNT" ${STATE.walletPromoType === 'AMOUNT' ? 'selected' : ''}>Fixed Amount (€) — Max €${discPol.max_discount_eur}</option>
-                </select>
-                <input type="number" step="0.5" min="0" id="walPromoVal" value="${Number(STATE.walletPromoVal || 10)}" style="width:74px;padding:5px;font-size:11.5px;">
-                <button type="button" class="btn btn-amber" style="padding:5px 10px;font-size:11.5px;" onclick="generateWalletPromoShareLink()">✨ Generate VIP Link</button>
-                ${STATE.walletPromoUrl ? `<button type="button" class="btn" style="padding:5px 8px;font-size:11px;" onclick="STATE.walletPromoUrl='';renderApp();">Reset</button>` : ''}
-              </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px;">
+          <a class="btn btn-emerald" style="padding:9px 14px;font-size:13px;font-weight:900;" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips and confirm your booking directly with me: ' + activeShareBrochure)}" target="_blank" rel="noopener">💬 ${ar ? 'ابعت على واتساب' : 'Share on WhatsApp'}</a>
+          <button type="button" class="btn btn-primary" style="padding:9px 13px;" onclick="downloadSellerQrPng('${esc(qrTargetUrl)}', '${esc(slug)}')">⬇ ${ar ? 'تحميل صورة QR' : 'Download PNG QR'}</button>
+          <button type="button" class="btn" style="padding:9px 12px;" onclick="shareNativeOrCopy('${esc(activeShareBrochure)}', 'Sea College Trips')">📲 ${ar ? 'نسخ الرابط' : 'Copy Link'}</button>
+          <a class="btn" style="border-color:#3b82f6;color:#93c5fd;" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">📘 FB</a>
+          <a class="btn" style="border-color:#38bdf8;color:#7dd3fc;" href="https://t.me/share/url?url=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">✈️ TG</a>
+        </div>
+
+        ${discPol.is_enabled ? `
+          <div style="padding:8px 10px;border-radius:10px;background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.34);">
+            <div style="font-size:11.5px;font-weight:800;color:#fde68a;margin-bottom:5px;">🎁 ${ar ? 'إنشاء رابط خصم VIP خاص لعميلك (% أو €):' : 'Create VIP Discount Link & QR (% or €):'}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+              <select id="walPromoType" style="width:auto;padding:5px 7px;font-size:11.5px;">
+                <option value="PERCENT" ${STATE.walletPromoType === 'PERCENT' ? 'selected' : ''}>% (Max ${discPol.max_discount_pct}%)</option>
+                <option value="AMOUNT" ${STATE.walletPromoType === 'AMOUNT' ? 'selected' : ''}>€ (Max €${discPol.max_discount_eur})</option>
+              </select>
+              <input type="number" step="0.5" min="0" id="walPromoVal" value="${Number(STATE.walletPromoVal || 10)}" style="width:74px;padding:5px;font-size:11.5px;">
+              <button type="button" class="btn btn-amber" style="padding:5px 10px;font-size:11.5px;" onclick="generateWalletPromoShareLink()">✨ ${ar ? 'تفعيل خصم الرابط' : 'Create VIP Link'}</button>
+              ${STATE.walletPromoUrl ? `<button type="button" class="btn" style="padding:5px 8px;font-size:11px;" onclick="STATE.walletPromoUrl='';renderApp();">Reset</button>` : ''}
             </div>
-          ` : ''}
-
-          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">
-            Share via WhatsApp, Facebook, Instagram or Telegram — when your client books later, it registers directly under your name &amp; sends you an instant 🔔 notification! (Commission calculated on actual net discounted amount: INSHEET 10% Net • OUT_SIDE 25% Net Profit after Supplier Cost).
-          </p>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <a class="btn btn-emerald" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips and confirm your booking directly with me: ' + activeShareBrochure)}" target="_blank" rel="noopener">💬 WhatsApp Link</a>
-            <a class="btn" style="border-color:#3b82f6;color:#93c5fd;" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">📘 Facebook</a>
-            <a class="btn" style="border-color:#38bdf8;color:#7dd3fc;" href="https://t.me/share/url?url=${encodeURIComponent(activeShareBrochure)}" target="_blank" rel="noopener">✈️ Telegram</a>
-            <button type="button" class="btn" onclick="shareNativeOrCopy('${esc(activeShareBrochure)}', 'Sea College Trips')">📲 Copy / Instagram</button>
-            <button type="button" class="btn btn-primary" onclick="downloadSellerQrPng('${esc(qrTargetUrl)}', '${esc(slug)}')">⬇ Download PNG QR</button>
           </div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;">
-            ${Object.entries(locUrls).map(([lg, uLink]) => `<button type="button" class="contact-chip" style="cursor:pointer;" onclick="copyTextPrompt('${esc(uLink)}')">🌐 ${esc(lg.toUpperCase())}</button>`).join('')}
-          </div>
-        </div>
-      </div>
+        ` : ''}
 
-      <div class="grid grid-kpi" style="align-content:start;">
-        <div class="card" style="border-color:rgba(16,185,129,0.45);">
-          <div class="kpi-label">${ar ? 'العمولة الفعلية المستحقة (رحلات تمت ومحصّلة 100%)' : 'Actual Due Commission (Done & 100% Paid)'}</div>
-          <div class="kpi-val pos">${fmt(actualDueComm)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">Guest Boarded + Deposit &amp; REST Paid</div>
-        </div>
-        <div class="card" style="border-color:rgba(0,210,255,0.45);">
-          <div class="kpi-label">${ar ? 'صافي متاح للصرف الآن أو كسلفة' : 'Net Payable Now (After Allowances)'}</div>
-          <div class="kpi-val" style="color:var(--cyan);">${fmt(netDueNow)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">End-of-Month / Instant Allowance Ready</div>
-        </div>
-        <div class="card">
-          <div class="kpi-label">${ar ? 'سلف ودفعات مستلمة خلال الشهر' : 'Allowances / Installments Taken'}</div>
-          <div class="kpi-val neg">${fmt(settledAndAllowances)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">Requested Pending: ${fmt(brk.requested_pending_allowances_egp || 0)} EGP</div>
-        </div>
-        <div class="card">
-          <div class="kpi-label">${ar ? 'عمولة بانتظار تنفيذ الرحلة أو تحصيل الباقي' : 'Waiting Trip Execution or Guest REST'}</div>
-          <div class="kpi-val" style="color:#fcd34d;">${fmt(waitingRestOrTrip)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">Unlocks when trip done &amp; REST = 0</div>
-        </div>
-        <div class="card">
-          <div class="kpi-label">${ar ? 'إجمالي المبيعات الصافية والخصومات الممنوحة' : 'My Net Sales & Special Discounts'}</div>
-          <div class="kpi-val">${fmt(k.gross_sales_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">${fmt(k.entries_count)} Trips • 🎁 Discounts: ${fmt(discSum.total_discount_egp || 0)} EGP (${fmt(discSum.discounted_trips_count || 0)})</div>
-        </div>
-        <div class="card">
-          <div class="kpi-label">${ar ? 'صافي المستحق الشامل بالراتب' : 'Full Payroll + Comm Net Balance'}</div>
-          <div class="kpi-val ${Number(k.net_balance_egp || 0) >= 0 ? 'pos' : 'neg'}">${fmt(k.net_balance_egp)} <span style="font-size:11px;color:var(--muted);">EGP</span></div>
-          <div class="kpi-sub">Base ${fmt(k.payroll_base_egp)} + Comm − Deductions</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">
+          ${Object.entries(locUrls).map(([lg, uLink]) => `<button type="button" class="contact-chip" style="cursor:pointer;" onclick="copyTextPrompt('${esc(uLink)}')">🌐 ${esc(lg.toUpperCase())}</button>`).join('')}
         </div>
       </div>
     </div>
 
-    <!-- Seller's Isolated Trips & Client Confirmations Table -->
-    <div class="card" style="margin-bottom:14px;">
-      <h3 style="font-size:14px;margin-bottom:8px;">🎫 ${ar ? 'رحلاتي وحجوزات عملائي وحالة التحصيل والعمولة الفعلية' : 'My Trips Only — Booking Status, Special Discounts, Paid Deposit & Actual Commission'} (${myTrips.length})</h3>
-      <div class="table-wrap" style="max-height:310px;">
+    <!-- Collapsible Detailed Tables (Zero Scroll Clutter by Default!) -->
+    <details class="card" style="margin-bottom:10px;">
+      <summary style="cursor:pointer;font-size:13.5px;font-weight:800;color:var(--cyan);">🎫 ${ar ? `قائمة رحلاتي وحالة التحصيل (${myTrips.length})` : `My Trips & Payment Status (${myTrips.length})`}</summary>
+      <div class="table-wrap" style="max-height:310px;margin-top:10px;">
         <table>
           <thead>
             <tr>
@@ -3970,12 +4751,12 @@ function renderSellerWalletTab(ar) {
           </tbody>
         </table>
       </div>
-    </div>
+    </details>
 
     ${advRows.length ? `
-      <div class="card" style="margin-bottom:14px;">
-        <h3 style="font-size:14px;margin-bottom:8px;">💸 ${ar ? 'سجل السلف والدفعات المسحوبة من العمولة' : 'My Mid-Month Commission Allowances & Installments'} (${advRows.length})</h3>
-        <div class="table-wrap" style="max-height:200px;">
+      <details class="card" style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-size:13.5px;font-weight:800;color:#fde68a;">💸 ${ar ? `سجل السلف والدفعات (${advRows.length})` : `My Allowances & Installments (${advRows.length})`}</summary>
+        <div class="table-wrap" style="max-height:200px;margin-top:10px;">
           <table>
             <thead><tr><th>Date</th><th>Month</th><th>Amount (EGP)</th><th>Status</th><th>Approved By</th><th>Notes</th></tr></thead>
             <tbody>
@@ -3992,12 +4773,12 @@ function renderSellerWalletTab(ar) {
             </tbody>
           </table>
         </div>
-      </div>
+      </details>
     ` : ''}
 
-    <div class="card" style="margin-bottom:14px;">
-      <h3 style="font-size:14px;margin-bottom:8px;">📋 ${ar ? 'دفتر حساب العمولة التفصيلي (10% داخلي / 25% صافي خارجي بعد تكلفة المورد)' : 'Detailed Commission Calculation Ledger (INSHEET 10% Gross vs OUT_SIDE 25% Net)'} (${rows.length})</h3>
-      <div class="table-wrap" style="max-height:340px;">
+    <details class="card" style="margin-bottom:10px;">
+      <summary style="cursor:pointer;font-size:13.5px;font-weight:800;color:var(--muted);">📋 ${ar ? `تفاصيل الحساب المحاسبي للعمولات (${rows.length})` : `Detailed Accounting Ledger — INSHEET 10% vs OUT_SIDE 25% (${rows.length})`}</summary>
+      <div class="table-wrap" style="max-height:340px;margin-top:10px;">
         <table>
           <thead>
             <tr>
@@ -4023,30 +4804,32 @@ function renderSellerWalletTab(ar) {
           </tbody>
         </table>
       </div>
-    </div>
+    </details>
 
-    <div class="card">
-      <h3 style="font-size:14px;margin-bottom:8px;">🌐 ${ar ? 'عملاء الروابط والباركود المسجلين باسمك' : 'Attributed Shareable Link & QR Bookings'} (${leads.length})</h3>
-      <div class="table-wrap" style="max-height:240px;">
-        <table>
-          <thead><tr><th>Received</th><th>Type</th><th>Lang</th><th>Guest</th><th>Trip Date</th><th>Interest</th><th>Est. EUR</th><th>Voucher</th></tr></thead>
-          <tbody>
-            ${leads.map((l) => `
-              <tr>
-                <td>${esc(String(l.received_at || '').slice(0, 16))}</td>
-                <td><span class="pill">${esc(l.lead_type)}</span></td>
-                <td>${esc(l.lang)}</td>
-                <td><b>${esc(l.guest_name || 'WhatsApp Visitor')}</b></td>
-                <td>${esc(l.trip_date || '—')}</td>
-                <td>${esc(l.interest_items || '—')}</td>
-                <td class="num pos">€${fmt(l.estimated_eur, 2)}</td>
-                <td><b>${esc(l.linked_voucher_no || '—')}</b></td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    ${leads.length ? `
+      <details class="card">
+        <summary style="cursor:pointer;font-size:13.5px;font-weight:800;color:var(--muted);">🌐 ${ar ? `عملاء الروابط والباركود (${leads.length})` : `Shareable Link & QR Leads (${leads.length})`}</summary>
+        <div class="table-wrap" style="max-height:240px;margin-top:10px;">
+          <table>
+            <thead><tr><th>Received</th><th>Type</th><th>Lang</th><th>Guest</th><th>Trip Date</th><th>Interest</th><th>Est. EUR</th><th>Voucher</th></tr></thead>
+            <tbody>
+              ${leads.map((l) => `
+                <tr>
+                  <td>${esc(String(l.received_at || '').slice(0, 16))}</td>
+                  <td><span class="pill">${esc(l.lead_type)}</span></td>
+                  <td>${esc(l.lang)}</td>
+                  <td><b>${esc(l.guest_name || 'WhatsApp Visitor')}</b></td>
+                  <td>${esc(l.trip_date || '—')}</td>
+                  <td>${esc(l.interest_items || '—')}</td>
+                  <td class="num pos">€${fmt(l.estimated_eur, 2)}</td>
+                  <td><b>${esc(l.linked_voucher_no || '—')}</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    ` : ''}
   `;
 }
 

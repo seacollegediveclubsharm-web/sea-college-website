@@ -113,6 +113,8 @@ function erp_snapshot_live_state(PDO $pdo): array
         'live_commissions' => [],
         'live_feedback'    => [],
         'live_expenses'    => [],
+        'live_inbox_msgs'  => [],
+        'live_inbox_reads' => [],
     ];
     try {
         $snap['custom_users'] = $pdo->query("SELECT * FROM users WHERE updated_at != ''")->fetchAll();
@@ -132,6 +134,12 @@ function erp_snapshot_live_state(PDO $pdo): array
     try {
         $snap['live_expenses'] = $pdo->query("SELECT * FROM expense_vouchers_fact WHERE source_file = 'LIVE_MOBILE_SAFE'")->fetchAll();
     } catch (Throwable $e) {}
+    try {
+        $snap['live_inbox_msgs'] = $pdo->query('SELECT * FROM company_inbox_messages WHERE seed_key IS NULL OR is_deleted = 1')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_inbox_reads'] = $pdo->query('SELECT * FROM company_inbox_reads')->fetchAll();
+    } catch (Throwable $e) {}
     return $snap;
 }
 
@@ -144,6 +152,7 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
 {
     sc_erp_ensure_schema_and_columns($impPdo);
     sc_erp_ensure_user_profiles($impPdo);
+    sc_erp_ensure_v3_extensions($impPdo);
 
     $insertDynamic = static function (PDO $db, string $table, array $rows, string $conflictClause = 'OR IGNORE', array $skipCols = ['id']): void {
         if (!$rows) {
@@ -239,6 +248,23 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
             $insertDynamic($impPdo, 'expense_vouchers_fact', [$le], '');
         }
     }
+
+    // 7) Restore live Company Inbox messages & read/reaction states
+    foreach (($snap['live_inbox_msgs'] ?? []) as $im) {
+        if (!empty($im['seed_key'])) {
+            $impPdo->prepare('UPDATE company_inbox_messages SET is_deleted = ?, is_pinned = ?, deleted_by = ?, deleted_at = ? WHERE seed_key = ?')
+                ->execute([(int) ($im['is_deleted'] ?? 0), (int) ($im['is_pinned'] ?? 0), (string) ($im['deleted_by'] ?? ''), (string) ($im['deleted_at'] ?? ''), (string) $im['seed_key']]);
+        } else {
+            $insertDynamic($impPdo, 'company_inbox_messages', [$im], 'OR IGNORE');
+        }
+    }
+    $validMsgIds = array_flip(array_column($impPdo->query('SELECT id FROM company_inbox_messages')->fetchAll(), 'id'));
+    foreach (($snap['live_inbox_reads'] ?? []) as $ir) {
+        $mid = (int) ($ir['message_id'] ?? 0);
+        if ($mid > 0 && isset($validMsgIds[$mid])) {
+            $insertDynamic($impPdo, 'company_inbox_reads', [$ir], 'OR REPLACE', []);
+        }
+    }
 }
 
 /* ---------------- PUBLIC / AUTH ACTIONS ---------------- */
@@ -305,13 +331,28 @@ if ($action === 'directory_roles') {
     exit;
 }
 
+if ($method !== 'POST' && in_array($action, ['send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message'], true)) {
+    http_response_code(405);
+    echo json_encode(['ok' => false, 'error' => 'POST required']);
+    exit;
+}
+
 $ctx = erp_auth_context($pdo);
 if ($action === 'me') {
     if (!$ctx) {
         echo json_encode(['ok' => true, 'authenticated' => false, 'csrf_token' => csrf_token()]);
         exit;
     }
-    echo json_encode(['ok' => true, 'authenticated' => true, 'user' => $ctx['user'], 'permissions' => $ctx['perms'], 'csrf_token' => csrf_token()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $inbSnap = sc_erp_fetch_inbox_for_user($pdo, $ctx['user'], $ctx['perms'], 'all', 5);
+    echo json_encode([
+        'ok'                 => true,
+        'authenticated'      => true,
+        'user'               => $ctx['user'],
+        'permissions'        => $ctx['perms'],
+        'unread_inbox_count' => $inbSnap['unread_count'],
+        'can_send_inbox'     => in_array('bi.view_executive', $ctx['perms'], true),
+        'csrf_token'         => csrf_token(),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
@@ -948,7 +989,52 @@ if ($action === 'notifications') {
             $unread++;
         }
     }
-    echo json_encode(['ok' => true, 'unread_count' => $unread, 'notifications' => $rows], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $inbQuick = sc_erp_fetch_inbox_for_user($pdo, $ctx['user'], $ctx['perms'], 'all', 5);
+    echo json_encode([
+        'ok'                 => true,
+        'unread_count'       => $unread,
+        'unread_inbox_count' => $inbQuick['unread_count'],
+        'notifications'      => $rows,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- COMPANY-WIDE ANNOUNCEMENTS, CONGRATULATIONS & DIRECT INBOX (`inbox_messages`) ---------------- */
+if ($action === 'inbox_messages') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    $filter  = strtolower(trim((string) ($_GET['filter'] ?? 'all')));
+    $limit   = max(1, min(100, (int) ($_GET['limit'] ?? 50)));
+    $canSend = in_array('bi.view_executive', $ctx['perms'], true);
+    $feed    = sc_erp_fetch_inbox_for_user($pdo, $ctx['user'], $ctx['perms'], $filter, $limit);
+
+    $recipientsDir = ['users' => [], 'roles' => [], 'branches' => []];
+    if ($canSend) {
+        $recipientsDir['users'] = $pdo->query(
+            'SELECT username, display_name_en, display_name_ar, role_code, branch_scope, avatar_url
+             FROM users WHERE is_active = 1 ORDER BY role_code ASC, display_name_en ASC'
+        )->fetchAll();
+        $recipientsDir['roles'] = $pdo->query(
+            'SELECT role_code, name_en, name_ar, department FROM roles ORDER BY hierarchy_level DESC'
+        )->fetchAll();
+        $recipientsDir['branches'] = $pdo->query(
+            'SELECT code, name_en, name_ar FROM branches WHERE is_active = 1 ORDER BY code ASC'
+        )->fetchAll();
+    }
+
+    echo json_encode([
+        'ok'                   => true,
+        'can_send'             => $canSend,
+        'can_pin_delete'       => $canSend,
+        'unread_count'         => $feed['unread_count'],
+        'pinned_banner'        => $feed['pinned_banner'],
+        'allowed_reactions'    => sc_erp_allowed_inbox_reactions(),
+        'recipients_directory' => $recipientsDir,
+        'messages'             => $feed['messages'],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
@@ -2024,6 +2110,12 @@ if ($action === 'role_workspace') {
     }
     $out['notifications']              = $wsNotifs;
     $out['unread_notifications_count'] = $wsUnread;
+
+    $wsInbox = sc_erp_fetch_inbox_for_user($pdo, $user, $perms, 'all', 12);
+    $out['unread_inbox_count']  = $wsInbox['unread_count'];
+    $out['can_manage_inbox']    = in_array('bi.view_executive', $perms, true);
+    $out['inbox_pinned_banner'] = $wsInbox['pinned_banner'];
+    $out['inbox_preview']       = $wsInbox['messages'];
 
     $enrichVoucherRow = static function (array $r): array {
         $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
@@ -3560,6 +3652,341 @@ if ($method === 'POST') {
         }
         sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'SAFE_' . $txType, 'SAFE', $safeCode, ['currency' => $curr, 'amount' => $amt, 'desc' => $desc]);
         echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($action === 'send_inbox_message') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        $me = $ctx['user'];
+
+        $msgType = strtoupper(trim((string) ($rawIn['msg_type'] ?? 'ANNOUNCEMENT')));
+        if (!in_array($msgType, ['ANNOUNCEMENT', 'CONGRATULATIONS', 'TARGET_ALERT', 'DIRECT', 'POLICY_UPDATE'], true)) {
+            $msgType = 'ANNOUNCEMENT';
+        }
+        $priority = strtoupper(trim((string) ($rawIn['priority'] ?? 'NORMAL')));
+        if (!in_array($priority, ['NORMAL', 'IMPORTANT', 'URGENT', 'CELEBRATION'], true)) {
+            $priority = ($msgType === 'CONGRATULATIONS') ? 'CELEBRATION' : 'NORMAL';
+        }
+        $audType = strtoupper(trim((string) ($rawIn['audience_type'] ?? 'ALL')));
+        if (!in_array($audType, ['ALL', 'ROLE', 'BRANCH', 'DIRECT'], true)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Invalid audience_type']);
+            exit;
+        }
+
+        $audTarget = clean_line($rawIn['audience_target'] ?? '', 64);
+        if ($audType === 'ALL') {
+            $audTarget = '';
+        } elseif ($audType === 'ROLE') {
+            $audTarget = strtoupper($audTarget);
+            $chkR = $pdo->prepare('SELECT role_code FROM roles WHERE UPPER(role_code) = ?');
+            $chkR->execute([$audTarget]);
+            $foundRole = $chkR->fetchColumn();
+            if (!$foundRole) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Unknown target role']);
+                exit;
+            }
+            $audTarget = (string) $foundRole;
+        } elseif ($audType === 'BRANCH') {
+            $audTarget = strtoupper($audTarget);
+            $chkB = $pdo->prepare('SELECT code FROM branches WHERE UPPER(code) = ?');
+            $chkB->execute([$audTarget]);
+            $foundBranch = $chkB->fetchColumn();
+            if (!$foundBranch) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Unknown target branch']);
+                exit;
+            }
+            $audTarget = (string) $foundBranch;
+        } elseif ($audType === 'DIRECT') {
+            $chkU = $pdo->prepare('SELECT username FROM users WHERE LOWER(username) = LOWER(?) AND is_active = 1');
+            $chkU->execute([$audTarget]);
+            $foundUser = $chkU->fetchColumn();
+            if (!$foundUser) {
+                http_response_code(422);
+                echo json_encode(['ok' => false, 'error' => 'Recipient user not found']);
+                exit;
+            }
+            $audTarget = (string) $foundUser;
+        }
+
+        $spotlight = clean_line($rawIn['spotlight_username'] ?? '', 64);
+        if ($spotlight !== '') {
+            $spChk = $pdo->prepare('SELECT username FROM users WHERE LOWER(username) = LOWER(?)');
+            $spChk->execute([$spotlight]);
+            $foundSp = $spChk->fetchColumn();
+            $spotlight = $foundSp ? (string) $foundSp : '';
+        }
+
+        $titleEn = clean_line($rawIn['title_en'] ?? ($rawIn['title'] ?? ''), 160);
+        $titleAr = clean_line($rawIn['title_ar'] ?? '', 160);
+        if ($titleEn === '' && $titleAr !== '') {
+            $titleEn = $titleAr;
+        } elseif ($titleAr === '' && $titleEn !== '') {
+            $titleAr = $titleEn;
+        }
+
+        $bodyEn = clean($rawIn['body_en'] ?? ($rawIn['body'] ?? ''), 2000);
+        $bodyAr = clean($rawIn['body_ar'] ?? '', 2000);
+        if ($bodyEn === '' && $bodyAr !== '') {
+            $bodyEn = $bodyAr;
+        } elseif ($bodyAr === '' && $bodyEn !== '') {
+            $bodyAr = $bodyEn;
+        }
+
+        if (mb_strlen($titleEn) < 2 || mb_strlen($bodyEn) < 2) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please enter a message title and body']);
+            exit;
+        }
+
+        $defaultIcons = [
+            'CONGRATULATIONS' => '🎉',
+            'TARGET_ALERT'    => '🎯',
+            'DIRECT'          => '💌',
+            'POLICY_UPDATE'   => '📋',
+            'ANNOUNCEMENT'    => '📢',
+        ];
+        $badgeIcon = clean_line($rawIn['badge_icon'] ?? '', 12);
+        if ($badgeIcon === '') {
+            $badgeIcon = $defaultIcons[$msgType] ?? '📢';
+        }
+        $actionTab = clean_line($rawIn['action_tab'] ?? '', 40);
+        $isPinned  = !empty($rawIn['is_pinned']) ? 1 : 0;
+        $nowIso    = gmdate('Y-m-d\TH:i:s\Z');
+
+        $insMsg = $pdo->prepare(
+            'INSERT INTO company_inbox_messages
+             (seed_key, created_at, sender_username, sender_name_en, sender_name_ar, sender_role_code,
+              sender_title_en, sender_title_ar, sender_avatar_url, msg_type, priority,
+              audience_type, audience_target, spotlight_username, badge_icon,
+              title_en, title_ar, body_en, body_ar, action_tab, is_pinned)
+             VALUES (NULL, ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+        );
+        $insMsg->execute([
+            $nowIso,
+            (string) $me['username'],
+            (string) ($me['display_name_en'] ?: $me['username']),
+            (string) ($me['display_name_ar'] ?: $me['display_name_en'] ?: $me['username']),
+            (string) $me['role_code'],
+            (string) ($me['job_title_en'] ?? ''),
+            (string) ($me['job_title_ar'] ?? ''),
+            (string) ($me['avatar_url'] ?? ''),
+            $msgType,
+            $priority,
+            $audType,
+            $audTarget,
+            $spotlight,
+            $badgeIcon,
+            $titleEn,
+            $titleAr,
+            $bodyEn,
+            $bodyAr,
+            $actionTab,
+            $isPinned,
+        ]);
+        $newMsgId = (int) $pdo->lastInsertId();
+
+        // Mark read automatically for the sender
+        $pdo->prepare(
+            'INSERT INTO company_inbox_reads (message_id, username, read_at, reaction_emoji, reacted_at)
+             VALUES (?, ?, ?, "", "")
+             ON CONFLICT(message_id, username) DO UPDATE SET read_at = excluded.read_at'
+        )->execute([$newMsgId, strtolower((string) $me['username']), $nowIso]);
+
+        // Also push a quick bell notification when messaging/congratulating a specific user directly
+        $bellTarget = $audType === 'DIRECT' ? $audTarget : ($spotlight !== '' ? $spotlight : '');
+        if ($bellTarget !== '' && function_exists('sc_erp_push_notification')) {
+            sc_erp_push_notification(
+                $pdo,
+                $bellTarget,
+                'INBOX_' . $msgType,
+                '',
+                $badgeIcon . ' ' . $titleEn,
+                $badgeIcon . ' ' . $titleAr,
+                $bodyEn,
+                $bodyAr
+            );
+        }
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'SEND_INBOX_MESSAGE', 'INBOX_MSG', (string) $newMsgId, [
+            'msg_type'        => $msgType,
+            'audience_type'   => $audType,
+            'audience_target' => $audTarget,
+            'spotlight'       => $spotlight,
+            'is_pinned'       => $isPinned,
+        ]);
+
+        echo json_encode([
+            'ok'         => true,
+            'message_id' => $newMsgId,
+            'created_at' => $nowIso,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'mark_inbox_read') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+            exit;
+        }
+        $me     = $ctx['user'];
+        $uLower = strtolower((string) $me['username']);
+        $nowIso = gmdate('Y-m-d\TH:i:s\Z');
+
+        if (!empty($rawIn['mark_all'])) {
+            $feed = sc_erp_fetch_inbox_for_user($pdo, $me, $ctx['perms'], 'unread', 200);
+            $upSt = $pdo->prepare(
+                'INSERT INTO company_inbox_reads (message_id, username, read_at, reaction_emoji, reacted_at)
+                 VALUES (?, ?, ?, "", "")
+                 ON CONFLICT(message_id, username) DO UPDATE SET read_at = CASE WHEN company_inbox_reads.read_at = "" THEN excluded.read_at ELSE company_inbox_reads.read_at END'
+            );
+            foreach ($feed['messages'] as $um) {
+                $upSt->execute([(int) $um['id'], $uLower, $nowIso]);
+            }
+            echo json_encode(['ok' => true, 'unread_count' => 0]);
+            exit;
+        }
+
+        $mid = (int) ($rawIn['message_id'] ?? 0);
+        if ($mid <= 0) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Invalid message_id']);
+            exit;
+        }
+        $mSt = $pdo->prepare('SELECT * FROM company_inbox_messages WHERE id = ? AND is_deleted = 0');
+        $mSt->execute([$mid]);
+        $msg = $mSt->fetch();
+        if (!$msg) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Message not found']);
+            exit;
+        }
+        if (!sc_erp_can_user_see_inbox_message($msg, $me, $ctx['perms'])) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Access denied to this message']);
+            exit;
+        }
+        $pdo->prepare(
+            'INSERT INTO company_inbox_reads (message_id, username, read_at, reaction_emoji, reacted_at)
+             VALUES (?, ?, ?, "", "")
+             ON CONFLICT(message_id, username) DO UPDATE SET read_at = CASE WHEN company_inbox_reads.read_at = "" THEN excluded.read_at ELSE company_inbox_reads.read_at END'
+        )->execute([$mid, $uLower, $nowIso]);
+
+        $after = sc_erp_fetch_inbox_for_user($pdo, $me, $ctx['perms'], 'all', 1);
+        echo json_encode(['ok' => true, 'message_id' => $mid, 'unread_count' => $after['unread_count']]);
+        exit;
+    }
+
+    if ($action === 'react_inbox_message') {
+        if (!$ctx) {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+            exit;
+        }
+        $me     = $ctx['user'];
+        $uLower = strtolower((string) $me['username']);
+        $mid    = (int) ($rawIn['message_id'] ?? 0);
+        $emoji  = trim((string) ($rawIn['emoji'] ?? ''));
+        $allowed = sc_erp_allowed_inbox_reactions();
+        if ($mid <= 0 || ($emoji !== '' && !in_array($emoji, $allowed, true))) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Invalid message_id or reaction emoji']);
+            exit;
+        }
+        $mSt = $pdo->prepare('SELECT * FROM company_inbox_messages WHERE id = ? AND is_deleted = 0');
+        $mSt->execute([$mid]);
+        $msg = $mSt->fetch();
+        if (!$msg) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Message not found']);
+            exit;
+        }
+        if (!sc_erp_can_user_see_inbox_message($msg, $me, $ctx['perms'])) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Access denied to this message']);
+            exit;
+        }
+
+        $curSt = $pdo->prepare('SELECT reaction_emoji, read_at FROM company_inbox_reads WHERE message_id = ? AND username = ?');
+        $curSt->execute([$mid, $uLower]);
+        $curRow = $curSt->fetch();
+        $nextEmoji = ($curRow && (string) $curRow['reaction_emoji'] === $emoji) ? '' : $emoji;
+        $nowIso    = gmdate('Y-m-d\TH:i:s\Z');
+
+        $pdo->prepare(
+            'INSERT INTO company_inbox_reads (message_id, username, read_at, reaction_emoji, reacted_at)
+             VALUES (?, ?, ?, ?, ?)
+             ON CONFLICT(message_id, username) DO UPDATE SET
+               read_at = CASE WHEN company_inbox_reads.read_at = "" THEN excluded.read_at ELSE company_inbox_reads.read_at END,
+               reaction_emoji = excluded.reaction_emoji,
+               reacted_at = excluded.reacted_at'
+        )->execute([$mid, $uLower, $nowIso, $nextEmoji, $nowIso]);
+
+        $aggSt = $pdo->prepare("SELECT reaction_emoji, COUNT(*) AS cnt FROM company_inbox_reads WHERE message_id = ? AND reaction_emoji != '' GROUP BY reaction_emoji");
+        $aggSt->execute([$mid]);
+        $summary = [];
+        $totReact = 0;
+        foreach ($aggSt->fetchAll() as $ar) {
+            $c = (int) $ar['cnt'];
+            $summary[(string) $ar['reaction_emoji']] = $c;
+            $totReact += $c;
+        }
+        echo json_encode([
+            'ok'                => true,
+            'message_id'        => $mid,
+            'my_reaction'       => $nextEmoji,
+            'reactions_summary' => $summary,
+            'reactions_total'   => $totReact,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'toggle_pin_inbox_message') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        $mid = (int) ($rawIn['message_id'] ?? 0);
+        if ($mid <= 0) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Invalid message_id']);
+            exit;
+        }
+        $mSt = $pdo->prepare('SELECT id, is_pinned FROM company_inbox_messages WHERE id = ? AND is_deleted = 0');
+        $mSt->execute([$mid]);
+        $msg = $mSt->fetch();
+        if (!$msg) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Message not found']);
+            exit;
+        }
+        $nextPin = array_key_exists('is_pinned', $rawIn) ? (!empty($rawIn['is_pinned']) ? 1 : 0) : (1 - (int) $msg['is_pinned']);
+        $pdo->prepare('UPDATE company_inbox_messages SET is_pinned = ? WHERE id = ?')->execute([$nextPin, $mid]);
+        sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'PIN_INBOX_MESSAGE', 'INBOX_MSG', (string) $mid, ['is_pinned' => $nextPin]);
+        echo json_encode(['ok' => true, 'message_id' => $mid, 'is_pinned' => $nextPin === 1]);
+        exit;
+    }
+
+    if ($action === 'delete_inbox_message') {
+        erp_require_perm($ctx, 'bi.view_executive');
+        $mid = (int) ($rawIn['message_id'] ?? 0);
+        if ($mid <= 0) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Invalid message_id']);
+            exit;
+        }
+        $mSt = $pdo->prepare('SELECT id FROM company_inbox_messages WHERE id = ?');
+        $mSt->execute([$mid]);
+        if (!$mSt->fetchColumn()) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Message not found']);
+            exit;
+        }
+        $nowIso = gmdate('Y-m-d\TH:i:s\Z');
+        $pdo->prepare('UPDATE company_inbox_messages SET is_deleted = 1, is_pinned = 0, deleted_by = ?, deleted_at = ? WHERE id = ?')
+            ->execute([(string) $ctx['user']['username'], $nowIso, $mid]);
+        sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'DELETE_INBOX_MESSAGE', 'INBOX_MSG', (string) $mid);
+        echo json_encode(['ok' => true, 'message_id' => $mid]);
         exit;
     }
 }
