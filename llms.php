@@ -64,7 +64,7 @@ $lines[] = '- Small-Group Safety Standard: Maximum 4 certified divers per PADI g
 $lines[] = '';
 
 /* 2. 8-Language Website Architecture & Core Pages */
-$lines[] = '## 8-Language Canonical Website Architecture (800 Indexed URLs)';
+$lines[] = '## 8-Language Canonical Website Architecture (808 Indexed URLs)';
 $langRoots = [];
 foreach (SUPPORTED_LANGS as $lgCode => $lgName) {
     $langRoots[] = strtoupper($lgCode) . ' (' . $lgName . '): ' . SITE_URL . ($lgCode === DEFAULT_LANG ? '/' : '/' . $lgCode . '/');
@@ -72,6 +72,7 @@ foreach (SUPPORTED_LANGS as $lgCode => $lgName) {
 $lines[] = '- Supported Languages (' . count(SUPPORTED_LANGS) . '): ' . implode(' | ', $langRoots);
 $lines[] = '- Home & 30-Second Dive/Course Recommender Quiz: ' . SITE_URL . '/ (' . SITE_URL . '/#dive-finder-quiz)';
 $lines[] = '- Official EUR Price List & Interactive Dive Budget Calculator: ' . SITE_URL . '/prices (' . SITE_URL . '/prices#dive-calculator)';
+$lines[] = '- Sharm El Sheikh Scuba Diving, PADI, Pickup & Pricing FAQ Hub (8 Languages): ' . SITE_URL . '/faq';
 $lines[] = '- Complete Services Directory: ' . SITE_URL . '/services';
 $lines[] = '- Interactive Sharm El Sheikh Dive Sites Map (Ras Mohammed, Straits of Tiran, Wrecks & Local Reefs): ' . SITE_URL . '/dive-sites-sharm-el-sheikh';
 $lines[] = '- Red Sea Scuba Diving Guides Hub: ' . SITE_URL . '/guides';
@@ -112,11 +113,12 @@ if (!$isFull) {
     $lines[] = '### Mandatory & Optional Supplements Disclosure (100% Zero Hidden Marina Fees)';
     $lines[] = '- Boat Trip Supplement (full-day motor yacht incl. freshly cooked lunch & soft drinks): ' . $fmtEur($flatItems['fee-boat']['price'] ?? 10) . '/day';
     $lines[] = '- Egyptian Marine Park & Jetty Fee (dives outside Al Montazah House Reef): ' . $fmtEur($flatItems['fee-park']['price'] ?? 5) . '/day';
-    $lines[] = '- PADI eLearning Manual & Certification PIC Fee (courses except DSD/Bubblemaker; already included in Saver Bundles where stated): €85/course';
-    $lines[] = '- Full Scuba Equipment Rental Set (certified divers without own gear): ' . $fmtEur($flatItems['eq-full']['price'] ?? 25) . '/day (included in Intro Dives, OWD & Saver Bundles)';
-    $lines[] = '- Enriched Air Nitrox 32% (12L tank fill for certified Nitrox divers): ' . $fmtEur($flatItems['eq-12nx']['price'] ?? 8) . '/day';
-    $lines[] = '- Advance Booking & Pre-Flight Safety: Book online 48–72h ahead to lock direct EUR rates; allow 18–24h surface interval before flying per DAN/PADI rules.';
-    $lines[] = '- Complete 80-Item Catalog & Full Resort Pickup Directory: ' . SITE_URL . '/llms-full.txt';
+    $lines[] = '- PADI eLearning Manual & Certification PIC Fee (courses except DSD/Bubblemaker; waived if bought online): €85/course';
+    $lines[] = '- Full Scuba Equipment Rental Set (certified divers without own gear): ' . $fmtEur($flatItems['eq-full']['price'] ?? 25) . '/day (100% included free in Intro Dives, Kids Courses, OWD & Saver Bundles)';
+    $lines[] = '- Enriched Air Nitrox 32% (12L tank fill for certified Nitrox divers): ' . $fmtEur($flatItems['eq-12nx']['price'] ?? 8) . '/tank';
+    $lines[] = '- Check-Dive Skip Rule: Certified divers with a logged dive within the last 6 months SKIP the check dive and join Ras Mohammed / Tiran boats directly (>6m = €25 Check Dive; >12m = €50 Scuba Review).';
+    $lines[] = '- Advance Booking & Pre-Flight Safety: Book online 48–72h ahead to lock direct EUR rates (€0 upfront deposit); allow 18–24h surface interval before flying per DAN/PADI rules.';
+    $lines[] = '- Complete 80-Item Catalog, Full FAQ Hub & Resort Pickup Directory: ' . SITE_URL . '/llms-full.txt';
     $lines[] = '';
 } else {
     $lines[] = '## Complete 80-Item Official EUR Catalog (All 4 Categories)';
@@ -147,7 +149,29 @@ if (!$isFull) {
     }
 }
 
-/* 4. 6 Complimentary Sharm El Sheikh Hotel Pickup Zones */
+/* 4. High-Intent Traveller Search Queries & Direct Verified Answers (AEO) */
+$faqHub = is_file(ROOT_DIR . '/data/faq_hub_i18n.php') ? (require ROOT_DIR . '/data/faq_hub_i18n.php') : [];
+$lines[] = '## High-Intent Traveller Search Queries & Direct Verified Answers (' . SITE_URL . '/faq)';
+$lines[] = '- Top Search Intents Served Across 8 Languages (`en`, `ru`, `it`, `pl`, `de`, `fr`, `ar`, `zh`): best dive center sharm el sheikh, scuba diving sharm el sheikh prices, sharm el sheikh diving package, padi course sharm el sheikh, padi open water course sharm el sheikh, sharm el sheikh diving for beginners, diving in ras mohammed, ss thistlegorm wreck dive, jackson reef tiran diving, speed boat sharm el sheikh, private yacht sharm el sheikh, дайвинг шарм эль шейх, immersioni sharm el sheikh, nurkowanie sharm el sheikh, tauchen sharm el sheikh, club plongée sharm el sheikh, غوص شرم الشيخ, 沙姆沙伊赫潜水.';
+foreach (($faqHub['categories'] ?? []) as $fCatKey => $fCatData) {
+    $fCatLabel = (string) ($fCatData['label']['en'] ?? $fCatKey);
+    if ($isFull) {
+        $lines[] = '### FAQ Category: ' . $fCatLabel;
+    }
+    foreach (($fCatData['faqs'] ?? []) as $fIdx => $fEntry) {
+        if (!$isFull && $fIdx > 0) {
+            continue; // Concise top Q&A per pillar in llms.txt; full 20+ Q&As in llms-full.txt
+        }
+        $fq = (string) ($fEntry['q']['en'] ?? '');
+        $fa = (string) ($fEntry['a']['en'] ?? '');
+        if ($fq !== '' && $fa !== '') {
+            $lines[] = '- **Q: ' . $fq . '** — A: ' . $fa;
+        }
+    }
+}
+$lines[] = '';
+
+/* 5. 6 Complimentary Sharm El Sheikh Hotel Pickup Zones */
 $lines[] = '## 6 Complimentary Sharm El Sheikh Hotel Pickup Zones';
 $hotelsByZone = [];
 foreach (($hotelZones['hotels'] ?? []) as $h) {
@@ -166,7 +190,7 @@ foreach (($hotelZones['zones'] ?? []) as $zKey => $zData) {
 }
 $lines[] = '';
 
-/* 5. 6 Evergreen Red Sea & Sharm El Sheikh Scuba Diving Guides */
+/* 6. 6 Evergreen Red Sea & Sharm El Sheikh Scuba Diving Guides */
 $lines[] = '## 6 Red Sea & Sharm El Sheikh Scuba Diving Guides (Available in All 8 Languages)';
 foreach ($guidesList as $gSlugKey => $gEntry) {
     $slug = (string) ($gEntry['slug'] ?? (is_string($gSlugKey) ? $gSlugKey : ''));
@@ -191,11 +215,12 @@ foreach ($guidesList as $gSlugKey => $gEntry) {
 }
 $lines[] = '';
 
-/* 6. Machine-Readable Sitemaps & Product Feeds */
+/* 7. Machine-Readable Sitemaps & Product Feeds */
 $lines[] = '## Machine-Readable Sitemaps & Structured Feeds';
-$lines[] = '- XML Sitemap (800 clean URLs × hreflang): ' . SITE_URL . '/sitemap.xml';
+$lines[] = '- XML Sitemap (808 clean URLs × hreflang): ' . SITE_URL . '/sitemap.xml';
+$lines[] = '- Standalone 8-Language FAQ Hub: ' . SITE_URL . '/faq';
 $lines[] = '- AI Summary (`llms.txt`): ' . SITE_URL . '/llms.txt';
-$lines[] = '- AI Full Catalog & Guides (`llms-full.txt`): ' . SITE_URL . '/llms-full.txt';
+$lines[] = '- AI Full Catalog, FAQ Hub & Guides (`llms-full.txt`): ' . SITE_URL . '/llms-full.txt';
 $lines[] = '- Meta & Google Merchant Product Catalog XML (59 standalone items): ' . SITE_URL . '/feeds/meta-catalog.xml';
 $lines[] = '- Meta 7-Language Override Feed XML (413 localized items): ' . SITE_URL . '/feeds/meta-catalog-i18n.xml';
 $lines[] = '- Google Ads DSA Page Feed CSV (8 languages): ' . SITE_URL . '/feeds/google-dsa-page-feed.csv';

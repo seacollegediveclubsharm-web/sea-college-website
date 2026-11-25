@@ -100,6 +100,7 @@ $emit = static function (string $url, string $labelStr) use ($out, &$seen): void
 $corePages = [
     ['/', 'CORE_HOME;HIGH_INTENT'],
     ['/prices', 'CORE_PRICES;CALCULATOR;HIGH_INTENT'],
+    ['/faq', 'CORE_FAQ;HIGH_INTENT'],
     ['/services', 'CORE_SERVICES'],
     ['/dive-sites-sharm-el-sheikh', 'DIVE_SITES;C1_DIVE_TRIPS'],
 ];

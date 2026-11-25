@@ -110,7 +110,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/r/([a-zA-Z0-9._-]+)/?$ index.php?lang=$1&seller=$2 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2&trip=$3 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
+  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|faq|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides(\.php)?/?$ guides.php?lang=$1 [L,QSA]
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/([a-z0-9-]+)/?$ guide.php?lang=$1&slug=$2 [L,QSA]
@@ -121,7 +121,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
   # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Internal ERP Mobile App, Dive Sites & Gallery (default English)
-  RewriteRule ^(services|prices|about|contact|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
+  RewriteRule ^(services|prices|about|contact|faq|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
   RewriteRule ^check-in/?$ check-in.php [L,QSA]
   RewriteRule ^app/?$ erp-app.php [L,QSA]
   RewriteRule ^r/([a-zA-Z0-9._-]+)/?$ index.php?seller=$1 [L,QSA]

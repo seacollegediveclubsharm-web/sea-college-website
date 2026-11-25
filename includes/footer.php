@@ -35,6 +35,7 @@ declare(strict_types=1);
         <li><a href="<?= e(page_link('/snorkeling-and-boats-sharm-el-sheikh')) ?>"><?= te('footer_hub_boats') ?></a></li>
         <li><a href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>"><?= te('nav_dive_sites') ?></a></li>
         <li><a href="<?= e(page_link('/guides')) ?>"><?= te('nav_guides') ?></a></li>
+        <li><a href="<?= e(page_link('/faq')) ?>"><?= te('footer_faq') ?></a></li>
         <li><a href="<?= e(page_link('/gallery')) ?>"><?= te('nav_gallery') ?></a></li>
         <li><a href="<?= e(page_link('/prices', 'dive-calculator')) ?>"><?= te('calc_jump_chip') ?></a></li>
         <li><a href="<?= e(page_link('/check-in')) ?>"><?= te('nav_checkin') ?></a></li>

@@ -267,12 +267,15 @@ function sc_resolve_faqs(array $faqs, ?array $i18nMap = null): array
     return $out;
 }
 
+require_once __DIR__ . '/item_seo_enhancer.php';
+
 /**
  * Resolve complete localized SEO/AEO fields for any of the 80 catalog items.
  */
 function sc_resolve_item_seo(array $it, array $seo): array
 {
     $lang = defined('LANG') ? LANG : 'en';
+    $resolved = null;
 
     // 1) Native EN / AR from core data/seo_*.php
     if ($lang === 'en' || $lang === 'ar') {
@@ -284,7 +287,7 @@ function sc_resolve_item_seo(array $it, array $seo): array
         foreach (($seo['steps'] ?? []) as $st) {
             $steps[] = [$lang === 'ar' ? ($st[1] ?? $st[0]) : $st[0], $lang === 'ar' ? ($st[3] ?? $st[2]) : $st[2]];
         }
-        return [
+        $resolved = [
             'h1'         => loc($seo['h1'] ?? null) ?: item_name($it),
             'meta_title' => loc($seo['meta_title'] ?? null) ?: (item_name($it) . ' | ' . SITE_NAME),
             'meta_desc'  => loc($seo['meta_desc'] ?? null) ?: item_desc($it),
@@ -297,12 +300,13 @@ function sc_resolve_item_seo(array $it, array $seo): array
             'ideal_for'  => $seo['ideal_for'][$lang] ?? $seo['ideal_for']['en'] ?? [],
             'faqs'       => sc_resolve_faqs($seo['faqs'] ?? []),
         ];
+        return sc_enrich_item_seo($it, $seo, $resolved);
     }
 
     // 2) Bespoke per-item translation in data/i18n/{lang}/items_seo.php
     $custom = $seo['i18n'][$lang] ?? null;
     if (is_array($custom) && !empty($custom['h1'])) {
-        return [
+        $resolved = [
             'h1'         => (string) $custom['h1'],
             'meta_title' => (string) ($custom['meta_title'] ?? ($custom['h1'] . ' | ' . SITE_NAME)),
             'meta_desc'  => (string) ($custom['meta_desc'] ?? item_desc($it)),
@@ -315,6 +319,7 @@ function sc_resolve_item_seo(array $it, array $seo): array
             'ideal_for'  => (array) ($custom['ideal_for'] ?? []),
             'faqs'       => sc_resolve_faqs($custom['faqs'] ?? []),
         ];
+        return sc_enrich_item_seo($it, $seo, $resolved);
     }
 
     // 3) Smart localized group-aware generator from data/i18n/{lang}/item_templates.php
@@ -324,11 +329,11 @@ function sc_resolve_item_seo(array $it, array $seo): array
         if (is_callable($builder)) {
             $built = $builder($it, $seo);
             $built['faqs'] = sc_resolve_faqs($built['faqs'] ?? []);
-            return $built;
+            return sc_enrich_item_seo($it, $seo, $built);
         }
     }
 
-    return [
+    $resolved = [
         'h1'         => item_name($it),
         'meta_title' => item_name($it) . ' | ' . SITE_NAME,
         'meta_desc'  => item_desc($it),
@@ -341,4 +346,5 @@ function sc_resolve_item_seo(array $it, array $seo): array
         'ideal_for'  => [],
         'faqs'       => [],
     ];
+    return sc_enrich_item_seo($it, $seo, $resolved);
 }

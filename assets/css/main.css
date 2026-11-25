@@ -376,8 +376,8 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
   .header-mobile-actions { display: none; }
   .nav-toggle { display: none; }
   .site-nav { position: static; display: flex !important; flex: 1 1 auto; min-width: 0; justify-content: flex-end; align-items: center; gap: .45rem; padding: 0; box-shadow: none; border: 0; background: transparent; max-height: none; overflow: visible; }
-  .site-nav__list { display: flex; align-items: center; gap: .08rem; margin: 0; min-width: 0; }
-  .site-nav__list a { border: 0; padding: .4rem .4rem; border-radius: var(--radius-sm); white-space: nowrap; font-size: .81rem; }
+  .site-nav__list { display: flex; align-items: center; gap: .05rem; margin: 0; min-width: 0; }
+  .site-nav__list a { border: 0; padding: .38rem .34rem; border-radius: var(--radius-sm); white-space: nowrap; font-size: .79rem; }
   .site-nav__list a:hover { background: var(--sand); }
   .site-nav__tools { flex: none; flex-wrap: nowrap; gap: .35rem; }
   .switcher { padding: .36rem .38rem; font-size: .8rem; }
@@ -387,10 +387,10 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
   .site-nav__tools .btn--sm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 @media (min-width: 1420px) {
-  .site-header__inner { width: min(100% - 2.5rem, 1400px); gap: .75rem; }
-  .site-nav { gap: .65rem; }
-  .site-nav__list { gap: .15rem; }
-  .site-nav__list a { padding: .44rem .5rem; font-size: .87rem; }
+  .site-header__inner { width: min(100% - 2.5rem, 1400px); gap: .7rem; }
+  .site-nav { gap: .55rem; }
+  .site-nav__list { gap: .12rem; }
+  .site-nav__list a { padding: .42rem .44rem; font-size: .85rem; }
   .switcher { padding: .4rem .45rem; font-size: .84rem; }
   [data-lang-switch] { max-width: 132px; }
   .site-nav__tools .btn--sm { padding: .44rem .8rem; font-size: .85rem; max-width: 215px; }
@@ -985,6 +985,22 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
 .guide-toc__list a:hover { text-decoration: underline; }
 .guide-side-title { font-size: 1.15rem; margin-bottom: .45rem; }
 
+/* Smart Cross-Sell Upgrades & Per-Trip Traveller FAQ on item.php */
+#upgrades, #faq { scroll-margin-top: calc(var(--header-h) + 1rem); }
+.pcard--upgrade { border-color: rgba(10, 132, 168, .28); }
+.pcard__badge--upgrade { background: linear-gradient(135deg, var(--navy), var(--ocean-dark)); color: #fff; border: 1px solid rgba(52, 224, 161, .45); box-shadow: 0 4px 12px rgba(11, 29, 44, .25); }
+.pcard__foot--upgrade { flex-direction: column; align-items: stretch; gap: .6rem; }
+.pcard__actions--upgrade { display: flex; flex-wrap: wrap; gap: .4rem; width: 100%; }
+.pcard__actions--upgrade .btn { flex: 1 1 auto; justify-content: center; padding-inline: .6rem; font-size: .81rem; }
+.faq-trust-pills { list-style: none; padding: 0; margin: .9rem 0 0; display: flex; flex-wrap: wrap; gap: .48rem; }
+.faq-trust-pills li { display: inline-flex; align-items: center; gap: .3rem; background: #fff; border: 1px solid #c7e1ec; color: var(--navy); font-weight: 700; font-size: .82rem; padding: .34rem .75rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(11, 29, 44, .05); }
+.item-faq-grid .faq { display: grid; grid-template-columns: 1fr; gap: .65rem; }
+.item-faq-grid .faq__item { margin-bottom: 0; }
+@media (min-width: 960px) {
+  .item-faq-grid .faq { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+.item-faq-more { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin: 1.5rem 0 0; }
+
 /* ==========================================================================
    Pre-Arrival Diver Check-In Portal
    ========================================================================== */
@@ -1004,7 +1020,25 @@ form.is-loading button[type="submit"] { opacity: .6; pointer-events: none; }
 @media (min-width: 640px) {
   .med-box__row { grid-template-columns: 1fr 125px; gap: 1rem; }
 }
+
+/* Standalone /faq Hub Filter & Categorized Sections */
+.faq-hub__controls { margin-bottom: 2rem; background: linear-gradient(180deg, #f5fbfd 0%, #ffffff 100%); border-color: #c7e1ec; }
+.faq-hub__search-wrap { margin-bottom: .85rem; }
+.faq-hub__search { width: 100%; font: inherit; font-size: 1rem; padding: .78rem 1.1rem; border-radius: 999px; border: 1px solid #bfd6e2; background: #fff; color: var(--ink); }
+.faq-hub__search:focus { border-color: var(--ocean); outline: 2px solid rgba(10, 132, 168, .2); }
+.faq-hub__pills { display: flex; flex-wrap: wrap; gap: .45rem; }
+.faq-pill { font: inherit; font-size: .84rem; font-weight: 700; padding: .45rem .85rem; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--navy); cursor: pointer; transition: background-color .15s, color .15s, border-color .15s; }
+.faq-pill:hover { border-color: var(--ocean); background: #eef7fb; }
+.faq-pill.is-active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.faq-cat { margin-bottom: 2.25rem; scroll-margin-top: calc(var(--header-h) + 1rem); }
+.faq-cat__title { font-size: clamp(1.22rem, 2.5vw, 1.55rem); margin-bottom: .9rem; padding-bottom: .45rem; border-bottom: 2px solid var(--line); display: flex; align-items: center; gap: .45rem; }
+.faq-hub__empty { margin-top: 1rem; }
 /* === END === */
+
+.aeo-box { background: #f2f8fb; border: 1px solid #c7e1ec; border-inline-start: 5px solid var(--ocean); border-radius: var(--radius); padding: 1.25rem 1.4rem; margin-bottom: 2rem; }
+.aeo-box__label { font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ocean-dark); margin: 0 0 .45rem; }
+[dir="rtl"] .aeo-box__label { letter-spacing: 0; text-transform: none; font-size: .95rem; }
+.aeo-box__text { margin: 0; font-size: 1.02rem; line-height: 1.65; color: var(--navy); font-weight: 500; }
 
 .seller-pill { display: flex; width: fit-content; max-width: 100%; flex-wrap: wrap; align-items: center; gap: .38rem .55rem; margin: 0 0 .85rem; padding: .38rem .85rem .38rem .48rem; border-radius: 999px; background: rgba(11, 29, 44, .84); border: 1px solid rgba(52, 224, 161, .48); color: #eef8fc; font-size: .82rem; line-height: 1.35; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); backdrop-filter: blur(6px); }
 .seller-pill__dot { width: 20px; height: 20px; border-radius: 50%; background: #34e0a1; color: #08281c; font-size: .74rem; font-weight: 900; display: inline-grid; place-items: center; flex: none; }

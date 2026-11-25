@@ -1910,6 +1910,54 @@
     }
   });
 
+  /* ---------------- Standalone /faq Hub Search & Category Filter ---------------- */
+  $$('[data-faq-hub]').forEach(function (hub) {
+    var searchInp = $('[data-faq-search]', hub);
+    var pills = $$('[data-faq-filter]', hub);
+    var sections = $$('[data-faq-section]', hub);
+    var emptyEl = $('[data-faq-empty]', hub);
+    var activeCat = 'all';
+
+    function filterFaqs() {
+      var q = searchInp ? String(searchInp.value || '').trim().toLowerCase() : '';
+      var totalShown = 0;
+      sections.forEach(function (sec) {
+        var catKey = sec.getAttribute('data-faq-section');
+        var catMatch = (activeCat === 'all' || activeCat === catKey);
+        var entries = $$('[data-faq-entry]', sec);
+        var secShown = 0;
+        entries.forEach(function (det) {
+          var hay = det.getAttribute('data-faq-entry') || '';
+          var show = catMatch && (q === '' || hay.indexOf(q) !== -1);
+          det.hidden = !show;
+          if (show) {
+            secShown++;
+            totalShown++;
+            if (q.length >= 2) { det.open = true; }
+          }
+        });
+        sec.hidden = (secShown === 0);
+      });
+      if (emptyEl) { emptyEl.hidden = (totalShown > 0); }
+    }
+
+    pills.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        activeCat = btn.getAttribute('data-faq-filter') || 'all';
+        pills.forEach(function (b) {
+          var on = (b === btn);
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', String(on));
+        });
+        filterFaqs();
+      });
+    });
+
+    if (searchInp) {
+      searchInp.addEventListener('input', filterFaqs);
+    }
+  });
+
   /* Re-sync calculator & quiz numbers whenever currency changes */
   $$('[data-currency-switch]').forEach(function (sel) {
     sel.addEventListener('change', function () {

@@ -525,4 +525,4 @@ return array_replace([
     'side_promo_1' => '€0 upfront card charge — pay at the dive center',
     'side_promo_2' => 'Free Sharm El Sheikh hotel pickup on dive packages',
     'side_promo_3' => 'Training pool + beachfront House Reef + dive boats',
-], (require __DIR__ . '/features_v2_i18n.php')['en']);
+], (require __DIR__ . '/features_v2_i18n.php')['en'], (require __DIR__ . '/seo_faq_upgrades_i18n.php')['en']);

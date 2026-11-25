@@ -112,7 +112,7 @@ $included = $resolved['included'];
 $excluded = $resolved['excluded'];
 $idealFor = $resolved['ideal_for'];
 $faqs     = $resolved['faqs'];
-$related  = catalog_related($catalog, $it, $seo['related'] ?? [], 4);
+$upgrades = sc_recommended_upgrades($catalog, $it, $seo['related'] ?? [], 4);
 
 $revList  = $gbp['reviews'] ?? [];
 $revIdx   = (int) ($seo['review_idx'] ?? 0);
@@ -293,12 +293,6 @@ require ROOT_DIR . '/includes/header.php';
         </figure>
         <?php endif; ?>
 
-        <?php if ($faqs): ?>
-        <div class="item-block" id="faq">
-          <h2><?= te('faq_title') ?></h2>
-          <?= faq_pairs_html($faqs) ?>
-        </div>
-        <?php endif; ?>
       </article>
 
       <aside class="item-sidebar">
@@ -386,15 +380,44 @@ require ROOT_DIR . '/includes/header.php';
   </div>
 </section>
 
-<?php if ($related): ?>
-<section class="section">
+<?php if ($upgrades): ?>
+<section class="section section--upgrades" id="upgrades">
   <div class="container">
     <header class="section__head">
-      <h2><?= te('related_title') ?></h2>
+      <p class="eyebrow"><?= te('upgrades_eyebrow') ?></p>
+      <h2 dir="auto"><?= te('upgrades_title') ?></h2>
+      <p dir="auto"><?= te('upgrades_sub', ['item' => item_name($it)]) ?></p>
     </header>
     <div class="cards cards--4">
-      <?php foreach ($related as $rel): ?><?= product_card($rel) ?><?php endforeach; ?>
+      <?php foreach ($upgrades as $up): ?><?= upgrade_product_card($up['item'], $up['badge_key'], $it) ?><?php endforeach; ?>
     </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<?php if ($faqs): ?>
+<section class="section section--tint section--item-faq" id="faq">
+  <div class="container">
+    <header class="section__head">
+      <p class="eyebrow"><?= te('item_faq_eyebrow') ?></p>
+      <h2 dir="auto"><?= te('item_faq_title', ['item' => item_name($it)]) ?></h2>
+      <p dir="auto"><?= te('item_faq_sub') ?></p>
+      <ul class="faq-trust-pills">
+        <li><?= te('item_faq_pill_1') ?></li>
+        <li><?= te('item_faq_pill_2') ?></li>
+        <li><?= te('item_faq_pill_3') ?></li>
+        <li><?= te('item_faq_pill_4') ?></li>
+      </ul>
+    </header>
+    <div class="item-faq-grid">
+      <?= faq_pairs_html($faqs) ?>
+    </div>
+    <p class="item-faq-more no-print">
+      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="item_faq_hub">❓ <?= te('item_faq_view_all') ?> →</a>
+      <a class="btn btn--wa" href="<?= e(whatsapp_link(item_name($it) . ' — FAQ', 'item_faq_wa')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="item_faq_wa">
+        <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('ask_whatsapp') ?></span>
+      </a>
+    </p>
   </div>
 </section>
 <?php endif; ?>

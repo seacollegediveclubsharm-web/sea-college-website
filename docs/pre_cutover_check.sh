@@ -51,12 +51,14 @@ check_code() {
 echo "=== 1. Core Routes, 4 Category Hubs & Security Boundaries ($BASE_URL) ==="
 for p in \
   "/" "/services.php" "/prices.php" "/about.php" "/contact.php" "/privacy-policy.php" "/terms.php" "/sitemap.xml" "/robots.txt" \
-  "/services" "/prices" "/about" "/contact" "/privacy-policy" "/terms" \
+  "/services" "/prices" "/about" "/contact" "/faq" "/privacy-policy" "/terms" \
   "/guides" \
   "/guides/best-time-to-dive-sharm-el-sheikh" \
   "/ru/guides/ss-thistlegorm-wreck-diving-guide" \
   "/check-in" \
   "/de/check-in" \
+  "/de/faq" \
+  "/zh/faq" \
   "/de/prices" \
   "/diving-trips-sharm-el-sheikh" \
   "/diving-courses-sharm-el-sheikh" \
@@ -163,14 +165,25 @@ for lg in ru it pl de fr zh; do
   done
 done
 
-echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Calculator, Dive Map & Gallery Checks ==="
+echo "=== 4. Item Page Gallery + VideoObject, Side Banners, Upgrades, FAQ, Calculator, Dive Map & Gallery Checks ==="
 course_html=$(fetch_body "/courses/padi-open-water-diver-sharm-el-sheikh")
-for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side' 'data-quick-book' 'mobile-item-bar' 'data-hotel-checker'; do
+for needle in '"@type":"Course"' '"@type":"Product"' '"@type":"VideoObject"' '"@type":"FAQPage"' 'SpeakableSpecification' 'quick-answer' 'data-item-gallery' 'promo-banner--side' 'data-quick-book' 'mobile-item-bar' 'data-hotel-checker' 'id="upgrades"' 'upgrade_quickbook' 'faq-trust-pills'; do
   if grep -q "$needle" <<<"$course_html"; then
-    echo "PASS [course AEO/gallery/quick-book] $needle"
+    echo "PASS [course AEO/gallery/quick-book/upgrades] $needle"
     pass=$((pass + 1))
   else
-    echo "FAIL [course AEO/gallery/quick-book] $needle"
+    echo "FAIL [course AEO/gallery/quick-book/upgrades] $needle"
+    fail=$((fail + 1))
+  fi
+done
+
+faq_html=$(fetch_body "/faq")
+for needle in '"@type":"FAQPage"' 'SpeakableSpecification' 'data-faq-hub' 'data-hotel-checker'; do
+  if grep -q "$needle" <<<"$faq_html"; then
+    echo "PASS [standalone /faq hub] $needle"
+    pass=$((pass + 1))
+  else
+    echo "FAIL [standalone /faq hub] $needle missing"
     fail=$((fail + 1))
   fi
 done
@@ -255,11 +268,11 @@ done
 smap_xml=$(fetch_body "/sitemap.xml")
 smap_count=$(grep -c "<loc>" <<<"$smap_xml" || true)
 smap_php_count=$(grep -c "\.php</loc>" <<<"$smap_xml" || true)
-if [[ "$smap_count" -ge 800 && "$smap_php_count" -eq 0 ]]; then
+if [[ "$smap_count" -ge 808 && "$smap_php_count" -eq 0 ]]; then
   echo "PASS [sitemap] $smap_count clean extensionless <loc> URLs (0 .php URLs)"
   pass=$((pass + 1))
 else
-  echo "FAIL [sitemap] expected >= 800 clean <loc> URLs & 0 .php URLs, got count=$smap_count php=$smap_php_count"
+  echo "FAIL [sitemap] expected >= 808 clean <loc> URLs & 0 .php URLs, got count=$smap_count php=$smap_php_count"
   fail=$((fail + 1))
 fi
 

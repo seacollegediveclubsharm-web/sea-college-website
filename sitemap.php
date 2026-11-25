@@ -10,6 +10,7 @@ $pages = [
     ['/services', '0.9', 'weekly', '/services.php'],
     ['/dive-sites-sharm-el-sheikh', '0.9', 'weekly', '/dive-sites.php'],
     ['/guides', '0.85', 'weekly', '/guides.php'],
+    ['/faq', '0.85', 'weekly', '/faq.php'],
     ['/prices', '0.9', 'weekly', '/prices.php'],
     ['/gallery', '0.8', 'weekly', '/gallery.php'],
     ['/about', '0.6', 'monthly', '/about.php'],

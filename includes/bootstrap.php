@@ -146,7 +146,7 @@ function strip_lang_prefix(string $path): string
     if ($p === '/dive-sites.php') {
         return '/dive-sites-sharm-el-sheikh';
     }
-    $p = (string) preg_replace('#^/(services|prices|about|contact|privacy-policy|terms|check-in|guides|gallery|thank-you)\.php$#i', '/$1', $p);
+    $p = (string) preg_replace('#^/(services|prices|about|contact|faq|privacy-policy|terms|check-in|guides|gallery|thank-you)\.php$#i', '/$1', $p);
     return str_starts_with($p, '/') ? $p : '/' . $p;
 }
 

@@ -198,6 +198,9 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container container--narrow">
     <?= section_head('faq_title') ?>
     <?= faq_list([1, 2, 3, 4, 5, 6]) ?>
+    <p class="center hero__ctas hero__ctas--center">
+      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="home_faq_all">❓ <?= te('item_faq_view_all') ?> →</a>
+    </p>
   </div>
 </section>
 

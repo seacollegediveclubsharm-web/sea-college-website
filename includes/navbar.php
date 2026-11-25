@@ -8,6 +8,7 @@ $sc_nav = [
     ['dive-sites', '/dive-sites-sharm-el-sheikh', 'nav_dive_sites'],
     ['prices', '/prices', 'nav_prices'],
     ['gallery', '/gallery', 'nav_gallery'],
+    ['faq', '/faq', 'nav_faq'],
     ['about', '/about', 'nav_about'],
     ['contact', '/contact', 'nav_contact'],
 ];
