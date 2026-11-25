@@ -278,12 +278,12 @@ SYS;
         'contents'          => [['role' => 'user', 'parts' => [['text' => $userPrompt]]]],
         'generationConfig'  => [
             'temperature'      => 0.35,
-            'maxOutputTokens'  => 350,
+            'maxOutputTokens'  => 1200,
             'responseMimeType' => 'application/json',
         ],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    $models = ['gemini-flash-lite-latest', 'gemini-flash-latest', 'gemini-3.6-flash'];
+    $models = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
     $raw = '';
     $code = 0;
     foreach ($models as $model) {
@@ -294,7 +294,7 @@ SYS;
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_POSTFIELDS     => $payloadJson,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_TIMEOUT        => 12,
         ]);
         $raw = (string) curl_exec($ch);
         $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -308,7 +308,12 @@ SYS;
         return null;
     }
     $outer = json_decode($raw, true);
-    $jsonText = (string) ($outer['candidates'][0]['content']['parts'][0]['text'] ?? '');
+    $jsonText = '';
+    foreach (($outer['candidates'][0]['content']['parts'] ?? []) as $part) {
+        if (empty($part['thought']) && isset($part['text']) && is_string($part['text'])) {
+            $jsonText = $part['text'];
+        }
+    }
     if ($jsonText === '') {
         return null;
     }

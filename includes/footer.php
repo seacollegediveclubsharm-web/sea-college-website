@@ -111,3 +111,28 @@ declare(strict_types=1);
 </div>
 </body>
 </html>
+<?php
+if (
+    defined('LARA_EMAIL_AUTOREPLY') && LARA_EMAIL_AUTOREPLY
+    && SMTP_USER !== '' && SMTP_PASS !== ''
+    && defined('GEMINI_API_KEY') && GEMINI_API_KEY !== ''
+    && (function_exists('litespeed_finish_request') || function_exists('fastcgi_finish_request'))
+) {
+    $scEmailStamp = LEADS_STORAGE_DIR . '/.lara_email_poll.stamp';
+    if (!is_file($scEmailStamp) || (time() - (int) @filemtime($scEmailStamp)) >= 180) {
+        @touch($scEmailStamp);
+        @ignore_user_abort(true);
+        if (function_exists('litespeed_finish_request')) {
+            @litespeed_finish_request();
+        } elseif (function_exists('fastcgi_finish_request')) {
+            @fastcgi_finish_request();
+        }
+        try {
+            require_once ROOT_DIR . '/includes/lara_email_concierge.php';
+            lara_email_poll_and_reply(true, 2, null);
+        } catch (\Throwable $e) {
+            error_log('Lara email background poll error: ' . $e->getMessage());
+        }
+    }
+}
+

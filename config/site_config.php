@@ -191,6 +191,10 @@ define('SMTP_PORT', (int) sc_env('SMTP_PORT', '465'));
 define('SMTP_USER', sc_env('SMTP_USER', ''));
 define('SMTP_PASS', sc_env('SMTP_PASS', ''));                // secret: env only
 define('MAIL_FROM', sc_env('MAIL_FROM', SMTP_USER !== '' ? SMTP_USER : 'no-reply@seacollegediveclub.com'));
+define('IMAP_HOST', sc_env('IMAP_HOST', 'imap.hostinger.com'));
+define('IMAP_PORT', (int) sc_env('IMAP_PORT', '993'));
+define('LARA_EMAIL_AUTOREPLY', sc_env('LARA_EMAIL_AUTOREPLY', '1') === '1');
+define('OWNER_COPY_EMAIL', sc_env('OWNER_COPY_EMAIL', 'seacollegediveclubsharm@gmail.com'));
 define('CRM_WEBHOOK_URL', sc_env('CRM_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec')); // Leads & OCT CRM Sheet webhook
 define('LEADS_STORAGE_DIR', sc_env('LEADS_STORAGE_DIR', dirname(__DIR__) . '/storage'));
 define('RATE_LIMIT_SECONDS', 20);                             // min seconds between submissions per session
