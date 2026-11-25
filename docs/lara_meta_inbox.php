@@ -29,10 +29,11 @@ if ($cmd === 'simulate') {
     $sample = trim((string) ($argv[2] ?? 'Hello, how much for diving tomorrow?'));
     $plan = lara_generate_reply($sample, 'messenger', 'Guest');
     echo "=== Lara Concierge Simulation ===\n";
-    echo "Input   : {$sample}\n";
-    echo "Lang    : {$plan['lang']} | Intent: {$plan['intent']} | Urgent: " . ($plan['urgent_human'] ? 'YES' : 'NO') . "\n";
+    echo "Input        : {$sample}\n";
+    echo "Should Reply : " . (!empty($plan['should_reply']) ? 'YES' : 'NO (SILENT — vendor/staff/closing/unrelated)') . "\n";
+    echo "Lang         : {$plan['lang']} | Intent: {$plan['intent']} | Urgent: " . ($plan['urgent_human'] ? 'YES' : 'NO') . "\n";
     echo "---------------------------------\n";
-    echo $plan['reply'] . "\n";
+    echo ($plan['reply'] !== '' ? $plan['reply'] : '[No auto-reply sent]') . "\n";
     exit(0);
 }
 
@@ -101,7 +102,8 @@ if ($cmd === 'status') {
     echo "=== Lara — Meta Inbox & Engagement Status ===\n";
     echo "Facebook Page : {$pgRes['data']['name']} (ID: " . META_PAGE_ID . ")\n";
     echo "Instagram     : @" . ($igHandle ?: 'not-linked') . " (ID: " . ($igId ?: 'none') . ")\n";
-    echo "WhatsApp      : +" . WHATSAPP_NUMBER . " (https://wa.me/" . WHATSAPP_NUMBER . ")\n";
+    echo "WhatsApp      : +" . WHATSAPP_NUMBER . " (Auto-Reply: " . (LARA_WHATSAPP_AUTOREPLY ? 'ENABLED' : 'OFF — Human WhatsApp Web protected') . ")\n";
+    echo "AI Brain      : " . ((defined('GEMINI_API_KEY') && GEMINI_API_KEY !== '') ? 'Gemini 2.5 Flash (multi-turn contextual)' : 'Concise single-greeting fallback (set GEMINI_API_KEY for full AI)') . "\n";
     echo "Webhook URL   : " . SITE_URL . "/webhooks/meta-inbox (Verify Token: " . META_WEBHOOK_VERIFY_TOKEN . ")\n";
 
     $fbConv = lara_graph('GET', META_PAGE_ID . '/conversations', ['platform' => 'messenger', 'limit' => 3], $pageToken);
@@ -112,7 +114,7 @@ if ($cmd === 'status') {
 }
 
 if ($cmd === 'subscribe-webhooks') {
-    echo "=== Subscribing Page, Instagram & WABA to Lara Real-Time Webhook ===\n";
+    echo "=== Subscribing Page & Instagram to Lara Real-Time Webhook ===\n";
     $desiredFields = ['messages', 'messaging_postbacks', 'feed', 'leadgen'];
     $pgSub = lara_graph('POST', META_PAGE_ID . '/subscribed_apps', [
         'subscribed_fields' => implode(',', $desiredFields),
@@ -152,8 +154,13 @@ if ($cmd === 'subscribe-webhooks') {
     }
 
     if (META_WABA_ID !== '') {
-        $waSub = lara_graph('POST', META_WABA_ID . '/subscribed_apps', [], META_ACCESS_TOKEN);
-        echo "WhatsApp WABA (" . META_WABA_ID . ") : HTTP {$waSub['status']} " . json_encode($waSub['data']) . "\n";
+        if (LARA_WHATSAPP_AUTOREPLY) {
+            $waSub = lara_graph('POST', META_WABA_ID . '/subscribed_apps', [], META_ACCESS_TOKEN);
+            echo "WhatsApp WABA (" . META_WABA_ID . ") [ENABLED] : HTTP {$waSub['status']} " . json_encode($waSub['data']) . "\n";
+        } else {
+            $waUnsub = lara_graph('DELETE', META_WABA_ID . '/subscribed_apps', [], META_ACCESS_TOKEN);
+            echo "WhatsApp WABA (" . META_WABA_ID . ") [PROTECTED / OFF] : HTTP {$waUnsub['status']} " . json_encode($waUnsub['data']) . "\n";
+        }
     }
     exit(0);
 }
@@ -225,12 +232,19 @@ if ($cmd === 'sweep-unanswered') {
                     array_unshift($guestChunks, $mTxt);
                 }
             }
-            $guestText = !empty($guestChunks) ? implode(' ', $guestChunks) : 'Hello';
+            $guestText = !empty($guestChunks) ? implode(' ', $guestChunks) : '';
+            if ($guestText === '') {
+                continue;
+            }
+            $plan = lara_generate_reply($guestText, $platform, $fromName);
+            if (empty($plan['should_reply'])) {
+                continue; // Skip non-customer / thank-you / bot threads
+            }
+
             $createdTs = strtotime((string) ($latest['created_time'] ?? '')) ?: 0;
             $ageHours = $createdTs > 0 ? round((time() - $createdTs) / 3600, 1) : 999;
 
             $totalUnanswered++;
-            $plan = lara_generate_reply($guestText, $platform, $fromName);
 
             echo "\n  -> Unanswered [{$platform}] Thread {$th['id']} | Guest: {$fromName} ({$fromId}) | Age: {$ageHours}h\n";
             echo "     Guest said : " . mb_substr($guestText, 0, 180, 'UTF-8') . "\n";

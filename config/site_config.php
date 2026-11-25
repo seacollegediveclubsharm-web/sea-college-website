@@ -164,6 +164,8 @@ define('META_WABA_PHONE_ID', sc_env('META_WABA_PHONE_ID', '1394410417097578')); 
 define('META_WEBHOOK_VERIFY_TOKEN', sc_env('META_WEBHOOK_VERIFY_TOKEN', 'sc_lara_inbox_2026'));
 define('META_APP_SECRET', sc_secret('META_APP_SECRET', ''));
 define('META_GRAPH_VERSION', 'v21.0');
+define('LARA_WHATSAPP_AUTOREPLY', sc_env('LARA_WHATSAPP_AUTOREPLY', '0') === '1'); // OFF by default: protects live WhatsApp Web team/vendor/captain chats
+define('GEMINI_API_KEY', sc_secret('GEMINI_API_KEY', '')); // Optional Gemini 2.5 Flash key for natural contextual multi-turn concierge replies
 define('TIKTOK_PIXEL_ID', sc_secret('TIKTOK_PIXEL_ID', ''));
 define('MICROSOFT_UET_ID', sc_secret('MICROSOFT_UET_ID', ''));
 define('LINKEDIN_PARTNER_ID', sc_env('LINKEDIN_PARTNER_ID', ''));

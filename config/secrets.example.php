@@ -24,6 +24,8 @@ return [
     'META_CAPI_TOKEN'     => '', // Meta System User Access Token (powers both Server-Side CAPI & Hossam's Graph API sync)
     'META_ACCESS_TOKEN'   => '', // Optional separate Marketing/Catalog API token (defaults to META_CAPI_TOKEN if empty)
     'META_CAPI_TEST_CODE' => '',
+    'GEMINI_API_KEY'      => '', // Recommended: Google AI Studio API key so Lara understands context & replies naturally in 2-4 human sentences
+    'LARA_WHATSAPP_AUTOREPLY' => '0', // Keep '0' when team uses WhatsApp Web directly with captains/vendors/guests
     'TIKTOK_PIXEL_ID'     => '', // Optional TikTok Ads Pixel ID
     'MICROSOFT_UET_ID'    => '', // Optional Microsoft/Bing Ads UET Tag ID
 
