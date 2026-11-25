@@ -66,15 +66,20 @@ function lara_graph(string $method, string $path, array $params, string $token, 
     curl_setopt_array($ch, [
         CURLOPT_URL            => $url,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 20,
+        CURLOPT_TIMEOUT        => 45,
     ]);
     $raw = (string) curl_exec($ch);
+    $err = curl_error($ch);
     $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     $decoded = json_decode($raw, true);
+    $data = is_array($decoded) ? $decoded : ['raw' => $raw];
+    if ($code === 0 && $err !== '') {
+        $data['error'] = ['message' => 'cURL timeout/network error: ' . $err];
+    }
     return [
         'status' => $code,
-        'data'   => is_array($decoded) ? $decoded : ['raw' => $raw],
+        'data'   => $data,
     ];
 }
 
@@ -107,11 +112,44 @@ if ($cmd === 'status') {
 }
 
 if ($cmd === 'subscribe-webhooks') {
-    echo "=== Subscribing Page & WABA to Lara Real-Time Webhook ===\n";
+    echo "=== Subscribing Page, Instagram & WABA to Lara Real-Time Webhook ===\n";
+    $desiredFields = ['messages', 'messaging_postbacks', 'feed', 'leadgen'];
     $pgSub = lara_graph('POST', META_PAGE_ID . '/subscribed_apps', [
-        'subscribed_fields' => 'messages,messaging_postbacks,feed,leadgen',
+        'subscribed_fields' => implode(',', $desiredFields),
     ], $pageToken);
-    echo "Facebook Page (" . META_PAGE_ID . ") : HTTP {$pgSub['status']} " . json_encode($pgSub['data']) . "\n";
+    echo "Facebook Page (" . META_PAGE_ID . ") [all fields] : HTTP {$pgSub['status']} " . json_encode($pgSub['data']) . "\n";
+
+    if ($pgSub['status'] !== 200) {
+        $permitted = [];
+        foreach ($desiredFields as $field) {
+            $tryField = lara_graph('POST', META_PAGE_ID . '/subscribed_apps', [
+                'subscribed_fields' => $field,
+            ], $pageToken);
+            if ($tryField['status'] === 200) {
+                $permitted[] = $field;
+            } else {
+                echo "  -> Field '{$field}' skipped: " . ($tryField['data']['error']['message'] ?? "HTTP {$tryField['status']}") . "\n";
+            }
+        }
+        if (!empty($permitted)) {
+            $finalPgSub = lara_graph('POST', META_PAGE_ID . '/subscribed_apps', [
+                'subscribed_fields' => implode(',', $permitted),
+            ], $pageToken);
+            echo "Facebook Page (" . META_PAGE_ID . ") [permitted: " . implode(',', $permitted) . "] : HTTP {$finalPgSub['status']} " . json_encode($finalPgSub['data']) . "\n";
+        }
+    }
+
+    if ($igId !== '') {
+        $igSub = lara_graph('POST', $igId . '/subscribed_apps', [
+            'subscribed_fields' => 'messages,comments',
+        ], $pageToken);
+        if ($igSub['status'] !== 200) {
+            $igSub = lara_graph('POST', $igId . '/subscribed_apps', [
+                'subscribed_fields' => 'messages,comments',
+            ], META_ACCESS_TOKEN);
+        }
+        echo "Instagram (" . $igId . ") : HTTP {$igSub['status']} " . json_encode($igSub['data']) . "\n";
+    }
 
     if (META_WABA_ID !== '') {
         $waSub = lara_graph('POST', META_WABA_ID . '/subscribed_apps', [], META_ACCESS_TOKEN);
@@ -127,18 +165,39 @@ if ($cmd === 'sweep-unanswered') {
     $totalSent = 0;
 
     foreach (['messenger', 'instagram'] as $platform) {
-        $res = lara_graph('GET', META_PAGE_ID . '/conversations', [
-            'platform' => $platform,
-            'fields'   => 'id,updated_time,unread_count,participants,messages.limit(5){id,created_time,from,message}',
-            'limit'    => 50,
-        ], $pageToken);
-
-        if ($res['status'] !== 200) {
-            echo "[{$platform}] Blocked (HTTP {$res['status']}): " . ($res['data']['error']['message'] ?? 'Missing permission') . "\n";
-            continue;
+        $threads = [];
+        $after = '';
+        $blocked = false;
+        for ($page = 0; $page < 5; $page++) {
+            $params = [
+                'platform' => $platform,
+                'fields'   => 'id,updated_time,unread_count,participants,messages.limit(5){id,created_time,from,message}',
+                'limit'    => 10,
+            ];
+            if ($after !== '') {
+                $params['after'] = $after;
+            }
+            $res = lara_graph('GET', META_PAGE_ID . '/conversations', $params, $pageToken);
+            if ($res['status'] !== 200) {
+                if ($page === 0) {
+                    echo "[{$platform}] Blocked (HTTP {$res['status']}): " . ($res['data']['error']['message'] ?? 'Missing permission') . "\n";
+                    $blocked = true;
+                }
+                break;
+            }
+            $batch = $res['data']['data'] ?? [];
+            foreach ($batch as $item) {
+                $threads[] = $item;
+            }
+            $after = (string) ($res['data']['paging']['cursors']['after'] ?? '');
+            if ($after === '' || count($batch) < 10) {
+                break;
+            }
         }
 
-        $threads = $res['data']['data'] ?? [];
+        if ($blocked) {
+            continue;
+        }
         echo "[{$platform}] Checked " . count($threads) . " conversation threads.\n";
 
         foreach ($threads as $th) {
@@ -154,10 +213,19 @@ if ($cmd === 'sweep-unanswered') {
                 continue; // Already answered by Sea College Dive Club!
             }
 
-            $guestText = trim((string) ($latest['message'] ?? 'Hello'));
-            if ($guestText === '') {
-                $guestText = 'Hello';
+            // Combine consecutive trailing guest messages so follow-ups like "??" keep the guest's actual question
+            $guestChunks = [];
+            foreach ($msgs as $m) {
+                $mFromId = (string) ($m['from']['id'] ?? '');
+                if ($mFromId === META_PAGE_ID || $mFromId === $igId) {
+                    break;
+                }
+                $mTxt = trim((string) ($m['message'] ?? ''));
+                if ($mTxt !== '') {
+                    array_unshift($guestChunks, $mTxt);
+                }
             }
+            $guestText = !empty($guestChunks) ? implode(' ', $guestChunks) : 'Hello';
             $createdTs = strtotime((string) ($latest['created_time'] ?? '')) ?: 0;
             $ageHours = $createdTs > 0 ? round((time() - $createdTs) / 3600, 1) : 999;
 

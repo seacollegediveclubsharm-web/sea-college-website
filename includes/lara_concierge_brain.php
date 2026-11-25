@@ -100,6 +100,9 @@ function lara_classify_intent(string $text): string
     if (preg_match('/(\b(refund|complaint|angry|scam|emergency|hospital|accident|cancel my paid)\b|استرداد|شكوى|طوارئ|возврат|жалоб|退款|投诉)/u', $low)) {
         return 'escalation';
     }
+    if (preg_match('/(\b(marketing department|advertising|partnership|collaborat|influencer|media kit|press|b2b|tour operator|travel agency)\b|تسويق|تعاون|شراكة|реклам|сотрудничеств|маркетинг)/u', $low)) {
+        return 'partnership';
+    }
     if (preg_match('/(\b(private boat|private yacht|yacht|speedboat|vip|charter|barca privata|privatboot|bateau privé)\b|مركب خاص|يخت|لانش|яхт|частн|私人游艇|包船)/u', $low)) {
         return 'private_boat';
     }
@@ -167,7 +170,8 @@ function lara_generate_reply(string $guestMessage, string $channel = 'messenger'
     $lp = lara_lang_prefix($lang);
     $base = SITE_URL . $lp;
     $waUrl = 'https://wa.me/' . WHATSAPP_NUMBER;
-    $cleanName = trim((string) preg_replace('/[^\p{L}\s\'-]/u', '', $guestName));
+    $isHandle = (bool) preg_match('/[._0-9]/', $guestName);
+    $cleanName = $isHandle ? '' : trim((string) preg_replace('/[^\p{L}\s\'-]/u', '', $guestName));
     $firstName = $cleanName !== '' ? explode(' ', $cleanName)[0] : '';
 
     // Live EUR prices (auto-synced with Master EUR Sheet)
@@ -197,6 +201,14 @@ function lara_generate_reply(string $guestMessage, string $channel = 'messenger'
             default => "Hello" . ($firstName ? " {$firstName}" : "") . "! This is Lara at Sea College Dive Club (PADI 5★ Dive Resort, Sharm El Sheikh) 🌊\nI have immediately escalated your message to our Operations Manager for priority personal assistance.\nFor instant direct WhatsApp or phone support: +201114567886 ({$waUrl})",
         };
         return ['lang' => $lang, 'intent' => $intent, 'urgent_human' => true, 'reply' => $msg];
+    }
+
+    if ($intent === 'partnership') {
+        $msg = match ($lang) {
+            'ar' => "مرحباً بك من Sea College Dive Club بشرم الشيخ 🌊\nمعك لارا! للتواصل المباشر مع إدارة التسويق والشراكات الإعلامية والتجارية، يرجى مراسلتنا عبر البريد الرسمي: info@seacollegediveclub.com أو واتساب المباشر: +201114567886 ({$waUrl}) وسيتواصل معك مدير التسويق فوراً.",
+            default => "Hello" . ($firstName ? " {$firstName}" : "") . "! Thank you for reaching out to Sea College Dive Club (Sharm El Sheikh) 🌊\nFor marketing, advertising, and B2B partnership inquiries, please send your proposal directly to our Marketing Director at info@seacollegediveclub.com (or via direct WhatsApp at +201114567886: {$waUrl}) so our team can review it promptly!",
+        };
+        return ['lang' => $lang, 'intent' => $intent, 'urgent_human' => false, 'reply' => $msg];
     }
 
     // Arabic native responses
