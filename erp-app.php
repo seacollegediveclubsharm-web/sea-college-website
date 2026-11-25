@@ -321,16 +321,19 @@ $csrf = csrf_token();
   <!-- ================= LOGIN VIEW (1-TAP EASY PHOTO LOGIN FOR SELLERS & STAFF) ================= -->
   <section id="loginView" class="login-box card" style="display:none;max-width:560px;">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-      <h2 style="font-size:19px;" id="loginHeading">👋 تسجيل الدخول السريع • Staff &amp; Seller Sign In</h2>
+      <h2 style="font-size:19px;" id="loginHeading">👋 تسجيل الدخول السريع • Staff &amp; Verified Guest Sign In</h2>
       <button type="button" class="btn" onclick="toggleLang()">🌍 عربي / EN</button>
     </div>
-    <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;" id="loginDesc">
-      اضغط على اسمك بالأسفل ثم اكتب كلمة المرور فقط • Tap your name below, enter password &amp; start!
+    <p style="font-size:12.5px;color:var(--muted);margin-bottom:8px;" id="loginDesc">
+      اضغط على اسمك بالأسفل أو اكتب اسم المستخدم / بريد العميل المؤكد • Tap your staff profile or sign in with your Verified Guest Email!
     </p>
+    <div style="margin-bottom:11px;padding:7px 11px;border-radius:9px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.32);font-size:11.5px;color:#a7f3d0;">
+      🔒 <b>Verified Club Members &amp; Team Only:</b> Guest accounts are created automatically when your Sea College booking is confirmed (no public spam sign-ups).
+    </div>
     <form onsubmit="doLogin(event)" class="grid" style="gap:11px;">
       <div>
-        <label id="lblUser" style="font-weight:700;color:var(--text);">👤 اسم المستخدم • Username</label>
-        <input type="text" id="inpUser" required autocomplete="username" style="font-size:15px;padding:11px;font-weight:700;" placeholder="Tap your name below or type username">
+        <label id="lblUser" style="font-weight:700;color:var(--text);">👤 اسم المستخدم أو إيميل الضيف • Username or Verified Guest Email</label>
+        <input type="text" id="inpUser" required autocomplete="username" style="font-size:15px;padding:11px;font-weight:700;" placeholder="Tap your name below or enter username / guest email">
       </div>
       <div>
         <label id="lblPass" style="font-weight:700;color:var(--text);">🔑 كلمة المرور • Password</label>
@@ -365,10 +368,10 @@ $csrf = csrf_token();
         </div>
       </div>
       <div id="roleBannerExtraBtns" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button type="button" class="btn" onclick="openCompanyInboxTab()">📨 Inbox</button>
+        <div id="roleBannerStaffQuickBtns" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn" id="btnBannerInbox" onclick="openCompanyInboxTab()">📨 Inbox</button>
           <button type="button" class="btn" onclick="STATE.activeTab='my_profile';renderApp();">👤 My Profile</button>
-          <button type="button" class="btn" onclick="STATE.activeTab='team_profiles';renderApp();">👥 Team Directory</button>
+          <button type="button" class="btn" id="btnBannerTeamDir" onclick="STATE.activeTab='team_profiles';renderApp();">👥 Team Directory</button>
         </div>
         <div id="permPills" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
       </div>
@@ -609,6 +612,10 @@ $csrf = csrf_token();
         <label style="font-weight:700;color:var(--text);">📱 واتساب / تليفون • WhatsApp</label>
         <input type="tel" id="fbkPhone" style="padding:10px;font-size:14px;" placeholder="+39 333 1234567">
       </div>
+      <div style="grid-column:1/-1;">
+        <label style="font-weight:700;color:#7dd3fc;">✉️ إيميل الضيف (اختياري — يُرسل له حساب التطبيق تلقائياً) • Guest Email (Optional — Auto-Send VIP App Login)</label>
+        <input type="email" id="fbkEmail" style="padding:10px;font-size:14px;" placeholder="Optional: guest@example.com (creates real customer account & emails login!)">
+      </div>
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:4px;">
           <label style="margin:0;font-weight:700;color:var(--text);">📅 الموعد • Date</label>
@@ -844,6 +851,60 @@ $csrf = csrf_token();
   </div>
 </div>
 
+<!-- Verified Club Guest Future-Trip Booking Modal -->
+<div id="guestBookModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:520px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="gbkTitle">🌴 Book Your Next Sea College Trip</h3>
+      <button type="button" class="btn" onclick="document.getElementById('guestBookModal').style.display='none'">✕</button>
+    </div>
+    <form onsubmit="submitGuestFutureBooking(event)" class="grid grid-2" style="gap:10px;">
+      <input type="hidden" id="gbkTripCode" value="">
+      <div>
+        <label>📅 Preferred Trip Date *</label>
+        <input type="date" id="gbkDate" required value="<?= gmdate('Y-m-d', time() + 86400) ?>">
+      </div>
+      <div>
+        <label>📱 WhatsApp / Phone *</label>
+        <input type="tel" id="gbkPhone" required placeholder="+39 333 1234567">
+      </div>
+      <div>
+        <label>🏨 Hotel in Sharm El Sheikh</label>
+        <input type="text" id="gbkHotel" list="gbkHotelsList" placeholder="Your Sharm hotel">
+        <datalist id="gbkHotelsList"></datalist>
+      </div>
+      <div>
+        <label>🚪 Room # (Optional)</label>
+        <input type="text" id="gbkRoom" placeholder="e.g. 312">
+      </div>
+      <div>
+        <label>👤 Adults (12+)</label>
+        <input type="number" id="gbkAdl" min="1" max="50" value="2" oninput="recalcGuestBookModalTotal()">
+      </div>
+      <div>
+        <label>🧒 Children (3–11 yrs)</label>
+        <input type="number" id="gbkCh" min="0" max="30" value="0" oninput="recalcGuestBookModalTotal()">
+      </div>
+      <div style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1.6fr;gap:8px;">
+        <div>
+          <label>👶 Infants (&lt;3 FREE)</label>
+          <input type="number" id="gbkInf" min="0" max="15" value="0" oninput="recalcGuestBookModalTotal()">
+        </div>
+        <div>
+          <label>📝 Special Request (Optional)</label>
+          <input type="text" id="gbkNotes" placeholder="Vegetarian lunch, gear size, etc.">
+        </div>
+      </div>
+      <div id="gbkTotalBar" style="grid-column:1/-1;padding:11px 13px;border-radius:11px;background:rgba(0,210,255,0.1);border:1px solid rgba(0,210,255,0.35);display:flex;justify-content:space-between;align-items:center;font-weight:800;"></div>
+      <div id="gbkSuccessBox" style="display:none;grid-column:1/-1;padding:12px;border-radius:12px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.45);text-align:center;"></div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('guestBookModal').style.display='none'">Close</button>
+        <button type="submit" id="gbkSubmitBtn" class="btn btn-primary" style="padding:11px 18px;font-weight:900;">✅ Confirm Future Trip (Pay at Pickup)</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <nav id="mobileBottomNav" class="bottom-dock"></nav>
 
 <div id="toast" class="toast"></div>
@@ -911,8 +972,21 @@ let STATE = {
   sellerCatalog: null,
   sellerWallet: null,
   monthlyPack: null,
+  guestCatalog: null,
+  guestPortal: null,
+  guestLang: 'en',
+  guestCurr: 'EUR',
+  guestCat: 'ALL',
+  guestQuery: '',
+  guestCrm: null,
+  guestCrmFilter: 'all',
+  guestCrmSearch: '',
   directory: []
 };
+
+function isGuestCustomerUser() {
+  return Boolean(STATE.user && STATE.user.role_code === 'GUEST_CUSTOMER');
+}
 
 function isSalesRepUser() {
   const u = STATE.user || {};
@@ -1184,13 +1258,40 @@ async function loadUserData() {
   document.getElementById('loginView').style.display = 'none';
   document.getElementById('appView').style.display = 'block';
   document.getElementById('logoutBtn').style.display = 'inline-flex';
-  document.getElementById('fabFeedback').style.display = 'block';
+  const isGuest = isGuestCustomerUser();
+  document.getElementById('fabFeedback').style.display = isGuest ? 'none' : 'block';
   const ub = document.getElementById('userBadge');
   ub.style.display = 'inline-flex';
   const dispName = STATE.lang === 'ar'
     ? (STATE.user.display_name_ar || STATE.user.display_name_en || STATE.user.username)
     : (STATE.user.display_name_en || STATE.user.username);
   ub.innerHTML = `${renderAvatarHtml(STATE.user, 24)} <span>${esc(dispName)}</span>`;
+
+  if (isGuest) {
+    await Promise.all([
+      apiGet({ action: 'role_workspace' }).then((r) => {
+        if (r && r.ok) {
+          STATE.ws = r;
+          STATE.notifications = r.notifications || [];
+          STATE.unreadNotifs = Number(r.unread_notifications_count || 0);
+          STATE.unreadInbox = Number(r.unread_inbox_count || 0);
+        }
+      }),
+      apiGet({ action: 'guest_portal_data' }).then((r) => {
+        if (r && r.ok) {
+          STATE.guestPortal = r;
+          if (r.guest_account && r.guest_account.preferred_lang) {
+            STATE.guestLang = r.guest_account.preferred_lang;
+          }
+        }
+      })
+    ]);
+    const gcRes = await apiGet({ action: 'guest_catalog', lang: STATE.guestLang || 'en' });
+    if (gcRes && gcRes.ok) STATE.guestCatalog = gcRes;
+    syncNotifBadge();
+    await renderApp();
+    return;
+  }
 
   const jobs = [
     apiGet({ action: 'role_workspace' }).then((r) => {
@@ -1222,6 +1323,9 @@ async function loadUserData() {
     const wParams = { action: 'seller_wallet', month: STATE.walletMonth };
     if (STATE.walletSeller) wParams.seller = STATE.walletSeller;
     jobs.push(apiGet(wParams).then((r) => { if (r && r.ok) STATE.sellerWallet = r; }));
+  }
+  if (hasPerm('crm.manage_leads_ads', 'bi.view_executive')) {
+    jobs.push(apiGet({ action: 'marketing_guest_accounts', filter: STATE.guestCrmFilter || 'all' }).then((r) => { if (r && r.ok) STATE.guestCrm = r; }));
   }
   await Promise.all(jobs);
   syncNotifBadge();
@@ -1325,6 +1429,13 @@ function exportUrl(report, format, extra = {}) {
 
 function buildTabsForUser() {
   const ar = STATE.lang === 'ar';
+  if (isGuestCustomerUser()) {
+    return [
+      { id: 'guest_book_trips', ico: '🌴', short: ar ? 'احجز رحلة' : 'Book Trips', label: ar ? '🌴 احجز رحلات شرم الشيخ القادمة' : '🌴 Book Future Trips' },
+      { id: 'guest_my_trips', ico: '🎫', short: ar ? 'حجوزاتي' : 'My Trips', label: ar ? '🎫 حجوزاتي ومواعيد الباص' : '🎫 My Bookings & Pickup' },
+      { id: 'my_profile', ico: '👤', short: ar ? 'حسابي' : 'Profile', label: ar ? '👤 بياناتي وكلمة المرور' : '👤 My VIP Profile' }
+    ];
+  }
   const isSalesRepPrimary = isSalesRepUser();
   const inbBadgeTxt = STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : '';
 
@@ -1372,6 +1483,9 @@ function buildTabsForUser() {
   if (hasPerm('jetty.manage_gear_photo')) {
     tabs.push({ id: 'gear_assets', ico: '🤿', short: 'Gear', label: ar ? '🤿 جرد معدات الغوص S.C#' : '🤿 Dive Gear Assets (S.C #)' });
   }
+  if (hasPerm('crm.manage_leads_ads', 'bi.view_executive')) {
+    tabs.push({ id: 'guest_crm_vault', ico: '🎯', short: ar ? 'عملاء فعليون' : 'Real Guests', label: ar ? '🎯 حسابات وإيميلات العملاء الفعليين (Marketing)' : '🎯 Real Guests Accounts & Marketing CRM' });
+  }
   if (hasPerm('crm.manage_leads_ads')) {
     tabs.push({ id: 'website_crm', ico: '🌐', short: 'CRM', label: ar ? '🌐 حجوزات الموقع والواتساب والإعلانات' : '🌐 Website Leads, Check-In & Ads CRM' });
   }
@@ -1391,8 +1505,8 @@ function buildTabsForUser() {
 function renderPinnedInboxBanner(ar) {
   const slot = document.getElementById('pinnedInboxBannerSlot');
   if (!slot) return;
-  // Never display internal company announcements on guest-facing seller_pitch tab!
-  if (STATE.activeTab === 'seller_pitch' || STATE.activeTab === 'company_inbox') {
+  // Never display internal company announcements on guest-facing tabs!
+  if (isGuestCustomerUser() || STATE.activeTab === 'seller_pitch' || STATE.activeTab === 'company_inbox') {
     slot.innerHTML = '';
     return;
   }
@@ -1433,16 +1547,36 @@ function renderApp() {
   const ar = STATE.lang === 'ar';
   const u = STATE.user;
   const sellerMode = isSalesRepUser();
+  const guestMode = isGuestCustomerUser();
   if (document.body) {
     document.body.className = sellerMode ? 'role-seller' : '';
   }
   syncNotifBadge();
+  const ibTop = document.getElementById('inboxTopBtn');
+  if (ibTop && guestMode) ibTop.style.display = 'none';
+  const btnBanInb = document.getElementById('btnBannerInbox');
+  const btnBanDir = document.getElementById('btnBannerTeamDir');
+  if (btnBanInb) btnBanInb.style.display = guestMode ? 'none' : 'inline-flex';
+  if (btnBanDir) btnBanDir.style.display = guestMode ? 'none' : 'inline-flex';
+
   const dispName = ar ? (u.display_name_ar || u.display_name_en || u.username || '') : (u.display_name_en || u.username || '');
   document.getElementById('userBadge').innerHTML = `${renderAvatarHtml(u, 24)} <span>${esc(dispName)}</span>`;
-  document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, sellerMode ? 44 : 62);
+  document.getElementById('welcomeAvatar').innerHTML = renderAvatarHtml(u, (sellerMode || guestMode) ? 44 : 62);
   document.getElementById('welcomeName').textContent = dispName;
 
-  if (sellerMode) {
+  if (guestMode) {
+    const gp = (STATE.guestPortal && STATE.guestPortal.guest_account) || {};
+    const waNum = (STATE.guestPortal && STATE.guestPortal.whatsapp_phone) || '201001106266';
+    const conc = ar ? (gp.concierge_name_ar || 'مستشار رحلات سي كوليدج') : (gp.concierge_name_en || 'Sea College VIP Concierge');
+    document.getElementById('welcomeScope').textContent = ar
+      ? `🌟 عميل سي كوليدج المعتمد • مستشارك: ${conc}`
+      : `🌟 Verified Sea College Club Member • Personal Concierge: ${conc}`;
+    document.getElementById('welcomeContacts').innerHTML = `
+      <button type="button" class="btn btn-primary" style="padding:6px 12px;font-size:12px;" onclick="STATE.activeTab='guest_book_trips';renderApp();">🌴 ${ar ? 'احجز رحلة جديدة' : 'Book Future Trip'}</button>
+      <a class="btn btn-emerald" style="padding:6px 12px;font-size:12px;" href="https://wa.me/${esc(waNum)}" target="_blank" rel="noopener">💬 ${ar ? 'تواصل مع المستشار واتساب' : 'WhatsApp Concierge'}</a>
+    `;
+    document.getElementById('permPills').innerHTML = `<span class="pill" style="border-color:rgba(16,185,129,0.5);color:#34d399;">✅ Verified Club Member</span>`;
+  } else if (sellerMode) {
     const slug = u.referral_code || String(u.username || 'fady').replace(/\.sales$/i, '');
     const myBrochureUrl = 'https://seacollegediveclub.com/s/' + encodeURIComponent(slug);
     document.getElementById('welcomeScope').textContent = ar
@@ -1453,6 +1587,7 @@ function renderApp() {
       <button type="button" class="btn btn-primary" style="padding:6px 11px;font-size:12px;" onclick="STATE.activeTab='seller_wallet';renderApp();">📱 ${ar ? 'باركودي وفلوسي' : 'My QR & Cash'}</button>
       <button type="button" class="btn btn-amber" style="padding:6px 11px;font-size:12px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'الرسائل' : 'Inbox'}${STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : ''}</button>
     `;
+    document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('');
   } else {
     const titleTxt = ar
       ? (u.job_title_ar || u.role_name_ar || u.job_title_en || u.role_code || '')
@@ -1476,10 +1611,9 @@ function renderApp() {
       cChips.push(`<a class="contact-chip" href="${esc(myBrochureUrl)}" target="_blank" rel="noopener" style="border-color:rgba(16,185,129,0.5);color:#34d399;">📲 Share All-Trips Link: ${esc(myBrochureUrl)}</a>`);
     }
     document.getElementById('welcomeContacts').innerHTML = cChips.join('');
+    document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('')
+      + (STATE.perms.length > 5 ? `<span class="pill">+${STATE.perms.length - 5} more</span>` : '');
   }
-
-  document.getElementById('permPills').innerHTML = STATE.perms.slice(0, 5).map((p) => `<span class="pill">${esc(p)}</span>`).join('')
-    + (STATE.perms.length > 5 ? `<span class="pill">+${STATE.perms.length - 5} more</span>` : '');
 
   const tabs = buildTabsForUser();
   if (!STATE.activeTab || !tabs.some((t) => t.id === STATE.activeTab)) {
@@ -1503,7 +1637,37 @@ function renderApp() {
   }
 
   const box = document.getElementById('tabContent');
-  if (STATE.activeTab === 'company_inbox') {
+  if (STATE.activeTab === 'guest_book_trips') {
+    if (STATE.guestCatalog) {
+      box.innerHTML = renderGuestBookTripsTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل رحلات شرم الشيخ...' : 'Loading Sharm El Sheikh Trips...'}</div>`;
+    return apiGet({ action: 'guest_catalog', lang: STATE.guestLang || 'en' }).then((res) => {
+      if (res && res.ok) STATE.guestCatalog = res;
+      box.innerHTML = renderGuestBookTripsTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'guest_my_trips') {
+    if (STATE.guestPortal) {
+      box.innerHTML = renderGuestMyTripsTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل حجوزاتك...' : 'Loading Your Bookings...'}</div>`;
+    return apiGet({ action: 'guest_portal_data' }).then((res) => {
+      if (res && res.ok) STATE.guestPortal = res;
+      box.innerHTML = renderGuestMyTripsTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'guest_crm_vault') {
+    if (STATE.guestCrm) {
+      box.innerHTML = renderGuestCrmVaultTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل سجل العملاء الفعليين للتسويق...' : 'Loading Verified Real-Customers CRM Vault...'}</div>`;
+    return apiGet({ action: 'marketing_guest_accounts', filter: STATE.guestCrmFilter || 'all' }).then((res) => {
+      if (res && res.ok) STATE.guestCrm = res;
+      box.innerHTML = renderGuestCrmVaultTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'company_inbox') {
     if (STATE.inboxData) {
       box.innerHTML = renderCompanyInboxTab(ar);
       return;
@@ -2900,9 +3064,15 @@ function renderVouchersOps(ar) {
                   <span>💵 ${ar ? 'مدفوع:' : 'Paid:'} <b class="pos">${fmt(paidEgp)}</b> / <b>${fmt(totEgp)} EGP</b></span>
                   <span class="${restEgp > 0.5 ? 'neg' : 'pos'}" style="font-weight:900;">${restEgp > 0.5 ? (ar ? `الباقي: ${fmt(restEgp)} ج` : `Rest: ${fmt(restEgp)} EGP`) : '✅ PAID'}</span>
                 </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:#93c5fd;">
+                  <span>${v.guest_account_username ? `🔐 VIP: <b>@${esc(v.guest_account_username)}</b>` : `⏳ ${ar ? 'يُفعّل حساب الضيف عند التأكيد' : 'VIP account activates on confirm'}`}</span>
+                  <button type="button" class="btn" style="padding:4px 9px;font-size:11px;border-color:rgba(56,189,248,0.45);color:#7dd3fc;" onclick="promptAndSendGuestLoginEmail('${esc(v.voucher_no)}', '${esc(v.guest_account_username || '')}', '${esc(v.guest_email || '')}')">
+                    📧 ${v.guest_email ? (ar ? 'إعادة إرسال الدخول' : 'Resend Login') : (ar ? 'إضافة إيميل وإرسال حساب' : 'Add Email & Send Login')}
+                  </button>
+                </div>
                 ${needsMe ? `
                   <button type="button" class="btn btn-emerald" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:900;" onclick="sellerConfirmBooking(${Number(v.id)})">
-                    ✅ ${ar ? 'تأكيد الحجز وإرساله للتشغيل الآن' : 'Confirm Booking to Reservations Now'}
+                    ✅ ${ar ? 'تأكيد الحجز وتفعيل حساب الضيف الآن' : 'Confirm Booking & Activate Guest Account'}
                   </button>
                 ` : ''}
               </div>
@@ -2947,6 +3117,7 @@ function renderVouchersOps(ar) {
                   <td>
                     <b>${esc(v.guest_name || 'Guest')}</b>
                     <div style="font-size:10.5px;color:var(--muted);">${esc(v.hotel_name)} ${v.room_no ? '#' + esc(v.room_no) : ''} (${esc(v.nationality || '—')})</div>
+                    ${v.guest_account_username ? `<div style="font-size:10px;color:#34d399;">🔐 @${esc(v.guest_account_username)}${v.guest_email ? ' · ✉️ ' + esc(v.guest_email) : ''}</div>` : ''}
                   </td>
                   <td class="num">${adl}A${ch > 0 ? '+' + ch + 'C' : ''}${inf > 0 ? '+' + inf + 'I' : ''} (${fmt(v.total_pax)})</td>
                   <td>${esc(v.trip_name)} ${Number(v.discount_egp || 0) > 0 ? `<div style="font-size:10px;color:#fcd34d;">🎁 -${fmt(v.discount_egp)} EGP (${v.discount_type === 'PERCENT' ? '-' + esc(v.discount_value) + '%' : '-' + esc(v.discount_value) + ' ' + esc(v.discount_currency || 'EUR')})</div>` : ''} ${v.modification_note ? `<div style="font-size:10px;color:#fcd34d;">✏️ ${esc(String(v.modification_note).slice(0, 48))}</div>` : ''}</td>
@@ -2963,6 +3134,7 @@ function renderVouchersOps(ar) {
                     ${hasPerm('ops.assign_boat_driver') ? `<button type="button" class="btn" onclick="assignBoat(${Number(v.id)})">🛥️ Assign Boat</button>` : ''}
                     ${hasPerm('jetty.scan_boarding_collect_rest') && v.boarding_status !== 'BOARDED' ? `<button type="button" class="btn btn-emerald" onclick="boardGuest(${Number(v.id)})">✅ Collect REST &amp; Board</button>` : ''}
                     ${canAdjust ? `<button type="button" class="btn btn-amber" onclick="openAdjustVoucherModalById(${Number(v.id)})">✏️ Adjust PAX / REST</button>` : ''}
+                    ${hasPerm('sales.create_voucher', 'crm.manage_leads_ads', 'bi.view_executive') ? `<button type="button" class="btn" style="border-color:rgba(56,189,248,0.45);color:#7dd3fc;" onclick="promptAndSendGuestLoginEmail('${esc(v.voucher_no)}', '${esc(v.guest_account_username || '')}', '${esc(v.guest_email || '')}')">📧 Guest Login</button>` : ''}
                   </td>
                 </tr>
               `;
@@ -2974,10 +3146,39 @@ function renderVouchersOps(ar) {
   `;
 }
 
+async function promptAndSendGuestLoginEmail(voucherNo, guestUsername, currentEmail = '') {
+  const ar = STATE.lang === 'ar';
+  const entered = prompt(
+    ar
+      ? 'أدخل البريد الإلكتروني للضيف لإرسال بيانات دخول تطبيق VIP للرحلات القادمة:'
+      : 'Enter Guest Email to send their Verified Club App Login Details:',
+    currentEmail || ''
+  );
+  if (entered === null) return;
+  const email = entered.trim();
+  if (!email) return;
+  const res = await apiPost({
+    action: 'send_guest_login_email',
+    voucher_no: voucherNo,
+    guest_username: guestUsername,
+    guest_email: email
+  });
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Could not send login email');
+    return;
+  }
+  showToast(`📧 Login credentials sent to ${res.guest_email} (@${res.guest_username})!`);
+  await loadUserData();
+}
+
 async function sellerConfirmBooking(id) {
   const res = await apiPost({ action: 'seller_confirm_booking', id });
   if (res && res.ok) {
-    showToast(`✅ Confirmed ${res.voucher_no} — forwarded to Reservations Manager!`);
+    const ga = res.guest_account || {};
+    const extra = ga.email_sent
+      ? ` & Login Emailed to ${ga.guest_email}!`
+      : (ga.guest_username ? ` (VIP Account @${ga.guest_username} Active!)` : '!');
+    showToast(`✅ Confirmed ${res.voucher_no}${extra}`);
     document.getElementById('notifModal').style.display = 'none';
     await loadUserData();
   } else {
@@ -2988,7 +3189,11 @@ async function sellerConfirmBooking(id) {
 async function sellerConfirmByVoucher(voucherNo) {
   const res = await apiPost({ action: 'seller_confirm_booking', voucher_no: voucherNo });
   if (res && res.ok) {
-    showToast(`✅ Confirmed ${res.voucher_no} — forwarded to Reservations Manager!`);
+    const ga = res.guest_account || {};
+    const extra = ga.email_sent
+      ? ` & Login Emailed to ${ga.guest_email}!`
+      : (ga.guest_username ? ` (VIP Account @${ga.guest_username} Active!)` : '!');
+    showToast(`✅ Confirmed ${res.voucher_no}${extra}`);
     document.getElementById('notifModal').style.display = 'none';
     await loadUserData();
   } else {
@@ -4097,6 +4302,8 @@ function openFastBookModal(itemCode) {
   const pol = getSellerDiscountPolicy();
   const dRow = document.getElementById('fbkDiscountRow');
   if (dRow) dRow.style.display = pol.is_enabled ? 'block' : 'none';
+  const emEl = document.getElementById('fbkEmail');
+  if (emEl) emEl.value = '';
   document.getElementById('fbkDiscType').value = pol.is_enabled ? (STATE.pitchDiscType || 'NONE') : 'NONE';
   document.getElementById('fbkDiscVal').value = pol.is_enabled && STATE.pitchDiscType !== 'NONE' ? String(STATE.pitchDiscVal || 0) : '0';
   document.getElementById('fbkDiscReason').value = '';
@@ -4177,6 +4384,7 @@ async function submitFastBookForm(e) {
     const cur = document.getElementById('fbkDepCur').value || 'EUR';
     const guestName = document.getElementById('fbkGuest').value.trim();
     const guestPhone = document.getElementById('fbkPhone').value.trim();
+    const guestEmail = document.getElementById('fbkEmail') ? document.getElementById('fbkEmail').value.trim() : '';
     const tripDate = document.getElementById('fbkDate').value;
     const hotelName = document.getElementById('fbkHotel').value;
     const roomNo = document.getElementById('fbkRoom').value.trim();
@@ -4188,6 +4396,8 @@ async function submitFastBookForm(e) {
       action: 'create_voucher',
       guest_name: guestName,
       guest_phone: guestPhone,
+      guest_email: guestEmail,
+      lang: STATE.pitchLang || 'en',
       trip_date: tripDate,
       nationality: document.getElementById('fbkNat').value.trim(),
       hotel_name: hotelName,
@@ -4211,6 +4421,7 @@ async function submitFastBookForm(e) {
       return;
     }
     const rBox = document.getElementById('fbkResultBox');
+    const ga = res.guest_account || {};
     const qrSvg = (window.SCQR && typeof window.SCQR.toSvg === 'function')
       ? `<div class="qr-box" style="margin:8px auto;">${window.SCQR.toSvg(String(res.qr_token || res.voucher_no), { size: 150 })}</div>`
       : '';
@@ -4219,22 +4430,34 @@ async function submitFastBookForm(e) {
       + `🎫 Voucher: *${res.voucher_no}* (${res.qr_token})\n`
       + `✨ Trip: *${(CURRENT_FBK_ITEM && (CURRENT_FBK_ITEM.name || CURRENT_FBK_ITEM.name_en)) || 'Sharm Trip'}*\n`
       + `📅 Date: *${tripDate}* • 🚐 Pickup: *${pickWin}* (${hotelName}${roomNo ? ' #' + roomNo : ''})\n`
-      + `💵 Paid Deposit: *${fmt(depNow, 1)} ${cur}* • Balance at Pickup: *${fmt(restLater, 1)} ${restCurr}*`;
+      + `💵 Paid Deposit: *${fmt(depNow, 1)} ${cur}* • Balance at Pickup: *${fmt(restLater, 1)} ${restCurr}*`
+      + (ga.guest_username && ga.initial_password ? `\n\n🔐 *Your VIP Club App Account (Book Future Trips):*\n🔗 https://seacollegediveclub.com/app\n👤 Login: *${ga.guest_email || ga.guest_username}*\n🔑 Password: *${ga.initial_password}*` : '');
     const waHref = `https://wa.me/${waDigitsGuest.length >= 8 ? waDigitsGuest : ''}?text=${encodeURIComponent(passMsg)}`;
     rBox.style.display = 'block';
     rBox.innerHTML = `
       <div style="font-size:15px;font-weight:900;color:var(--teal);">✅ Booking Confirmed — Voucher ${esc(res.voucher_no)}</div>
       <div style="font-size:12px;margin-top:4px;">Pickup Window: <b>${esc(pickWin)}</b> • Guests: <b>${Number(res.adults || 1)} Adults${Number(res.children || 0) > 0 ? ` + ${res.children} Kids` : ''}${Number(res.infants || 0) > 0 ? ` + ${res.infants} Infants` : ''}</b>${Number(res.discount_egp || 0) > 0 ? ` • <span style="color:#fcd34d;">🎁 Special Discount Applied</span>` : ''}</div>
+      ${ga.guest_username ? `
+        <div style="margin-top:7px;padding:7px 10px;border-radius:9px;background:rgba(0,210,255,0.1);border:1px solid rgba(0,210,255,0.35);font-size:11.5px;color:#e0f2fe;">
+          🔐 <b>Verified Guest Account Active:</b> <code>@${esc(ga.guest_username)}</code>
+          ${ga.email_sent
+            ? ` • <span style="color:#34d399;font-weight:800;">📧 Login Emailed to ${esc(ga.guest_email)}!</span>`
+            : ` • <button type="button" class="btn" style="padding:2px 8px;font-size:11px;margin-left:4px;" onclick="promptAndSendGuestLoginEmail('${esc(res.voucher_no)}', '${esc(ga.guest_username)}', '')">📧 Add Email &amp; Send Login</button>`}
+        </div>
+      ` : ''}
       ${qrSvg}
       <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Digital Boarding Pass: ${esc(res.qr_token)}</div>
-      <a href="${esc(waHref)}" target="_blank" rel="noopener" class="btn btn-emerald" style="justify-content:center;padding:10px 16px;font-size:13.5px;font-weight:900;">💬 Send Boarding Pass on WhatsApp</a>
+      <a href="${esc(waHref)}" target="_blank" rel="noopener" class="btn btn-emerald" style="justify-content:center;padding:10px 16px;font-size:13.5px;font-weight:900;">💬 Send Boarding Pass &amp; VIP Login on WhatsApp</a>
     `;
-    showToast(`✅ Booking ${res.voucher_no} Confirmed!`);
+    showToast(`✅ Booking ${res.voucher_no} Confirmed${ga.email_sent ? ' + Login Email Sent!' : '!'}`);
     STATE.sellerWallet = null;
     const wp = { action: 'seller_wallet', month: STATE.walletMonth };
     if (STATE.walletSeller) wp.seller = STATE.walletSeller;
     apiGet(wp).then((w) => { if (w && w.ok) STATE.sellerWallet = w; });
     apiGet({ action: 'role_workspace' }).then((w) => { if (w && w.ok) STATE.ws = w; });
+    if (hasPerm('crm.manage_leads_ads', 'bi.view_executive')) {
+      apiGet({ action: 'marketing_guest_accounts', filter: STATE.guestCrmFilter || 'all' }).then((g) => { if (g && g.ok) STATE.guestCrm = g; });
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = '🎫 تأكيد الحجز وإصدار الباركود • Confirm Booking';
@@ -5175,6 +5398,387 @@ function renderMonthlyReportsPack(ar) {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ================= VERIFIED REAL-CUSTOMER VIP PORTAL & MARKETING GUEST VAULT ================= */
+let ACTIVE_GUEST_TRIP = null;
+
+async function changeGuestCatalogLang(nextLang) {
+  STATE.guestLang = nextLang;
+  const res = await apiGet({ action: 'guest_catalog', lang: nextLang });
+  if (res && res.ok) STATE.guestCatalog = res;
+  renderApp();
+}
+
+function fmtGuestMoney(eurVal) {
+  const fx = (STATE.guestCatalog && STATE.guestCatalog.fx_rates) || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
+  const eurEgp = Number(fx.EUR || 57);
+  const c = STATE.guestCurr || 'EUR';
+  if (c === 'EUR') return '€' + fmt(eurVal, 0);
+  if (c === 'USD') return '$' + fmt((eurVal * eurEgp) / Number(fx.USD || 50), 0);
+  if (c === 'GBP') return '£' + fmt((eurVal * eurEgp) / Number(fx.GBP || 65), 0);
+  return fmt(eurVal * eurEgp, 0) + ' EGP';
+}
+
+function renderGuestBookTripsTab(ar) {
+  const cat = STATE.guestCatalog || {};
+  const trips = cat.trips || [];
+  const gp = (STATE.guestPortal && STATE.guestPortal.guest_account) || {};
+  const counts = { ALL: trips.length };
+  const labels = { ALL: ar ? '🌟 كل الرحلات' : '🌟 All Trips' };
+  trips.forEach((t) => {
+    counts[t.category_group] = (counts[t.category_group] || 0) + 1;
+    labels[t.category_group] = t.category_label;
+  });
+  const q = String(STATE.guestQuery || '').trim().toLowerCase();
+  const visible = trips.filter((t) => (STATE.guestCat === 'ALL' || t.category_group === STATE.guestCat) && (!q || `${t.name} ${t.summary} ${t.category_label}`.toLowerCase().includes(q)));
+
+  const langOpts = [
+    ['en', '🇬🇧 EN'], ['ar', '🇪🇬 AR'], ['ru', '🇷🇺 RU'], ['de', '🇩🇪 DE'],
+    ['it', '🇮🇹 IT'], ['fr', '🇫🇷 FR'], ['pl', '🇵🇱 PL'], ['zh', '🇨🇳 中文']
+  ];
+
+  return `
+    <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(0,210,255,0.14),rgba(16,185,129,0.1));">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div>
+          <h3 style="font-size:16px;">🌊 ${ar ? 'مرحباً بعودتك في نادي عملاء سي كوليدج شرم الشيخ!' : 'Welcome Back to Sea College Dive Club Sharm El Sheikh!'}</h3>
+          <p style="font-size:12px;color:var(--muted);margin-top:3px;">
+            ${ar ? 'اختر أي رحلة بحرية أو غوص أو سفاري أو القاهرة واحجز بلمسة واحدة بدون عربون مسبق (الدفع عند التحرك من الفندق).' : 'Browse all Red Sea diving, boat, safari & Egypt excursions — book in 1 tap and pay at hotel pickup.'}
+          </p>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
+          <select style="width:auto;" onchange="STATE.guestCurr=this.value;renderApp();">
+            ${['EUR', 'USD', 'GBP', 'EGP'].map((cc) => `<option value="${cc}" ${STATE.guestCurr === cc ? 'selected' : ''}>${cc}</option>`).join('')}
+          </select>
+          <select style="width:auto;" onchange="changeGuestCatalogLang(this.value)">
+            ${langOpts.map(([lc, lbl]) => `<option value="${lc}" ${STATE.guestLang === lc ? 'selected' : ''}>${lbl}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${!gp.guest_email ? `
+        <div style="margin-top:9px;padding:8px 11px;border-radius:9px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.38);font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span>✉️ ${ar ? 'أضف بريدك الإلكتروني في حسابك لاستلام العروض الحصرية وتأكيدات الرحلات القادمة!' : 'Add your email in My Profile to receive exclusive Red Sea VIP offers & trip confirmations!'}</span>
+          <button type="button" class="btn btn-amber" style="padding:4px 10px;font-size:11.5px;" onclick="STATE.activeTab='my_profile';renderApp();">➕ ${ar ? 'إضافة الإيميل' : 'Add Email'}</button>
+        </div>
+      ` : ''}
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+      <div class="easy-cat-strip" style="flex:1;min-width:220px;">
+        ${Object.keys(counts).map((k) => `
+          <button type="button" class="easy-cat-tile ${STATE.guestCat === k ? 'active' : ''}" onclick="STATE.guestCat='${esc(k)}';renderApp();">
+            <span>${esc(labels[k])} (${counts[k]})</span>
+          </button>
+        `).join('')}
+      </div>
+      <input type="search" style="max-width:240px;" placeholder="${ar ? '🔍 ابحث عن رحلة...' : '🔍 Search trip...'}" value="${esc(STATE.guestQuery || '')}" oninput="STATE.guestQuery=this.value;renderApp();">
+    </div>
+
+    <div class="pitch-grid">
+      ${visible.map((t) => `
+        <article class="pitch-card">
+          <div>
+            <div class="pitch-media">
+              <img src="${esc(t.cover_webp || '/assets/images/pitch/ras-mohammed-boat.webp')}" alt="${esc(t.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/images/pitch/ras-mohammed-boat.webp';">
+              <span class="pitch-cat-tag">${esc(t.category_label)}</span>
+              <span class="pitch-price-tag">${esc(fmtGuestMoney(t.adult_eur))}</span>
+            </div>
+            <div style="padding:12px 13px;">
+              <div style="font-size:15.5px;font-weight:900;line-height:1.3;">${esc(t.name)}</div>
+              <p style="font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45;">${esc(String(t.summary || '').slice(0, 130))}</p>
+              <div class="info-badges">
+                <span class="info-badge">👤 Adult: ${esc(fmtGuestMoney(t.adult_eur))}</span>
+                <span class="info-badge">🧒 Child: ${t.child_eur > 0 ? esc(fmtGuestMoney(t.child_eur)) : 'Included'}</span>
+                <span class="info-badge" style="color:#34d399;">👶 Infant &lt;3: FREE</span>
+                <span class="info-badge">⏱ ${esc(t.duration || 'Full Day')}</span>
+                <span class="info-badge">🚐 ${esc(t.pickup || 'Free Hotel Pickup')}</span>
+              </div>
+            </div>
+          </div>
+          <div style="padding:10px 13px 13px;border-top:1px solid rgba(148,163,184,0.14);background:rgba(6,21,38,0.5);">
+            <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:13.5px;font-weight:900;" onclick="openGuestBookModal('${esc(t.id)}')">
+              ⚡ ${ar ? 'احجز هذه الرحلة الآن' : 'Book This Trip Now'}
+            </button>
+          </div>
+        </article>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openGuestBookModal(tripId) {
+  const cat = STATE.guestCatalog || {};
+  const trips = cat.trips || [];
+  const hotels = cat.hotels || [];
+  const gp = (STATE.guestPortal && STATE.guestPortal.guest_account) || {};
+  const trip = trips.find((x) => String(x.id) === String(tripId)) || trips[0];
+  if (!trip) return;
+  ACTIVE_GUEST_TRIP = trip;
+  document.getElementById('gbkTitle').textContent = `🌴 ${trip.name}`;
+  document.getElementById('gbkTripCode').value = String(trip.id);
+  document.getElementById('gbkPhone').value = gp.guest_phone || (STATE.user && STATE.user.phone) || '';
+  document.getElementById('gbkHotel').value = gp.hotel_name || '';
+  document.getElementById('gbkRoom').value = gp.room_no || '';
+  document.getElementById('gbkNotes').value = '';
+  document.getElementById('gbkSuccessBox').style.display = 'none';
+  document.getElementById('gbkSubmitBtn').style.display = 'inline-flex';
+  const dl = document.getElementById('gbkHotelsList');
+  if (dl) {
+    dl.innerHTML = hotels.map((h) => `<option value="${esc(h.name)}">Pickup ~${esc(h.pickup)}</option>`).join('');
+  }
+  recalcGuestBookModalTotal();
+  document.getElementById('guestBookModal').style.display = 'flex';
+}
+
+function recalcGuestBookModalTotal() {
+  if (!ACTIVE_GUEST_TRIP) return;
+  const a = Math.max(1, Number(document.getElementById('gbkAdl').value || 1));
+  const c = Math.max(0, Number(document.getElementById('gbkCh').value || 0));
+  const i = Math.max(0, Number(document.getElementById('gbkInf').value || 0));
+  const totEur = a * Number(ACTIVE_GUEST_TRIP.adult_eur || 0) + c * Number(ACTIVE_GUEST_TRIP.child_eur || 0) + i * Number(ACTIVE_GUEST_TRIP.infant_eur || 0);
+  document.getElementById('gbkTotalBar').innerHTML = `
+    <span>Total (${a} Adult${c > 0 ? ` + ${c} Child` : ''}${i > 0 ? ` + ${i} Infant Free` : ''}):</span>
+    <span style="font-size:18px;color:var(--cyan);">${esc(fmtGuestMoney(totEur))} (€${fmt(totEur, 0)})</span>
+  `;
+}
+
+async function submitGuestFutureBooking(e) {
+  e.preventDefault();
+  if (!ACTIVE_GUEST_TRIP) return;
+  const btn = document.getElementById('gbkSubmitBtn');
+  btn.disabled = true;
+  try {
+    const hVal = document.getElementById('gbkHotel').value.trim();
+    const hotels = (STATE.guestCatalog && STATE.guestCatalog.hotels) || [];
+    const matchedH = hotels.find((h) => String(h.name || '').toLowerCase() === hVal.toLowerCase());
+    const res = await apiPost({
+      action: 'guest_create_booking',
+      trip_code: document.getElementById('gbkTripCode').value,
+      trip_date: document.getElementById('gbkDate').value,
+      guest_phone: document.getElementById('gbkPhone').value.trim(),
+      hotel_name: hVal,
+      room_no: document.getElementById('gbkRoom').value.trim(),
+      pickup_time: matchedH ? matchedH.pickup : '08:00',
+      adults: Number(document.getElementById('gbkAdl').value || 2),
+      children: Number(document.getElementById('gbkCh').value || 0),
+      infants: Number(document.getElementById('gbkInf').value || 0),
+      notes: document.getElementById('gbkNotes').value.trim()
+    });
+    if (!res || !res.ok) {
+      alert((res && res.error) || 'Could not confirm booking');
+      return;
+    }
+    const sBox = document.getElementById('gbkSuccessBox');
+    const waMsg = encodeURIComponent(`Hello Sea College! Confirmed VIP App booking ${res.voucher_no}: ${res.trip_name} on ${res.trip_date} (€${res.total_eur})`);
+    sBox.style.display = 'block';
+    sBox.innerHTML = `
+      <div style="font-size:15px;font-weight:900;color:#34d399;">✅ Trip Confirmed — Ref ${esc(res.voucher_no)}!</div>
+      <div style="font-size:12px;margin-top:4px;">Pickup: <b>~${esc(res.pickup_time)}</b> • Total at Pickup: <b>€${fmt(res.total_eur, 0)}</b></div>
+      <a class="btn btn-emerald" style="margin-top:8px;justify-content:center;width:100%;" target="_blank" rel="noopener" href="https://wa.me/${esc(res.whatsapp_phone || '201001106266')}?text=${waMsg}">💬 Message Concierge on WhatsApp</a>
+    `;
+    btn.style.display = 'none';
+    showToast(`🎉 Future Trip ${res.voucher_no} Confirmed!`);
+    const gpRes = await apiGet({ action: 'guest_portal_data' });
+    if (gpRes && gpRes.ok) STATE.guestPortal = gpRes;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderGuestMyTripsTab(ar) {
+  const gp = STATE.guestPortal || {};
+  const list = gp.bookings || [];
+  const waNum = gp.whatsapp_phone || '201001106266';
+  if (!list.length) {
+    return `
+      <div class="card" style="text-align:center;padding:28px;">
+        <h3 style="font-size:16px;margin-bottom:8px;">🎫 ${ar ? 'لا توجد حجوزات مسجلة بعد' : 'No Trips Yet'}</h3>
+        <button type="button" class="btn btn-primary" onclick="STATE.activeTab='guest_book_trips';renderApp();">🌴 ${ar ? 'استعرض رحلات شرم الشيخ واحجز الآن' : 'Browse Trips & Book Now'}</button>
+      </div>
+    `;
+  }
+  return `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(295px,1fr));gap:12px;">
+      ${list.map((b) => {
+        const isCancelled = String(b.booking_state || '').includes('CANCEL');
+        const qrSvg = (!isCancelled && window.SCQR && typeof window.SCQR.toSvg === 'function')
+          ? `<div class="qr-box" style="margin:6px auto;">${window.SCQR.toSvg(String(b.qr_token || b.voucher_no), { size: 120 })}</div>`
+          : '';
+        return `
+          <div class="trip-mobile-card" style="border-color:${isCancelled ? 'rgba(244,63,94,0.45)' : 'rgba(0,210,255,0.4)'};">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <b style="color:var(--cyan);">🎫 ${esc(b.voucher_no)}</b>
+              <span class="pill" style="${isCancelled ? 'color:#fda4af;border-color:#f43f5e;' : 'color:#34d399;border-color:#10b981;'}">${isCancelled ? (ar ? 'ملغى — احجز موعداً جديداً' : 'Cancelled — Rebook Anytime') : esc(b.boarding_status)}</span>
+            </div>
+            <div style="font-size:15.5px;font-weight:900;">${esc(b.trip_name)}</div>
+            <div style="font-size:12.5px;color:#cbd5e1;">
+              📅 <b>${esc(b.trip_date)}</b> • 🚐 Pickup: <b>${esc(b.pickup_time)}</b><br>
+              🏨 ${esc(b.hotel_name || 'Sharm Hotel')} ${b.room_no ? '#' + esc(b.room_no) : ''} • 👥 ${Number(b.adults || 1)} Adults${Number(b.children || 0) > 0 ? ` + ${b.children} Kids` : ''}${Number(b.infants || 0) > 0 ? ` + ${b.infants} Infants` : ''}
+            </div>
+            ${qrSvg}
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;border-top:1px solid rgba(148,163,184,0.14);padding-top:8px;">
+              <span>Total: <b>€${fmt(b.total_eur, 0)}</b></span>
+              <span class="${Number(b.rest_egp || 0) > 1 ? '' : 'pos'}" style="font-weight:800;">${isCancelled ? '—' : (Number(b.rest_egp || 0) > 1 ? `Due at Pickup: €${fmt(b.rest_eur, 0)}` : '✅ Paid')}</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="btn btn-primary" style="flex:1;justify-content:center;" onclick="STATE.activeTab='guest_book_trips';renderApp();">🌴 ${ar ? 'احجز رحلة أخرى' : 'Book Another Trip'}</button>
+              <a class="btn btn-emerald" target="_blank" rel="noopener" href="https://wa.me/${esc(waNum)}?text=${encodeURIComponent('Hi Sea College! Question about my booking ' + b.voucher_no)}">💬 WhatsApp</a>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+async function changeGuestCrmFilter(nextFilter) {
+  STATE.guestCrmFilter = nextFilter;
+  const res = await apiGet({ action: 'marketing_guest_accounts', filter: nextFilter, q: STATE.guestCrmSearch || '' });
+  if (res && res.ok) STATE.guestCrm = res;
+  renderApp();
+}
+
+let GUEST_CRM_SEARCH_TIMER = null;
+function onGuestCrmSearchInput(val) {
+  STATE.guestCrmSearch = val;
+  if (GUEST_CRM_SEARCH_TIMER) clearTimeout(GUEST_CRM_SEARCH_TIMER);
+  GUEST_CRM_SEARCH_TIMER = setTimeout(async () => {
+    const res = await apiGet({ action: 'marketing_guest_accounts', filter: STATE.guestCrmFilter || 'all', q: STATE.guestCrmSearch || '' });
+    if (res && res.ok) {
+      STATE.guestCrm = res;
+      renderApp();
+    }
+  }, 240);
+}
+
+function renderGuestCrmVaultTab(ar) {
+  const data = STATE.guestCrm || {};
+  const k = data.kpis || {};
+  const guests = data.guests || [];
+  const dispatches = data.email_dispatches || [];
+  const curFilter = STATE.guestCrmFilter || 'all';
+  const csvHref = `/handlers/erp_api.php?action=export_marketing_guests_csv&filter=${encodeURIComponent(curFilter)}`;
+
+  const filters = [
+    ['all', ar ? `🌟 كل العملاء الفعليين (${fmt(k.total_verified_guests)})` : `🌟 All Verified Guests (${fmt(k.total_verified_guests)})`],
+    ['with_email', ar ? `✉️ لديهم إيميل (${fmt(k.guests_with_email)})` : `✉️ With Email (${fmt(k.guests_with_email)})`],
+    ['without_email', ar ? '📭 بدون إيميل بعد' : '📭 Missing Email'],
+    ['unpaid', ar ? `⏳ مؤكد بدون عربون (${fmt(k.unpaid_open_guests)})` : `⏳ Confirmed / 0 Deposit (${fmt(k.unpaid_open_guests)})`],
+    ['cancelled', ar ? `🔄 ألغى الحجز — إعادة استهداف (${fmt(k.cancelled_winback_guests)})` : `🔄 Cancelled Win-Back (${fmt(k.cancelled_winback_guests)})`],
+    ['paid', ar ? `💰 عملاء دافعون (${fmt(k.paid_vip_guests)})` : `💰 Paid VIPs (${fmt(k.paid_vip_guests)})`],
+    ['repeat', ar ? `🔁 حجزوا أكثر من مرة (${fmt(k.repeat_app_bookers)})` : `🔁 Repeat Bookers (${fmt(k.repeat_app_bookers)})`]
+  ];
+
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:12px;">
+      <div class="card">
+        <div class="kpi-label">🔐 ${ar ? 'إجمالي حسابات العملاء الفعليين' : 'Verified Real Customer Accounts'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.total_verified_guests)}</div>
+        <div class="kpi-sub">${ar ? 'عملاء حقيقيون فقط بعد تأكيد الحجز (صفر حسابات وهمية)' : '100% Real Confirmed Customers (Zero Public Spam)'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">✉️ ${ar ? 'إيميلات مسجلة للتسويق' : 'Captured Guest Emails'}</div>
+        <div class="kpi-val pos">${fmt(k.guests_with_email)}</div>
+        <div class="kpi-sub">📨 ${fmt(k.credentials_emails_sent)} ${ar ? 'رسالة بيانات دخول مرسلة' : 'App Login Emails Sent'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">⏳ ${ar ? 'مؤكد بدون دفع / عربون صفر' : 'Confirmed Unpaid (0 Deposit)'}</div>
+        <div class="kpi-val" style="color:#fcd34d;">${fmt(k.unpaid_open_guests)}</div>
+        <div class="kpi-sub">${ar ? 'حسابهم نشط وجاهز لحجز رحلات قادمة' : 'Active app accounts retained pre-payment'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">🔄 ${ar ? 'ألغوا الحجز (Win-Back CRM)' : 'Cancelled (Retained for Win-Back)'}</div>
+        <div class="kpi-val" style="color:#fb7185;">${fmt(k.cancelled_winback_guests)}</div>
+        <div class="kpi-sub">🔁 ${fmt(k.repeat_app_bookers)} ${ar ? 'عميل كرر الحجز من التطبيق' : 'Repeat App Bookers'}</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <h3 style="font-size:15.5px;">🎯 ${ar ? 'قاعدة بيانات العملاء الفعليين وحسابات تطبيق VIP للتسويق وإعادة الاستهداف' : 'Real-Customers App Vault — Emails, Win-Back Segments & Repeat Bookings'}</h3>
+          <p style="font-size:12px;color:var(--muted);">
+            ${ar ? 'يتم إنشاء حساب العميل والاحتفاظ به نشطاً بمجرد تأكيد المسوق للحجز حتى لو لم يدفع عربوناً أو ألغى الرحلة، لاستخدام البيانات لاحقاً بواسطة فريق التسويق.' : 'Accounts are created automatically when a Seller confirms a booking — and stay active even if the guest paid 0 deposit or cancelled, giving Marketing clean 1st-party customer data.'}
+          </p>
+        </div>
+        <a class="btn btn-emerald" href="${esc(csvHref)}">📥 ${ar ? 'تصدير CSV لحملات التسويق' : 'Export Marketing CSV'}</a>
+      </div>
+
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+        ${filters.map(([fk, fl]) => `
+          <button type="button" class="btn ${curFilter === fk ? 'btn-primary' : ''}" style="padding:6px 11px;font-size:12px;" onclick="changeGuestCrmFilter('${fk}')">${esc(fl)}</button>
+        `).join('')}
+        <input type="search" style="max-width:250px;margin-inline-start:auto;" placeholder="${ar ? '🔍 بحث بالاسم، الإيميل، الهاتف، الفندق...' : '🔍 Search guest, email, phone, hotel...'}" value="${esc(STATE.guestCrmSearch || '')}" oninput="onGuestCrmSearchInput(this.value)">
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Guest &amp; App Login</th><th>Email &amp; WhatsApp</th><th>Hotel &amp; Nat.</th><th>Seller</th>
+              <th>Latest Trip / Voucher</th><th>Segment / Lifecycle</th><th>Bookings</th><th>Booked / Paid (EGP)</th><th>Login Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${!guests.length ? `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:18px;">No verified guest accounts match this filter yet.</td></tr>` : guests.map((g) => {
+              const seg = String(g.segment || g.latest_booking_status || '');
+              const isCanc = seg.includes('CANCEL');
+              const isPaid = seg === 'PAID_VIP' || String(g.latest_booking_status || '') === 'CONFIRMED_PAID';
+              const wd = waDigits(g.guest_phone);
+              return `
+                <tr>
+                  <td>
+                    <b>${esc(g.guest_name)}</b>
+                    <div style="font-size:10.5px;color:#34d399;"><code>@${esc(g.username)}</code> • ${Number(g.account_is_active ?? 1) === 1 ? 'ACTIVE' : 'OFF'}</div>
+                  </td>
+                  <td>
+                    ${g.guest_email ? `<div style="color:#93c5fd;font-weight:700;">✉️ ${esc(g.guest_email)}</div>` : `<div style="color:#f59e0b;font-size:11px;">📭 Optional email not added</div>`}
+                    <div style="font-size:11px;color:var(--muted);">${esc(g.guest_phone || '—')} ${wd.length >= 8 ? `<a href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener" style="color:#34d399;">💬 WA</a>` : ''}</div>
+                  </td>
+                  <td>${esc(g.hotel_name || '—')} ${g.room_no ? '#' + esc(g.room_no) : ''}<div style="font-size:10.5px;color:var(--muted);">${esc(g.nationality || '—')} (${esc(g.preferred_lang || 'en')})</div></td>
+                  <td>${esc(g.seller_display_name || g.referred_by_seller || 'Direct')}</td>
+                  <td><b>${esc(g.latest_voucher_no || '—')}</b><div style="font-size:10.5px;color:var(--muted);">${esc(g.latest_trip_name || '')} (${esc(g.latest_trip_date || '')})</div></td>
+                  <td>
+                    <span class="pill" style="${isCanc ? 'border-color:#f43f5e;color:#fda4af;' : (isPaid ? 'border-color:#10b981;color:#34d399;' : 'border-color:#f59e0b;color:#fde68a;')}">
+                      ${esc(g.latest_booking_status || seg)}
+                    </span>
+                  </td>
+                  <td class="num"><b>${fmt(g.total_bookings_count)}</b>${Number(g.cancelled_bookings_count || 0) > 0 ? `<div style="font-size:10px;color:#fb7185;">(${fmt(g.cancelled_bookings_count)} canc)</div>` : ''}</td>
+                  <td class="num">${fmt(g.lifetime_booked_egp)} / <b class="pos">${fmt(g.lifetime_paid_egp)}</b></td>
+                  <td>
+                    <button type="button" class="btn ${Number(g.credentials_email_sent || 0) === 1 ? '' : 'btn-primary'}" style="padding:5px 9px;font-size:11px;" onclick="promptAndSendGuestLoginEmail('${esc(g.latest_voucher_no || '')}', '${esc(g.username)}', '${esc(g.guest_email || '')}')">
+                      ${Number(g.credentials_email_sent || 0) === 1 ? '✅ Resend Login' : '📧 Add / Send Login'}
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:14px;margin-bottom:8px;">📨 ${ar ? 'سجل إرسال إيميلات بيانات الدخول للعملاء' : 'Recent Guest Login Credentials Email Dispatch Log'} (${dispatches.length})</h3>
+      <div class="table-wrap" style="max-height:220px;">
+        <table>
+          <thead><tr><th>Sent UTC</th><th>Guest Account</th><th>Recipient Email</th><th>Voucher</th><th>Subject</th></tr></thead>
+          <tbody>
+            ${!dispatches.length ? `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No login credential emails dispatched yet.</td></tr>` : dispatches.map((d) => `
+              <tr>
+                <td>${esc(String(d.sent_at || '').slice(0, 19).replace('T', ' '))}</td>
+                <td><code>@${esc(d.guest_username)}</code></td>
+                <td style="color:#93c5fd;">${esc(d.recipient_email)}</td>
+                <td><b>${esc(d.voucher_no || '—')}</b></td>
+                <td>${esc(d.subject)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
       </div>
     </div>
   `;

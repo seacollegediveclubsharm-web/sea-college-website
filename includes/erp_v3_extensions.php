@@ -73,8 +73,11 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
         'discount_type'        => "TEXT NOT NULL DEFAULT 'NONE'",
         'discount_value'       => 'REAL NOT NULL DEFAULT 0',
         'discount_currency'    => "TEXT NOT NULL DEFAULT 'EUR'",
-        'discount_egp'         => 'REAL NOT NULL DEFAULT 0',
-        'discount_reason'      => "TEXT NOT NULL DEFAULT ''",
+        'discount_egp'           => 'REAL NOT NULL DEFAULT 0',
+        'discount_reason'        => "TEXT NOT NULL DEFAULT ''",
+        'guest_phone'            => "TEXT NOT NULL DEFAULT ''",
+        'guest_email'            => "TEXT NOT NULL DEFAULT ''",
+        'guest_account_username' => "TEXT NOT NULL DEFAULT ''",
     ];
     foreach ($resAddCols as $col => $ddl) {
         if (!isset($haveResCols[$col])) {
@@ -226,7 +229,54 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
             PRIMARY KEY (message_id, username),
             FOREIGN KEY (message_id) REFERENCES company_inbox_messages(id) ON DELETE CASCADE
         );
-        CREATE INDEX IF NOT EXISTS idx_cir_user_read ON company_inbox_reads(username, read_at);"
+        CREATE INDEX IF NOT EXISTS idx_cir_user_read ON company_inbox_reads(username, read_at);
+        INSERT OR IGNORE INTO roles (role_code, name_en, name_ar, department, hierarchy_level, default_dashboard, description_en, description_ar)
+        VALUES ('GUEST_CUSTOMER', 'Verified Club Guest', 'عميل سي كوليدج المعتمد', 'GUEST_PORTAL', 5, 'guest_book_trips', 'Verified real Sea College customer eligible to view bookings and book future trips', 'عميل حقيقي معتمد لدى سي كوليدج يمكنه متابعة حجوزاته وحجز رحلاته القادمة');
+        INSERT OR IGNORE INTO permissions (perm_code, module, name_en, name_ar)
+        VALUES ('guest.book_future_trips', 'GUEST_PORTAL', 'Book Future Trips as Verified Guest', 'حجز الرحلات القادمة كعميل معتمد');
+        INSERT OR IGNORE INTO role_permissions (role_code, perm_code)
+        VALUES ('GUEST_CUSTOMER', 'guest.book_future_trips');
+        CREATE TABLE IF NOT EXISTS guest_customer_accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            guest_name TEXT NOT NULL,
+            guest_phone TEXT NOT NULL DEFAULT '',
+            guest_phone_norm TEXT NOT NULL DEFAULT '',
+            guest_email TEXT NOT NULL DEFAULT '',
+            nationality TEXT NOT NULL DEFAULT '',
+            preferred_lang TEXT NOT NULL DEFAULT 'en',
+            hotel_name TEXT NOT NULL DEFAULT '',
+            room_no TEXT NOT NULL DEFAULT '',
+            referred_by_seller TEXT NOT NULL DEFAULT '',
+            first_voucher_no TEXT NOT NULL DEFAULT '',
+            latest_voucher_no TEXT NOT NULL DEFAULT '',
+            latest_trip_name TEXT NOT NULL DEFAULT '',
+            latest_trip_date TEXT NOT NULL DEFAULT '',
+            latest_booking_status TEXT NOT NULL DEFAULT 'CONFIRMED_UNPAID',
+            total_bookings_count INTEGER NOT NULL DEFAULT 1,
+            cancelled_bookings_count INTEGER NOT NULL DEFAULT 0,
+            lifetime_booked_egp REAL NOT NULL DEFAULT 0,
+            lifetime_paid_egp REAL NOT NULL DEFAULT 0,
+            credentials_email_sent INTEGER NOT NULL DEFAULT 0,
+            credentials_emailed_at TEXT NOT NULL DEFAULT '',
+            marketing_opt_in INTEGER NOT NULL DEFAULT 1
+        );
+        CREATE INDEX IF NOT EXISTS idx_gca_email ON guest_customer_accounts(guest_email);
+        CREATE INDEX IF NOT EXISTS idx_gca_phone ON guest_customer_accounts(guest_phone_norm);
+        CREATE INDEX IF NOT EXISTS idx_gca_status ON guest_customer_accounts(latest_booking_status, id DESC);
+        CREATE TABLE IF NOT EXISTS guest_email_dispatches (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sent_at TEXT NOT NULL,
+            guest_username TEXT NOT NULL,
+            recipient_email TEXT NOT NULL,
+            voucher_no TEXT NOT NULL DEFAULT '',
+            subject TEXT NOT NULL,
+            body_preview TEXT NOT NULL,
+            transport_ok INTEGER NOT NULL DEFAULT 1
+        );
+        CREATE INDEX IF NOT EXISTS idx_ged_user ON guest_email_dispatches(guest_username, id DESC);"
     );
 
     sc_erp_seed_default_inbox_messages($pdo);
@@ -965,6 +1015,11 @@ function sc_erp_can_user_see_inbox_message(array $msg, array $user, array $perms
     $audType   = strtoupper(trim((string) ($msg['audience_type'] ?? 'ALL')));
     $audTarget = trim((string) ($msg['audience_target'] ?? ''));
 
+    // Real guest accounts never receive internal staff broadcasts unless specifically sent DIRECT to them
+    if ($role === 'GUEST_CUSTOMER') {
+        return $audType === 'DIRECT' && $uLower !== '' && strtolower($audTarget) === $uLower;
+    }
+
     if ($audType === 'ALL') {
         return true;
     }
@@ -1143,5 +1198,474 @@ function sc_erp_fetch_inbox_for_user(PDO $pdo, array $user, array $perms, string
         'messages'      => $filteredOut,
     ];
 }
+
+/**
+ * Normalize phone number to digits (minimum 7 digits for deduplication).
+ */
+function sc_erp_normalize_guest_phone(string $phone): string
+{
+    $digits = (string) preg_replace('/\D+/', '', $phone);
+    if (str_starts_with($digits, '00')) {
+        $digits = substr($digits, 2);
+    }
+    return strlen($digits) >= 7 ? $digits : '';
+}
+
+/**
+ * Generate a readable, unambiguous initial password for verified guests (hashed with bcrypt in DB).
+ */
+function sc_erp_generate_guest_password(): string
+{
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $len = strlen($alphabet);
+    $out = 'SC-';
+    for ($i = 0; $i < 8; $i++) {
+        $out .= $alphabet[random_int(0, $len - 1)];
+    }
+    return $out;
+}
+
+/**
+ * Extract guest display name + embedded phone from `divers_names` when stored as `Name (+phone)`.
+ *
+ * @return array{name:string, phone:string}
+ */
+function sc_erp_split_guest_name_phone(string $rawDiversNames, string $explicitPhone = ''): array
+{
+    $raw = trim($rawDiversNames);
+    $foundPhone = trim($explicitPhone);
+    if (preg_match('/^(.*?)\s*\(([+\d\s\-]{6,32})\)\s*$/u', $raw, $m)) {
+        $cleanName = trim($m[1]);
+        if ($foundPhone === '') {
+            $foundPhone = trim($m[2]);
+        }
+        return ['name' => $cleanName !== '' ? $cleanName : $raw, 'phone' => $foundPhone];
+    }
+    return ['name' => $raw, 'phone' => $foundPhone];
+}
+
+/**
+ * Send welcome email with VIP App login credentials to a verified Sea College guest, and log the dispatch.
+ *
+ * @param array<string,mixed> $guestAcct
+ */
+function sc_erp_send_guest_credentials_email(
+    PDO $pdo,
+    array $guestAcct,
+    string $plainPassword,
+    string $voucherNo,
+    string $tripName = '',
+    string $tripDate = ''
+): bool {
+    $email = strtolower(trim((string) ($guestAcct['guest_email'] ?? '')));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    if (!function_exists('send_mail')) {
+        $leadLib = ROOT_DIR . '/includes/lead_lib.php';
+        if (is_file($leadLib)) {
+            require_once $leadLib;
+        }
+    }
+
+    $guestName = trim((string) ($guestAcct['guest_name'] ?? 'Valued Guest'));
+    $username  = (string) ($guestAcct['username'] ?? '');
+    $appUrl    = 'https://seacollegediveclub.com/app';
+    $subject   = 'Welcome to Sea College Dive Club Sharm — Your VIP App Login' . ($voucherNo !== '' ? " ({$voucherNo})" : '');
+
+    $lines = [
+        "Dear {$guestName},",
+        '',
+        'Welcome to the Sea College Dive Club family in Sharm El Sheikh!',
+        'Your personal Verified Club Guest account is now active so you can view your trip details and book any future Red Sea diving, boat, safari, or Egypt excursions directly in our app:',
+        '',
+        "App Link: {$appUrl}",
+        "Login Email (or Username): {$email}  (or {$username})",
+        "Temporary Password: {$plainPassword}",
+    ];
+    if ($voucherNo !== '' || $tripName !== '') {
+        $lines[] = '';
+        $lines[] = 'Latest Trip Reference: ' . ($voucherNo !== '' ? $voucherNo : 'Confirmed')
+            . ($tripName !== '' ? " — {$tripName}" : '')
+            . ($tripDate !== '' ? " ({$tripDate})" : '');
+    }
+    $lines[] = '';
+    $lines[] = 'Need anything on WhatsApp? Message our Concierge anytime: https://wa.me/' . WHATSAPP_NUMBER;
+    $lines[] = 'Warm regards,';
+    $lines[] = 'Sea College Dive Club — Sharm El Sheikh';
+
+    $body = implode("\n", $lines);
+    $transportOk = function_exists('send_mail') ? (bool) @send_mail($email, $subject, $body, 'info@seacollegediveclub.com') : false;
+
+    $now = gmdate('Y-m-d\TH:i:s\Z');
+    $pdo->prepare(
+        'INSERT INTO guest_email_dispatches (sent_at, guest_username, recipient_email, voucher_no, subject, body_preview, transport_ok)
+         VALUES (?, ?, ?, ?, ?, ?, ?)'
+    )->execute([
+        $now,
+        $username,
+        $email,
+        $voucherNo,
+        $subject,
+        substr($body, 0, 1000),
+        $transportOk ? 1 : 0,
+    ]);
+
+    $pdo->prepare('UPDATE guest_customer_accounts SET credentials_email_sent = 1, credentials_emailed_at = ?, updated_at = ? WHERE username = ?')
+        ->execute([$now, $now, $username]);
+
+    return true;
+}
+
+/**
+ * Provision (or update/reuse) a Verified Real-Customer Account (`role_code = 'GUEST_CUSTOMER'`)
+ * after a Seller/Staff confirms a booking — even if the guest paid 0 deposit (`OPEN_REST`) or later cancels!
+ * If a valid optional email is supplied (now or added later), dispatches login credentials via email.
+ *
+ * @param array<string,mixed> $opts
+ * @return array<string,mixed>
+ */
+function sc_erp_provision_verified_guest_account(PDO $pdo, array $opts): array
+{
+    $parsed   = sc_erp_split_guest_name_phone((string) ($opts['guest_name'] ?? ''), (string) ($opts['guest_phone'] ?? ''));
+    $rawName  = trim($parsed['name']);
+    $rawPhone = trim($parsed['phone']);
+    $rawEmail = strtolower(trim((string) ($opts['guest_email'] ?? '')));
+    $validEmail = ($rawEmail !== '' && filter_var($rawEmail, FILTER_VALIDATE_EMAIL)) ? $rawEmail : '';
+    $phoneNorm  = sc_erp_normalize_guest_phone($rawPhone);
+
+    // Guard against B2B tour agency names ever being provisioned as human user rows (T2_F3_02 invariant)
+    $b2bTokens = ['SHARM GATE', 'SHARM_GATE', 'I DIVE', 'IDIVE', 'DISCOVERY', 'RED SEA MARINE', 'CRAZY SHARK', 'ABO SAMAHA', 'PALMA'];
+    $upCheck   = strtoupper($rawName);
+    foreach ($b2bTokens as $badTok) {
+        if (str_contains($upCheck, $badTok)) {
+            $rawName = trim((string) str_ireplace($badTok, 'Club Guest', $rawName));
+        }
+    }
+    if ($rawName === '' || strtolower($rawName) === 'guest' || strtolower($rawName) === 'resort guest') {
+        if ($validEmail === '' && $phoneNorm === '') {
+            // Generic walk-in placeholder with neither real name, phone, nor email — still create if explicitly requested or use voucher tag
+            $voFallback = preg_replace('/[^a-z0-9]/i', '', (string) ($opts['voucher_no'] ?? ''));
+            if ($voFallback === '') {
+                return ['ok' => false, 'account_created' => false, 'skipped_reason' => 'missing_guest_identity'];
+            }
+            $rawName = 'Club Guest ' . substr($voFallback, -4);
+        } elseif ($rawName === '') {
+            $rawName = 'Club Guest';
+        }
+    }
+
+    $voNo       = trim((string) ($opts['voucher_no'] ?? ''));
+    $nat        = strtoupper(trim((string) ($opts['nationality'] ?? '')));
+    $lang       = strtolower(trim((string) ($opts['lang'] ?? 'en')));
+    if (!in_array($lang, ['en', 'ar', 'ru', 'it', 'pl', 'de', 'fr', 'zh'], true)) {
+        $lang = 'en';
+    }
+    $hotel      = trim((string) ($opts['hotel_name'] ?? ''));
+    $room       = trim((string) ($opts['room_no'] ?? ''));
+    $sellerUser = strtolower(trim((string) ($opts['seller_username'] ?? '')));
+    $tripName   = trim((string) ($opts['trip_name'] ?? ''));
+    $tripDate   = trim((string) ($opts['trip_date'] ?? ''));
+    $bookedEgp  = max(0.0, round((float) ($opts['booked_egp'] ?? 0.0), 2));
+    $paidEgp    = max(0.0, round((float) ($opts['paid_egp'] ?? 0.0), 2));
+    $forceResend= !empty($opts['force_resend_email']);
+
+    $statusIn = strtoupper(trim((string) ($opts['booking_status'] ?? '')));
+    if ($statusIn === '') {
+        $statusIn = ($paidEgp > 0.01 && $paidEgp + 1.0 >= $bookedEgp) ? 'CONFIRMED_PAID' : 'CONFIRMED_UNPAID';
+    }
+
+    $now = gmdate('Y-m-d\TH:i:s\Z');
+
+    // 1) Deduplicate returning real customer by exact email or normalized phone (or existing voucher link)
+    $existing = null;
+    if ($voNo !== '') {
+        $vCheck = $pdo->prepare('SELECT guest_account_username FROM reservations_fact WHERE voucher_no = ? AND guest_account_username != "" LIMIT 1');
+        $vCheck->execute([$voNo]);
+        $linkedUser = (string) ($vCheck->fetchColumn() ?: '');
+        if ($linkedUser !== '') {
+            $st = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE username = ? LIMIT 1');
+            $st->execute([$linkedUser]);
+            $existing = $st->fetch() ?: null;
+        }
+    }
+    if (!$existing && $validEmail !== '') {
+        $st = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE LOWER(guest_email) = ? LIMIT 1');
+        $st->execute([$validEmail]);
+        $existing = $st->fetch() ?: null;
+    }
+    if (!$existing && $phoneNorm !== '') {
+        $st = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE guest_phone_norm = ? LIMIT 1');
+        $st->execute([$phoneNorm]);
+        $existing = $st->fetch() ?: null;
+    }
+
+    $accountCreated = false;
+    $emailDispatched = false;
+    $generatedPass   = '';
+
+    if (!$existing) {
+        $slugBase = strtolower((string) preg_replace('/[^a-z0-9]+/i', '', strtok($rawName, ' ') ?: 'member'));
+        if (strlen($slugBase) < 3) {
+            $slugBase = 'vip' . $slugBase;
+        }
+        $slugBase = substr($slugBase, 0, 12);
+        // Ensure zero reserved/agency collisions
+        if (in_array($slugBase, ['sharm', 'idive', 'discovery', 'palma'], true)) {
+            $slugBase = 'diver';
+        }
+
+        $username = '';
+        for ($try = 0; $try < 12; $try++) {
+            $cand = 'guest.' . $slugBase . '.' . random_int(1000, 9999);
+            $chk = $pdo->prepare('SELECT COUNT(*) FROM users WHERE LOWER(username) = ?');
+            $chk->execute([$cand]);
+            if ((int) $chk->fetchColumn() === 0) {
+                $username = $cand;
+                break;
+            }
+        }
+        if ($username === '') {
+            $username = 'guest.' . bin2hex(random_bytes(4));
+        }
+
+        $generatedPass = sc_erp_generate_guest_password();
+        $pwHash        = password_hash($generatedPass, PASSWORD_BCRYPT);
+
+        $pdo->prepare(
+            "INSERT INTO users
+             (username, password_hash, pin_hint, emp_code, display_name_en, display_name_ar,
+              job_title_en, job_title_ar, phone, email, avatar_url, bio_notes,
+              role_code, branch_scope, vessel_scope, rep_scope, referral_code,
+              default_comm_insheet_pct, default_comm_outside_pct, is_active, created_at, updated_at)
+             VALUES (?, ?, '', NULL, ?, ?, 'Verified Club Guest', 'عميل سي كوليدج المعتمد', ?, ?, '', ?,
+                     'GUEST_CUSTOMER', 'WEBSITE', 'NONE', '', '', 0, 0, 1, ?, ?)"
+        )->execute([
+            $username,
+            $pwHash,
+            $rawName,
+            $rawName,
+            $rawPhone,
+            $validEmail,
+            $hotel !== '' ? ("Hotel: {$hotel}" . ($room !== '' ? " #{$room}" : '')) : 'Verified Sea College Guest',
+            $now,
+            $now,
+        ]);
+
+        $isCancelledInit = str_contains($statusIn, 'CANCEL') ? 1 : 0;
+        $pdo->prepare(
+            'INSERT INTO guest_customer_accounts
+             (username, created_at, updated_at, guest_name, guest_phone, guest_phone_norm, guest_email,
+              nationality, preferred_lang, hotel_name, room_no, referred_by_seller,
+              first_voucher_no, latest_voucher_no, latest_trip_name, latest_trip_date,
+              latest_booking_status, total_bookings_count, cancelled_bookings_count,
+              lifetime_booked_egp, lifetime_paid_egp, credentials_email_sent, credentials_emailed_at, marketing_opt_in)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, 0, "", 1)'
+        )->execute([
+            $username, $now, $now, $rawName, $rawPhone, $phoneNorm, $validEmail,
+            $nat, $lang, $hotel, $room, $sellerUser,
+            $voNo, $voNo, $tripName, $tripDate,
+            $statusIn, $isCancelledInit,
+            $bookedEgp, $paidEgp,
+        ]);
+
+        $accountCreated = true;
+        $guestRow = [
+            'username'    => $username,
+            'guest_name'  => $rawName,
+            'guest_email' => $validEmail,
+            'guest_phone' => $rawPhone,
+        ];
+
+        if ($validEmail !== '') {
+            $emailDispatched = sc_erp_send_guest_credentials_email($pdo, $guestRow, $generatedPass, $voNo, $tripName, $tripDate);
+        }
+        $finalEmail = $validEmail;
+        $finalPhone = $rawPhone;
+    } else {
+        $username = (string) $existing['username'];
+        $mergedEmail = $validEmail !== '' ? $validEmail : (string) ($existing['guest_email'] ?? '');
+        $mergedPhone = $rawPhone !== '' ? $rawPhone : (string) ($existing['guest_phone'] ?? '');
+        $mergedNorm  = $phoneNorm !== '' ? $phoneNorm : (string) ($existing['guest_phone_norm'] ?? '');
+        $mergedHotel = $hotel !== '' ? $hotel : (string) ($existing['hotel_name'] ?? '');
+        $mergedRoom  = $room !== '' ? $room : (string) ($existing['room_no'] ?? '');
+        $mergedNat   = $nat !== '' ? $nat : (string) ($existing['nationality'] ?? '');
+        $mergedSeller= (string) ($existing['referred_by_seller'] ?? '') !== '' ? (string) $existing['referred_by_seller'] : $sellerUser;
+        $finalEmail  = $mergedEmail;
+        $finalPhone  = $mergedPhone;
+
+        $isNewVoucher = ($voNo !== '' && $voNo !== (string) ($existing['latest_voucher_no'] ?? '') && $voNo !== (string) ($existing['first_voucher_no'] ?? ''));
+        $newCount     = (int) ($existing['total_bookings_count'] ?? 1) + ($isNewVoucher ? 1 : 0);
+        $newBooked    = round((float) ($existing['lifetime_booked_egp'] ?? 0.0) + ($isNewVoucher ? $bookedEgp : 0.0), 2);
+        $newPaid      = round((float) ($existing['lifetime_paid_egp'] ?? 0.0) + ($isNewVoucher ? $paidEgp : 0.0), 2);
+        $newCanc      = (int) ($existing['cancelled_bookings_count'] ?? 0) + (($isNewVoucher && str_contains($statusIn, 'CANCEL')) ? 1 : 0);
+
+        $pdo->prepare(
+            'UPDATE guest_customer_accounts
+             SET updated_at = ?, guest_phone = ?, guest_phone_norm = ?, guest_email = ?,
+                 nationality = ?, hotel_name = ?, room_no = ?, referred_by_seller = ?,
+                 latest_voucher_no = CASE WHEN ? != "" THEN ? ELSE latest_voucher_no END,
+                 latest_trip_name = CASE WHEN ? != "" THEN ? ELSE latest_trip_name END,
+                 latest_trip_date = CASE WHEN ? != "" THEN ? ELSE latest_trip_date END,
+                 latest_booking_status = ?,
+                 total_bookings_count = ?, cancelled_bookings_count = ?,
+                 lifetime_booked_egp = ?, lifetime_paid_egp = ?
+             WHERE username = ?'
+        )->execute([
+            $now, $mergedPhone, $mergedNorm, $mergedEmail,
+            $mergedNat, $mergedHotel, $mergedRoom, $mergedSeller,
+            $voNo, $voNo, $tripName, $tripName, $tripDate, $tripDate,
+            $statusIn,
+            $newCount, $newCanc, $newBooked, $newPaid,
+            $username,
+        ]);
+
+        // Always keep users.is_active = 1 even on non-payment or cancellation!
+        $pdo->prepare('UPDATE users SET is_active = 1, phone = ?, email = ?, updated_at = ? WHERE username = ?')
+            ->execute([$mergedPhone, $mergedEmail, $now, $username]);
+
+        $needFirstEmail = ($mergedEmail !== '' && (int) ($existing['credentials_email_sent'] ?? 0) === 0);
+        if ($mergedEmail !== '' && ($needFirstEmail || $forceResend)) {
+            $generatedPass = sc_erp_generate_guest_password();
+            $pdo->prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE username = ?')
+                ->execute([password_hash($generatedPass, PASSWORD_BCRYPT), $now, $username]);
+            $emailDispatched = sc_erp_send_guest_credentials_email(
+                $pdo,
+                ['username' => $username, 'guest_name' => (string) $existing['guest_name'], 'guest_email' => $mergedEmail],
+                $generatedPass,
+                $voNo !== '' ? $voNo : (string) ($existing['latest_voucher_no'] ?? ''),
+                $tripName !== '' ? $tripName : (string) ($existing['latest_trip_name'] ?? ''),
+                $tripDate !== '' ? $tripDate : (string) ($existing['latest_trip_date'] ?? '')
+            );
+        }
+    }
+
+    if ($voNo !== '') {
+        $pdo->prepare(
+            'UPDATE reservations_fact
+             SET guest_account_username = ?,
+                 guest_phone = CASE WHEN ? != "" THEN ? ELSE guest_phone END,
+                 guest_email = CASE WHEN ? != "" THEN ? ELSE guest_email END
+             WHERE voucher_no = ?'
+        )->execute([$username, $finalPhone, $finalPhone, $finalEmail, $finalEmail, $voNo]);
+
+        // Enrich Marketing CRM (`website_leads_crm`) so Hossam & Lara can retarget real guests (including unpaid/cancelled!)
+        $fx = sc_erp_fx_rates($pdo);
+        $eurEq = round($bookedEgp / ($fx['EUR'] ?? 57.0), 2);
+        $paidEurEq = round($paidEgp / ($fx['EUR'] ?? 57.0), 2);
+        $sRefRow = $sellerUser !== '' ? sc_erp_resolve_seller($pdo, $sellerUser) : null;
+        $sRepCode = $sRefRow ? (string) $sRefRow['rep_scope'] : 'DIRECT';
+        $pdo->prepare(
+            'INSERT OR REPLACE INTO website_leads_crm
+             (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
+              people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
+              status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
+              seller_username, sales_rep_code)
+             VALUES (?, ?, "VERIFIED_GUEST_ACCOUNT", ?, ?, ?, ?, ?, 1, ?, ?, ?, "", "{}", ?, ?, ?, "", "", "erp_confirmed_guest", "real_customer_vault", ?, ?, ?, ?)'
+        )->execute([
+            'guest_acct_' . strtolower($username),
+            $now,
+            $lang,
+            $rawName,
+            $finalPhone,
+            $finalEmail,
+            $tripName !== '' ? $tripName : 'Sea College Trip',
+            $tripDate,
+            $hotel,
+            $room,
+            $eurEq,
+            $paidEurEq,
+            $statusIn,
+            $sRepCode,
+            $voNo,
+            $sellerUser,
+            $sRepCode,
+        ]);
+    }
+
+    $resp = [
+        'ok'                 => true,
+        'account_created'    => $accountCreated,
+        'guest_username'     => $username,
+        'guest_email'        => $finalEmail,
+        'email_sent'         => $emailDispatched,
+        'booking_lifecycle'  => $statusIn,
+        'app_login_url'      => 'https://seacollegediveclub.com/app',
+    ];
+    if ($generatedPass !== '') {
+        $resp['initial_password'] = $generatedPass;
+    }
+    return $resp;
+}
+
+/**
+ * Keep a guest's verified account ACTIVE and sync lifecycle status when a voucher is cancelled or settled.
+ * Never deletes or deactivates the guest account on cancellation or non-payment!
+ *
+ * @param array<string,mixed> $voucherRow
+ * @return array<string,mixed>|null
+ */
+function sc_erp_sync_guest_account_on_voucher_change(PDO $pdo, array $voucherRow, string $newLifecycleStatus): ?array
+{
+    $guestUser = trim((string) ($voucherRow['guest_account_username'] ?? ''));
+    $now = gmdate('Y-m-d\TH:i:s\Z');
+
+    if ($guestUser !== '') {
+        $aggSt = $pdo->prepare(
+            "SELECT COUNT(*) AS cnt,
+                    SUM(CASE WHEN booking_state = 'CANCELLED' THEN 1 ELSE 0 END) AS canc_cnt,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state != 'CANCELLED' THEN (CASE WHEN booked_total_egp > 0 THEN booked_total_egp ELSE estimated_revenue_egp END) ELSE 0 END), 0), 2) AS booked_sum,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state != 'CANCELLED' THEN actual_paid_total_egp ELSE 0 END), 0), 2) AS paid_sum
+             FROM reservations_fact
+             WHERE guest_account_username = ?"
+        );
+        $aggSt->execute([$guestUser]);
+        $agg = $aggSt->fetch() ?: [];
+
+        $pdo->prepare(
+            'UPDATE guest_customer_accounts
+             SET latest_booking_status = ?,
+                 total_bookings_count = MAX(1, ?),
+                 cancelled_bookings_count = ?,
+                 lifetime_booked_egp = ?,
+                 lifetime_paid_egp = ?,
+                 updated_at = ?
+             WHERE username = ?'
+        )->execute([
+            $newLifecycleStatus,
+            (int) ($agg['cnt'] ?? 1),
+            (int) ($agg['canc_cnt'] ?? (str_contains(strtoupper($newLifecycleStatus), 'CANCEL') ? 1 : 0)),
+            (float) ($agg['booked_sum'] ?? 0.0),
+            (float) ($agg['paid_sum'] ?? 0.0),
+            $now,
+            $guestUser,
+        ]);
+        $pdo->prepare('UPDATE users SET is_active = 1, updated_at = ? WHERE username = ?')
+            ->execute([$now, $guestUser]);
+        return ['guest_username' => $guestUser, 'booking_lifecycle' => $newLifecycleStatus, 'is_active' => true];
+    }
+
+    // If a live booking (mobile app or seller share link) was cancelled before account link, still create & retain the guest account!
+    $srcFile = strtoupper((string) ($voucherRow['source_file'] ?? ''));
+    if (in_array($srcFile, ['LIVE_MOBILE_APP', 'SELLER_SHARE_LINK', 'LIVE_WEBSITE_FORM'], true)) {
+        return sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'      => (string) ($voucherRow['voucher_no'] ?? ''),
+            'guest_name'      => (string) ($voucherRow['divers_names'] ?? ''),
+            'guest_phone'     => (string) ($voucherRow['guest_phone'] ?? ''),
+            'guest_email'     => (string) ($voucherRow['guest_email'] ?? ''),
+            'nationality'     => (string) ($voucherRow['nationality'] ?? ''),
+            'hotel_name'      => (string) ($voucherRow['hotel_name'] ?? ''),
+            'room_no'         => (string) ($voucherRow['room_no'] ?? ''),
+            'seller_username' => (string) ($voucherRow['seller_username'] ?? ''),
+            'trip_name'       => (string) ($voucherRow['trip_name'] ?? ''),
+            'trip_date'       => (string) ($voucherRow['trip_date'] ?? ''),
+            'booked_egp'      => (float) ($voucherRow['booked_total_egp'] ?? ($voucherRow['estimated_revenue_egp'] ?? 0.0)),
+            'paid_egp'        => (float) ($voucherRow['actual_paid_total_egp'] ?? ($voucherRow['deposit_egp_equiv'] ?? 0.0)),
+            'booking_status'  => $newLifecycleStatus,
+        ]);
+    }
+    return null;
+}
+
 
 

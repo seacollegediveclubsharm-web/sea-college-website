@@ -56,6 +56,8 @@ $seller      = sc_erp_resolve_seller($pdo, $sellerToken) ?: sc_erp_resolve_selle
 $lang      = clean_line($in['lang'] ?? 'en', 8);
 $guestName = clean_line($in['guest_name'] ?? ($in['name'] ?? ''), 120);
 $phone     = clean_line($in['phone'] ?? ($in['guest_phone'] ?? ''), 48);
+$rawEmail  = strtolower(clean_line($in['guest_email'] ?? ($in['email'] ?? ''), 140));
+$guestEmail= ($rawEmail !== '' && filter_var($rawEmail, FILTER_VALIDATE_EMAIL)) ? $rawEmail : '';
 $hotel     = clean_line($in['hotel_name'] ?? ($in['hotel'] ?? ''), 120);
 $room      = clean_line($in['room_no'] ?? '', 32);
 $nat       = clean_line($in['nationality'] ?? strtoupper($lang), 40);
@@ -170,14 +172,14 @@ $ins = $pdo->prepare(
       adult_unit_eur, child_unit_eur, infant_unit_eur,
       booked_adults, booked_children, booked_infants, booked_total_egp,
       list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
-      snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
+      snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email,
       sales_rep, executor, ap_supplier_code, client_agency,
       rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
       desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
       estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
       boarding_status, payment_status, booking_state, workflow_stage, source_file,
       seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-     VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?, ?,?,?,?, 0,0,?,0,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+     VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?, ?,?,?,?, 0,0,?,0,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
 );
 $ins->execute([
     $voNo, $qrTok, $tripDate, $wk, $mo, $qr, $yr,
@@ -187,7 +189,7 @@ $ins->execute([
     $fin['adult_unit_eur'], $fin['child_unit_eur'], $fin['infant_unit_eur'],
     $adults, $children, $infants, $grossEgp,
     $listGrossEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $discReason,
-    $guestName . ' (' . $phone . ')',
+    $guestName . ' (' . $phone . ')', $phone, $guestEmail,
     $sRep, $fin['supplier_name'], $fin['supplier_code'] !== 'SEA_COLLEGE' ? $fin['supplier_code'] : '', 'DIRECT',
     $remEur, $restEgp,
     $depEgp, $depEgp, $depEgp, $supCostEgp,
@@ -198,17 +200,17 @@ $ins->execute([
 ]);
 $newVid = (int) $pdo->lastInsertId();
 
-// Also log in website_leads_crm so Lara & CRM stay in sync
+// Also log in website_leads_crm so Lara & CRM stay in sync (note: VIP app account is created only AFTER seller confirms!)
 $pdo->prepare(
     'INSERT OR REPLACE INTO website_leads_crm
      (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
       people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
       status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
       seller_username, sales_rep_code)
-     VALUES (?,?,?,?,?,?, "", ?,?,?,?,?, "", "{}", ?, ?, "NEW", "", "", "seller_share_link", ?, ?, ?, ?, ?)'
+     VALUES (?,?,?,?,?,?,?, ?,?,?,?,?, "", "{}", ?, ?, "NEW", "", "", "seller_share_link", ?, ?, ?, ?, ?)'
 )->execute([
     'slb_' . strtolower($voNo), gmdate('c'), 'SELLER_LINK_BOOKING', $lang,
-    $guestName, $phone, $tripName,
+    $guestName, $phone, $guestEmail, $tripName,
     $adults + $children + $infants, $tripDate, $hotel, $room,
     $totalEur, $paidEur, $promoApplied ? 'promo_brochure' : 'brochure', $sRep, $voNo, $sUser, $sRep,
 ]);
@@ -220,8 +222,8 @@ sc_erp_push_notification(
     $voNo,
     "🎉 New Booking Confirmed by Guest ({$voNo})!",
     "🎉 حجز جديد من العميل عبر رابطك الشخصي ({$voNo})!",
-    "{$guestName} ({$phone}) booked {$tripName} for {$tripDate} ({$adults} Adl, {$children} Ch, {$infants} Inf — Total €{$totalEur}" . ($promoApplied ? " after Special Promo -€{$discEurOut}" : "") . ", Deposit €{$paidEur}, Rest €{$remEur}). Tap to confirm to Reservations!",
-    "حجز العميل {$guestName} ({$phone}) رحلة {$tripName} ليوم {$tripDate} ({$adults} بالغ، {$children} طفل، {$infants} رضيع — الإجمالي €{$totalEur}" . ($promoApplied ? " بعد الخصم الخاص -€{$discEurOut}" : "") . "، العربون €{$paidEur}، المتبقي €{$remEur}). اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
+    "{$guestName} ({$phone}" . ($guestEmail !== '' ? " · {$guestEmail}" : "") . ") booked {$tripName} for {$tripDate} ({$adults} Adl, {$children} Ch, {$infants} Inf — Total €{$totalEur}" . ($promoApplied ? " after Special Promo -€{$discEurOut}" : "") . ", Deposit €{$paidEur}, Rest €{$remEur}). Tap to confirm to Reservations & activate their VIP Club Account!",
+    "حجز العميل {$guestName} ({$phone}" . ($guestEmail !== '' ? " · {$guestEmail}" : "") . ") رحلة {$tripName} ليوم {$tripDate} ({$adults} بالغ، {$children} طفل، {$infants} رضيع — الإجمالي €{$totalEur}" . ($promoApplied ? " بعد الخصم الخاص -€{$discEurOut}" : "") . "، العربون €{$paidEur}، المتبقي €{$remEur}). اضغط للتأكيد وتفعيل حساب العميل!"
 );
 
 echo json_encode([
@@ -234,6 +236,7 @@ echo json_encode([
     'adults'            => $adults,
     'children'          => $children,
     'infants'           => $infants,
+    'guest_email'       => $guestEmail,
     'list_total_eur'    => $listTotalEur,
     'list_total_egp'    => $listGrossEgp,
     'promo_applied'     => $promoApplied,

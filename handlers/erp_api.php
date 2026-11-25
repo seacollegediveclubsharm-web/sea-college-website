@@ -107,26 +107,28 @@ function erp_require_perm(?array $ctx, string ...$anyOf): array
 function erp_snapshot_live_state(PDO $pdo): array
 {
     $snap = [
-        'custom_users'     => [],
-        'live_vouchers'    => [],
-        'live_crm'         => [],
-        'live_commissions' => [],
-        'live_feedback'    => [],
-        'live_expenses'    => [],
-        'live_inbox_msgs'  => [],
-        'live_inbox_reads' => [],
+        'custom_users'        => [],
+        'live_vouchers'       => [],
+        'live_crm'            => [],
+        'live_commissions'    => [],
+        'live_feedback'       => [],
+        'live_expenses'       => [],
+        'live_inbox_msgs'     => [],
+        'live_inbox_reads'    => [],
+        'live_guest_accounts' => [],
+        'live_guest_emails'   => [],
     ];
     try {
         $snap['custom_users'] = $pdo->query("SELECT * FROM users WHERE updated_at != ''")->fetchAll();
     } catch (Throwable $e) {}
     try {
-        $snap['live_vouchers'] = $pdo->query("SELECT * FROM reservations_fact WHERE source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM')")->fetchAll();
+        $snap['live_vouchers'] = $pdo->query("SELECT * FROM reservations_fact WHERE source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'SELLER_SHARE_LINK')")->fetchAll();
     } catch (Throwable $e) {}
     try {
         $snap['live_crm'] = $pdo->query('SELECT * FROM website_leads_crm')->fetchAll();
     } catch (Throwable $e) {}
     try {
-        $snap['live_commissions'] = $pdo->query("SELECT * FROM seller_commissions_ledger WHERE source_channel LIKE 'LIVE_%' OR voucher_no LIKE 'TRIAL-%' OR voucher_no LIKE 'WEB-%'")->fetchAll();
+        $snap['live_commissions'] = $pdo->query("SELECT * FROM seller_commissions_ledger WHERE source_channel LIKE 'LIVE_%' OR source_channel = 'SELLER_SHARE_LINK' OR voucher_no LIKE 'TRIAL-%' OR voucher_no LIKE 'WEB-%' OR voucher_no LIKE 'SLB-%' OR voucher_no LIKE 'VIP-%'")->fetchAll();
     } catch (Throwable $e) {}
     try {
         $snap['live_feedback'] = $pdo->query('SELECT * FROM trial_feedback')->fetchAll();
@@ -139,6 +141,12 @@ function erp_snapshot_live_state(PDO $pdo): array
     } catch (Throwable $e) {}
     try {
         $snap['live_inbox_reads'] = $pdo->query('SELECT * FROM company_inbox_reads')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_guest_accounts'] = $pdo->query('SELECT * FROM guest_customer_accounts')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_guest_emails'] = $pdo->query('SELECT * FROM guest_email_dispatches')->fetchAll();
     } catch (Throwable $e) {}
     return $snap;
 }
@@ -178,7 +186,7 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
         }
     };
 
-    // 1) Restore customized user profiles & newly created users
+    // 1) Restore customized user profiles & newly created users (including GUEST_CUSTOMER accounts)
     foreach ($snap['custom_users'] as $cu) {
         $uname = (string) ($cu['username'] ?? '');
         if ($uname === '') {
@@ -218,7 +226,7 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
         if ($vo === '') {
             continue;
         }
-        $ex = $impPdo->prepare("SELECT COUNT(*) FROM reservations_fact WHERE voucher_no = ? AND source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM')");
+        $ex = $impPdo->prepare("SELECT COUNT(*) FROM reservations_fact WHERE voucher_no = ? AND source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'SELLER_SHARE_LINK')");
         $ex->execute([$vo]);
         if ((int) $ex->fetchColumn() === 0) {
             $insertDynamic($impPdo, 'reservations_fact', [$lv], '');
@@ -265,6 +273,10 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
             $insertDynamic($impPdo, 'company_inbox_reads', [$ir], 'OR REPLACE', []);
         }
     }
+
+    // 8) Restore verified Guest Customer Accounts & Email Dispatches
+    $insertDynamic($impPdo, 'guest_customer_accounts', $snap['live_guest_accounts'] ?? [], 'OR REPLACE');
+    $insertDynamic($impPdo, 'guest_email_dispatches', $snap['live_guest_emails'] ?? [], 'OR IGNORE');
 }
 
 /* ---------------- PUBLIC / AUTH ACTIONS ---------------- */
@@ -276,8 +288,15 @@ if ($action === 'login') {
     }
     $username = strtolower(trim((string) ($rawIn['username'] ?? '')));
     $password = (string) ($rawIn['password'] ?? '');
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE LOWER(username) = ? AND is_active = 1');
-    $stmt->execute([$username]);
+    // Staff log in by username; Verified Club Guests (GUEST_CUSTOMER) may log in by username OR email!
+    $stmt = $pdo->prepare(
+        "SELECT * FROM users
+         WHERE (LOWER(username) = ? OR (email != '' AND LOWER(email) = ? AND role_code = 'GUEST_CUSTOMER'))
+           AND is_active = 1
+         ORDER BY CASE WHEN LOWER(username) = ? THEN 0 ELSE 1 END
+         LIMIT 1"
+    );
+    $stmt->execute([$username, $username, $username]);
     $u = $stmt->fetch();
     if (!$u || !sc_erp_verify_password($password, (string) $u['password_hash'])) {
         http_response_code(401);
@@ -323,15 +342,15 @@ if ($action === 'avatar') {
 }
 
 if ($action === 'directory_roles') {
-    // Public metadata of roles, job titles & avatars (strictly zero passwords, phones, emails, or commission balances!)
-    $rows = $pdo->query('SELECT u.username, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar, u.avatar_url, u.role_code, u.branch_scope, u.vessel_scope, r.name_en AS role_en, r.name_ar AS role_ar, r.department
+    // Public metadata of staff roles, job titles & avatars (strictly zero passwords, phones, emails, commission balances, or GUEST_CUSTOMER PII!)
+    $rows = $pdo->query("SELECT u.username, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar, u.avatar_url, u.role_code, u.branch_scope, u.vessel_scope, r.name_en AS role_en, r.name_ar AS role_ar, r.department
                          FROM users u JOIN roles r ON r.role_code = u.role_code
-                         WHERE u.is_active = 1 ORDER BY r.hierarchy_level DESC, u.id ASC')->fetchAll();
+                         WHERE u.is_active = 1 AND u.role_code != 'GUEST_CUSTOMER' ORDER BY r.hierarchy_level DESC, u.id ASC")->fetchAll();
     echo json_encode(['ok' => true, 'accounts' => $rows, 'csrf_token' => csrf_token()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
-if ($method !== 'POST' && in_array($action, ['send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message'], true)) {
+if ($method !== 'POST' && in_array($action, ['send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message', 'guest_create_booking', 'send_guest_login_email'], true)) {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST required']);
     exit;
@@ -753,7 +772,8 @@ if ($action === 'seller_wallet') {
                 trip_name, unified_trip_code, adults, children, infants, total_pax,
                 booked_adults, booked_children, booked_infants, booked_total_egp,
                 list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
-                divers_names, deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
+                divers_names, guest_phone, guest_email, guest_account_username,
+                deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
                 estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp,
                 seller_commission_egp, commission_type, commission_status,
                 boarding_status, payment_status, booking_state, workflow_stage,
@@ -1014,11 +1034,11 @@ if ($action === 'inbox_messages') {
     $recipientsDir = ['users' => [], 'roles' => [], 'branches' => []];
     if ($canSend) {
         $recipientsDir['users'] = $pdo->query(
-            'SELECT username, display_name_en, display_name_ar, role_code, branch_scope, avatar_url
-             FROM users WHERE is_active = 1 ORDER BY role_code ASC, display_name_en ASC'
+            "SELECT username, display_name_en, display_name_ar, role_code, branch_scope, avatar_url
+             FROM users WHERE is_active = 1 AND role_code != 'GUEST_CUSTOMER' ORDER BY role_code ASC, display_name_en ASC"
         )->fetchAll();
         $recipientsDir['roles'] = $pdo->query(
-            'SELECT role_code, name_en, name_ar, department FROM roles ORDER BY hierarchy_level DESC'
+            "SELECT role_code, name_en, name_ar, department FROM roles WHERE role_code != 'GUEST_CUSTOMER' ORDER BY hierarchy_level DESC"
         )->fetchAll();
         $recipientsDir['branches'] = $pdo->query(
             'SELECT code, name_en, name_ar FROM branches WHERE is_active = 1 ORDER BY code ASC'
@@ -2190,7 +2210,17 @@ if ($action === 'role_workspace') {
         $out['trial_feedback'] = $fSt->fetchAll();
     }
 
-    if ($user['role_code'] === 'FLEET_PARTNER') {
+    if ($user['role_code'] === 'GUEST_CUSTOMER') {
+        $tpSt = $pdo->prepare(
+            "SELECT u.id, u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
+                    u.phone, u.email, u.avatar_url, u.bio_notes, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope, u.referral_code, u.is_active, u.updated_at,
+                    r.name_en AS role_en, r.name_ar AS role_ar, r.department
+             FROM users u JOIN roles r ON r.role_code = u.role_code
+             WHERE u.username = ?"
+        );
+        $tpSt->execute([$user['username']]);
+        $out['team_profiles'] = $tpSt->fetchAll();
+    } elseif ($user['role_code'] === 'FLEET_PARTNER') {
         $tpSt = $pdo->prepare(
             "SELECT u.id, u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
                     u.phone, u.email, u.avatar_url, u.bio_notes, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope, u.referral_code, u.is_active, u.updated_at,
@@ -2202,7 +2232,9 @@ if ($action === 'role_workspace') {
         $tpSt->execute([$user['username']]);
         $out['team_profiles'] = $tpSt->fetchAll();
     } else {
-        $activeClause = in_array('bi.view_executive', $perms, true) ? '' : 'WHERE u.is_active = 1';
+        $activeClause = in_array('bi.view_executive', $perms, true)
+            ? "WHERE u.role_code != 'GUEST_CUSTOMER'"
+            : "WHERE u.is_active = 1 AND u.role_code != 'GUEST_CUSTOMER'";
         $out['team_profiles'] = $pdo->query(
             "SELECT u.id, u.username, u.emp_code, u.display_name_en, u.display_name_ar, u.job_title_en, u.job_title_ar,
                     u.phone, u.email, u.avatar_url, u.bio_notes, u.role_code, u.branch_scope, u.vessel_scope, u.rep_scope, u.referral_code, u.is_active, u.updated_at,
@@ -2213,10 +2245,405 @@ if ($action === 'role_workspace') {
         )->fetchAll();
     }
     if (in_array('bi.view_executive', $perms, true)) {
-        $out['all_roles'] = $pdo->query('SELECT role_code, name_en, name_ar, department FROM roles ORDER BY hierarchy_level DESC')->fetchAll();
+        $out['all_roles'] = $pdo->query("SELECT role_code, name_en, name_ar, department FROM roles WHERE role_code != 'GUEST_CUSTOMER' ORDER BY hierarchy_level DESC")->fetchAll();
     }
 
     echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- VIP REAL-CUSTOMER GUEST PORTAL (`guest_catalog` & `guest_portal_data`) ---------------- */
+if ($action === 'guest_catalog') {
+    erp_require_perm($ctx, 'guest.book_future_trips', 'bi.view_executive', 'crm.manage_leads_ads');
+    $supportedLangs = ['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'];
+    $rawLang = strtolower(trim((string) ($_GET['lang'] ?? 'en')));
+    $lang = in_array($rawLang, $supportedLangs, true) ? $rawLang : 'en';
+
+    $prevLang = $GLOBALS['SC_LANG'] ?? 'en';
+    $GLOBALS['SC_LANG'] = $lang;
+    $rawCatalog = require ROOT_DIR . '/data/catalog.php';
+    $galleries  = is_file(ROOT_DIR . '/data/item_galleries.php') ? (require ROOT_DIR . '/data/item_galleries.php') : [];
+    $appExcRaw  = is_file(ROOT_DIR . '/data/app_excursions_catalog.php') ? (require ROOT_DIR . '/data/app_excursions_catalog.php') : [];
+    $opSkusRaw  = is_file(ROOT_DIR . '/data/operational_skus.php') ? (require ROOT_DIR . '/data/operational_skus.php') : [];
+    $hotelData  = is_file(ROOT_DIR . '/data/hotel_zones.php') ? (require ROOT_DIR . '/data/hotel_zones.php') : ['zones' => [], 'hotels' => []];
+    $GLOBALS['SC_LANG'] = $prevLang;
+
+    $fx = sc_erp_fx_rates($pdo);
+    $eurRate = $fx['EUR'] ?? 57.0;
+    $usdRate = $fx['USD'] ?? 50.0;
+    $gbpRate = $fx['GBP'] ?? 65.0;
+
+    // Guest-safe trip cards ONLY (strictly zero supplier_cost_egp, default_comm_pct, or internal vendor codes!)
+    $trips = [];
+    foreach ($appExcRaw as $ex) {
+        $pEur = (float) ($ex['price_eur'] ?? 30);
+        $cEur = isset($ex['child_price_eur']) && $ex['child_price_eur'] !== null ? (float) $ex['child_price_eur'] : round($pEur * 0.5, 0);
+        $iEur = (float) ($ex['infant_price_eur'] ?? 0.0);
+        $trips[] = [
+            'id'              => (string) $ex['id'],
+            'category_group'  => (string) ($ex['category_group'] ?? 'excursions'),
+            'category_label'  => (string) ($ex['category_labels'][$lang] ?? $ex['category_labels']['en'] ?? 'Excursions'),
+            'name'            => (string) ($ex['names'][$lang] ?? $ex['names']['en'] ?? $ex['id']),
+            'summary'         => (string) ($ex['summaries'][$lang] ?? $ex['summaries']['en'] ?? ''),
+            'duration'        => (string) ($ex['duration'] ?? 'Full Day'),
+            'adult_eur'       => $pEur,
+            'child_eur'       => $cEur,
+            'infant_eur'      => $iEur,
+            'price_usd'       => round(($pEur * $eurRate) / $usdRate, 0),
+            'price_gbp'       => round(($pEur * $eurRate) / $gbpRate, 0),
+            'price_egp'       => round($pEur * $eurRate, 0),
+            'cover_webp'      => sc_erp_resolve_asset_webp((string) ($ex['cover_webp'] ?? '')),
+            'pickup'          => (string) ($ex['specs']['pickup'] ?? 'Free Hotel Pickup'),
+            'popular'         => !empty($ex['popular']),
+        ];
+    }
+    foreach ($opSkusRaw as $sk) {
+        if (!empty($sk['is_pass_through_fee'])) {
+            continue;
+        }
+        $pEur = (float) ($sk['price_eur'] ?? 30);
+        $cEur = isset($sk['child_price_eur']) && $sk['child_price_eur'] !== null ? (float) $sk['child_price_eur'] : $pEur;
+        $trips[] = [
+            'id'              => (string) $sk['id'],
+            'category_group'  => (string) ($sk['category_group'] ?? 'watersports'),
+            'category_label'  => (string) ($sk['category_labels'][$lang] ?? $sk['category_labels']['en'] ?? 'Watersports'),
+            'name'            => (string) ($sk['names'][$lang] ?? $sk['names']['en'] ?? $sk['id']),
+            'summary'         => (string) ($sk['summaries'][$lang] ?? $sk['summaries']['en'] ?? ''),
+            'duration'        => (string) ($sk['duration'] ?? 'Flexible'),
+            'adult_eur'       => $pEur,
+            'child_eur'       => $cEur,
+            'infant_eur'      => 0.0,
+            'price_usd'       => round(($pEur * $eurRate) / $usdRate, 0),
+            'price_gbp'       => round(($pEur * $eurRate) / $gbpRate, 0),
+            'price_egp'       => round($pEur * $eurRate, 0),
+            'cover_webp'      => sc_erp_resolve_asset_webp((string) ($sk['cover_webp'] ?? '')),
+            'pickup'          => (string) ($sk['specs']['pickup'] ?? 'Included'),
+            'popular'         => !empty($sk['popular']),
+        ];
+    }
+    foreach ($rawCatalog as $catKey => $catMeta) {
+        if (in_array($catKey, ['equipment', 'insurance'], true)) {
+            continue;
+        }
+        $catLabel = is_array($catMeta['label'] ?? null)
+            ? ($catMeta['label'][$lang] ?? $catMeta['label']['en'] ?? $catKey)
+            : (string) ($catMeta['label'] ?? $catKey);
+        foreach (($catMeta['groups'] ?? []) as $grp) {
+            foreach (($grp['items'] ?? []) as $it) {
+                $id = (string) ($it['id'] ?? '');
+                if ($id === '' || ($it['price'] ?? null) === null || preg_match('/^(eq|fee|ins)-/', $id)) {
+                    continue;
+                }
+                $pEur = (float) $it['price'];
+                $cEur = str_contains($catKey, 'snork') ? round($pEur * 0.5, 0) : $pEur;
+                $gal  = $galleries[$id] ?? [];
+                $trips[] = [
+                    'id'              => $id,
+                    'category_group'  => 'diving-' . $catKey,
+                    'category_label'  => $catLabel,
+                    'name'            => $lang === 'ar' && !empty($it['name_ar']) ? (string) $it['name_ar'] : (string) ($it['name'] ?? $id),
+                    'summary'         => $lang === 'ar' && !empty($it['desc_ar']) ? (string) $it['desc_ar'] : (string) ($it['desc'] ?? ''),
+                    'duration'        => (string) ($it['duration'] ?? 'Full Day'),
+                    'adult_eur'       => $pEur,
+                    'child_eur'       => $cEur,
+                    'infant_eur'      => 0.0,
+                    'price_usd'       => round(($pEur * $eurRate) / $usdRate, 0),
+                    'price_gbp'       => round(($pEur * $eurRate) / $gbpRate, 0),
+                    'price_egp'       => round($pEur * $eurRate, 0),
+                    'cover_webp'      => sc_erp_resolve_asset_webp((string) ($it['img'] ?? ($gal['photos'][0] ?? ''))),
+                    'pickup'          => 'Free Hotel Transfer',
+                    'popular'         => !empty($it['popular']),
+                ];
+            }
+        }
+    }
+
+    $hotelsSimple = [];
+    $zonesMap = $hotelData['zones'] ?? [];
+    foreach (($hotelData['hotels'] ?? []) as $h) {
+        $zk = (string) ($h['zone'] ?? 'montazah');
+        $hotelsSimple[] = [
+            'name'   => (string) $h['name'],
+            'pickup' => (string) ($zonesMap[$zk]['pickup'] ?? '08:00'),
+        ];
+    }
+
+    echo json_encode([
+        'ok'        => true,
+        'lang'      => $lang,
+        'fx_rates'  => $fx,
+        'trips'     => $trips,
+        'hotels'    => $hotelsSimple,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+if ($action === 'guest_portal_data') {
+    erp_require_perm($ctx, 'guest.book_future_trips');
+    $meUser = $ctx['user'];
+    $uLower = strtolower((string) $meUser['username']);
+
+    $gSt = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE LOWER(username) = ? LIMIT 1');
+    $gSt->execute([$uLower]);
+    $gRow = $gSt->fetch() ?: [
+        'username'             => (string) $meUser['username'],
+        'guest_name'           => (string) $meUser['display_name_en'],
+        'guest_phone'          => (string) ($meUser['phone'] ?? ''),
+        'guest_email'          => (string) ($meUser['email'] ?? ''),
+        'hotel_name'           => '',
+        'room_no'              => '',
+        'nationality'          => '',
+        'preferred_lang'       => 'en',
+        'referred_by_seller'   => '',
+        'total_bookings_count' => 0,
+    ];
+
+    $conciergeNameEn = 'Sea College VIP Concierge';
+    $conciergeNameAr = 'مستشار رحلات سي كوليدج';
+    if (!empty($gRow['referred_by_seller'])) {
+        $refSeller = sc_erp_resolve_seller($pdo, (string) $gRow['referred_by_seller']);
+        if ($refSeller) {
+            $conciergeNameEn = (string) ($refSeller['display_name_en'] ?: $conciergeNameEn);
+            $conciergeNameAr = (string) ($refSeller['display_name_ar'] ?: $conciergeNameAr);
+        }
+    }
+
+    $fx = sc_erp_fx_rates($pdo);
+    $eurRate = max(1.0, (float) ($fx['EUR'] ?? 57.0));
+
+    $bSt = $pdo->prepare(
+        'SELECT id, voucher_no, qr_token, trip_date, trip_name, hotel_name, room_no, pickup_time,
+                adults, children, infants, total_pax,
+                booked_total_egp, estimated_revenue_egp, deposit_egp_equiv, collected_rest_egp, rest_egp_equiv, rest_eur, discount_egp,
+                boarding_status, payment_status, booking_state, workflow_stage
+         FROM reservations_fact
+         WHERE LOWER(guest_account_username) = ?
+         ORDER BY trip_date DESC, id DESC
+         LIMIT 60'
+    );
+    $bSt->execute([$uLower]);
+    $myBookings = array_map(static function (array $r) use ($eurRate): array {
+        $totEgp  = (float) (($r['booked_total_egp'] ?? 0) > 0 ? $r['booked_total_egp'] : ($r['estimated_revenue_egp'] ?? 0));
+        $paidEgp = round((float) ($r['deposit_egp_equiv'] ?? 0) + (float) ($r['collected_rest_egp'] ?? 0), 2);
+        $restEgp = round((float) ($r['rest_egp_equiv'] ?? 0), 2);
+        return [
+            'id'              => (int) $r['id'],
+            'voucher_no'      => (string) $r['voucher_no'],
+            'qr_token'        => (string) ($r['qr_token'] ?? ''),
+            'trip_date'       => (string) $r['trip_date'],
+            'trip_name'       => (string) $r['trip_name'],
+            'hotel_name'      => (string) ($r['hotel_name'] ?? ''),
+            'room_no'         => (string) ($r['room_no'] ?? ''),
+            'pickup_time'     => (string) ($r['pickup_time'] ?: '08:00'),
+            'adults'          => (int) ($r['adults'] ?? 0),
+            'children'        => (int) ($r['children'] ?? 0),
+            'infants'         => (int) ($r['infants'] ?? 0),
+            'total_pax'       => (int) ($r['total_pax'] ?? 0),
+            'total_egp'       => round($totEgp, 2),
+            'total_eur'       => round($totEgp / $eurRate, 2),
+            'paid_egp'        => $paidEgp,
+            'rest_egp'        => $restEgp,
+            'rest_eur'        => round($restEgp / $eurRate, 2),
+            'discount_egp'    => round((float) ($r['discount_egp'] ?? 0), 2),
+            'boarding_status' => (string) ($r['boarding_status'] ?? 'BOOKED'),
+            'payment_status'  => (string) ($r['payment_status'] ?? 'OPEN_REST'),
+            'booking_state'   => (string) ($r['booking_state'] ?? 'EXECUTED'),
+            'workflow_stage'  => (string) ($r['workflow_stage'] ?? 'CONFIRMED'),
+        ];
+    }, $bSt->fetchAll());
+
+    echo json_encode([
+        'ok'               => true,
+        'guest_account'    => [
+            'username'             => (string) $gRow['username'],
+            'guest_name'           => (string) $gRow['guest_name'],
+            'guest_phone'          => (string) ($gRow['guest_phone'] ?? ''),
+            'guest_email'          => (string) ($gRow['guest_email'] ?? ''),
+            'hotel_name'           => (string) ($gRow['hotel_name'] ?? ''),
+            'room_no'              => (string) ($gRow['room_no'] ?? ''),
+            'nationality'          => (string) ($gRow['nationality'] ?? ''),
+            'preferred_lang'       => (string) ($gRow['preferred_lang'] ?? 'en'),
+            'concierge_name_en'    => $conciergeNameEn,
+            'concierge_name_ar'    => $conciergeNameAr,
+            'total_bookings_count' => count($myBookings) ?: (int) ($gRow['total_bookings_count'] ?? 0),
+        ],
+        'whatsapp_phone'   => WHATSAPP_NUMBER,
+        'fx_rates'         => $fx,
+        'bookings'         => $myBookings,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- MARKETING TEAM REAL-CUSTOMER VAULT & CSV EXPORT ---------------- */
+if ($action === 'marketing_guest_accounts') {
+    erp_require_perm($ctx, 'crm.manage_leads_ads', 'bi.view_executive');
+    $filter = strtolower(trim((string) ($_GET['filter'] ?? 'all')));
+    $search = strtolower(trim((string) ($_GET['q'] ?? '')));
+
+    $allRows = $pdo->query(
+        'SELECT g.*, COALESCE(u.is_active, 1) AS account_is_active, COALESCE(s.display_name_en, g.referred_by_seller) AS seller_display_name
+         FROM guest_customer_accounts g
+         LEFT JOIN users u ON LOWER(u.username) = LOWER(g.username)
+         LEFT JOIN users s ON LOWER(s.username) = LOWER(g.referred_by_seller)
+         ORDER BY g.id DESC
+         LIMIT 500'
+    )->fetchAll();
+
+    $kpis = [
+        'total_verified_guests'    => count($allRows),
+        'guests_with_email'        => 0,
+        'credentials_emails_sent'  => 0,
+        'unpaid_open_guests'       => 0,
+        'cancelled_winback_guests' => 0,
+        'paid_vip_guests'          => 0,
+        'repeat_app_bookers'       => 0,
+    ];
+
+    $filtered = [];
+    foreach ($allRows as $gr) {
+        $hasEmail  = trim((string) ($gr['guest_email'] ?? '')) !== '';
+        $stUp      = strtoupper((string) ($gr['latest_booking_status'] ?? ''));
+        $isCancel  = str_contains($stUp, 'CANCEL') || ((int) ($gr['cancelled_bookings_count'] ?? 0) > 0 && (float) ($gr['lifetime_paid_egp'] ?? 0) <= 0.01);
+        $isPaid    = !$isCancel && ((float) ($gr['lifetime_paid_egp'] ?? 0) > 0.01 || $stUp === 'CONFIRMED_PAID');
+        $isUnpaid  = !$isCancel && !$isPaid;
+        $isRepeat  = (int) ($gr['total_bookings_count'] ?? 0) > 1;
+
+        if ($hasEmail) {
+            $kpis['guests_with_email']++;
+        }
+        if ((int) ($gr['credentials_email_sent'] ?? 0) === 1) {
+            $kpis['credentials_emails_sent']++;
+        }
+        if ($isCancel) {
+            $kpis['cancelled_winback_guests']++;
+        } elseif ($isPaid) {
+            $kpis['paid_vip_guests']++;
+        } else {
+            $kpis['unpaid_open_guests']++;
+        }
+        if ($isRepeat) {
+            $kpis['repeat_app_bookers']++;
+        }
+
+        if ($filter === 'with_email' && !$hasEmail) {
+            continue;
+        }
+        if ($filter === 'without_email' && $hasEmail) {
+            continue;
+        }
+        if ($filter === 'unpaid' && !$isUnpaid) {
+            continue;
+        }
+        if ($filter === 'cancelled' && !$isCancel) {
+            continue;
+        }
+        if ($filter === 'paid' && !$isPaid) {
+            continue;
+        }
+        if ($filter === 'repeat' && !$isRepeat) {
+            continue;
+        }
+
+        if ($search !== '') {
+            $hay = strtolower(
+                ($gr['guest_name'] ?? '') . ' ' .
+                ($gr['guest_email'] ?? '') . ' ' .
+                ($gr['guest_phone'] ?? '') . ' ' .
+                ($gr['username'] ?? '') . ' ' .
+                ($gr['hotel_name'] ?? '') . ' ' .
+                ($gr['latest_voucher_no'] ?? '') . ' ' .
+                ($gr['latest_trip_name'] ?? '')
+            );
+            if (!str_contains($hay, $search)) {
+                continue;
+            }
+        }
+
+        $gr['segment'] = $isCancel ? 'CANCELLED_WINBACK' : ($isPaid ? 'PAID_VIP' : 'CONFIRMED_UNPAID');
+        $filtered[] = $gr;
+    }
+
+    $dispatches = $pdo->query('SELECT id, sent_at, guest_username, recipient_email, voucher_no, subject, transport_ok FROM guest_email_dispatches ORDER BY id DESC LIMIT 40')->fetchAll();
+
+    echo json_encode([
+        'ok'               => true,
+        'filter'           => $filter,
+        'kpis'             => $kpis,
+        'guests'           => $filtered,
+        'email_dispatches' => $dispatches,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+if ($action === 'export_marketing_guests_csv') {
+    erp_require_perm($ctx, 'crm.manage_leads_ads', 'bi.view_executive');
+    $segmentFilter = strtolower(trim((string) ($_GET['filter'] ?? 'all')));
+    $rows = $pdo->query(
+        'SELECT g.*, COALESCE(u.is_active, 1) AS account_is_active
+         FROM guest_customer_accounts g
+         LEFT JOIN users u ON LOWER(u.username) = LOWER(g.username)
+         ORDER BY g.id DESC'
+    )->fetchAll();
+
+    $csvSafe = static function ($val): string {
+        $s = trim((string) ($val ?? ''));
+        if ($s !== '' && in_array($s[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'" . $s;
+        }
+        return $s;
+    };
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="sea_college_verified_guests_crm.csv"');
+    $outFp = fopen('php://output', 'wb');
+    fwrite($outFp, "\xEF\xBB\xBF");
+    fputcsv($outFp, [
+        'Guest Username', 'Guest Name', 'Email', 'Phone', 'Nationality', 'Language',
+        'Hotel', 'Room', 'Referred Seller', 'Latest Voucher', 'Latest Trip', 'Latest Trip Date',
+        'Lifecycle Status', 'Total Bookings', 'Cancelled Bookings',
+        'Lifetime Booked EGP', 'Lifetime Paid EGP', 'Login Email Sent', 'Account Active', 'Created At',
+    ]);
+    foreach ($rows as $r) {
+        $hasEm = trim((string) ($r['guest_email'] ?? '')) !== '';
+        $stUp  = strtoupper((string) ($r['latest_booking_status'] ?? ''));
+        $isCan = str_contains($stUp, 'CANCEL') || ((int) ($r['cancelled_bookings_count'] ?? 0) > 0 && (float) ($r['lifetime_paid_egp'] ?? 0) <= 0.01);
+        $isPd  = !$isCan && ((float) ($r['lifetime_paid_egp'] ?? 0) > 0.01 || $stUp === 'CONFIRMED_PAID');
+        if ($segmentFilter === 'with_email' && !$hasEm) {
+            continue;
+        }
+        if ($segmentFilter === 'cancelled' && !$isCan) {
+            continue;
+        }
+        if ($segmentFilter === 'unpaid' && ($isCan || $isPd)) {
+            continue;
+        }
+        if ($segmentFilter === 'paid' && !$isPd) {
+            continue;
+        }
+        fputcsv($outFp, [
+            $csvSafe($r['username']),
+            $csvSafe($r['guest_name']),
+            $csvSafe($r['guest_email']),
+            $csvSafe($r['guest_phone']),
+            $csvSafe($r['nationality']),
+            $csvSafe($r['preferred_lang']),
+            $csvSafe($r['hotel_name']),
+            $csvSafe($r['room_no']),
+            $csvSafe($r['referred_by_seller']),
+            $csvSafe($r['latest_voucher_no']),
+            $csvSafe($r['latest_trip_name']),
+            $csvSafe($r['latest_trip_date']),
+            $csvSafe($r['latest_booking_status']),
+            (int) ($r['total_bookings_count'] ?? 1),
+            (int) ($r['cancelled_bookings_count'] ?? 0),
+            round((float) ($r['lifetime_booked_egp'] ?? 0), 2),
+            round((float) ($r['lifetime_paid_egp'] ?? 0), 2),
+            ((int) ($r['credentials_email_sent'] ?? 0)) === 1 ? 'YES' : 'NO',
+            ((int) ($r['account_is_active'] ?? 1)) === 1 ? 'ACTIVE' : 'INACTIVE',
+            $csvSafe($r['created_at']),
+        ]);
+    }
+    fclose($outFp);
     exit;
 }
 
@@ -2396,6 +2823,24 @@ if ($method === 'POST') {
                 $roleCode, $branchScope, $vesselScope, $repScope, $refCode, $isActive, $now,
                 $cur['id'],
             ]);
+            if ($roleCode === 'GUEST_CUSTOMER') {
+                $pdo->prepare(
+                    'UPDATE guest_customer_accounts
+                     SET guest_name = ?,
+                         guest_phone = CASE WHEN ? != "" THEN ? ELSE guest_phone END,
+                         guest_phone_norm = CASE WHEN ? != "" THEN ? ELSE guest_phone_norm END,
+                         guest_email = CASE WHEN ? != "" THEN ? ELSE guest_email END,
+                         updated_at = ?
+                     WHERE LOWER(username) = ?'
+                )->execute([
+                    $nameEn,
+                    $phone, $phone,
+                    sc_erp_normalize_guest_phone($phone), sc_erp_normalize_guest_phone($phone),
+                    $email, $email,
+                    $now,
+                    $targetUsername,
+                ]);
+            }
             sc_erp_audit($pdo, (string) $meUser['username'], (string) $meUser['role_code'], 'UPDATE_USER_PROFILE', 'USER', $targetUsername, ['photo_updated' => $savedAvatarUrl !== null, 'phone' => $phone]);
         }
 
@@ -2589,6 +3034,10 @@ if ($method === 'POST') {
         $voNo     = 'TRIAL-' . random_int(10000, 99999);
         $qrTok    = 'QR-' . strtoupper(bin2hex(random_bytes(6)));
         $guest    = clean_line($rawIn['guest_name'] ?? 'Resort Guest', 120);
+        $guestPh  = clean_line($rawIn['guest_phone'] ?? ($rawIn['phone'] ?? ''), 48);
+        $rawGEm   = strtolower(clean_line($rawIn['guest_email'] ?? ($rawIn['email'] ?? ''), 160));
+        $guestEm  = ($rawGEm !== '' && filter_var($rawGEm, FILTER_VALIDATE_EMAIL)) ? $rawGEm : '';
+        $guestLg  = strtolower(clean_line($rawIn['lang'] ?? 'en', 8));
         $hotel    = clean_line($rawIn['hotel_name'] ?? 'Cyrene Sharm Hotel', 120);
         $room     = clean_line($rawIn['room_no'] ?? '', 32);
         $nat      = strtoupper(clean_line($rawIn['nationality'] ?? 'ITALY', 24));
@@ -2793,14 +3242,14 @@ if ($method === 'POST') {
               adult_unit_eur, child_unit_eur, infant_unit_eur,
               booked_adults, booked_children, booked_infants, booked_total_egp,
               list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
-              snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
+              snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email,
               sales_rep, executor, ap_supplier_code, client_agency,
               rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
               desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
               estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
               boarding_status, payment_status, booking_state, workflow_stage, source_file,
               seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
         );
         $ins->execute([
             $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
@@ -2809,7 +3258,7 @@ if ($method === 'POST') {
             $adlEur, $chdEur, $infEur,
             $adults, $children, $infants, $grossEgp,
             $listTotalEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $reqDiscReason,
-            $guest,
+            $guest, $guestPh, $guestEm,
             $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', 'DIRECT',
             $rEgp, $rUsd, $rEur, $rGbp, $restEq,
             $depositEgp, $depositEgp, $depositEgp, $supplierCostEgp,
@@ -2822,6 +3271,24 @@ if ($method === 'POST') {
             $commRes['commission_status'],
         ]);
         $createdVid = (int) $pdo->lastInsertId();
+
+        // Automatically provision Verified Real-Customer Account (even if deposit_amount = 0 / OPEN_REST) & send login email if optional email provided!
+        $guestAcctRes = sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'      => $voNo,
+            'guest_name'      => $guest,
+            'guest_phone'     => $guestPh,
+            'guest_email'     => $guestEm,
+            'nationality'     => $nat,
+            'lang'            => $guestLg,
+            'hotel_name'      => $hotel,
+            'room_no'         => $room,
+            'seller_username' => $resolvedSeller ? (string) $resolvedSeller['username'] : '',
+            'trip_name'       => $tripName,
+            'trip_date'       => $tripDt,
+            'booked_egp'      => $grossEgp,
+            'paid_egp'        => $depositEgp,
+            'booking_status'  => $restEq > 0.01 ? 'CONFIRMED_UNPAID' : 'CONFIRMED_PAID',
+        ]);
 
         sc_erp_push_notification(
             $pdo,
@@ -2843,6 +3310,8 @@ if ($method === 'POST') {
             'gross_egp'      => $grossEgp,
             'sale_mode'      => $saleModeRaw,
             'commission_egp' => $commRes['commission_egp'],
+            'guest_username' => $guestAcctRes['guest_username'] ?? '',
+            'email_sent'     => !empty($guestAcctRes['email_sent']),
         ]);
 
         echo json_encode([
@@ -2868,6 +3337,7 @@ if ($method === 'POST') {
             'commission_egp'        => $commRes['commission_egp'],
             'commission_type'       => $commRes['commission_type'],
             'commission_status'     => $commRes['commission_status'],
+            'guest_account'         => $guestAcctRes,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
@@ -2888,6 +3358,8 @@ if ($method === 'POST') {
         erp_require_perm($ctx, 'sales.view_own_sales', 'ops.assign_boat_driver', 'bi.view_executive');
         $id   = (int) ($rawIn['id'] ?? 0);
         $voIn = trim((string) ($rawIn['voucher_no'] ?? ''));
+        $optEmail = strtolower(clean_line($rawIn['guest_email'] ?? ($rawIn['email'] ?? ''), 160));
+        $optPhone = clean_line($rawIn['guest_phone'] ?? ($rawIn['phone'] ?? ''), 48);
         $vSt  = $id > 0
             ? $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?')
             : $pdo->prepare('SELECT * FROM reservations_fact WHERE voucher_no = ? ORDER BY id DESC LIMIT 1');
@@ -2907,6 +3379,27 @@ if ($method === 'POST') {
         $pdo->prepare("UPDATE reservations_fact SET workflow_stage = 'SELLER_CONFIRMED_PENDING_OPS' WHERE id = ?")->execute([(int) $v['id']]);
         $pdo->prepare("UPDATE user_notifications SET is_read = 1 WHERE voucher_no = ? AND LOWER(recipient_username) = LOWER(?)")->execute([$voNo, (string) $ctx['user']['username']]);
 
+        // Provision Verified Real-Customer Account now that Seller confirmed the booking (even if unpaid / deposit = 0)!
+        $bookedVal = (float) (($v['booked_total_egp'] ?? 0) > 0 ? $v['booked_total_egp'] : ($v['estimated_revenue_egp'] ?? 0));
+        $paidVal   = (float) (($v['actual_paid_total_egp'] ?? 0) > 0 ? $v['actual_paid_total_egp'] : ($v['deposit_egp_equiv'] ?? 0));
+        $guestAcctRes = sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'      => $voNo,
+            'guest_name'      => (string) ($v['divers_names'] ?? ''),
+            'guest_phone'     => $optPhone !== '' ? $optPhone : (string) ($v['guest_phone'] ?? ''),
+            'guest_email'     => $optEmail !== '' ? $optEmail : (string) ($v['guest_email'] ?? ''),
+            'nationality'     => (string) ($v['nationality'] ?? ''),
+            'hotel_name'      => (string) ($v['hotel_name'] ?? ''),
+            'room_no'         => (string) ($v['room_no'] ?? ''),
+            'seller_username' => (string) ($v['seller_username'] ?? ''),
+            'trip_name'       => (string) ($v['trip_name'] ?? ''),
+            'trip_date'       => (string) ($v['trip_date'] ?? ''),
+            'booked_egp'      => $bookedVal,
+            'paid_egp'        => $paidVal,
+            'booking_status'  => str_contains(strtoupper((string) ($v['booking_state'] ?? '')), 'CANCEL')
+                ? 'CANCELLED_RETAINED'
+                : (((float) ($v['rest_egp_equiv'] ?? 0)) > 0.01 ? 'CONFIRMED_UNPAID' : 'CONFIRMED_PAID'),
+        ]);
+
         sc_erp_push_notification(
             $pdo,
             'ROLE:OPERATIONS_MANAGER',
@@ -2917,16 +3410,23 @@ if ($method === 'POST') {
             "Guest {$v['divers_names']} · {$v['trip_name']} ({$v['total_pax']} PAX) on {$v['trip_date']}.",
             "العميل {$v['divers_names']} · {$v['trip_name']} ({$v['total_pax']} أفراد) بتاريخ {$v['trip_date']}."
         );
-        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'workflow_stage' => 'SELLER_CONFIRMED_PENDING_OPS', 'workflow_status' => 'SELLER_CONFIRMED_PENDING_OPS']);
+        echo json_encode([
+            'ok'              => true,
+            'voucher_no'      => $voNo,
+            'workflow_stage'  => 'SELLER_CONFIRMED_PENDING_OPS',
+            'workflow_status' => 'SELLER_CONFIRMED_PENDING_OPS',
+            'guest_account'   => $guestAcctRes,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 
     if ($action === 'ops_confirm_reservation') {
         erp_require_perm($ctx, 'ops.view_manifests', 'ops.assign_boat_driver', 'bi.view_executive', 'gl.view_all_ledgers');
-        $id     = (int) ($rawIn['id'] ?? 0);
-        $voIn   = trim((string) ($rawIn['voucher_no'] ?? ''));
-        $pickup = clean_line($rawIn['pickup_time'] ?? '', 24);
-        $vessel = clean_line($rawIn['vessel_code'] ?? '', 32);
+        $id       = (int) ($rawIn['id'] ?? 0);
+        $voIn     = trim((string) ($rawIn['voucher_no'] ?? ''));
+        $pickup   = clean_line($rawIn['pickup_time'] ?? '', 24);
+        $vessel   = clean_line($rawIn['vessel_code'] ?? '', 32);
+        $optEmail = strtolower(clean_line($rawIn['guest_email'] ?? ($rawIn['email'] ?? ''), 160));
 
         $vSt = $id > 0
             ? $pdo->prepare('SELECT * FROM reservations_fact WHERE id = ?')
@@ -2944,6 +3444,28 @@ if ($method === 'POST') {
         $pdo->prepare("UPDATE reservations_fact SET workflow_stage = 'OPS_CONFIRMED', boarding_status = CASE WHEN boarding_status='BOOKED' THEN 'DISPATCHED' ELSE boarding_status END, pickup_time = ?, vessel_code = ? WHERE id = ?")
             ->execute([$newPickup, $newVessel, (int) $v['id']]);
 
+        $guestAcctRes = null;
+        $srcFileUp = strtoupper((string) ($v['source_file'] ?? ''));
+        if (in_array($srcFileUp, ['LIVE_MOBILE_APP', 'SELLER_SHARE_LINK', 'LIVE_WEBSITE_FORM'], true) || !empty($v['guest_account_username']) || $optEmail !== '') {
+            $bookedVal = (float) (($v['booked_total_egp'] ?? 0) > 0 ? $v['booked_total_egp'] : ($v['estimated_revenue_egp'] ?? 0));
+            $paidVal   = (float) (($v['actual_paid_total_egp'] ?? 0) > 0 ? $v['actual_paid_total_egp'] : ($v['deposit_egp_equiv'] ?? 0));
+            $guestAcctRes = sc_erp_provision_verified_guest_account($pdo, [
+                'voucher_no'      => $voNo,
+                'guest_name'      => (string) ($v['divers_names'] ?? ''),
+                'guest_phone'     => (string) ($v['guest_phone'] ?? ''),
+                'guest_email'     => $optEmail !== '' ? $optEmail : (string) ($v['guest_email'] ?? ''),
+                'nationality'     => (string) ($v['nationality'] ?? ''),
+                'hotel_name'      => (string) ($v['hotel_name'] ?? ''),
+                'room_no'         => (string) ($v['room_no'] ?? ''),
+                'seller_username' => (string) ($v['seller_username'] ?? ''),
+                'trip_name'       => (string) ($v['trip_name'] ?? ''),
+                'trip_date'       => (string) ($v['trip_date'] ?? ''),
+                'booked_egp'      => $bookedVal,
+                'paid_egp'        => $paidVal,
+                'booking_status'  => ((float) ($v['rest_egp_equiv'] ?? 0)) > 0.01 ? 'CONFIRMED_UNPAID' : 'CONFIRMED_PAID',
+            ]);
+        }
+
         sc_erp_push_notification(
             $pdo,
             'ROLE:CHIEF_ACCOUNTANT',
@@ -2954,7 +3476,13 @@ if ($method === 'POST') {
             "{$v['divers_names']} · {$v['trip_name']} · Total: " . number_format((float) $v['estimated_revenue_egp']) . " EGP · Paid: " . number_format((float) $v['deposit_egp_equiv']) . " EGP · Rest: " . number_format((float) $v['rest_egp_equiv']) . " EGP.",
             "العميل {$v['divers_names']} · {$v['trip_name']} · الإجمالي: " . number_format((float) $v['estimated_revenue_egp']) . " ج.م · المدفوع: " . number_format((float) $v['deposit_egp_equiv']) . " ج.م · المتبقي للتحصيل: " . number_format((float) $v['rest_egp_equiv']) . " ج.م."
         );
-        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'workflow_stage' => 'OPS_CONFIRMED', 'workflow_status' => 'OPS_CONFIRMED']);
+        echo json_encode([
+            'ok'              => true,
+            'voucher_no'      => $voNo,
+            'workflow_stage'  => 'OPS_CONFIRMED',
+            'workflow_status' => 'OPS_CONFIRMED',
+            'guest_account'   => $guestAcctRes,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 
@@ -3000,6 +3528,8 @@ if ($method === 'POST') {
                  WHERE voucher_no = ? AND status = 'PENDING_EXECUTION'"
             )->execute([$voNo]);
         }
+
+        sc_erp_sync_guest_account_on_voucher_change($pdo, $v, 'CONFIRMED_PAID');
 
         if (!empty($v['seller_username'])) {
             sc_erp_push_notification(
@@ -3083,7 +3613,9 @@ if ($method === 'POST') {
                 'FULL_CANCEL', $prevAdl, $prevChd, $prevInf, 0, 0, 0,
                 $prevTot, 0.0, -$prevTot, 0.0, $prevCom, 0.0, $reason,
             ]);
-            echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'change_type' => 'FULL_CANCEL', 'status' => 'CANCELLED', 'new_commission_egp' => 0.0]);
+            // Retain (or create!) the guest's verified account as ACTIVE even on full cancellation!
+            $guestSync = sc_erp_sync_guest_account_on_voucher_change($pdo, $v, 'CANCELLED_RETAINED');
+            echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'change_type' => 'FULL_CANCEL', 'status' => 'CANCELLED', 'new_commission_egp' => 0.0, 'guest_account' => $guestSync]);
             exit;
         }
 
@@ -3301,6 +3833,10 @@ if ($method === 'POST') {
                 "{$modSummary} -> Commission: " . number_format($newCommEgp) . " EGP ({$newCommStatus}).",
                 "{$modSummary} -> العمولة الفعلية: " . number_format($newCommEgp) . " ج.م ({$newCommStatus})."
             );
+        }
+
+        if (!empty($v['guest_account_username'])) {
+            sc_erp_sync_guest_account_on_voucher_change($pdo, $v, $isFullyDoneAndPaid ? 'CONFIRMED_PAID' : 'CONFIRMED_UNPAID');
         }
 
         echo json_encode([
@@ -3621,8 +4157,11 @@ if ($method === 'POST') {
             )->execute([$reason, $reason, $voNo]);
         }
 
+        // Retain (or provision if live booking!) the guest's verified account as ACTIVE even when booking is cancelled!
+        $guestSync = sc_erp_sync_guest_account_on_voucher_change($pdo, $v, 'CANCELLED_RETAINED');
+
         sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'CANCEL_VOUCHER', 'VOUCHER', $voNo, ['reason' => $reason]);
-        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'status' => 'CANCELLED', 'commission_status' => 'REVERSED_CANCELLED']);
+        echo json_encode(['ok' => true, 'voucher_no' => $voNo, 'status' => 'CANCELLED', 'commission_status' => 'REVERSED_CANCELLED', 'guest_account' => $guestSync]);
         exit;
     }
 
@@ -3987,6 +4526,277 @@ if ($method === 'POST') {
             ->execute([(string) $ctx['user']['username'], $nowIso, $mid]);
         sc_erp_audit($pdo, (string) $ctx['user']['username'], (string) $ctx['user']['role_code'], 'DELETE_INBOX_MESSAGE', 'INBOX_MSG', (string) $mid);
         echo json_encode(['ok' => true, 'message_id' => $mid]);
+        exit;
+    }
+
+    if ($action === 'guest_create_booking') {
+        erp_require_perm($ctx, 'guest.book_future_trips');
+        $meUser  = $ctx['user'];
+        $gUser   = (string) $meUser['username'];
+        $gSt     = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE LOWER(username) = LOWER(?) LIMIT 1');
+        $gSt->execute([$gUser]);
+        $gAcct   = $gSt->fetch() ?: [];
+
+        $tripCode = clean_line($rawIn['trip_code'] ?? ($rawIn['product_code'] ?? ''), 64);
+        if ($tripCode === '') {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please select a trip to book']);
+            exit;
+        }
+        $tripDt   = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($rawIn['trip_date'] ?? ''))
+            ? (string) $rawIn['trip_date']
+            : gmdate('Y-m-d', time() + 86400);
+        [$wk, $mo, $qr, $yr] = sc_erp_period_parts($tripDt);
+
+        $adults   = max(1, min(50, (int) ($rawIn['adults'] ?? 2)));
+        $children = max(0, min(30, (int) ($rawIn['children'] ?? 0)));
+        $infants  = max(0, min(15, (int) ($rawIn['infants'] ?? 0)));
+        $pax      = $adults + $children + $infants;
+
+        $guestName = clean_line($rawIn['guest_name'] ?? ($gAcct['guest_name'] ?? $meUser['display_name_en']), 120);
+        $guestPh   = clean_line($rawIn['guest_phone'] ?? ($gAcct['guest_phone'] ?? $meUser['phone'] ?? ''), 48);
+        $rawEm     = strtolower(clean_line($rawIn['guest_email'] ?? ($gAcct['guest_email'] ?? $meUser['email'] ?? ''), 160));
+        $guestEm   = ($rawEm !== '' && filter_var($rawEm, FILTER_VALIDATE_EMAIL)) ? $rawEm : '';
+        $hotel     = clean_line($rawIn['hotel_name'] ?? ($gAcct['hotel_name'] ?? 'Sharm Hotel'), 120);
+        $room      = clean_line($rawIn['room_no'] ?? ($gAcct['room_no'] ?? ''), 32);
+        $nat       = strtoupper(clean_line($rawIn['nationality'] ?? ($gAcct['nationality'] ?? 'VIP'), 24));
+        $pickup    = clean_line($rawIn['pickup_time'] ?? '08:00', 24);
+        $notes     = clean_line($rawIn['notes'] ?? 'Booked via Verified Club Guest App', 240);
+
+        $fx        = sc_erp_fx_rates($pdo);
+        $tripMeta  = sc_erp_lookup_unified_trip($pdo, $tripCode);
+        $fin       = sc_erp_compute_trip_financials($tripMeta, $adults, $children, $infants, $fx);
+
+        $voNo      = 'VIP-' . random_int(10000, 99999);
+        $qrTok     = 'QR-' . strtoupper(bin2hex(random_bytes(6)));
+        $tripName  = $tripMeta ? (string) $tripMeta['unified_name_en'] : $tripCode;
+        $resCode   = $tripMeta ? (string) $tripMeta['trip_code'] : $tripCode;
+        $grossEgp  = (float) $fin['gross_total_egp'];
+        $totalEur  = (float) $fin['catalog_total_eur'];
+        $supCost   = (float) $fin['supplier_cost_egp'];
+        $saleMode  = (string) $fin['sale_mode'];
+
+        // Preserve lifetime referral attribution to the original Seller who onboarded this real customer!
+        $refSellerTok = trim((string) ($gAcct['referred_by_seller'] ?? ''));
+        $refSeller    = $refSellerTok !== '' ? sc_erp_resolve_seller($pdo, $refSellerTok) : null;
+        $sUser        = $refSeller ? (string) $refSeller['username'] : '';
+        $sRep         = $refSeller ? (string) $refSeller['rep_scope'] : 'VIP_APP';
+        $branch       = $refSeller ? (string) ($refSeller['branch_scope'] ?: 'CYRENE') : 'CYRENE';
+        $sellerType   = $refSeller ? 'HOTEL_SELLER' : 'WEBSITE_DIRECT';
+
+        $commRes = sc_erp_record_seller_commission($pdo, [
+            'seller_token'     => $sUser,
+            'sale_mode'        => $saleMode,
+            'tx_date'          => $tripDt,
+            'voucher_no'       => $voNo,
+            'guest_name'       => $guestName,
+            'product_name'     => $tripName,
+            'pax'              => $pax,
+            'gross_amount_egp' => $grossEgp,
+            'supplier_cost_egp'=> $saleMode === 'OUT_SIDE' ? $supCost : 0.0,
+            'status'           => 'PENDING_EXECUTION',
+            'source_channel'   => 'LIVE_MOBILE_APP',
+            'branch_code'      => $branch,
+            'notes'            => 'Repeat booking from Verified Guest App (' . $gUser . ')',
+        ]);
+
+        $ins = $pdo->prepare(
+            'INSERT INTO reservations_fact
+             (voucher_no, qr_token, trip_date, period_week, period_month, period_quarter, period_year,
+              branch_code, channel, hotel_name, pickup_zone, room_no, nationality, pickup_time,
+              trip_name, unified_trip_code, product_category, adults, children, infants, total_pax,
+              adult_unit_eur, child_unit_eur, infant_unit_eur,
+              booked_adults, booked_children, booked_infants, booked_total_egp,
+              list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
+              snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email, guest_account_username,
+              sales_rep, executor, ap_supplier_code, client_agency,
+              rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
+              desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
+              estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
+              boarding_status, payment_status, booking_state, workflow_stage, source_file,
+              seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?,?, ?,?,?,?, 0,0,?,0,?, 0,0,0,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+        );
+        $ins->execute([
+            $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
+            $branch, 'VIP_GUEST_APP', $hotel !== '' ? $hotel : 'Sharm Hotel', '', $room, $nat, $pickup,
+            $tripName, $resCode, 'VIP_REPEAT_BOOKING', $adults, $children, $infants, $pax,
+            $fin['adult_unit_eur'], $fin['child_unit_eur'], $fin['infant_unit_eur'],
+            $adults, $children, $infants, $grossEgp,
+            $grossEgp, 'NONE', 0.0, 'EUR', 0.0, '',
+            $guestName . ($guestPh !== '' ? " ({$guestPh})" : ''), $guestPh, $guestEm, $gUser,
+            $sRep, $fin['supplier_name'], $fin['supplier_code'] !== 'SEA_COLLEGE' ? $fin['supplier_code'] : '', 'DIRECT',
+            $totalEur, $grossEgp,
+            $supCost,
+            $grossEgp, $supCost, round($grossEgp - $supCost, 2),
+            '', 'BOOKED', 'OPEN_REST', 'EXECUTED', 'SELLER_CONFIRMED_PENDING_OPS', 'LIVE_MOBILE_APP',
+            $sellerType, $sUser,
+            $commRes['commission_egp'], $commRes['commission_type'], $commRes['commission_status'],
+        ]);
+        $newId = (int) $pdo->lastInsertId();
+
+        sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'      => $voNo,
+            'guest_name'      => $guestName,
+            'guest_phone'     => $guestPh,
+            'guest_email'     => $guestEm,
+            'nationality'     => $nat,
+            'hotel_name'      => $hotel,
+            'room_no'         => $room,
+            'seller_username' => $sUser,
+            'trip_name'       => $tripName,
+            'trip_date'       => $tripDt,
+            'booked_egp'      => $grossEgp,
+            'paid_egp'        => 0.0,
+            'booking_status'  => 'CONFIRMED_UNPAID',
+        ]);
+
+        sc_erp_push_notification(
+            $pdo,
+            'ROLE:OPERATIONS_MANAGER',
+            'VIP_GUEST_BOOKING',
+            $voNo,
+            "🌟 Repeat VIP Guest App Booking ({$voNo})",
+            "🌟 حجز جديد من عميل فعلي عبر تطبيق سي كوليدج ({$voNo})",
+            "{$guestName} ({$guestPh}) booked {$tripName} on {$tripDt} ({$adults} Adl, {$children} Ch, {$infants} Inf — €{$totalEur}).",
+            "حجز العميل المعتمد {$guestName} ({$guestPh}) رحلة {$tripName} بتاريخ {$tripDt} ({$adults} بالغ، {$children} طفل، {$infants} رضيع — €{$totalEur})."
+        );
+        if ($sUser !== '') {
+            sc_erp_push_notification(
+                $pdo,
+                $sUser,
+                'VIP_GUEST_BOOKING',
+                $voNo,
+                "🎉 Your Returning Guest Booked Another Trip ({$voNo})!",
+                "🎉 عميلك السابق حجز رحلة جديدة عبر التطبيق باسمك ({$voNo})!",
+                "{$guestName} booked {$tripName} on {$tripDt} (€{$totalEur}) — automatically credited to your account!",
+                "قام عميلك {$guestName} بحجز رحلة {$tripName} ليوم {$tripDt} (€{$totalEur}) — مسجلة تلقائيًا باسمك!"
+            );
+        }
+
+        sc_erp_audit($pdo, $gUser, 'GUEST_CUSTOMER', 'GUEST_CREATE_BOOKING', 'VOUCHER', $voNo, [
+            'trip' => $resCode,
+            'pax'  => $pax,
+            'eur'  => $totalEur,
+        ]);
+
+        echo json_encode([
+            'ok'             => true,
+            'voucher_id'     => $newId,
+            'voucher_no'     => $voNo,
+            'qr_token'       => $qrTok,
+            'trip_name'      => $tripName,
+            'trip_date'      => $tripDt,
+            'pickup_time'    => $pickup,
+            'adults'         => $adults,
+            'children'       => $children,
+            'infants'        => $infants,
+            'total_eur'      => $totalEur,
+            'total_egp'      => $grossEgp,
+            'whatsapp_phone' => WHATSAPP_NUMBER,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
+
+    if ($action === 'send_guest_login_email') {
+        erp_require_perm($ctx, 'sales.create_voucher', 'sales.view_own_sales', 'crm.manage_leads_ads', 'ops.assign_boat_driver', 'bi.view_executive');
+        $me       = $ctx['user'];
+        $gUserIn  = strtolower(clean_line($rawIn['guest_username'] ?? '', 64));
+        $voNoIn   = clean_line($rawIn['voucher_no'] ?? '', 40);
+        $rawEmail = strtolower(clean_line($rawIn['guest_email'] ?? ($rawIn['email'] ?? ''), 160));
+        if ($rawEmail === '' || !filter_var($rawEmail, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => 'Please enter a valid email address']);
+            exit;
+        }
+
+        $gRow = null;
+        $vRow = null;
+        if ($gUserIn !== '') {
+            $st = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE LOWER(username) = ? LIMIT 1');
+            $st->execute([$gUserIn]);
+            $gRow = $st->fetch() ?: null;
+        }
+        if ($voNoIn !== '') {
+            $vst = $pdo->prepare('SELECT * FROM reservations_fact WHERE voucher_no = ? ORDER BY id DESC LIMIT 1');
+            $vst->execute([$voNoIn]);
+            $vRow = $vst->fetch() ?: null;
+            if (!$gRow && $vRow && !empty($vRow['guest_account_username'])) {
+                $st2 = $pdo->prepare('SELECT * FROM guest_customer_accounts WHERE LOWER(username) = LOWER(?) LIMIT 1');
+                $st2->execute([(string) $vRow['guest_account_username']]);
+                $gRow = $st2->fetch() ?: null;
+            }
+        }
+        if (!$gRow && !$vRow) {
+            http_response_code(404);
+            echo json_encode(['ok' => false, 'error' => 'Guest account or booking voucher not found']);
+            exit;
+        }
+
+        // Horizontal RBAC check: Sellers may only email/update guests attributed to them!
+        if ($me['role_code'] === 'SALES_REP') {
+            $myUser = strtolower((string) $me['username']);
+            $ownerSeller = strtolower((string) ($gRow['referred_by_seller'] ?? ($vRow['seller_username'] ?? '')));
+            if ($ownerSeller !== $myUser) {
+                http_response_code(403);
+                echo json_encode(['ok' => false, 'error' => 'You may only send login emails to your own guests']);
+                exit;
+            }
+        }
+
+        $res = sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'         => $voNoIn !== '' ? $voNoIn : (string) ($gRow['latest_voucher_no'] ?? ''),
+            'guest_name'         => (string) ($gRow['guest_name'] ?? ($vRow['divers_names'] ?? 'Club Guest')),
+            'guest_phone'        => (string) ($gRow['guest_phone'] ?? ($vRow['guest_phone'] ?? '')),
+            'guest_email'        => $rawEmail,
+            'nationality'        => (string) ($gRow['nationality'] ?? ($vRow['nationality'] ?? '')),
+            'lang'               => (string) ($gRow['preferred_lang'] ?? 'en'),
+            'hotel_name'         => (string) ($gRow['hotel_name'] ?? ($vRow['hotel_name'] ?? '')),
+            'room_no'            => (string) ($gRow['room_no'] ?? ($vRow['room_no'] ?? '')),
+            'seller_username'    => (string) ($gRow['referred_by_seller'] ?? ($vRow['seller_username'] ?? '')),
+            'trip_name'          => (string) ($gRow['latest_trip_name'] ?? ($vRow['trip_name'] ?? '')),
+            'trip_date'          => (string) ($gRow['latest_trip_date'] ?? ($vRow['trip_date'] ?? '')),
+            'booked_egp'         => (float) ($vRow['booked_total_egp'] ?? ($vRow['estimated_revenue_egp'] ?? 0.0)),
+            'paid_egp'           => (float) ($vRow['actual_paid_total_egp'] ?? ($vRow['deposit_egp_equiv'] ?? 0.0)),
+            'booking_status'     => (string) ($gRow['latest_booking_status'] ?? 'CONFIRMED_UNPAID'),
+            'force_resend_email' => true,
+        ]);
+
+        // If `$gRow` existed under `$gUserIn` and `voucher_no` was empty, ensure that exact `guest_customer_accounts` row was updated/emailed
+        if ($gRow && strtolower((string) ($res['guest_username'] ?? '')) !== strtolower((string) $gRow['username'])) {
+            $exactUser = (string) $gRow['username'];
+            $nowIso = gmdate('Y-m-d\TH:i:s\Z');
+            $newTempPass = sc_erp_generate_guest_password();
+            $pdo->prepare('UPDATE users SET email = ?, password_hash = ?, is_active = 1, updated_at = ? WHERE username = ?')
+                ->execute([$rawEmail, password_hash($newTempPass, PASSWORD_BCRYPT), $nowIso, $exactUser]);
+            $pdo->prepare('UPDATE guest_customer_accounts SET guest_email = ?, updated_at = ? WHERE username = ?')
+                ->execute([$rawEmail, $nowIso, $exactUser]);
+            $sentOk = sc_erp_send_guest_credentials_email(
+                $pdo,
+                ['username' => $exactUser, 'guest_name' => (string) $gRow['guest_name'], 'guest_email' => $rawEmail],
+                $newTempPass,
+                (string) ($gRow['latest_voucher_no'] ?? ''),
+                (string) ($gRow['latest_trip_name'] ?? ''),
+                (string) ($gRow['latest_trip_date'] ?? '')
+            );
+            $res['guest_username']   = $exactUser;
+            $res['guest_email']      = $rawEmail;
+            $res['email_sent']       = $sentOk;
+            $res['initial_password'] = $newTempPass;
+        }
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'SEND_GUEST_LOGIN_EMAIL', 'GUEST_ACCOUNT', (string) ($res['guest_username'] ?? $gUserIn), [
+            'email'      => $rawEmail,
+            'email_sent' => !empty($res['email_sent']),
+        ]);
+
+        echo json_encode([
+            'ok'             => true,
+            'guest_username' => $res['guest_username'] ?? $gUserIn,
+            'guest_email'    => $rawEmail,
+            'email_sent'     => !empty($res['email_sent']),
+            'guest_account'  => $res,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 }

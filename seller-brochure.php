@@ -269,6 +269,10 @@ if ($activePromoToken !== '') {
             <label><?= $isRtl ? 'تاريخ الرحلة المفضل' : 'Preferred Trip Date' ?></label>
             <input type="date" id="fDate" required value="<?= gmdate('Y-m-d', time() + 86400) ?>">
           </div>
+          <div class="full">
+            <label><?= $isRtl ? '✉️ البريد الإلكتروني (اختياري — لاستلام بيانات دخول تطبيق VIP للرحلات القادمة)' : '✉️ Email (Optional — receive VIP Club App Login for future trips)' ?></label>
+            <input type="email" id="fEmail" placeholder="guest@example.com">
+          </div>
           <div>
             <label><?= $isRtl ? 'الفندق في شرم الشيخ' : 'Your Hotel in Sharm' ?></label>
             <input type="text" id="fHotel" list="hotelsList" placeholder="Start typing hotel...">
@@ -460,6 +464,7 @@ if ($activePromoToken !== '') {
             trip_code: activeTrip.id,
             guest_name: document.getElementById('fName').value.trim(),
             phone: document.getElementById('fPhone').value.trim(),
+            guest_email: (document.getElementById('fEmail')?.value || '').trim(),
             trip_date: document.getElementById('fDate').value,
             hotel_name: hotelVal,
             room_no: document.getElementById('fRoom').value.trim(),
@@ -475,7 +480,8 @@ if ($activePromoToken !== '') {
         if (!j.ok) throw new Error(j.error || 'Booking failed');
         const box = document.getElementById('mSuccess');
         const waMsg = encodeURIComponent(`Hello Sea College! Confirmed booking ${j.voucher_no}: ${j.trip_name} on ${j.trip_date} (${j.adults} Adl, ${j.children} Ch, ${j.infants} Inf — Total €${j.total_eur}) — Ref: ${SELLER_SLUG}`);
-        box.innerHTML = `✅ <strong>${IS_RTL ? 'تم تسجيل حجزك بنجاح!' : 'Booking Confirmed!'}</strong><br>Ref: <strong>${esc(j.voucher_no)}</strong> · Total: <strong>€${esc(j.total_eur)}</strong>${j.promo_applied ? ` <span style="color:#fcd34d">(Saved €${esc(j.discount_eur)})</span>` : ''} · Pickup: ~${esc(j.pickup_time)}<br><a class="btn btn-wa" style="margin-top:8px;width:100%" target="_blank" rel="noopener" href="https://wa.me/${esc(j.whatsapp_phone)}?text=${waMsg}">💬 ${IS_RTL ? 'إرسال التأكيد عبر واتساب' : 'Send Confirmation on WhatsApp'}</a>`;
+        const emailBadge = j.guest_email ? `<br><span style="color:#7dd3fc">📧 ${IS_RTL ? 'سيتم إرسال بيانات دخول تطبيق VIP لبريدك الإلكتروني فور تأكيد المستشار!' : 'Your VIP Club App Login will be sent to ' + esc(j.guest_email) + ' once your concierge confirms!'}</span>` : '';
+        box.innerHTML = `✅ <strong>${IS_RTL ? 'تم تسجيل حجزك بنجاح!' : 'Booking Confirmed!'}</strong><br>Ref: <strong>${esc(j.voucher_no)}</strong> · Total: <strong>€${esc(j.total_eur)}</strong>${j.promo_applied ? ` <span style="color:#fcd34d">(Saved €${esc(j.discount_eur)})</span>` : ''} · Pickup: ~${esc(j.pickup_time)}${emailBadge}<br><a class="btn btn-wa" style="margin-top:8px;width:100%" target="_blank" rel="noopener" href="https://wa.me/${esc(j.whatsapp_phone)}?text=${waMsg}">💬 ${IS_RTL ? 'إرسال التأكيد عبر واتساب' : 'Send Confirmation on WhatsApp'}</a>`;
         box.style.display = 'block';
         btn.style.display = 'none';
       } catch (err) {
