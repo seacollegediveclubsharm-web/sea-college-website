@@ -76,5 +76,45 @@ if ($cmd === 'poll') {
     exit($res['ok'] ? 0 : 1);
 }
 
-echo "Unknown command '{$cmd}'. Use: status | list | reply-uid <uid> [--send] | poll [--send]\n";
+if ($cmd === 'sync-crm') {
+    $imap = new LaraImapClient();
+    if (!$imap->connect(IMAP_HOST, IMAP_PORT, SMTP_USER, SMTP_PASS)) {
+        exit("IMAP connect failed.\n");
+    }
+    $state = lara_email_with_state(static fn(array $s): array => $s);
+    $uids = $imap->searchUids('ALL');
+    $synced = 0;
+    foreach ($uids as $uid) {
+        if (!empty($state['crm_synced_uids'][(string) $uid])) {
+            echo "UID {$uid}: already synced to CRM.\n";
+            continue;
+        }
+        $raw = $imap->fetchRawByUid($uid);
+        if ($raw === '') {
+            continue;
+        }
+        $parsed = lara_parse_rfc822_message($raw);
+        if (lara_email_precheck_skip($parsed) !== null) {
+            continue;
+        }
+        $isReplied = isset($state['processed_uids'][(string) $uid]);
+        $statusLabel = $isReplied ? 'Lara Auto-Quoted' : 'Email Inbox Lead';
+        $presetEur = ($uid === 18) ? 741.0 : (($uid === 13) ? 1100.0 : 0.0);
+        $fields = lara_extract_email_lead_fields($parsed, $presetEur, '');
+        $ok = lara_email_sync_lead_to_crm($uid, $parsed, ['estimated_eur' => $fields['estimated_eur'], 'lang' => $fields['lang']], $statusLabel);
+        echo "UID {$uid} ({$fields['name']} <{$parsed['from_email']}> | {$fields['people']} pax | {$fields['date']} | €{$fields['estimated_eur']}): CRM sync = " . ($ok ? 'OK' : 'FAILED') . "\n";
+        if ($ok) {
+            $synced++;
+            lara_email_with_state(static function (array $s) use ($uid): array {
+                $s['crm_synced_uids'][(string) $uid] = gmdate('c');
+                return $s;
+            });
+        }
+    }
+    $imap->close();
+    echo "=== Synced {$synced} email lead(s) to Google Sheets CRM ===\n";
+    exit(0);
+}
+
+echo "Unknown command '{$cmd}'. Use: status | list | reply-uid <uid> [--send] | poll [--send] | sync-crm\n";
 exit(1);

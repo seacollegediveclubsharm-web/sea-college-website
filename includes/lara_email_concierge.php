@@ -548,14 +548,7 @@ C) TEAM, PICKUP ZONES, AVAILABILITY & TERMS:
      * Free cancellation up to 48 hours before departure with zero fee.
      * Weather / Sea Safety Guarantee: If Port Authority closes the marina or wind/sea conditions are unsuitable for safe family snorkeling/diving, guests receive FREE rescheduling to another suitable day during their stay OR a 100% full refund with zero penalty.
 
-OUTPUT FORMAT — Return ONLY valid JSON:
-{
-  "is_genuine_guest_inquiry": true,
-  "reason": "brief reason",
-  "lang": "en",
-  "estimated_eur": 741,
-  "reply_markdown": "Dear Aleksei,\n\nThank you for..."
-}
+OUTPUT FORMAT — Return ONLY valid JSON matching schema.
 SYS;
 
     $userPrompt = "From: {$msg['from_name']} <{$msg['from_email']}>\nSubject: {$msg['subject']}\n\nEmail Body:\n" . mb_substr($msg['body'], 0, 6000, 'UTF-8');
@@ -581,11 +574,11 @@ SYS;
         ],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    $models = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
+    $models = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
     $parsed = null;
     foreach ($models as $idx => $model) {
         if ($idx > 0) {
-            usleep(800000);
+            usleep(600000);
         }
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . rawurlencode(GEMINI_API_KEY);
         $ch = curl_init($url);
@@ -594,7 +587,7 @@ SYS;
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_POSTFIELDS     => $payloadJson,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 35,
+            CURLOPT_TIMEOUT        => 25,
         ]);
         $raw = (string) curl_exec($ch);
         $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -627,7 +620,6 @@ SYS;
     $lang = (string) ($parsed['lang'] ?? 'en');
     $should = (bool) $parsed['is_genuine_guest_inquiry'] && $md !== '';
 
-    // Clean plain-text version (convert [Label](url) -> Label: url and strip ** / ###)
     $plain = preg_replace('/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/u', '$1 ($2)', $md) ?? $md;
     $plain = preg_replace('/^#{1,3}\s+/m', '', $plain) ?? $plain;
     $plain = str_replace('**', '', $plain);
@@ -643,6 +635,217 @@ SYS;
         'reply_text'    => $plain,
         'reply_html'    => $html,
     ];
+}
+
+/**
+ * Deterministic <1ms extractor for CRM lead columns (`Name`, `Phone`, `People`, `Preferred_Date`, `Hotel`, `Diving_Level`, `Estimated_EUR`).
+ *
+ * @param array<string,mixed> $parsed
+ * @return array{name:string,phone:string,people:int,date:string,hotel:string,level:string,lang:string,interest:string,estimated_eur:float}
+ */
+function lara_extract_email_lead_fields(array $parsed, float $aiEur = 0.0, string $aiLang = ''): array
+{
+    $subject = trim((string) ($parsed['subject'] ?? ''));
+    $body    = trim((string) ($parsed['body'] ?? ''));
+    $full    = $subject . "\n" . $body;
+    $low     = mb_strtolower($full, 'UTF-8');
+
+    // 1. Name
+    $name = trim((string) ($parsed['from_name'] ?? ''));
+    if ($name === '' && preg_match('/(?:regards|thank you|thanks|sincerely|best)[,\s]*\r?\n+\s*([\p{L}][\p{L} .\'-]{1,45})/iu', $body, $nm)) {
+        $name = trim($nm[1]);
+    }
+    if ($name === '') {
+        $name = explode('@', (string) ($parsed['from_email'] ?? 'Guest'))[0];
+    }
+
+    // 2. Phone (digits only so Google Sheets never parses +27... as a formula)
+    $phone = '';
+    if (preg_match('/(?:cell|tel|phone|mobile|whatsapp|واتساب|هاتف)\s*[:.]?\s*(\+?[0-9][0-9 ()\-]{7,22})/iu', $body, $pm)) {
+        $phone = preg_replace('/\D/', '', $pm[1]) ?? '';
+    } elseif (preg_match('/(\+[1-9][0-9 ()\-]{8,20})/', $body, $pm)) {
+        $cand = preg_replace('/\D/', '', $pm[1]) ?? '';
+        if ($cand !== WHATSAPP_NUMBER && strlen($cand) >= 9 && strlen($cand) <= 15) {
+            $phone = $cand;
+        }
+    }
+
+    // 3. People count
+    $people = 1;
+    $wordNums = ['two' => 2, 'three' => 3, 'four' => 4, 'five' => 5, 'six' => 6, 'seven' => 7, 'eight' => 8, 'nine' => 9, 'ten' => 10];
+    if (preg_match('/family of (two|three|four|five|six|seven|eight|\d+)/iu', $low, $gm)) {
+        $w = strtolower($gm[1]);
+        $people = $wordNums[$w] ?? max(1, (int) $w);
+    } elseif (preg_match('/\b(\d{1,2})\s*(?:people|guests|persons|pax|divers)\b/iu', $low, $gm)) {
+        $people = max(1, min(60, (int) $gm[1]));
+    } elseif (preg_match('/\b(\d)\s*adults?\s*(?:and|&|\+)\s*(\d)\s*(?:kids?|children)/iu', $low, $gm)) {
+        $people = (int) $gm[1] + (int) $gm[2];
+    }
+
+    // 4. Hotel match against data/hotel_zones.php
+    $hotel = '';
+    $zonesFile = dirname(__DIR__) . '/data/hotel_zones.php';
+    if (is_file($zonesFile)) {
+        $hz = require $zonesFile;
+        foreach (($hz['hotels'] ?? []) as $hEntry) {
+            $hName = (string) ($hEntry['name'] ?? '');
+            if ($hName !== '' && str_contains($low, mb_strtolower($hName, 'UTF-8'))) {
+                $hotel = $hName;
+                break;
+            }
+        }
+    }
+
+    // 5. Preferred date (YYYY-MM-DD)
+    $prefDate = '';
+    $months = [
+        'jan' => 1, 'january' => 1, 'feb' => 2, 'february' => 2, 'mar' => 3, 'march' => 3,
+        'apr' => 4, 'april' => 4, 'may' => 5, 'jun' => 6, 'june' => 6, 'jul' => 7, 'july' => 7,
+        'aug' => 8, 'august' => 8, 'sep' => 9, 'sept' => 9, 'september' => 9,
+        'oct' => 10, 'october' => 10, 'nov' => 11, 'november' => 11, 'dec' => 12, 'december' => 12,
+    ];
+    $defaultYear = (int) gmdate('Y', strtotime((string) ($parsed['date'] ?? '')) ?: time());
+    if (preg_match('/\b(\d{1,2})(?:\s*(?:to|–|-)\s*\d{1,2})?\s+(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)(?:\s+(202\d))?/iu', $full, $dm)) {
+        $day = (int) $dm[1];
+        $mon = $months[strtolower($dm[2])] ?? 1;
+        $yr  = !empty($dm[3]) ? (int) $dm[3] : ($mon < (int) gmdate('n') ? $defaultYear + 1 : $defaultYear);
+        if (checkdate($mon, $day, $yr)) {
+            $prefDate = sprintf('%04d-%02d-%02d', $yr, $mon, $day);
+        }
+    } elseif (preg_match('/\b(202\d-\d{2}-\d{2})\b/', $full, $dm)) {
+        $prefDate = $dm[1];
+    }
+
+    // 6. Diving certification level
+    $level = '';
+    if (preg_match('/\b(cmas r3|dive leader|divemaster)\b/iu', $low)) {
+        $level = 'dm';
+    } elseif (preg_match('/\b(rescue diver)\b/iu', $low)) {
+        $level = 'rescue';
+    } elseif (preg_match('/\b(advanced open water|aowd)\b/iu', $low) && preg_match('/\b(have|certified|we have)\b/iu', $low)) {
+        $level = 'aowd';
+    } elseif (preg_match('/\b(certified open water|padi open water|\bowd\b)\b/iu', $low)) {
+        $level = 'owd';
+    } elseif (preg_match('/\b(beginner|first time|never dived|snorkeling)\b/iu', $low)) {
+        $level = 'none';
+    }
+
+    // 7. Language
+    $lang = $aiLang !== '' ? $aiLang : (preg_match('/\p{Arabic}/u', $body) ? 'ar' : (preg_match('/\p{Cyrillic}/u', $body) ? 'ru' : 'en'));
+
+    // 8. Estimated EUR (use AI figure if > 0, else smart catalog estimate)
+    $eur = $aiEur;
+    if ($eur <= 0) {
+        if (preg_match('/private.*(yacht|boat|charter)/iu', $low)) {
+            $eur = $people <= 5 ? 550.0 : ($people <= 10 ? 650.0 : 900.0);
+        } elseif (preg_match('/20[- ]dive/iu', $low)) {
+            $eur = 950.0;
+        } elseif (preg_match('/10[- ]dive/iu', $low)) {
+            $eur = 350.0;
+        } elseif (preg_match('/advanced open water/iu', $low)) {
+            $eur = 350.0;
+        } elseif (preg_match('/open water/iu', $low)) {
+            $eur = 400.0;
+        }
+    }
+
+    $interest = $subject !== '' ? $subject : mb_substr(str_replace("\n", ' ', $body), 0, 120, 'UTF-8');
+
+    return [
+        'name'          => $name,
+        'phone'         => $phone,
+        'people'        => $people,
+        'date'          => $prefDate,
+        'hotel'         => $hotel,
+        'level'         => $level,
+        'lang'          => $lang,
+        'interest'      => $interest,
+        'estimated_eur' => round($eur, 2),
+    ];
+}
+
+/**
+ * Push a verified Direct Email client lead into Google Sheets CRM (`CRM_WEBHOOK_URL`),
+ * and the Unified ERP SQL Warehouse (`sc_erp_ingest_website_lead`).
+ *
+ * @param array<string,mixed> $parsed
+ * @param array<string,mixed> $plan
+ */
+function lara_email_sync_lead_to_crm(int $uid, array $parsed, array $plan = [], string $laraStatus = 'Lara Auto-Quoted'): bool
+{
+    $msgId = (string) ($parsed['message_id'] ?? '');
+    $eventId = 'email_uid' . $uid . '_' . substr(sha1($msgId !== '' ? $msgId : ('uid_' . $uid)), 0, 10);
+    $receivedTs = strtotime((string) ($parsed['date'] ?? '')) ?: time();
+    $receivedIso = gmdate('c', $receivedTs);
+
+    $extracted = lara_extract_email_lead_fields(
+        $parsed,
+        (float) ($plan['estimated_eur'] ?? 0),
+        (string) ($plan['lang'] ?? '')
+    );
+
+    $crmPayload = [
+        'type'                => 'lead',
+        'received_at'         => $receivedIso,
+        'event_id'            => $eventId,
+        'form'                => 'direct_email',
+        'lang'                => $extracted['lang'],
+        'name'                => $extracted['name'],
+        'phone'               => $extracted['phone'],
+        'email'               => strtolower(trim((string) ($parsed['from_email'] ?? ''))),
+        'interest'            => $extracted['interest'],
+        'people'              => $extracted['people'],
+        'date'                => $extracted['date'],
+        'hotel'               => $extracted['hotel'],
+        'level'               => $extracted['level'],
+        'message'             => mb_substr(trim((string) ($parsed['body'] ?? '')), 0, 1000, 'UTF-8'),
+        'cart'                => [[
+            'source'  => 'direct_email',
+            'uid'     => $uid,
+            'subject' => mb_substr((string) ($parsed['subject'] ?? ''), 0, 140, 'UTF-8'),
+            'lara'    => $laraStatus,
+        ]],
+        'estimated_total_eur' => $extracted['estimated_eur'],
+        'estimated_eur'       => $extracted['estimated_eur'],
+        'utm_source'          => 'email',
+        'utm_medium'          => 'direct_email',
+        'utm_campaign'        => 'info_seacollegediveclub',
+        'channel_source'      => 'Direct Email',
+        'first_channel'       => 'Direct Email',
+        'journey_path'        => 'Direct Email -> ' . $laraStatus,
+    ];
+
+    $okCrm = false;
+    if (defined('CRM_WEBHOOK_URL') && CRM_WEBHOOK_URL !== '') {
+        $ch = curl_init(CRM_WEBHOOK_URL);
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+            CURLOPT_POSTFIELDS     => json_encode($crmPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS      => 4,
+            CURLOPT_TIMEOUT        => 12,
+        ]);
+        $resp = curl_exec($ch);
+        $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        $okCrm = ($resp !== false && $code >= 200 && $code < 400);
+    }
+
+    $erpFile = __DIR__ . '/erp_db.php';
+    if (is_file($erpFile)) {
+        try {
+            require_once $erpFile;
+            if (function_exists('sc_erp_ingest_website_lead')) {
+                sc_erp_ingest_website_lead($crmPayload);
+            }
+        } catch (\Throwable $e) {
+            error_log('Lara email ERP lead sync error: ' . $e->getMessage());
+        }
+    }
+
+    return $okCrm;
 }
 
 /**
@@ -940,8 +1143,17 @@ function lara_email_poll_and_reply(bool $doSend = true, int $maxMessages = 5, ?i
             $replied++;
             $imap->markAnswered($uid);
             $imap->appendSent($sendRes['raw_mime']);
-            lara_email_with_state(static function (array $st) use ($uid, $parsed, $senderKey): array {
+
+            $crmOk = false;
+            if (empty($stateSnapshot['crm_synced_uids'][(string) $uid])) {
+                $crmOk = lara_email_sync_lead_to_crm($uid, $parsed, $plan, 'Lara Auto-Quoted');
+            }
+
+            lara_email_with_state(static function (array $st) use ($uid, $parsed, $senderKey, $crmOk): array {
                 $st['processed_uids'][(string) $uid] = gmdate('c');
+                if ($crmOk) {
+                    $st['crm_synced_uids'][(string) $uid] = gmdate('c');
+                }
                 if ($parsed['message_id'] !== '') {
                     $st['replied_msg_ids'][$parsed['message_id']] = gmdate('c');
                 }
@@ -960,6 +1172,7 @@ function lara_email_poll_and_reply(bool $doSend = true, int $maxMessages = 5, ?i
                 'subject'       => $parsed['subject'],
                 'lang'          => $plan['lang'],
                 'estimated_eur' => $plan['estimated_eur'],
+                'crm_synced'    => $crmOk,
                 'out_msg_id'    => $sendRes['message_id'],
             ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
 
@@ -969,6 +1182,7 @@ function lara_email_poll_and_reply(bool $doSend = true, int $maxMessages = 5, ?i
                 'subject'       => $parsed['subject'],
                 'lang'          => $plan['lang'],
                 'estimated_eur' => $plan['estimated_eur'],
+                'crm_synced'    => $crmOk,
                 'action'        => 'sent_ok',
                 'out_msg_id'    => $sendRes['message_id'],
                 'reply_text'    => $plan['reply_text'],
