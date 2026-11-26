@@ -121,6 +121,7 @@ function erp_snapshot_live_state(PDO $pdo): array
         'live_cost_items'     => [],
         'live_cost_audit'     => [],
         'live_staff_bonuses'  => [],
+        'live_party_tx'       => [],
     ];
     try {
         $snap['custom_users'] = $pdo->query("SELECT * FROM users WHERE updated_at != ''")->fetchAll();
@@ -163,6 +164,9 @@ function erp_snapshot_live_state(PDO $pdo): array
     } catch (Throwable $e) {}
     try {
         $snap['live_staff_bonuses'] = $pdo->query('SELECT * FROM staff_bonuses_allowances WHERE seed_key IS NULL OR decided_at != ""')->fetchAll();
+    } catch (Throwable $e) {}
+    try {
+        $snap['live_party_tx'] = $pdo->query('SELECT * FROM financial_party_transactions')->fetchAll();
     } catch (Throwable $e) {}
     return $snap;
 }
@@ -312,6 +316,7 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
             $insertDynamic($impPdo, 'staff_bonuses_allowances', [$sb], 'OR IGNORE');
         }
     }
+    $insertDynamic($impPdo, 'financial_party_transactions', $snap['live_party_tx'] ?? [], 'OR IGNORE');
 }
 
 /* ---------------- PUBLIC / AUTH ACTIONS ---------------- */
@@ -389,6 +394,7 @@ if ($method !== 'POST' && in_array($action, [
     'send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message',
     'guest_create_booking', 'send_guest_login_email',
     'save_supplier', 'save_trip_cost', 'save_staff_bonus_allowance', 'decide_staff_bonus_allowance',
+    'record_party_transaction',
 ], true)) {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST required']);
@@ -2802,8 +2808,25 @@ if ($action === 'suppliers_hub') {
         $sp['pax_count']        = (int) (($st1['pax_cnt'] ?? 0) + ($st2['pax_cnt'] ?? 0));
         $sp['booked_cogs_egp']  = round((float) (($st1['total_cogs_egp'] ?? 0.0) + ($st2['total_cogs_egp'] ?? 0.0)), 2);
         $sp['recent_subledger'] = $subMap[$sc] ?? [];
-        if ((float) $sp['current_balance_egp'] < 0) {
-            $netPayableEgp += abs((float) $sp['current_balance_egp']);
+
+        $dos = $sc !== 'SEA_COLLEGE' ? sc_erp_build_entity_financial_dossier($pdo, 'SUPPLIER', $sc) : null;
+        if ($dos) {
+            $sp['total_accrued_egp']      = (float) $dos['summary']['total_accrued_egp'];
+            $sp['total_installments_egp'] = (float) $dos['summary']['total_installments_egp'];
+            $sp['installments_count']     = (int) $dos['summary']['installments_count'];
+            $sp['final_balance_egp']      = (float) $dos['summary']['final_balance_egp'];
+            $sp['balance_label_en']       = (string) $dos['summary']['balance_label_en'];
+            $sp['balance_label_ar']       = (string) $dos['summary']['balance_label_ar'];
+            if ($sp['final_balance_egp'] > 0) {
+                $netPayableEgp += $sp['final_balance_egp'];
+            }
+        } else {
+            $sp['total_accrued_egp']      = 0.0;
+            $sp['total_installments_egp'] = 0.0;
+            $sp['installments_count']     = 0;
+            $sp['final_balance_egp']      = 0.0;
+            $sp['balance_label_en']       = 'Internal Fleet';
+            $sp['balance_label_ar']       = 'أسطول سي كوليدج الداخلي';
         }
     }
     unset($sp);
@@ -3033,6 +3056,126 @@ if ($action === 'staff_bonuses_allowances') {
         'staff_directory' => $staffDir,
         'fx_rates'        => sc_erp_fx_rates($pdo),
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+/* ---------------- v3.6 360° COUNTERPARTY & STAFF FINANCIAL DIRECTORY & DOSSIERS ---------------- */
+if ($action === 'accounts_directory') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    if (($ctx['user']['role_code'] ?? '') === 'GUEST_CUSTOMER') {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Internal staff access required']);
+        exit;
+    }
+    $filterType = trim((string) ($_GET['filter_type'] ?? 'ALL'));
+    $searchQ    = trim((string) ($_GET['q'] ?? ''));
+    $summary    = sc_erp_build_all_financial_entities_summary($pdo, $ctx['user'], $ctx['perms'], $filterType, $searchQ);
+    echo json_encode(array_merge(['ok' => true, 'fx_rates' => sc_erp_fx_rates($pdo)], $summary), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+if ($action === 'entity_financial_dossier') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    $eType = trim((string) ($_GET['entity_type'] ?? ''));
+    $eCode = trim((string) ($_GET['entity_code'] ?? ''));
+    if ($eType === '' && $eCode === '') {
+        $self = sc_erp_self_financial_entity($ctx['user']);
+        $eType = $self['entity_type'];
+        $eCode = $self['entity_code'];
+    } else {
+        $eType = sc_erp_normalize_entity_type($eType);
+    }
+    if (!sc_erp_can_access_entity_dossier($ctx['user'], $ctx['perms'], $eType, $eCode)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Access denied to requested financial statement']);
+        exit;
+    }
+    $dossier = sc_erp_build_entity_financial_dossier($pdo, $eType, $eCode);
+    if (!$dossier) {
+        http_response_code(404);
+        echo json_encode(['ok' => false, 'error' => 'Financial account not found']);
+        exit;
+    }
+    echo json_encode([
+        'ok'                 => true,
+        'can_record_payment' => sc_erp_can_record_party_tx($ctx['user'], $ctx['perms'], $eType),
+        'fx_rates'           => sc_erp_fx_rates($pdo),
+        'dossier'            => $dossier,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+if ($action === 'export_entity_statement_csv') {
+    if (!$ctx) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'error' => 'Authentication required']);
+        exit;
+    }
+    $eType = sc_erp_normalize_entity_type((string) ($_GET['entity_type'] ?? 'SUPPLIER'));
+    $eCode = trim((string) ($_GET['entity_code'] ?? ''));
+    if (!sc_erp_can_access_entity_dossier($ctx['user'], $ctx['perms'], $eType, $eCode)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Access denied']);
+        exit;
+    }
+    $dossier = sc_erp_build_entity_financial_dossier($pdo, $eType, $eCode);
+    if (!$dossier) {
+        http_response_code(404);
+        echo json_encode(['ok' => false, 'error' => 'Account not found']);
+        exit;
+    }
+    $csvSafe = static function ($val): string {
+        $s = trim((string) ($val ?? ''));
+        if ($s !== '' && in_array($s[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'" . $s;
+        }
+        return $s;
+    };
+    $slugFile = strtolower((string) preg_replace('/[^a-zA-Z0-9_-]/', '_', $dossier['profile']['entity_code']));
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="statement_' . $slugFile . '_' . gmdate('Ymd') . '.csv"');
+    $fp = fopen('php://output', 'wb');
+    fwrite($fp, "\xEF\xBB\xBF");
+    fputcsv($fp, ['Account Type', 'Account Code', 'Name (EN)', 'Name (AR)', 'Total Accrued/Billed (EGP)', 'Total Deposits & Installments (EGP)', 'Final Net Balance (EGP)', 'Balance Status']);
+    fputcsv($fp, [
+        $csvSafe($dossier['profile']['entity_type']),
+        $csvSafe($dossier['profile']['entity_code']),
+        $csvSafe($dossier['profile']['name_en']),
+        $csvSafe($dossier['profile']['name_ar']),
+        $dossier['summary']['total_accrued_egp'],
+        $dossier['summary']['total_installments_egp'],
+        $dossier['summary']['final_balance_egp'],
+        $csvSafe($dossier['summary']['balance_label_en'] . ' / ' . $dossier['summary']['balance_label_ar']),
+    ]);
+    fputcsv($fp, []);
+    fputcsv($fp, ['#', 'Date', 'Reference', 'Category', 'Type', 'Description (EN)', 'Description (AR)', 'Method', 'Orig Amount', 'Orig Currency', 'Accrued / Billed (+ EGP)', 'Deposits & Installments (- EGP)', 'Running Balance (EGP)', 'Recorded By']);
+    foreach ($dossier['statement_lines'] as $ln) {
+        fputcsv($fp, [
+            (int) $ln['line_no'],
+            $csvSafe($ln['tx_date']),
+            $csvSafe($ln['ref_no']),
+            $csvSafe($ln['line_group']),
+            $csvSafe($ln['badge_en']),
+            $csvSafe($ln['description_en']),
+            $csvSafe($ln['description_ar']),
+            $csvSafe($ln['payment_method']),
+            $ln['orig_amount'],
+            $csvSafe($ln['orig_currency']),
+            $ln['plus_egp'],
+            $ln['minus_egp'],
+            $ln['running_balance_egp'],
+            $csvSafe($ln['recorded_by']),
+        ]);
+    }
+    fclose($fp);
     exit;
 }
 
@@ -5620,6 +5763,36 @@ if ($method === 'POST') {
         ]);
 
         echo json_encode(['ok' => true, 'id' => $id, 'status' => $decision, 'safe_code' => $finalSafe]);
+        exit;
+    }
+
+    /* ---------------- RECORD DEPOSIT / INSTALLMENT / ADVANCE / SETTLEMENT (`record_party_transaction` — v3.6) ---------------- */
+    if ($action === 'record_party_transaction') {
+        erp_require_perm($ctx, 'gl.view_all_ledgers', 'bi.view_executive', 'hr.manage_payroll', 'safe.record_tx');
+        $me = $ctx['user'];
+        $targetType = sc_erp_normalize_entity_type((string) ($rawIn['entity_type'] ?? 'SUPPLIER'));
+        if (!sc_erp_can_record_party_tx($me, $ctx['perms'], $targetType)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Insufficient authority for this counterparty type']);
+            exit;
+        }
+        try {
+            $res = sc_erp_record_party_financial_transaction($pdo, $rawIn, $me, $ctx['perms']);
+        } catch (Throwable $e) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
+
+        sc_erp_audit($pdo, (string) $me['username'], (string) $me['role_code'], 'RECORD_PARTY_TRANSACTION', 'PARTY_LEDGER', (string) $res['tx_ref'], [
+            'entity_type'       => $targetType,
+            'entity_code'       => (string) ($rawIn['entity_code'] ?? ''),
+            'tx_kind'           => (string) ($rawIn['tx_kind'] ?? 'INSTALLMENT'),
+            'amount_egp'        => $res['amount_egp'],
+            'final_balance_egp' => $res['final_balance_egp'],
+        ]);
+
+        echo json_encode(array_merge(['ok' => true], $res), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 }

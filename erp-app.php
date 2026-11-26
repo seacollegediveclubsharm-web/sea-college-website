@@ -411,6 +411,7 @@ $csrf = csrf_token();
       </div>
       <div id="roleBannerExtraBtns" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div id="roleBannerStaffQuickBtns" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-emerald" id="btnBannerMyStatement" onclick="openMyOwnStatement()">📒 My Statement &amp; Balance</button>
           <button type="button" class="btn btn-amber" id="btnBannerRewards" onclick="openStaffRewardsTab()">🎁 Bonus &amp; Allowances</button>
           <button type="button" class="btn" id="btnBannerInbox" onclick="openCompanyInboxTab()">📨 Inbox</button>
           <button type="button" class="btn" onclick="STATE.activeTab='my_profile';renderApp();">👤 My Profile</button>
@@ -1265,6 +1266,98 @@ $csrf = csrf_token();
   </div>
 </div>
 
+<!-- v3.6 Counterparty & Staff Deposit / Installment / Settlement Modal -->
+<div id="partyTransactionModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:580px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 style="font-size:16px;" id="ptmTitle">💵 Record Deposit / Installment / Settlement</h3>
+      <button type="button" class="btn" onclick="document.getElementById('partyTransactionModal').style.display='none'">✕</button>
+    </div>
+
+    <div id="ptmAccountSummaryBanner" style="margin-bottom:12px;padding:10px 12px;border-radius:11px;background:rgba(0,210,255,0.09);border:1px solid rgba(0,210,255,0.34);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"></div>
+
+    <form onsubmit="submitPartyTxForm(event)" class="grid grid-2" style="gap:10px;">
+      <input type="hidden" id="ptmEntityType" value="">
+      <input type="hidden" id="ptmEntityCode" value="">
+      <input type="hidden" id="ptmCurrentBalEgp" value="0">
+
+      <div>
+        <label>Transaction Type / نوع الحركة *</label>
+        <select id="ptmTxKind" onchange="syncPartyTxKindUI()">
+          <option value="INSTALLMENT">💵 Installment / دفعة قسط من الحساب</option>
+          <option value="DEPOSIT">🏦 Deposit / عربون أو دفعة مقدمة</option>
+          <option value="FULL_SETTLEMENT">✅ Full Settlement / تقفيل وسداد كامل الرصيد</option>
+          <option value="ADVANCE_GIVEN">💸 Advance Given / صرف سلفة نقدية</option>
+          <option value="ADVANCE_REPAID">↩️ Advance Repaid / توريد وسداد سلفة</option>
+          <option value="INVOICE_CHARGE">🧾 New Invoice / إضافة فاتورة أو استحقاق</option>
+          <option value="CREDIT_NOTE">✂️ Credit / خصم أو إشعار تسوية</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Payment / Settlement Channel *</label>
+        <select id="ptmMethod">
+          <option value="SAFE_CYRENE">💵 Cyrene Safe (خزينة سيرين)</option>
+          <option value="SAFE_JETTY">⚓ Travco Jetty Safe (خزينة السقالة)</option>
+          <option value="BANK_MISR_EGP">🏦 Banque Misr EGP (بنك مصر ج.م)</option>
+          <option value="BANK_MISR_USD">🏦 Banque Misr USD (بنك مصر دولار)</option>
+          <option value="BANK_MISR_EUR">🏦 Banque Misr EUR (بنك مصر يورو)</option>
+          <option value="INSTAPAY_TRANSFER">📲 InstaPay / Bank Transfer (إنستا باي)</option>
+          <option value="OFFSET_SETTLEMENT">⚖️ Account Offset (مقاصة / تسوية)</option>
+          <option value="PAYROLL_DEDUCTION">📋 Payroll Deduction (خصم شيت المرتبات)</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Amount / المبلغ *</label>
+        <input type="number" step="0.01" min="0.01" id="ptmAmount" required placeholder="e.g. 15000">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <label>Currency / العملة</label>
+          <select id="ptmCurrency">
+            <option value="EGP">EGP (ج.م)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+        <div>
+          <label>Date / التاريخ</label>
+          <input type="date" id="ptmDate" value="<?= gmdate('Y-m-d') ?>">
+        </div>
+      </div>
+
+      <div>
+        <label>Receipt / Voucher # (رقم الإيصال)</label>
+        <input type="text" id="ptmReceiptNo" placeholder="Auto-generated if left blank">
+      </div>
+
+      <div style="display:flex;align-items:flex-end;">
+        <label style="display:inline-flex;align-items:center;gap:7px;margin:0;cursor:pointer;color:#34d399;font-weight:700;padding-bottom:8px;">
+          <input type="checkbox" id="ptmSyncCashbox" checked style="width:auto;">
+          🧾 Post Live Safe Voucher (إذن خزينة)
+        </label>
+      </div>
+
+      <div>
+        <label>Description (English)</label>
+        <input type="text" id="ptmDescEn" placeholder="e.g. Second installment on Safari statement">
+      </div>
+      <div>
+        <label>البيان بالعربي</label>
+        <input type="text" id="ptmDescAr" dir="rtl" placeholder="مثال: دفعة قسط تحت حساب رحلات الشهر">
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('partyTransactionModal').style.display='none'">Cancel</button>
+        <button type="submit" class="btn btn-emerald" style="padding:10px 18px;font-weight:900;">💾 Save &amp; Update Final Balance</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <nav id="mobileBottomNav" class="bottom-dock"></nav>
 
 <div id="toast" class="toast"></div>
@@ -1291,6 +1384,14 @@ let STATE = {
   staffRewards: null,
   staffRewardsType: 'ALL',
   staffRewardsMonth: 'ALL',
+  accountsDir: null,
+  accountsFilterType: 'ALL',
+  accountsSearch: '',
+  activeDossier: null,
+  dossierTargetType: '',
+  dossierTargetCode: '',
+  dossierLineFilter: 'ALL',
+  prevTabBeforeDossier: '',
   fbkSafariSpec: {},
   pnlViewMode: 'consolidated',
   bankViewMode: 'all3',
@@ -1525,6 +1626,10 @@ async function doLogout() {
   STATE.sellerWallet = null;
   STATE.monthlyPack = null;
   STATE.inboxData = null;
+  STATE.suppliersHub = null;
+  STATE.staffRewards = null;
+  STATE.accountsDir = null;
+  STATE.activeDossier = null;
   STATE.notifications = [];
   STATE.unreadNotifs = 0;
   STATE.unreadInbox = 0;
@@ -1829,6 +1934,9 @@ function buildTabsForUser() {
   if (hasPerm('gl.view_all_ledgers')) {
     tabs.push({ id: 'accounting_gl', ico: '📚', short: 'Accounting', label: ar ? '📚 الحسابات والتسويات والمرتبات' : '📚 Accounting, Settlements & Payroll' });
   }
+  if (hasPerm('gl.view_all_ledgers', 'bi.view_executive', 'hr.manage_payroll', 'safe.view_balances', 'ops.assign_boat_driver')) {
+    tabs.push({ id: 'accounts_hub', ico: '📒', short: ar ? 'كشوف الحساب' : 'Accounts', label: ar ? '📒 كشوف حسابات الموردين والمبيعات والموظفين والدفعات' : '📒 Accounts, Installments & Final Balances' });
+  }
   if (hasPerm('gl.view_all_ledgers', 'bi.view_executive', 'ops.view_manifests')) {
     tabs.push({ id: 'suppliers_costs_hub', ico: '🏭', short: ar ? 'الموردين والتكلفة' : 'Suppliers', label: ar ? '🏭 الموردين وتكلفة الرحلات والسفاري' : '🏭 Suppliers & Trip Cost Matrix' });
   }
@@ -1929,9 +2037,14 @@ function renderApp() {
   syncNotifBadge();
   const ibTop = document.getElementById('inboxTopBtn');
   if (ibTop && guestMode) ibTop.style.display = 'none';
+  const btnBanStmt = document.getElementById('btnBannerMyStatement');
   const btnBanRew = document.getElementById('btnBannerRewards');
   const btnBanInb = document.getElementById('btnBannerInbox');
   const btnBanDir = document.getElementById('btnBannerTeamDir');
+  if (btnBanStmt) {
+    btnBanStmt.style.display = guestMode ? 'none' : 'inline-flex';
+    btnBanStmt.innerHTML = ar ? '📒 كشف حسابي والرصيد' : '📒 My Statement &amp; Balance';
+  }
   if (btnBanRew) {
     btnBanRew.style.display = guestMode ? 'none' : 'inline-flex';
     btnBanRew.innerHTML = ar ? '🎁 المكافآت والبدلات' : '🎁 Bonus &amp; Allowances';
@@ -1965,6 +2078,7 @@ function renderApp() {
     document.getElementById('welcomeContacts').innerHTML = `
       <a class="btn btn-emerald" style="padding:6px 11px;font-size:12px;" href="https://wa.me/?text=${encodeURIComponent('🌴 Explore all Sharm El Sheikh Diving, Boat, Safari & Cairo Trips with me: ' + myBrochureUrl)}" target="_blank" rel="noopener">💬 ${ar ? 'ابعت الكتالوج واتساب' : 'WhatsApp My Trips'}</a>
       <button type="button" class="btn btn-primary" style="padding:6px 11px;font-size:12px;" onclick="STATE.activeTab='seller_wallet';renderApp();">📱 ${ar ? 'باركودي وفلوسي' : 'My QR & Cash'}</button>
+      <button type="button" class="btn btn-emerald" style="padding:6px 11px;font-size:12px;" onclick="openMyOwnStatement()">📒 ${ar ? 'كشف حسابي والرصيد' : 'My Statement'}</button>
       <button type="button" class="btn btn-amber" style="padding:6px 11px;font-size:12px;" onclick="openStaffRewardsTab()">🎁 ${ar ? 'مكافآتي وبدلاتي' : 'Bonuses & Allowances'}</button>
       <button type="button" class="btn" style="padding:6px 11px;font-size:12px;" onclick="openCompanyInboxTab()">📨 ${ar ? 'الرسائل' : 'Inbox'}${STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : ''}</button>
     `;
@@ -1997,8 +2111,8 @@ function renderApp() {
   }
 
   const tabs = buildTabsForUser();
-  const allowSecondaryStaffRewards = !guestMode && STATE.activeTab === 'staff_rewards';
-  if (!STATE.activeTab || (!tabs.some((t) => t.id === STATE.activeTab) && !allowSecondaryStaffRewards)) {
+  const allowSecondaryStaffViews = !guestMode && (STATE.activeTab === 'staff_rewards' || STATE.activeTab === 'entity_dossier');
+  if (!STATE.activeTab || (!tabs.some((t) => t.id === STATE.activeTab) && !allowSecondaryStaffViews)) {
     STATE.activeTab = tabs[0] ? tabs[0].id : '';
   }
   renderPinnedInboxBanner(ar);
@@ -2019,7 +2133,34 @@ function renderApp() {
   }
 
   const box = document.getElementById('tabContent');
-  if (STATE.activeTab === 'suppliers_costs_hub') {
+  if (STATE.activeTab === 'accounts_hub') {
+    if (STATE.accountsDir) {
+      box.innerHTML = renderAccountsHubTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري تحميل كشوف الحسابات والأرصدة والدفعات لجميع الموردين والمبيعات والموظفين والعملاء...' : 'Loading 360° Counterparty & Staff Accounts, Installments & Final Balances...'}</div>`;
+    return apiGet({ action: 'accounts_directory', filter_type: STATE.accountsFilterType || 'ALL', q: STATE.accountsSearch || '' }).then((res) => {
+      if (res && res.ok) STATE.accountsDir = res;
+      box.innerHTML = renderAccountsHubTab(STATE.lang === 'ar');
+    });
+  } else if (STATE.activeTab === 'entity_dossier') {
+    if (STATE.activeDossier && STATE.activeDossier.dossier) {
+      box.innerHTML = renderEntityDossierTab(ar);
+      return;
+    }
+    box.innerHTML = `<div class="card">⏳ ${ar ? 'جاري فتح كشف الحساب الشامل والدفعات والرصيد النهائي...' : 'Opening Full Financial Statement, Installments & Final Balance...'}</div>`;
+    const qp = { action: 'entity_financial_dossier' };
+    if (STATE.dossierTargetType) qp.entity_type = STATE.dossierTargetType;
+    if (STATE.dossierTargetCode) qp.entity_code = STATE.dossierTargetCode;
+    return apiGet(qp).then((res) => {
+      if (res && res.ok) {
+        STATE.activeDossier = res;
+        box.innerHTML = renderEntityDossierTab(STATE.lang === 'ar');
+      } else {
+        box.innerHTML = `<div class="card" style="color:#fda4af;">⚠️ ${esc((res && res.error) || 'Unable to load financial dossier')}</div>`;
+      }
+    });
+  } else if (STATE.activeTab === 'suppliers_costs_hub') {
     if (STATE.suppliersHub) {
       box.innerHTML = renderSuppliersCostsHubTab(ar);
       return;
@@ -2696,9 +2837,9 @@ function renderOwnerSellerCommandCenter(ar) {
                 <tr>
                   <td class="num"><b>#${s.rank || '—'}</b></td>
                   <td>
-                    <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="openEntityDossier('SALES_REP', '${esc(s.username)}')" title="${ar ? 'اضغط لفتح كشف الحساب الكامل والدفعات والرصيد النهائي' : 'Click to open full Financial Statement & Installments'}">
                       ${renderAvatarHtml(s, 28)}
-                      <div><b>${esc(ar ? (s.display_name_ar || s.display_name_en) : s.display_name_en)}</b><div style="font-size:10px;color:var(--muted);">@${esc(s.username)}</div></div>
+                      <div><b style="text-decoration:underline;text-decoration-color:rgba(0,210,255,0.45);">${esc(ar ? (s.display_name_ar || s.display_name_en) : s.display_name_en)}</b><div style="font-size:10px;color:var(--muted);">@${esc(s.username)}</div></div>
                     </div>
                   </td>
                   <td style="font-size:15px;">${medals || '—'}</td>
@@ -2713,7 +2854,8 @@ function renderOwnerSellerCommandCenter(ar) {
                   <td class="num neg">${fmt(s.allowances_paid_egp)}</td>
                   <td class="num" style="color:var(--cyan);"><b>${fmt(s.net_payable_comm_egp)}</b></td>
                   ${tCfg.is_active ? `<td class="num"><span class="pill">${fmt(s.target_pct, 1)}%</span></td>` : ''}
-                  <td style="display:flex;gap:5px;">
+                  <td style="display:flex;gap:5px;flex-wrap:wrap;">
+                    <button type="button" class="btn btn-emerald" style="padding:5px 8px;font-size:11px;" onclick="openEntityDossier('SALES_REP', '${esc(s.username)}')">📒 ${ar ? 'كشف الحساب' : 'Statement'}</button>
                     <button type="button" class="btn btn-amber" style="padding:5px 8px;font-size:11px;" onclick="openQuickCongratsToSeller('${esc(s.username)}', '${esc(cleanEn)}', '${esc(cleanAr)}')">🎉 ${ar ? 'تهنئة' : 'Congrats'}</button>
                     <button type="button" class="btn" style="padding:5px 8px;font-size:11px;" onclick="STATE.walletSeller='${esc(s.username)}';STATE.sellerWallet=null;STATE.activeTab='seller_wallet';renderApp();">🔍 Wallet</button>
                   </td>
@@ -3265,27 +3407,37 @@ function renderAccountingGl(ar) {
 
     <div class="grid grid-2" style="margin-bottom:14px;">
       <div class="card">
-        <h3 style="font-size:14px;margin-bottom:8px;">🤝 AR Clients & AP Suppliers Sub-Ledgers (63 Accounts)</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+          <h3 style="font-size:14px;">🤝 AR Clients &amp; AP Suppliers Sub-Ledgers (63 Accounts)</h3>
+          <button type="button" class="btn btn-emerald" style="padding:4px 9px;font-size:11px;" onclick="STATE.activeTab='accounts_hub';renderApp();">📒 ${ar ? 'فتح دليل الأرصدة والدفعات' : 'All Accounts &amp; Installments'}</button>
+        </div>
         <div class="table-wrap" style="max-height:310px;">
           <table>
             <thead><tr><th>Party</th><th>Type</th><th>Total Debit</th><th>Total Credit</th><th>Balance (EGP)</th></tr></thead>
             <tbody>
-              ${cps.map((c) => `
-                <tr>
-                  <td><b>${esc(c.name_ar)}</b></td>
+              ${cps.map((c) => {
+                const cCode = String(c.code || '');
+                const mappedType = cCode.startsWith('AP_') ? 'SUPPLIER' : (cCode.startsWith('PA_') ? 'PARTNER' : 'CLIENT_AR');
+                return `
+                <tr style="cursor:pointer;" onclick="openEntityDossier('${mappedType}', '${esc(cCode)}')" title="Click to open Statement &amp; Installments">
+                  <td><b style="color:#7dd3fc;text-decoration:underline;">${esc(c.name_ar)}</b></td>
                   <td><span class="pill">${esc(c.party_type)}</span></td>
                   <td class="num">${fmt(c.total_debit_egp)}</td>
                   <td class="num">${fmt(c.total_credit_egp)}</td>
                   <td class="num ${c.current_balance_egp >= 0 ? 'pos' : 'neg'}">${fmt(c.current_balance_egp)}</td>
                 </tr>
-              `).join('')}
+              `;
+              }).join('')}
             </tbody>
           </table>
         </div>
       </div>
 
       <div class="card">
-        <h3 style="font-size:14px;margin-bottom:8px;">👥 Monthly Staff Payroll &amp; Commissions (SALERY)</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+          <h3 style="font-size:14px;">👥 Monthly Staff Payroll &amp; Commissions (SALERY)</h3>
+          <button type="button" class="btn btn-primary" style="padding:4px 9px;font-size:11px;" onclick="STATE.accountsFilterType='STAFF';STATE.accountsDir=null;STATE.activeTab='accounts_hub';renderApp();">👷 ${ar ? 'كشوف حسابات الموظفين' : 'Staff Statements'}</button>
+        </div>
         <div class="table-wrap" style="max-height:310px;">
           <table>
             <thead>
@@ -3296,9 +3448,9 @@ function renderAccountingGl(ar) {
             </thead>
             <tbody>
               ${pay.map((p) => `
-                <tr>
+                <tr style="${p.id ? 'cursor:pointer;' : ''}" ${p.id ? `onclick="openPayrollRowDossier(${Number(p.id)}, '${esc(p.emp_name_ar || '')}')"` : ''}>
                   <td>${esc(p.period_month)}</td>
-                  <td><b>${esc(p.emp_name_ar)}</b></td>
+                  <td><b style="${p.id ? 'color:#7dd3fc;text-decoration:underline;' : ''}">${esc(p.emp_name_ar)}</b></td>
                   <td>${esc(p.job_title_ar)}</td>
                   <td class="num">${fmt(p.worked_days)}</td>
                   <td class="num">${fmt(p.base_salary_egp)}</td>
@@ -4164,6 +4316,7 @@ function renderTeamProfilesTab(ar) {
                 ${p.phone ? `<a class="btn" style="padding:5px 9px;font-size:11px;" href="tel:${esc(p.phone.replace(/\s+/g, ''))}">📞 Call</a>` : ''}
                 ${wd.length >= 8 ? `<a class="btn btn-emerald" style="padding:5px 9px;font-size:11px;" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
                 ${p.email ? `<a class="btn" style="padding:5px 9px;font-size:11px;" href="mailto:${esc(p.email)}">✉️ Email</a>` : ''}
+                ${(hasPerm('bi.view_executive', 'gl.view_all_ledgers', 'hr.manage_payroll', 'safe.view_balances') || (STATE.user && STATE.user.username === p.username)) ? `<button type="button" class="btn btn-primary" style="padding:5px 9px;font-size:11px;" onclick="openTeamProfileDossier('${esc(p.username)}', '${esc(p.role_code)}')">📒 ${ar ? 'كشف الحساب' : 'Statement'}</button>` : ''}
                 ${canEdit ? `<button type="button" class="btn btn-amber" style="padding:5px 9px;font-size:11px;margin-inline-start:auto;" onclick="openProfileModal('${esc(p.username)}', 'update')">✏️ ${ar ? 'تعديل / صورة' : 'Edit / Photo'}</button>` : ''}
               </div>
             </div>
@@ -5359,6 +5512,7 @@ function renderSellerWalletTab(ar) {
         </select>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" style="padding:9px 14px;font-weight:900;" onclick="openEntityDossier('SALES_REP', '${esc(prof.username || (STATE.user && STATE.user.username) || '')}')">📒 ${ar ? 'كشف الحساب الكامل والدفعات والرصيد' : 'Full Statement &amp; Installments'}</button>
         <button type="button" class="btn btn-amber" style="padding:9px 14px;font-weight:900;" onclick="openAllowanceModal()">💸 ${ar ? 'اطلب سلفة / دفعة عمولة' : 'Request Cash Allowance'}</button>
         <a class="btn btn-emerald" href="${esc(walletExportHref)}">⬇ .xlsx</a>
       </div>
@@ -6422,7 +6576,7 @@ function renderSuppliersCostsHubTab(ar) {
                       <div style="font-size:10.5px;color:var(--muted);"><code>${esc(c.item_code)}</code> ${c.sheet_formula_note ? '• ' + esc(c.sheet_formula_note) : ''}</div>
                     </td>
                     <td>
-                      <span class="pill" style="font-size:10.5px;">${esc(ar ? (c.supplier_name_ar || c.supplier_name_en) : c.supplier_name_en)}</span>
+                      <button type="button" class="pill" style="font-size:10.5px;cursor:pointer;background:rgba(0,210,255,0.12);border-color:rgba(0,210,255,0.4);color:#7dd3fc;" onclick="openEntityDossier('SUPPLIER', '${esc(c.supplier_code)}')" title="${ar ? 'افتح كشف حساب المورد والدفعات' : 'Open Supplier Statement & Installments'}">📒 ${esc(ar ? (c.supplier_name_ar || c.supplier_name_en) : c.supplier_name_en)}</button>
                     </td>
                     <td style="font-size:11.5px;font-weight:700;color:#fde68a;">${esc(basisLabel(c.pricing_basis, c.capacity_pax))}</td>
                     <td class="num"><b style="color:#fca5a5;">${fmt(mainCostEgp)} EGP</b>${origBadge}</td>
@@ -6442,20 +6596,23 @@ function renderSuppliersCostsHubTab(ar) {
   } else if (sub === 'vendors') {
     bodyHtml = `
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-        <h3 style="font-size:15px;">🏭 ${ar ? 'دليل الموردين وشركات التنفيذ وحساباتهم (شيت الموردين 2026)' : 'Active Suppliers & Excursion Vendors Directory (2026 الموردين)'} (${suppliers.length})</h3>
+        <h3 style="font-size:15px;">🏭 ${ar ? 'دليل الموردين وشركات التنفيذ وحساباتهم والدفعات المسددة (شيت الموردين 2026)' : 'Active Suppliers & Vendors — Click Any Supplier for Full Statement & Installments'} (${suppliers.length})</h3>
         ${canEdit ? `<button type="button" class="btn btn-primary" onclick="openSupplierModal(null)">➕ ${ar ? 'إضافة مورد جديد' : 'Add New Supplier'}</button>` : ''}
       </div>
       <div class="grid grid-2">
         ${suppliers.map((s) => {
-          const bal = Number(s.current_balance_egp || 0);
+          const finalBal = Number(s.final_balance_egp !== undefined ? s.final_balance_egp : -Number(s.current_balance_egp || 0));
+          const instPaid = Number(s.total_installments_egp || 0);
+          const totAcc = Number(s.total_accrued_egp || s.booked_cogs_egp || 0);
           const wd = waDigits(s.whatsapp || s.phone || '');
           const encS = encodeURIComponent(JSON.stringify(s));
+          const isInternal = s.supplier_code === 'SEA_COLLEGE';
           return `
-            <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+            <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;gap:10px;border-color:${finalBal > 0 ? 'rgba(245,158,11,0.38)' : 'var(--border)'};">
               <div>
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-                  <div>
-                    <div style="font-size:15px;font-weight:900;color:#f8fafc;">${esc(ar ? (s.name_ar || s.name_en) : s.name_en)}</div>
+                  <div style="${!isInternal ? 'cursor:pointer;' : ''}" ${!isInternal ? `onclick="openEntityDossier('SUPPLIER', '${esc(s.supplier_code)}')"` : ''}>
+                    <div style="font-size:15px;font-weight:900;color:#f8fafc;${!isInternal ? 'text-decoration:underline;text-decoration-color:rgba(0,210,255,0.5);' : ''}">${esc(ar ? (s.name_ar || s.name_en) : s.name_en)}</div>
                     <div style="font-size:11px;color:var(--cyan);"><code>${esc(s.supplier_code)}</code> • Sheet Tab: <b>${esc(s.sheet_tab_name || '—')}</b> • Currency: <b>${esc(s.settlement_currency || 'EGP')}</b></div>
                   </div>
                   <span class="pill">${esc(s.category_code)}</span>
@@ -6463,26 +6620,27 @@ function renderSuppliersCostsHubTab(ar) {
                 <div style="font-size:12px;color:#cbd5e1;margin-top:8px;line-height:1.45;">${esc(s.notes || '—')}</div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;padding:8px;border-radius:10px;background:rgba(6,21,38,0.68);border:1px solid var(--border);">
                   <div>
-                    <div style="font-size:10px;color:var(--muted);">${ar ? 'رصيد الحساب (EGP)' : 'Ledger Balance'}</div>
-                    <div style="font-size:13.5px;font-weight:900;color:${bal < 0 ? '#fda4af' : '#34d399'};">${fmt(bal)} EGP</div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'إجمالي المستحق' : 'Total Billed'}</div>
+                    <div style="font-size:13px;font-weight:800;color:#fde68a;">${fmt(totAcc)} EGP</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--muted);">${ar ? 'حجوزات منفذة' : 'Executed Trips'}</div>
-                    <div style="font-size:13.5px;font-weight:900;">${fmt(s.bookings_count || 0)} (${fmt(s.pax_count || 0)} PAX)</div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'العربون والأقساط المسددة' : 'Deposits & Installments'}</div>
+                    <div style="font-size:13px;font-weight:800;color:#34d399;">${fmt(instPaid)} EGP</div>
                   </div>
                   <div>
-                    <div style="font-size:10px;color:var(--muted);">${ar ? 'إجمالي التكلفة' : 'Booked COGS'}</div>
-                    <div style="font-size:13.5px;font-weight:900;color:#fde68a;">${fmt(s.booked_cogs_egp || 0)} EGP</div>
+                    <div style="font-size:10px;color:var(--muted);">${ar ? 'الرصيد النهائي الصافي' : 'Final Net Balance'}</div>
+                    <div style="font-size:13.5px;font-weight:900;color:${finalBal > 0 ? '#fda4af' : '#34d399'};">${fmt(finalBal)} EGP</div>
                   </div>
                 </div>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:8px;">
                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  ${!isInternal ? `<button type="button" class="btn btn-primary" style="padding:5px 10px;font-size:11.5px;font-weight:900;" onclick="openEntityDossier('SUPPLIER', '${esc(s.supplier_code)}')">📒 ${ar ? 'كشف الحساب والدفعات' : 'Statement & Installments'}</button>` : ''}
                   ${s.phone ? `<a class="btn" style="padding:4px 9px;font-size:11px;" href="tel:${esc(s.phone)}">📞 ${esc(s.contact_person || s.phone)}</a>` : ''}
                   ${wd.length >= 8 ? `<a class="btn btn-emerald" style="padding:4px 9px;font-size:11px;" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
                   <button type="button" class="btn" style="padding:4px 9px;font-size:11px;" onclick="STATE.suppliersSubTab='costs';setSuppliersFilter('ALL','${esc(s.supplier_code)}');">📋 ${ar ? 'أسعار المورد' : 'View Rates'}</button>
                 </div>
-                ${canEdit ? `<button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="openSupplierModal('${encS}')">✏️ ${ar ? 'تعديل المورد' : 'Edit'}</button>` : ''}
+                ${canEdit ? `<button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="openSupplierModal('${encS}')">✏️ ${ar ? 'تعديل' : 'Edit'}</button>` : ''}
               </div>
             </div>
           `;
@@ -6796,7 +6954,7 @@ function renderStaffRewardsTab(ar) {
                 <tr>
                   <td><b>${esc(r.tx_date)}</b><div style="font-size:10px;color:var(--muted);">${esc(r.period_month)}</div></td>
                   <td>
-                    <div style="font-weight:800;">${esc(ar ? (r.emp_name_ar || r.emp_name_en) : r.emp_name_en)}</div>
+                    <div style="font-weight:800;cursor:pointer;color:#7dd3fc;text-decoration:underline;" onclick="openTeamProfileDossier('${esc(r.emp_username)}', '${esc(r.role_code || 'STAFF')}')" title="${ar ? 'افتح كشف حساب الموظف الكامل' : 'Open full financial statement'}">${esc(ar ? (r.emp_name_ar || r.emp_name_en) : r.emp_name_en)}</div>
                     <div style="font-size:10.5px;color:var(--muted);">@${esc(r.emp_username)} • ${esc(r.branch_code)}</div>
                   </td>
                   <td>${typeBadge}</td>
@@ -6909,6 +7067,8 @@ async function submitStaffRewardForm(e) {
   }
   document.getElementById('staffRewardModal').style.display = 'none';
   STATE.inboxData = null;
+  STATE.accountsDir = null;
+  STATE.activeDossier = null;
   showToast(res.status === 'REQUESTED' ? '📝 Request sent to Accounting for approval!' : '🎉 Staff Bonus / Allowance saved!');
   await reloadStaffRewards();
 }
@@ -6924,8 +7084,629 @@ async function decideStaffReward(id, decision, safeCode) {
     alert((res && res.error) || 'Failed to update status');
     return;
   }
+  STATE.accountsDir = null;
+  STATE.activeDossier = null;
   showToast(`✅ Updated: ${res.status}`);
   await reloadStaffRewards();
+}
+
+/* ================= v3.6 360° ACCOUNTS, INSTALLMENTS & ENTITY FINANCIAL DOSSIERS ================= */
+async function reloadAccountsHub(filterType = null, searchQ = null) {
+  if (filterType !== null) STATE.accountsFilterType = filterType;
+  if (searchQ !== null) STATE.accountsSearch = searchQ;
+  const res = await apiGet({
+    action: 'accounts_directory',
+    filter_type: STATE.accountsFilterType || 'ALL',
+    q: STATE.accountsSearch || ''
+  });
+  if (res && res.ok) {
+    STATE.accountsDir = res;
+  }
+  renderApp();
+}
+
+async function openEntityDossier(entityType, entityCode) {
+  if (!entityCode) return;
+  if (STATE.activeTab && STATE.activeTab !== 'entity_dossier') {
+    STATE.prevTabBeforeDossier = STATE.activeTab;
+  }
+  STATE.dossierTargetType = entityType || 'SUPPLIER';
+  STATE.dossierTargetCode = entityCode;
+  STATE.dossierLineFilter = 'ALL';
+  STATE.activeDossier = null;
+  STATE.activeTab = 'entity_dossier';
+  renderApp();
+}
+
+function openMyOwnStatement() {
+  const u = STATE.user || {};
+  const uname = String(u.username || '');
+  if (!uname) return;
+  if (u.role_code === 'SALES_REP') {
+    return openEntityDossier('SALES_REP', uname);
+  }
+  if (u.role_code === 'FLEET_PARTNER') {
+    const pCode = uname.includes('darwish') ? 'PA_DARWISH_LEASE' : (uname.includes('farid') ? 'PA_FARID_LEASE' : 'PA_PARTNERS_LEASES');
+    return openEntityDossier('PARTNER', pCode);
+  }
+  return openEntityDossier('STAFF', uname);
+}
+
+function openTeamProfileDossier(uname, roleCode) {
+  const rc = String(roleCode || '').toUpperCase();
+  const un = String(uname || '');
+  if (rc === 'SALES_REP') return openEntityDossier('SALES_REP', un);
+  if (rc === 'FLEET_PARTNER') {
+    const pCode = un.toLowerCase().includes('darwish') ? 'PA_DARWISH_LEASE' : 'PA_FARID_LEASE';
+    return openEntityDossier('PARTNER', pCode);
+  }
+  return openEntityDossier('STAFF', un);
+}
+
+function openPayrollRowDossier(payId, empNameAr) {
+  const arName = String(empNameAr || '');
+  if (arName.includes('فادى صالح')) return openEntityDossier('SALES_REP', 'fady.sales');
+  if (arName === 'عمار') return openEntityDossier('SALES_REP', 'ammar.sales');
+  if (arName === 'محمد على') return openEntityDossier('SALES_REP', 'moali.sales');
+  if (arName === 'محمد عبدالرحمن') return openEntityDossier('SALES_REP', 'moabdo.sales');
+  if (arName.includes('السكران')) return openEntityDossier('SALES_REP', 'sqran.sales');
+  if (arName === 'زنفل') return openEntityDossier('SALES_REP', 'zola.sales');
+  if (arName.includes('عمرو هشام')) return openEntityDossier('SALES_REP', 'amrhesham.sales');
+  if (arName === 'اسلام صابر') return openEntityDossier('STAFF', 'islam.saber');
+  if (arName.includes('طلال ابوالريش')) return openEntityDossier('STAFF', 'talal.jetty');
+  return openEntityDossier('STAFF', 'PAY_EMP_' + Number(payId));
+}
+
+function entityTypeBadgeHtml(eType, ar) {
+  const t = String(eType || '').toUpperCase();
+  if (t === 'SUPPLIER') return `<span class="pill" style="border-color:#f59e0b;color:#fde68a;">🏭 ${ar ? 'مورد / مقاول' : 'Supplier'}</span>`;
+  if (t === 'SALES_REP') return `<span class="pill" style="border-color:#10b981;color:#34d399;">💼 ${ar ? 'مندوب مبيعات' : 'Sales Rep'}</span>`;
+  if (t === 'STAFF') return `<span class="pill" style="border-color:#00d2ff;color:#7dd3fc;">👷 ${ar ? 'موظف / طاقم' : 'Staff & Crew'}</span>`;
+  if (t === 'CLIENT_AR') return `<span class="pill" style="border-color:#a855f7;color:#d8b4fe;">🏢 ${ar ? 'شركة سياحة / عميل' : 'B2B Client'}</span>`;
+  return `<span class="pill" style="border-color:#fb7185;color:#fda4af;">⚓ ${ar ? 'شريك مراكب' : 'Fleet Partner'}</span>`;
+}
+
+function balanceStatusColor(statusCode) {
+  if (statusCode === 'SETTLED_ZERO') return { fg: '#94a3b8', bg: 'rgba(148,163,184,0.12)', bd: 'rgba(148,163,184,0.4)' };
+  if (statusCode === 'OWED_TO_COMPANY') return { fg: '#34d399', bg: 'rgba(16,185,129,0.14)', bd: 'rgba(16,185,129,0.5)' };
+  if (statusCode === 'OWED_TO_PARTY') return { fg: '#fde68a', bg: 'rgba(245,158,11,0.15)', bd: 'rgba(245,158,11,0.55)' };
+  return { fg: '#7dd3fc', bg: 'rgba(0,210,255,0.14)', bd: 'rgba(0,210,255,0.5)' };
+}
+
+function renderAccountsHubTab(ar) {
+  const d = STATE.accountsDir || {};
+  const k = d.kpis || {};
+  const items = d.items || [];
+  const canRec = !!d.can_record_payment;
+  const fType = STATE.accountsFilterType || 'ALL';
+
+  const catPills = [
+    { id: 'ALL', lbl: ar ? `الكل (${k.total_entities || items.length})` : `All (${k.total_entities || items.length})` },
+    { id: 'SUPPLIER', lbl: ar ? `🏭 الموردين (${k.suppliers_count || 0})` : `🏭 Suppliers (${k.suppliers_count || 0})` },
+    { id: 'SALES_REP', lbl: ar ? `💼 المبيعات (${k.sellers_count || 0})` : `💼 Sales Reps (${k.sellers_count || 0})` },
+    { id: 'STAFF', lbl: ar ? `👷 الموظفين والطقم (${k.staff_count || 0})` : `👷 Staff & Crew (${k.staff_count || 0})` },
+    { id: 'CLIENT_AR', lbl: ar ? `🏢 شركات السياحة والعملاء (${k.clients_count || 0})` : `🏢 B2B Clients (${k.clients_count || 0})` },
+    { id: 'PARTNER', lbl: ar ? `⚓ الشركاء والمراكب (${k.partners_count || 0})` : `⚓ Partners (${k.partners_count || 0})` }
+  ];
+
+  return `
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card" style="border-color:rgba(245,158,11,0.42);">
+        <div class="kpi-label">🏭 ${ar ? 'صافي مستحقات الموردين (Suppliers AP)' : 'Suppliers Net Payable'}</div>
+        <div class="kpi-val" style="color:#fde68a;">${fmt(k.suppliers_net_payable_egp || 0)} EGP</div>
+        <div class="kpi-sub">${fmt(k.suppliers_count || 0)} ${ar ? 'مورد نشط • اضغط لفتح كشف الحساب' : 'active vendors • tap any row'}</div>
+      </div>
+      <div class="card" style="border-color:rgba(16,185,129,0.42);">
+        <div class="kpi-label">💼 ${ar ? 'صافي مستحقات المبيعات (Sellers Net)' : 'Sales Reps Net Payable'}</div>
+        <div class="kpi-val pos">${fmt(k.sellers_net_payable_egp || 0)} EGP</div>
+        <div class="kpi-sub">${fmt(k.sellers_count || 0)} ${ar ? 'مندوب مبيعات (العمولات بعد السلف)' : 'sellers (earned minus installments)'}</div>
+      </div>
+      <div class="card" style="border-color:rgba(0,210,255,0.42);">
+        <div class="kpi-label">👷 ${ar ? 'صافي مستحقات وسلف الموظفين والطقم' : 'Staff Payable / Advances'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.staff_net_payable_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? `سلف مرحلة على الموظفين: ${fmt(k.staff_advances_owed_egp || 0)} ج.م` : `Carried staff advances: ${fmt(k.staff_advances_owed_egp || 0)} EGP`}</div>
+      </div>
+      <div class="card" style="border-color:rgba(168,85,247,0.42);">
+        <div class="kpi-label">🏢 ${ar ? 'مديونيات العملاء وشركات السياحة (AR)' : 'B2B Clients Net Receivable'}</div>
+        <div class="kpi-val" style="color:#d8b4fe;">${fmt(k.clients_net_receivable_egp || 0)} EGP</div>
+        <div class="kpi-sub">${fmt(k.total_installments_tracked || 0)} ${ar ? 'حركة دفعات وأقساط مسجلة' : 'tracked deposit/installment entries'}</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <h3 style="font-size:16px;">📒 ${ar ? 'دليل كشوف الحسابات والأرصدة والدفعات الشامل (360° Financial Situation)' : '360° Counterparty & Staff Accounts — Deposits, Installments & Final Balances'}</h3>
+          <p style="font-size:12px;color:var(--muted);margin-top:2px;">
+            ${ar ? 'اضغط على أي مورد أو مندوب مبيعات أو موظف أو شركة سياحة لفتح صفحته المالية الكاملة ومعرفة كل دفعة أو قسط أو سلفة والرصيد النهائي الصافي.' : 'Select any Supplier, Sales Rep, Staff/Crew Member, B2B Agency, or Partner to open their dedicated statement page with all deposits, installments, and final net balance.'}
+          </p>
+        </div>
+        <input type="text" style="max-width:290px;" placeholder="${ar ? '🔍 ابحث بالاسم أو الكود أو التليفون...' : '🔍 Search supplier, seller, staff, agency...'}" value="${esc(STATE.accountsSearch || '')}" oninput="STATE.accountsSearch=this.value;reloadAccountsHub(null, this.value);">
+      </div>
+
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${catPills.map((cp) => `<button type="button" class="btn ${fType === cp.id ? 'btn-primary' : ''}" style="padding:6px 12px;font-size:12px;" onclick="reloadAccountsHub('${cp.id}', null)">${esc(cp.lbl)}</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap" style="max-height:620px;">
+        <table>
+          <thead>
+            <tr>
+              <th>${ar ? 'الاسم والحساب' : 'Counterparty / Staff'}</th>
+              <th>${ar ? 'التصنيف' : 'Category'}</th>
+              <th class="num">${ar ? 'إجمالي الفواتير / المستحقات (+)' : 'Total Accrued / Billed (+)'}</th>
+              <th class="num">${ar ? 'العربون والدفعات والأقساط (-)' : 'Deposits & Installments (-)'}</th>
+              <th class="num">${ar ? 'الرصيد النهائي الصافي' : 'Final Net Balance'}</th>
+              <th>${ar ? 'الموقف المالي الحالي' : 'Financial Status'}</th>
+              <th>${ar ? 'فتح الصفحة / دفعة' : 'Open / Pay'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${!items.length ? `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">${ar ? 'لا توجد حسابات مطابقة للبحث.' : 'No matching financial accounts found.'}</td></tr>` : items.map((it) => {
+              const col = balanceStatusColor(it.status_code);
+              const encItem = encodeURIComponent(JSON.stringify({
+                entity_type: it.entity_type,
+                entity_code: it.entity_code,
+                name_en: it.name_en,
+                name_ar: it.name_ar,
+                final_balance_egp: it.final_balance_egp,
+                balance_label_en: it.balance_label_en,
+                balance_label_ar: it.balance_label_ar,
+                settlement_currency: it.settlement_currency || 'EGP'
+              }));
+              return `
+                <tr style="cursor:pointer;" onclick="openEntityDossier('${esc(it.entity_type)}', '${esc(it.entity_code)}')">
+                  <td>
+                    <div style="font-weight:900;font-size:13.5px;color:#f8fafc;text-decoration:underline;text-decoration-color:rgba(0,210,255,0.45);">${esc(ar ? (it.name_ar || it.name_en) : it.name_en)}</div>
+                    <div style="font-size:11px;color:var(--muted);"><code>${esc(it.entity_code)}</code> • ${esc(ar ? (it.subtitle_ar || it.subtitle_en) : it.subtitle_en)}</div>
+                  </td>
+                  <td>${entityTypeBadgeHtml(it.entity_type, ar)}</td>
+                  <td class="num"><b>${fmt(it.total_accrued_egp)} EGP</b></td>
+                  <td class="num" style="color:#34d399;">
+                    <b>${fmt(it.total_installments_egp)} EGP</b>
+                    <div style="font-size:10px;color:var(--muted);">${fmt(it.installments_count || 0)} ${ar ? 'دفعة/قسط' : 'installment(s)'}</div>
+                  </td>
+                  <td class="num">
+                    <span style="font-size:14.5px;font-weight:900;color:${col.fg};">${fmt(it.final_balance_egp)} EGP</span>
+                  </td>
+                  <td>
+                    <span class="pill" style="background:${col.bg};border-color:${col.bd};color:${col.fg};font-weight:800;">
+                      ${esc(ar ? it.balance_label_ar : it.balance_label_en)}
+                    </span>
+                  </td>
+                  <td onclick="event.stopPropagation();" style="display:flex;gap:5px;flex-wrap:wrap;">
+                    <button type="button" class="btn btn-primary" style="padding:5px 10px;font-size:11.5px;font-weight:800;" onclick="openEntityDossier('${esc(it.entity_type)}', '${esc(it.entity_code)}')">📒 ${ar ? 'فتح الصفحة' : 'Open Page'}</button>
+                    ${canRec && !(it.entity_type === 'PARTNER' && !hasPerm('bi.view_executive', 'gl.view_all_ledgers')) ? `<button type="button" class="btn btn-emerald" style="padding:5px 9px;font-size:11.5px;" onclick="openPartyTxModal('${encItem}')">➕ ${ar ? 'دفعة' : 'Pay'}</button>` : ''}
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderEntityDossierTab(ar) {
+  const wrap = STATE.activeDossier || {};
+  const dos = wrap.dossier || {};
+  const p = dos.profile || {};
+  const s = dos.summary || {};
+  const instList = dos.installments_ledger || [];
+  const allLines = dos.statement_lines || [];
+  const ctx = dos.context || {};
+  const canRec = !!wrap.can_record_payment;
+  const col = balanceStatusColor(s.status_code);
+  const lf = STATE.dossierLineFilter || 'ALL';
+
+  const filteredLines = allLines.filter((ln) => {
+    if (lf === 'INSTALLMENT') return ln.line_group === 'INSTALLMENT' || Number(ln.minus_egp) > 0;
+    if (lf === 'ACCRUAL') return ln.line_group === 'ACCRUAL' && Number(ln.plus_egp) > 0;
+    return true;
+  });
+
+  const wd = waDigits(p.whatsapp || p.phone || '');
+  const csvHref = `/handlers/erp_api.php?action=export_entity_statement_csv&entity_type=${encodeURIComponent(p.entity_type || '')}&entity_code=${encodeURIComponent(p.entity_code || '')}`;
+  const backTab = STATE.prevTabBeforeDossier || (hasPerm('gl.view_all_ledgers', 'bi.view_executive', 'safe.view_balances') ? 'accounts_hub' : '');
+
+  const encParty = encodeURIComponent(JSON.stringify({
+    entity_type: p.entity_type,
+    entity_code: p.entity_code,
+    name_en: p.name_en,
+    name_ar: p.name_ar,
+    final_balance_egp: s.final_balance_egp,
+    balance_label_en: s.balance_label_en,
+    balance_label_ar: s.balance_label_ar,
+    settlement_currency: p.settlement_currency || 'EGP'
+  }));
+
+  const isClientAr = p.entity_type === 'CLIENT_AR';
+  const plusColLabel = isClientAr
+    ? (ar ? 'مسحوبات وفواتير على العميل (+)' : 'Billed to Client (+)')
+    : (ar ? 'مستحق له / فواتير وعمولات ومرتبات (+)' : 'Earned / Billed to Company (+)');
+  const minusColLabel = isClientAr
+    ? (ar ? 'عربون وأقساط وتحصيلات مستلمة (-)' : 'Deposits & Installments Collected (-)')
+    : (ar ? 'عربون ودفعات وأقساط وسلف مستلمة (-)' : 'Deposits, Installments & Advances Paid (-)');
+
+  // Contextual bottom section per entity type
+  let contextHtml = '';
+  if (p.entity_type === 'SUPPLIER') {
+    const cItems = ctx.cost_items || [];
+    const rVos = ctx.recent_vouchers || [];
+    const canEditCost = hasPerm('gl.view_all_ledgers', 'bi.view_executive');
+    contextHtml = `
+      <div class="grid grid-2" style="margin-top:14px;">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="font-size:14px;">🏷️ ${ar ? 'قائمة أسعار تكلفة الرحلات المعتمدة مع المورد' : 'Contracted Trip & Safari Unit Costs'} (${cItems.length})</h3>
+            ${canEditCost ? `<button type="button" class="btn btn-amber" style="padding:4px 9px;font-size:11px;" onclick="STATE.activeTab='suppliers_costs_hub';STATE.suppliersSubTab='costs';setSuppliersFilter('ALL','${esc(p.entity_code)}');">✏️ ${ar ? 'تعديل التكاليف' : 'Manage Costs'}</button>` : ''}
+          </div>
+          <div class="table-wrap" style="max-height:280px;">
+            <table>
+              <thead><tr><th>${ar ? 'الرحلة / البند' : 'Item'}</th><th>Basis</th><th class="num">Adult / Unit</th><th class="num">Child</th><th class="num">Infant</th></tr></thead>
+              <tbody>
+                ${!cItems.length ? `<tr><td colspan="5" style="text-align:center;color:var(--muted);">${ar ? 'تسوية شهرية إجمالية' : 'Monthly statement settlement'}</td></tr>` : cItems.map((ci) => `
+                  <tr>
+                    <td><b>${esc(ar ? (ci.name_ar || ci.name_en) : ci.name_en)}</b><div style="font-size:10px;color:var(--muted);"><code>${esc(ci.item_code)}</code></div></td>
+                    <td>${esc(ci.pricing_basis)}</td>
+                    <td class="num"><b style="color:#fca5a5;">${fmt(ci.pricing_basis !== 'PER_PAX' && Number(ci.unit_cost_egp) > 0 ? ci.unit_cost_egp : ci.adult_cost_egp)} EGP</b></td>
+                    <td class="num">${fmt(ci.child_cost_egp)} EGP</td>
+                    <td class="num">${fmt(ci.infant_cost_egp)} EGP</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:14px;margin-bottom:8px;">🎫 ${ar ? 'أحدث الفوتشرات والرحلات المنفذة مع المورد' : 'Recent Executed Vouchers with Supplier'} (${rVos.length})</h3>
+          <div class="table-wrap" style="max-height:280px;">
+            <table>
+              <thead><tr><th>VO.NO</th><th>Date</th><th>Trip</th><th>PAX</th><th class="num">Supplier Cost</th></tr></thead>
+              <tbody>
+                ${!rVos.length ? `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No individual trip vouchers linked</td></tr>` : rVos.map((v) => `
+                  <tr>
+                    <td><b>${esc(v.voucher_no)}</b></td>
+                    <td>${esc(v.trip_date)}</td>
+                    <td>${esc(v.trip_name)}</td>
+                    <td>${v.adults}A+${v.children}C</td>
+                    <td class="num"><b>${fmt(v.supplier_cost_egp)} EGP</b></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (p.entity_type === 'SALES_REP') {
+    const rComms = ctx.recent_commissions || [];
+    contextHtml = `
+      <div class="card" style="margin-top:14px;">
+        <h3 style="font-size:14px;margin-bottom:8px;">💼 ${ar ? 'تفاصيل عمولات الحجوزات المنفذة للمندوب' : 'Detailed Voucher Commissions Breakdown'} (${rComms.length})</h3>
+        <div class="table-wrap" style="max-height:300px;">
+          <table>
+            <thead><tr><th>Date</th><th>VO.NO</th><th>Guest / Product</th><th>Mode</th><th class="num">Gross EGP</th><th class="num">Supplier Cost</th><th class="num">Commission EGP</th><th>Status</th></tr></thead>
+            <tbody>
+              ${!rComms.length ? `<tr><td colspan="8" style="text-align:center;color:var(--muted);">No commission vouchers recorded</td></tr>` : rComms.map((rc) => `
+                <tr>
+                  <td>${esc(rc.tx_date)}</td>
+                  <td><b>${esc(rc.voucher_no)}</b></td>
+                  <td>${esc(rc.product_name)} <span style="color:var(--muted);">(${esc(rc.guest_name)})</span></td>
+                  <td><span class="pill">${esc(rc.commission_type)}</span></td>
+                  <td class="num">${fmt(rc.gross_amount_egp)}</td>
+                  <td class="num">${fmt(rc.supplier_cost_egp)}</td>
+                  <td class="num pos"><b>${fmt(rc.commission_egp)} EGP</b></td>
+                  <td><span class="pill">${esc(rc.status)}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  } else if (p.entity_type === 'STAFF') {
+    const pHist = ctx.payroll_history || [];
+    if (pHist.length) {
+      contextHtml = `
+        <div class="card" style="margin-top:14px;">
+          <h3 style="font-size:14px;margin-bottom:8px;">📋 ${ar ? 'سجل المرتبات الشهري وأيام العمل والسلف المخصومة (SALERY)' : 'Monthly Payroll, Worked Days & Advances History (SALERY)'} (${pHist.length})</h3>
+          <div class="table-wrap" style="max-height:280px;">
+            <table>
+              <thead><tr><th>Month</th><th>Days</th><th class="num">Base Salary</th><th class="num">Actual Wage</th><th class="num">Commission</th><th class="num">Bonuses/Allow.</th><th class="num">Advances Deducted</th><th class="num">Net Pay</th></tr></thead>
+              <tbody>
+                ${pHist.map((pr) => `
+                  <tr>
+                    <td><b>${esc(pr.period_month)}</b></td>
+                    <td class="num">${fmt(pr.worked_days)}</td>
+                    <td class="num">${fmt(pr.base_salary_egp)}</td>
+                    <td class="num">${fmt(pr.actual_wage_egp)}</td>
+                    <td class="num" style="color:var(--cyan);">${fmt(pr.commission_egp)}</td>
+                    <td class="num" style="color:#fde68a;">${fmt(Number(pr.bonuses_egp || 0) + Number(pr.allowances_egp || 0))}</td>
+                    <td class="num neg">${fmt(pr.advances_deductions_egp)}</td>
+                    <td class="num pos"><b>${fmt(pr.net_pay_egp)} EGP</b></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+  } else if (p.entity_type === 'PARTNER') {
+    const vList = ctx.vessels_owned || [];
+    if (vList.length) {
+      contextHtml = `
+        <div class="card" style="margin-top:14px;">
+          <h3 style="font-size:14px;margin-bottom:8px;">🛥️ ${ar ? 'حصص الشريك بالمراكب وعمرة الازق (قيراط)' : 'Partner Yacht Qirat Ownership & Drydock CapEx Shares'}</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Vessel</th><th>Partner Qirat</th><th>Sea College Qirat</th><th class="num">Monthly Lease</th><th class="num">Drydock Partner Share</th></tr></thead>
+              <tbody>
+                ${vList.map((v) => `
+                  <tr>
+                    <td><b>${esc(ar ? v.name_ar : v.name_en)}</b></td>
+                    <td class="num"><b>${v.partner_qirat} / 24 قيراط</b></td>
+                    <td class="num">${v.sea_college_qirat} / 24 قيراط</td>
+                    <td class="num">${fmt(v.monthly_fixed_rent_egp)} EGP</td>
+                    <td class="num">${fmt(v.drydock_partner_share_egp)} EGP</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  return `
+    <!-- Top Action & Navigation Bar -->
+    <div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(6,24,44,0.96),rgba(12,38,66,0.92));border-color:${col.bd};">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        ${backTab ? `<button type="button" class="btn" onclick="STATE.activeTab='${esc(backTab)}';renderApp();">← ${ar ? 'رجوع' : 'Back'}</button>` : ''}
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            ${entityTypeBadgeHtml(p.entity_type, ar)}
+            <h2 style="font-size:18px;font-weight:900;margin:0;color:#f8fafc;">${esc(ar ? (p.name_ar || p.name_en) : p.name_en)}</h2>
+            <code style="font-size:11.5px;color:var(--cyan);">${esc(p.entity_code)}</code>
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;margin-top:4px;">${esc(ar ? (p.subtitle_ar || p.subtitle_en) : p.subtitle_en)}</div>
+          ${p.notes ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">📌 ${esc(p.notes)}</div>` : ''}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        ${p.phone ? `<a class="btn" href="tel:${esc(p.phone)}">📞 ${esc(p.phone)}</a>` : ''}
+        ${wd.length >= 8 ? `<a class="btn btn-emerald" href="https://wa.me/${esc(wd)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
+        ${canRec ? `<button type="button" class="btn btn-amber" style="font-weight:900;padding:8px 14px;" onclick="openPartyTxModal('${encParty}')">➕ ${ar ? 'تسجيل عربون / قسط / دفعة / تسوية' : 'Record Deposit / Installment / Payout'}</button>` : ''}
+        <a class="btn" href="${esc(csvHref)}">📥 ${ar ? 'تصدير CSV' : 'Export CSV'}</a>
+      </div>
+    </div>
+
+    <!-- 4 Big Financial Situation KPI Cards -->
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">🧾 ${plusColLabel}</div>
+        <div class="kpi-val" style="color:#fde68a;">${fmt(s.total_accrued_egp || 0)} EGP</div>
+        <div class="kpi-sub">${ar ? 'إجمالي الفواتير أو العمولات والمرتبات المستحقة' : 'Cumulative Invoices, Wages & Commissions'}</div>
+      </div>
+
+      <div class="card" style="border-color:rgba(16,185,129,0.45);">
+        <div class="kpi-label">💵 ${minusColLabel}</div>
+        <div class="kpi-val pos">${fmt(s.total_installments_egp || 0)} EGP</div>
+        <div class="kpi-sub">${fmt(s.installments_count || 0)} ${ar ? 'دفعة / عربون / قسط / سلفة مسجلة' : 'recorded deposits, installments & advances'}</div>
+      </div>
+
+      <div class="card">
+        <div class="kpi-label">${p.entity_type === 'SALES_REP' ? (ar ? '⏳ عمولات رحلات لم تنفذ بعد' : '⏳ Pending Unboarded Comm.') : (ar ? '📑 إجمالي حركات الكشف' : '📑 Total Ledger Entries')}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${p.entity_type === 'SALES_REP' ? fmt(s.pending_unboarded_egp || 0) + ' EGP' : fmt(allLines.length)}</div>
+        <div class="kpi-sub">${ar ? `عملة التسوية: ${p.settlement_currency || 'EGP'} • ${p.payment_terms || ''}` : `Currency: ${p.settlement_currency || 'EGP'} • ${p.payment_terms || ''}`}</div>
+      </div>
+
+      <div class="card" style="background:${col.bg};border:2px solid ${col.bd};">
+        <div class="kpi-label" style="color:${col.fg};font-weight:900;">⚖️ ${ar ? 'الرصيد النهائي الصافي (Final Balance)' : 'FINAL NET BALANCE'}</div>
+        <div class="kpi-val" style="font-size:25px;color:${col.fg};">${fmt(s.final_balance_egp || 0)} EGP</div>
+        <div class="kpi-sub" style="color:#f8fafc;font-weight:800;">${esc(ar ? s.balance_label_ar : s.balance_label_en)}</div>
+      </div>
+    </div>
+
+    <!-- Dedicated Deposits, Installments & Advances Quick Box -->
+    <div class="card" style="margin-bottom:14px;border-color:rgba(16,185,129,0.38);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <h3 style="font-size:14.5px;color:#34d399;">💵 ${ar ? 'سجل العربون والأقساط والدفعات والسلف المستلمة / المسددة' : 'Deposits, Installments, Advances & Payouts Received / Paid'} (${instList.length})</h3>
+        ${canRec ? `<button type="button" class="btn btn-emerald" style="padding:5px 11px;font-size:11.5px;" onclick="openPartyTxModal('${encParty}')">➕ ${ar ? 'إضافة دفعة / قسط جديد' : 'Add Installment / Deposit'}</button>` : ''}
+      </div>
+      ${!instList.length ? `<div style="font-size:12.5px;color:var(--muted);padding:8px 0;">${ar ? 'لم يتم تسجيل دفعات أو أقساط بعد لهذا الحساب.' : 'No deposits or installments recorded yet on this account.'}</div>` : `
+        <div class="table-wrap" style="max-height:230px;">
+          <table>
+            <thead>
+              <tr>
+                <th>${ar ? 'التاريخ' : 'Date'}</th>
+                <th>${ar ? 'رقم الإيصال / المرجع' : 'Ref #'}</th>
+                <th>${ar ? 'نوع الدفعة' : 'Installment Type'}</th>
+                <th>${ar ? 'البيان والتفاصيل' : 'Description'}</th>
+                <th>${ar ? 'طريقة الدفع / الخزينة' : 'Channel / Safe'}</th>
+                <th class="num">${ar ? 'المبلغ المسدد / المستلم' : 'Installment Amount'}</th>
+                <th class="num">${ar ? 'الرصيد بعد الدفعة' : 'Balance After'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${instList.map((il) => `
+                <tr>
+                  <td><b>${esc(il.tx_date)}</b></td>
+                  <td><code>${esc(il.ref_no)}</code></td>
+                  <td><span class="pill" style="border-color:#10b981;color:#34d399;">${esc(ar ? il.badge_ar : il.badge_en)}</span></td>
+                  <td>${esc(ar ? il.description_ar : il.description_en)}</td>
+                  <td><span class="pill">${esc(il.payment_method || 'SAFE')}</span></td>
+                  <td class="num"><b class="pos">${fmt(il.minus_egp > 0 ? il.minus_egp : il.plus_egp)} EGP</b>${il.orig_currency && il.orig_currency !== 'EGP' ? `<div style="font-size:10px;color:#7dd3fc;">(${fmt(il.orig_amount, 2)} ${esc(il.orig_currency)})</div>` : ''}</td>
+                  <td class="num"><b>${fmt(il.running_balance_egp)} EGP</b></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `}
+    </div>
+
+    <!-- Complete Chronological Running-Balance Statement -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <h3 style="font-size:15px;">📊 ${ar ? 'كشف الحساب التفصيلي الكامل بالرصيد التراكمي' : 'Complete Chronological Account Statement & Running Balance'} (${filteredLines.length})</h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="btn ${lf === 'ALL' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.dossierLineFilter='ALL';renderApp();">${ar ? 'كل الحركات' : 'All Entries'} (${allLines.length})</button>
+          <button type="button" class="btn ${lf === 'INSTALLMENT' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.dossierLineFilter='INSTALLMENT';renderApp();">💵 ${ar ? 'الدفعات والأقساط فقط' : 'Deposits & Installments'} (${instList.length})</button>
+          <button type="button" class="btn ${lf === 'ACCRUAL' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.dossierLineFilter='ACCRUAL';renderApp();">🧾 ${ar ? 'الفواتير والمستحقات فقط' : 'Invoices / Accruals'}</button>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="max-height:480px;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>${ar ? 'التاريخ' : 'Date'}</th>
+              <th>${ar ? 'المرجع' : 'Ref'}</th>
+              <th>${ar ? 'النوع' : 'Type'}</th>
+              <th>${ar ? 'البيان' : 'Description'}</th>
+              <th class="num">${plusColLabel}</th>
+              <th class="num">${minusColLabel}</th>
+              <th class="num">${ar ? 'الرصيد التراكمي (EGP)' : 'Running Balance (EGP)'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${!filteredLines.length ? `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px;">${ar ? 'لا توجد حركات مسجلة.' : 'No statement entries found.'}</td></tr>` : filteredLines.map((ln) => `
+              <tr>
+                <td class="num" style="color:var(--muted);">${ln.line_no}</td>
+                <td><b>${esc(ln.tx_date)}</b></td>
+                <td><code>${esc(ln.ref_no)}</code></td>
+                <td><span class="pill" style="${ln.minus_egp > 0 ? 'border-color:#10b981;color:#34d399;' : 'border-color:#f59e0b;color:#fde68a;'}">${esc(ar ? ln.badge_ar : ln.badge_en)}</span></td>
+                <td>
+                  <div>${esc(ar ? ln.description_ar : ln.description_en)}</div>
+                  <div style="font-size:10px;color:var(--muted);">${esc(ln.payment_method || '')}${ln.recorded_by ? ' • by ' + esc(ln.recorded_by) : ''}</div>
+                </td>
+                <td class="num">${ln.plus_egp > 0 ? `<b style="color:#fde68a;">+${fmt(ln.plus_egp)}</b>` : '—'}</td>
+                <td class="num">${ln.minus_egp > 0 ? `<b class="pos">-${fmt(ln.minus_egp)}</b>` : '—'}</td>
+                <td class="num"><b style="font-size:13.5px;color:${ln.running_balance_egp > 0 ? '#fde68a' : (ln.running_balance_egp < 0 ? '#7dd3fc' : '#94a3b8')};">${fmt(ln.running_balance_egp)} EGP</b></td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr style="background:rgba(0,210,255,0.09);font-weight:900;">
+              <td colspan="5" style="text-align:end;">${ar ? 'الإجمالي والرصيد النهائي الصافي:' : 'Totals & Final Net Balance:'}</td>
+              <td class="num" style="color:#fde68a;">+${fmt(s.total_accrued_egp || 0)} EGP</td>
+              <td class="num pos">-${fmt(s.total_installments_egp || 0)} EGP</td>
+              <td class="num" style="font-size:14.5px;color:${col.fg};">${fmt(s.final_balance_egp || 0)} EGP</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    ${contextHtml}
+  `;
+}
+
+function openPartyTxModal(encodedParty) {
+  const p = encodedParty ? JSON.parse(decodeURIComponent(encodedParty)) : null;
+  if (!p) return;
+  const ar = STATE.lang === 'ar';
+  const curBal = Number(p.final_balance_egp || 0);
+  document.getElementById('ptmEntityType').value = p.entity_type || 'SUPPLIER';
+  document.getElementById('ptmEntityCode').value = p.entity_code || '';
+  document.getElementById('ptmCurrentBalEgp').value = String(curBal);
+
+  document.getElementById('ptmTitle').textContent = ar
+    ? `💵 تسجيل دفعة / عربون / قسط: ${p.name_ar || p.name_en}`
+    : `💵 Record Deposit / Installment: ${p.name_en}`;
+
+  document.getElementById('ptmAccountSummaryBanner').innerHTML = `
+    <div>
+      <div style="font-size:13.5px;font-weight:900;color:#f8fafc;">${esc(ar ? (p.name_ar || p.name_en) : p.name_en)} <code style="color:var(--cyan);">${esc(p.entity_code)}</code></div>
+      <div style="font-size:11.5px;color:#fde68a;margin-top:2px;">${ar ? 'الرصيد الحالي:' : 'Current Balance:'} <b>${fmt(curBal)} EGP</b> (${esc(ar ? p.balance_label_ar : p.balance_label_en)})</div>
+    </div>
+    ${Math.abs(curBal) > 0.5 ? `<button type="button" class="btn btn-amber" style="padding:5px 10px;font-size:11.5px;" onclick="document.getElementById('ptmTxKind').value='FULL_SETTLEMENT';document.getElementById('ptmCurrency').value='EGP';document.getElementById('ptmAmount').value='${Math.abs(curBal).toFixed(2)}';syncPartyTxKindUI();">✅ ${ar ? 'تقفيل كامل الرصيد' : 'Settle Exact Balance'} (${fmt(Math.abs(curBal))} EGP)</button>` : ''}
+  `;
+
+  document.getElementById('ptmTxKind').value = 'INSTALLMENT';
+  document.getElementById('ptmCurrency').value = 'EGP';
+  document.getElementById('ptmAmount').value = Math.abs(curBal) > 0 ? String(Math.min(Math.abs(curBal), 10000)) : '5000';
+  document.getElementById('ptmReceiptNo').value = '';
+  syncPartyTxKindUI();
+  document.getElementById('partyTransactionModal').style.display = 'flex';
+}
+
+function syncPartyTxKindUI() {
+  const kind = document.getElementById('ptmTxKind').value;
+  const eType = document.getElementById('ptmEntityType').value;
+  const dEn = document.getElementById('ptmDescEn');
+  const dAr = document.getElementById('ptmDescAr');
+  if (kind === 'DEPOSIT') {
+    dEn.value = eType === 'CLIENT_AR' ? 'Advance deposit received from client' : 'On-account deposit paid to counterparty';
+    dAr.value = eType === 'CLIENT_AR' ? 'عربون / دفعة مقدمة مستلمة من العميل' : 'دفعة مقدمة (عربون من تحت الحساب)';
+  } else if (kind === 'FULL_SETTLEMENT') {
+    const curBal = Math.abs(Number(document.getElementById('ptmCurrentBalEgp').value || 0));
+    if (curBal > 0 && document.getElementById('ptmCurrency').value === 'EGP') {
+      document.getElementById('ptmAmount').value = curBal.toFixed(2);
+    }
+    dEn.value = 'Full account balance settlement';
+    dAr.value = 'تقفيل وسداد كامل الرصيد المتبقي بالحساب';
+  } else if (kind === 'ADVANCE_GIVEN') {
+    dEn.value = 'Cash advance disbursed';
+    dAr.value = 'صرف سلفة نقدية على الحساب';
+  } else if (kind === 'ADVANCE_REPAID') {
+    dEn.value = 'Cash advance repayment received';
+    dAr.value = 'توريد وسداد من رصيد السلفة';
+  } else if (kind === 'INVOICE_CHARGE') {
+    dEn.value = 'New statement invoice / entitlement';
+    dAr.value = 'إضافة فاتورة / استحقاق جديد بكشف الحساب';
+  } else {
+    dEn.value = eType === 'CLIENT_AR' ? 'Installment collected on account' : 'Installment payment disbursed on account';
+    dAr.value = eType === 'CLIENT_AR' ? 'تحصيل دفعة قسط من حساب العميل' : 'سداد دفعة / قسط من الحساب';
+  }
+}
+
+async function submitPartyTxForm(e) {
+  e.preventDefault();
+  const payload = {
+    action: 'record_party_transaction',
+    entity_type: document.getElementById('ptmEntityType').value,
+    entity_code: document.getElementById('ptmEntityCode').value,
+    tx_kind: document.getElementById('ptmTxKind').value,
+    payment_method: document.getElementById('ptmMethod').value,
+    orig_amount: Number(document.getElementById('ptmAmount').value || 0),
+    orig_currency: document.getElementById('ptmCurrency').value,
+    tx_date: document.getElementById('ptmDate').value,
+    voucher_or_receipt_no: document.getElementById('ptmReceiptNo').value.trim(),
+    sync_cashbox: document.getElementById('ptmSyncCashbox').checked ? 1 : 0,
+    description_en: document.getElementById('ptmDescEn').value.trim(),
+    description_ar: document.getElementById('ptmDescAr').value.trim()
+  };
+  const res = await apiPost(payload);
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Failed to record financial transaction');
+    return;
+  }
+  document.getElementById('partyTransactionModal').style.display = 'none';
+  STATE.accountsDir = null;
+  STATE.suppliersHub = null;
+  showToast(`✅ Recorded ${fmt(res.amount_egp)} EGP • New Final Balance: ${fmt(res.final_balance_egp)} EGP`);
+
+  if (STATE.activeTab === 'entity_dossier' && res.dossier) {
+    STATE.activeDossier = {
+      ok: true,
+      can_record_payment: true,
+      dossier: res.dossier
+    };
+    renderApp();
+  } else if (STATE.activeTab === 'accounts_hub') {
+    await reloadAccountsHub();
+  } else {
+    renderApp();
+  }
 }
 
 boot();
