@@ -123,7 +123,7 @@ return [
     'gallery_next' => '下一张',
     'gallery_see_videos_btn' => '观看水下高清视频与全部相册',
     'team_showcase_title' => '认识被全球潜客实名点赞的明星教练们',
-    'team_showcase_sub' => '支持中文、英语、俄语、意大利语、波兰语、德语、法语及阿拉伯语服务——荣获 3,082+ 条 Google 认证好评 (4.9★) 与 129+ 条 Tripadvisor 好评 (4.9 ●●●●●)。',
+    'team_showcase_sub' => '提供简体中文 PADI 官方教材与中文客服对接，支持中、英、俄、意、波、德、法、阿 8 种语言服务——荣获 3,082+ 条 Google 认证好评 (4.9★) 与 129+ 条 Tripadvisor 好评 (4.9 ●●●●●)。',
     'team_see_all_btn' => '查看完整团队与视频相册',
     'home_gallery_title' => '观看真实红海水下视频与游艇出海日常',
     'home_gallery_sub' => '预订前抢先实景预览我们的双层潜水船、Al Montazah 泻湖快艇、泳池一对一教学与绚丽的红海珊瑚断崖。',
@@ -209,10 +209,18 @@ return [
     'banner_boats_cta' => '查看游艇包船与浮潜',
     'banner_brand_badge' => 'Sea College Dive Club 官网直订 · 无中介差价',
     'banner_brand_title' => 'PADI 五星潜水度假村 · Google (3,082+) 与 Tripadvisor (129+) 双平台 4.9★ 高分',
-    'banner_brand_desc' => '官网直订零佣金溢价，线上 €0 免刷卡押金。通过 WhatsApp 联系我们支持 8 种语言的沙姆团队，即刻确认酒店接送时间。',
+    'banner_brand_desc' => '官网直订零佣金溢价，线上 €0 免刷卡押金。通过电子邮箱（国内无需翻墙直收确认单）或 WhatsApp 联系我们支持 8 种语言的沙姆团队，即刻确认酒店接送时间。',
     'banner_brand_cta' => 'WhatsApp 联系潜水顾问',
     'side_promo_label' => 'Sea College 官网直订专属礼遇',
     'side_promo_1' => '线上 €0 免付押金 — 到潜店现场安心付款',
     'side_promo_2' => '预订潜水套餐享沙姆沙伊赫酒店免费接送',
     'side_promo_3' => '自有训练泳池 + 海滨私家房礁 + 专属潜水游艇',
+
+    // ---------- Interactive SVG Map Labels ----------
+    'map_south_sinai' => '南西奈半岛',
+    'map_gulf_suez' => '苏伊士湾',
+    'map_gulf_aqaba' => '亚喀巴湾',
+    'map_tiran' => '蒂朗岛',
+    'map_ras_mohammed' => '拉斯穆罕默德',
+    'map_base' => '★ Sea College 潜店基地',
 ];

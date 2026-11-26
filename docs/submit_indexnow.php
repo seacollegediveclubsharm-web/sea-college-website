@@ -55,23 +55,32 @@ preg_match_all('#<loc>([^<]+)</loc>#', $xml, $m);
 $sitemapUrls = array_values(array_unique($m[1] ?? []));
 $phpLocs = array_filter($sitemapUrls, static fn(string $u): bool => str_contains($u, '.php'));
 
-$urls = array_values(array_unique([
-    ...$sitemapUrls,
+$aiEndpoints = [
     "https://{$host}/llms.txt",
     "https://{$host}/llms-full.txt",
+];
+foreach (['ru', 'it', 'pl', 'de', 'fr', 'ar', 'zh'] as $lg) {
+    $aiEndpoints[] = "https://{$host}/{$lg}/llms.txt";
+    $aiEndpoints[] = "https://{$host}/{$lg}/llms-full.txt";
+}
+
+$urls = array_values(array_unique([
+    ...$sitemapUrls,
+    ...$aiEndpoints,
 ]));
 
 echo sprintf(
-    "Prepared %d unique URLs (%d sitemap <loc> + 2 AI discovery endpoints; %d .php URLs)\n",
+    "Prepared %d unique URLs (%d sitemap <loc> + %d 8-language AI discovery endpoints; %d .php URLs)\n",
     count($urls),
     count($sitemapUrls),
+    count($aiEndpoints),
     count($phpLocs)
 );
 
 if ($dryRun) {
     echo "[DRY-RUN] Key Location : {$keyLoc}\n";
-    echo "[DRY-RUN] Sample URLs  : " . implode(', ', array_slice($urls, 0, 5)) . ' ... ' . implode(', ', array_slice($urls, -2)) . "\n";
-    exit(count($urls) >= 800 && count($phpLocs) === 0 ? 0 : 1);
+    echo "[DRY-RUN] Sample URLs  : " . implode(', ', array_slice($urls, 0, 5)) . ' ... ' . implode(', ', array_slice($urls, -4)) . "\n";
+    exit(count($urls) >= 840 && count($phpLocs) === 0 ? 0 : 1);
 }
 
 $payload = json_encode([

@@ -6,11 +6,11 @@ declare(strict_types=1);
 
 return [
     'dive-packages' => [
-        'h1'         => 'Immersioni a Sharm El Sheikh & Pacchetti Diving nel Mar Rosso',
-        'meta_title' => 'Immersioni Sharm El Sheikh & Pacchetti Diving | Da €30 | Sea College',
-        'meta_desc'  => 'Immersioni guidate nel Mar Rosso a Sharm El Sheikh: Battesimo del Mare da €30, pacchetti sub brevettati 1–10 immersioni (€35/imm.), relitto SS Thistlegorm, Ras Mohammed e Tiran.',
-        'sub'        => 'Uscite giornaliere guidate in barca e da riva verso il Parco Nazionale di Ras Mohammed, lo Stretto di Tiran, i giardini di corallo locali e i grandi relitti del Mar Rosso — direttamente dal nostro Centro Diving PADI 5 Stelle presso Cyrene Sharm, Al Montazah.',
-        'aeo_answer' => 'Sea College Dive Club (Centro Diving PADI 5 Stelle ad Al Montazah, Sharm El Sheikh) propone Battesimi del Mare Discover Scuba Diving per principianti da €30 sull’House Reef o €70–€100 in barca tutto incluso, e pacchetti immersioni personali per sub brevettati da €45 (singola da riva) fino a €350 per 10 immersioni in barca o da riva (€35/immersione, più €30 per ogni immersione extra oltre la 10ª). I pacchetti brevettati includono guida PADI, bombole aria da 12L, zavorra e transfer hotel a Sharm El Sheikh; nei giorni di uscita in barca si applicano il Supplemento Barca (€10/giorno, pranzo incluso) e la Tassa Parco Marino (€5/giorno).',
+        'h1'         => 'Immersioni, Pacchetti Diving & Prova Sub a Sharm El Sheikh',
+        'meta_title' => 'Immersioni & Prova Sub Sharm El Sheikh | Da €30 · PADI 5★',
+        'meta_desc'  => 'Centro diving PADI 5★ con istruttori parlanti italiano a Sharm: Battesimo del Mare (prova sub) da €30, pacchetti €35/imm., Ras Mohammed, Tiran e Thistlegorm.',
+        'sub'        => 'Uscite giornaliere guidate in barca e da riva verso il Parco Nazionale di Ras Mohammed, l’Isola di Tiran, i giardini di corallo locali e i grandi relitti del Mar Rosso — direttamente dal nostro Centro Diving PADI 5 Stelle con istruttori parlanti italiano presso Cyrene Sharm, Al Montazah.',
+        'aeo_answer' => 'Sea College Dive Club (Centro Diving PADI 5 Stelle con istruttori parlanti italiano ad Al Montazah, Sharm El Sheikh) propone Battesimo del Mare / prova sub per principianti da €30 sull’House Reef o €70–€100 in barca tutto incluso, e pacchetti immersioni personali per sub brevettati (PADI, SSI, FIPSAS/CMAS/ANIS) da €45 (singola da riva) fino a €350 per 10 immersioni in barca o da riva (€35/immersione, più €30 oltre la 10ª). I pacchetti includono guida PADI, bombole aria 12L, zavorra e transfer gratuito dagli hotel di Sharm El Sheikh (+€10/giorno barca con pranzo e +€5/giorno tassa parco nei giorni su yacht; €0 acconto online).',
         'highlights' => [
             'Pacchetti personali flessibili da 1 a 10+ immersioni — la tariffa scende a €35 a immersione già da 3 tuffi e a €30 dalla 11ª immersione.',
             'I siti più celebri del Mar Rosso: Shark & Yolanda Reef (Ras Mohammed), Jackson, Woodhouse, Thomas e Gordon Reef (Stretto di Tiran), relitti SS Thistlegorm, SS Dunraven e Million Hope.',
@@ -38,11 +38,11 @@ return [
     ],
 
     'padi-courses' => [
-        'h1'         => 'Corsi Subacquei PADI a Sharm El Sheikh — Da Principiante a Divemaster',
-        'meta_title' => 'Corsi PADI Sharm El Sheikh | Da Open Water €400 a Divemaster | Sea College',
-        'meta_desc'  => 'Impara a immergerti in un Centro PADI 5 Stelle a Sharm El Sheikh con istruttori in italiano: Bubblemaker €70, Discover Scuba €85, Open Water €400, Advanced €350 e Divemaster.',
-        'sub'        => 'Studia e immergiti nelle acque calde e cristalline del Mar Rosso con piscina didattica privata, aula climatizzata, House Reef fronte spiaggia e istruttori PADI che parlano italiano, inglese, arabo, russo, tedesco, francese e polacco.',
-        'aeo_answer' => 'Sea College Dive Club è un PADI 5 Star Dive Resort ufficiale presso Cyrene Sharm ad Al Montazah, Sharm El Sheikh, che insegna l’intero percorso didattico PADI: corsi per bambini dagli 8 anni in piscina (Bubblemaker €70, Seal Team €170), corsi principianti dai 10 anni (Discover Scuba Diving €85 tutto incluso, Scuba Diver €250, Open Water Diver €400 in 3–3,5 giorni), Advanced Open Water (€350), Rescue Diver (€394), 8 Specialità PADI (€120–€350) e il tirocinio professionale Divemaster di 4–6 settimane (€850). Il noleggio attrezzatura è incluso in ogni corso; il manuale/eLearning e tassa brevetto PADI costa €85 per corso (già incluso gratuitamente nel Discover Scuba Diving).',
+        'h1'         => 'Corsi Sub & Brevetti PADI a Sharm El Sheikh con Istruttori in Italiano',
+        'meta_title' => 'Corso Sub & Brevetto PADI Sharm El Sheikh | Open Water €400',
+        'meta_desc'  => 'Prendi il brevetto sub PADI a Sharm El Sheikh con istruttori parlanti italiano: prova sub €85, corso sub Open Water €400, Advanced €350. Attrezzatura inclusa!',
+        'sub'        => 'Studia e immergiti nelle acque calde e cristalline del Mar Rosso con piscina didattica privata, aula climatizzata, House Reef fronte spiaggia e istruttori PADI parlanti italiano, inglese, arabo, russo, tedesco, francese e polacco.',
+        'aeo_answer' => 'Sea College Dive Club è un PADI 5 Star Dive Resort ufficiale con istruttori parlanti italiano presso Cyrene Sharm ad Al Montazah, Sharm El Sheikh, che insegna ogni corso sub e brevetto sub PADI: corsi per bambini dagli 8 anni in piscina (Bubblemaker €70, Seal Team €170), prova sub / Battesimo del Mare dai 10 anni (Discover Scuba Diving €85 tutto incluso) e brevetti PADI (Scuba Diver €250, Open Water Diver €400 in 3–3,5 giorni, Advanced Open Water €350, Rescue Diver €394, 8 Specialità €120–€350 e Divemaster €850). Noleggio attrezzatura incluso in ogni corso sub (+€85 manuale/eLearning e tassa brevetto PADI, già incluso nel Discover Scuba Diving).',
         'highlights' => [
             'Progressione graduale e serena: si inizia in acqua bassa nella piscina del resort, poi sul tranquillo House Reef e infine in barca sul Mar Rosso.',
             'Tutta l’attrezzatura subacquea è sempre inclusa nel prezzo di ogni corso PADI — nessun costo extra di noleggio durante la formazione.',
@@ -70,11 +70,11 @@ return [
     ],
 
     'offers' => [
-        'h1'         => 'Offerte Corsi PADI Combinati a Sharm El Sheikh — Risparmia fino a €120',
-        'meta_title' => 'Offerte Pacchetti Corsi PADI Sharm El Sheikh | Risparmia €120 | Sea College',
-        'meta_desc'  => 'Combina i corsi PADI Open Water, Advanced Open Water e Nitrox a Sharm El Sheikh risparmiando da €50 a €120. Attrezzatura completa, assicurazione sub e tasse incluse!',
+        'h1'         => 'Offerte Pacchetti Corsi Sub & Brevetti PADI a Sharm El Sheikh',
+        'meta_title' => 'Offerte Pacchetti Corsi Sub PADI Sharm | Risparmia fino €120',
+        'meta_desc'  => 'Combina corso sub Open Water, Advanced e brevetto PADI Nitrox a Sharm risparmiando fino a €120: istruttori parlanti italiano, attrezzatura e assicurazione!',
         'sub'        => 'Massimizza la tua vacanza sul Mar Rosso con i nostri quattro pacchetti multi-brevetto trasparenti — Stars, Super, Mega e Heros — tutti comprensivi di attrezzatura completa, assicurazione subacquea e tasse.',
-        'aeo_answer' => 'Sea College Dive Club propone quattro offerte di corsi PADI combinati a Sharm El Sheikh che includono tutti i corsi indicati, noleggio completo dell’attrezzatura subacquea, assicurazione subacquea e tasse: Super (Advanced Open Water + Nitrox) a €400 (risparmi €75), Stars (Open Water + Nitrox) a €500 (risparmi €50), Mega (Open Water + Advanced Open Water) a €600 (risparmi €90) e Heros (Open Water + Advanced + Nitrox) a €750 (risparmi €120). I manuali ufficiali e le tasse brevetto PADI (€85 per ciascun corso) sono calcolati per singola certificazione.',
+        'aeo_answer' => 'Sea College Dive Club propone quattro offerte di pacchetti corsi sub e brevetti PADI combinati a Sharm El Sheikh con istruttori parlanti italiano, comprensive di noleggio completo dell’attrezzatura subacquea, assicurazione subacquea e tasse: Super (Advanced Open Water + Nitrox) a €400 (risparmi €75), Stars (Open Water + Nitrox) a €500 (risparmi €50), Mega (Open Water + Advanced Open Water) a €600 (risparmi €90) e Heros (Open Water + Advanced + Nitrox) a €750 (risparmi €120). I manuali ufficiali e le tasse brevetto PADI (€85 per ciascun corso) sono calcolati per singola certificazione.',
         'highlights' => [
             'Risparmio immediato da €50 fino a €120 rispetto all’acquisto separato dei singoli corsi e dell’assicurazione.',
             'Assicurazione subacquea iperbarica inclusa gratuitamente in tutti e 4 i pacchetti — anche su Advanced e Nitrox!',
@@ -102,11 +102,11 @@ return [
     ],
 
     'snorkeling' => [
-        'h1'         => 'Escursioni Snorkeling, Motoscafi Privati & Yacht a Sharm El Sheikh',
-        'meta_title' => 'Escursioni Snorkeling Isola Bianca, Ras Mohammed & Barche Private Sharm',
-        'meta_desc'  => 'Crociera in yacht all’Isola Bianca e Ras Mohammed €55 (bambini €30), snorkeling da spiaggia e notturno da €35, motoscafo privato Tiran da €75 e yacht privati da €550.',
-        'sub'        => 'Giardini di corallo cristallini nel Mar Rosso per famiglie italiane, coppie e gruppi — partecipa alla crociera giornaliera all’Isola Bianca e Ras Mohammed, sfreccia in motoscafo privato all’Isola di Tiran o noleggia uno yacht in esclusiva fino a 20 ospiti.',
-        'aeo_answer' => 'Sea College Dive Club organizza ogni giorno escursioni snorkeling guidate e charter privati a Sharm El Sheikh: crociera giornaliera in yacht all’Isola Bianca e Parco Nazionale di Ras Mohammed (€55 adulto, €30 bambino 5–12 anni, tutto incluso con pranzo a buffet, bevande, maschera, salvagente, transfer e tassa parco), snorkeling guidato diurno (€35) e notturno con torcia (€40) sull’House Reef, Ras Mohammed in bus (€60), motoscafi privati per 2–5 ospiti (€75 per 1h reef locali, €150 per 2h Tiran, €225 per 3h Tiran) e yacht privati giornata intera (€550 per 1–5 ospiti fino a €1.100 per 16–20 ospiti).',
+        'h1'         => 'Escursioni in Barca a Ras Mohammed, Isola Bianca, Isola di Tiran & Yacht',
+        'meta_title' => 'Escursioni Barca Ras Mohammed, Isola Bianca & Tiran Sharm',
+        'meta_desc'  => 'Escursioni in barca a Sharm El Sheikh: Ras Mohammed & Isola Bianca €55 (bimbi €30), motoscafo Isola di Tiran da €75 e yacht privati da €550. €0 acconto online!',
+        'sub'        => 'Giardini di corallo cristallini nel Mar Rosso per famiglie italiane, coppie e gruppi — partecipa alle escursioni in barca a Ras Mohammed & Isola Bianca, sfreccia in motoscafo privato all’Isola di Tiran o noleggia uno yacht in esclusiva fino a 20 ospiti.',
+        'aeo_answer' => 'Sea College Dive Club organizza ogni giorno escursioni in barca, snorkeling guidato e charter privati a Sharm El Sheikh con team parlante italiano: crociera giornaliera in yacht a Ras Mohammed & Isola Bianca (€55 adulto, €30 bambino 5–12 anni, tutto incluso con pranzo a buffet, bevande, maschera, salvagente, transfer e tassa parco), snorkeling guidato diurno (€35) e notturno con torcia (€40) sull’House Reef, Ras Mohammed in bus (€60), motoscafi privati per 2–5 ospiti (€75 per 1h reef locali fino a 3 ospiti, €150 per 2h Isola di Tiran, €225 per 3h Isola di Tiran) e yacht privati giornata intera (€550 per 1–5 ospiti, €650 per 6–10, €900 per 11–15, €1.100 per 16–20 ospiti).',
         'highlights' => [
             'Sicurezza totale per famiglie e bambini: giubbotti salvagente di ogni taglia, maschere, transfer hotel A/R e guide PADI in acqua con il gruppo.',
             'Tariffa speciale bambini (5–12 anni) a soli €30 per l’intera giornata in yacht all’Isola Bianca e Ras Mohammed.',

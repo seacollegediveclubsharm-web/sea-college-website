@@ -168,7 +168,7 @@ return [
     'gallery_next' => 'Nächste Aufnahme',
     'gallery_see_videos_btn' => 'Unterwasservideos & Galerie ansehen',
     'team_showcase_title' => 'Lernen Sie die Tauchlehrer kennen, die Gäste namentlich loben',
-    'team_showcase_sub' => 'Unterricht auf Deutsch, Englisch, Arabisch, Russisch, Italienisch, Französisch & Polnisch — bestätigt durch über 3.082 Google-Bewertungen (4.9★) und 129+ Tripadvisor-Bewertungen (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Unterricht in 8 Sprachen (Deutsch, Englisch, Arabisch, Russisch, Italienisch, Polnisch, Französisch & Chinesisch) — bestätigt durch über 3.082 Google-Bewertungen (4.9★) und 129+ Tripadvisor-Bewertungen (4.9 ●●●●●).',
     'team_see_all_btn' => 'Komplettes Team & Videogalerie',
     'home_gallery_title' => 'Echte Unterwasservideos & Eindrücke vom Tauchboot',
     'home_gallery_sub' => 'Erleben Sie unsere Tauchboote, Schnellboote in der Lagune von Al Montazah, Pool-Übungen und Steilwände im Roten Meer schon vor Ihrer Buchung.',
@@ -225,4 +225,12 @@ return [
     'checkin_none' => 'Keines / Einsteiger',
     'checkin_other' => 'CMAS /VDST / SSI / Andere',
     'checkin_child' => 'Kindergröße',
+
+    // ---------- Interactive SVG Dive Map Labels ----------
+    'map_south_sinai' => 'SÜD-SINAI',
+    'map_gulf_suez' => 'GOLF VON SUEZ',
+    'map_gulf_aqaba' => 'GOLF VON AKABA',
+    'map_tiran' => 'Insel Tiran',
+    'map_ras_mohammed' => 'Ras Mohammed',
+    'map_base' => '★ Sea College Basis',
 ];

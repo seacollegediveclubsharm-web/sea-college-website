@@ -114,11 +114,11 @@ function lara_should_skip_message(string $text): bool
     }
 
     // 2. Short polite closings / acknowledgements / thank-you messages without a new question
-    if (mb_strlen($trim, 'UTF-8') <= 80 && !str_contains($low, '?') && !str_contains($low, '؟')) {
-        if (preg_match('/^(ok|okay|k|thanks|thank you|thx|ty|got it|sounds good|great|perfect|nice|cool|super|awesome|cheers|fine|noted|sure|inshallah|شكرا|شكراً|شكرا جزيلا|تمام|ماشي|حاضر|إن شاء الله|ان شاء الله|يعطيك العافية|спасибо|ок|хорошо|отлично|понял|поняла|grazie|perfetto|danke|alles klar|merci|super merci|dziękuję|dzieki|gracias)[\s!.,🙏👍❤️😊☺️👌]*$/u', $low)) {
+    if (mb_strlen($trim, 'UTF-8') <= 80 && !str_contains($low, '?') && !str_contains($low, '؟') && !str_contains($low, '？')) {
+        if (preg_match('/^(ok|okay|k|thanks|thank you|thx|ty|got it|sounds good|great|perfect|nice|cool|super|awesome|cheers|fine|noted|sure|inshallah|شكرا|شكراً|شكرا جزيلا|تمام|ماشي|حاضر|إن شاء الله|ان شاء الله|يعطيك العافية|спасибо|ок|хорошо|отлично|понял|поняла|grazie|perfetto|danke|alles klar|merci|super merci|dziękuję|dzieki|gracias|谢谢|多谢|好的|收到|没问题|明白了|辛苦了)[\s!.,。！🙏👍❤️😊☺️👌]*$/u', $low)) {
             return true;
         }
-        if (preg_match('/\b(thank you|thanks so much|many thanks|gracias por|grazie mille|vielen dank|merci beaucoup|большое спасибо|спасибо за|شكرا لك|شكراً لك|شكرا على|جزاك الله)\b/u', $low)) {
+        if (preg_match('/(\b(thank you|thanks so much|many thanks|gracias por|grazie mille|vielen dank|merci beaucoup|большое спасибо|спасибо за|شكرا لك|شكراً لك|شكرا على|جزاك الله)\b|非常感谢|太感谢了)/u', $low)) {
             return true;
         }
     }
@@ -222,20 +222,21 @@ function lara_call_gemini(string $guestMessage, string $channel, string $guestNa
     if (!defined('GEMINI_API_KEY') || GEMINI_API_KEY === '') {
         return null;
     }
-    $pIntroShore1 = lara_eur('intro-shore-1', 30);
-    $pIntroBoat1  = lara_eur('intro-boat-1', 70);
-    $pIntroBoat2  = lara_eur('intro-boat-2', 100);
+    $pIntroShore1 = lara_eur('dsd-quick-reef', 30);
+    $pIntroBoat1  = lara_eur('dsd-quick-boat', 70);
+    $pIntroBoat2  = lara_eur('dsd-2-boat', 100);
     $pDsd         = lara_eur('dsd', 85);
     $pOwd         = lara_eur('owd', 400);
     $pAowd        = lara_eur('aowd', 350);
-    $pNitrox      = lara_eur('nitrox-course', 145);
+    $pNitrox      = lara_eur('nitrox', 145);
     $pStars       = lara_eur('bundle-stars', 500);
+    $pMega        = lara_eur('bundle-mega', 600);
     $pDive2       = lara_eur('dive-2', 85);
-    $pDive6       = lara_eur('dive-6', 255);
+    $pDive6       = lara_eur('dive-6', 210);
     $pDive10      = lara_eur('dive-10', 350);
-    $pThistle     = lara_eur('thistlegorm', 150);
-    $pSnorkel     = lara_eur('white-island-adult', 55);
-    $pBoat10      = lara_eur('private-boat-10', 550);
+    $pThistle     = lara_eur('sup-thistlegorm', 150);
+    $pSnorkel     = lara_eur('snork-ras-adult', 55);
+    $pBoat10      = lara_eur('private-1-5', 550);
 
     $matchedZone = lara_match_hotel_zone($guestMessage);
     $zoneHint = $matchedZone
@@ -257,14 +258,14 @@ CRITICAL HUMAN RULES:
 2. Sound 100% like a warm, attentive human concierge texting a guest — NEVER dump a big price menu unless they ask generally "what are your prices?". Answer ONLY what the guest specifically asked in 2 to 4 short, natural sentences!
 3. NEVER use Markdown asterisks (`*` or `**`) — write clean plain text only.
 4. If `Recent conversation history` shows you already greeted the guest, DO NOT repeat "Hello! Welcome to Sea College Dive Club, this is Lara" — continue the conversation naturally!
-5. Reply natively in the guest's language (`en`, `ar`, `ru`, `it`, `pl`, `de`, `fr`, `zh`, `es`) and include at most ONE relevant website link (`https://seacollegediveclub.com/<lang>/prices#calculator` or `/check-in` or `/diving-courses-sharm-el-sheikh`; omit `/<lang>` for English). Do NOT include a WhatsApp link if channel is already `whatsapp`.
+5. Reply natively in the guest's language (`en`, `ar`, `ru`, `it`, `pl`, `de`, `fr`, `zh`, `es`) and include at most ONE relevant website link (`https://seacollegediveclub.com/<lang>/prices#dive-calculator` or `/check-in` or `/diving-courses-sharm-el-sheikh`; omit `/<lang>` for English). Do NOT include a WhatsApp link if channel is already `whatsapp`.
 
 VERIFIED FACTS & EUR PRICES (zero hidden marina fees; max 4 divers per PADI guide):
-- Beginners: House Reef Intro {$pIntroShore1}, Full-Day Yacht + 1 Intro Dive {$pIntroBoat1} (2 Intro Dives {$pIntroBoat2}), PADI DSD {$pDsd}, White Island & Ras Mohammed Snorkeling Yacht {$pSnorkel}.
-- PADI Courses: Open Water {$pOwd}, Advanced {$pAowd}, Nitrox {$pNitrox}, Stars Bundle (OWD+AOWD) {$pStars}.
-- Certified Divers: 2 dives {$pDive2}, 6 dives {$pDive6}, 10 dives {$pDive10} (+€10/day boat, +€5/day park, +€25/day full gear if needed), SS Thistlegorm {$pThistle}. Recent divers can skip Check Dive with a dive computer log photo. Non-diver partner on same yacht + 1 Intro Dive + lunch + transfer = +€45.
-- Private Yachts: from {$pBoat10} (up to 10 pax).
-- Currency: Official prices in EUR; guests may pay EUR, USD, GBP, or EGP (cash or card) at dive morning's official bank rate.
+- Beginners: House Reef Intro {$pIntroShore1}, Full-Day Yacht + 1 Intro Dive {$pIntroBoat1} (2 Intro Dives {$pIntroBoat2}, park ticket & lunch included), PADI DSD {$pDsd}, White Island & Ras Mohammed Snorkeling Yacht {$pSnorkel}.
+- PADI Courses: Open Water {$pOwd}, Advanced {$pAowd}, Nitrox {$pNitrox}, Stars Bundle (OWD+Nitrox) {$pStars}, Mega Bundle (OWD+AOWD) {$pMega}.
+- Certified Divers: 2 dives {$pDive2}, 6 dives {$pDive6}, 10 dives {$pDive10} (+€10/day boat, +€5/day park, +€25/day full gear if needed), SS Thistlegorm +{$pThistle}. Divers with a logged dive <6 months ago skip Check Dive.
+- Private Boats: RIB Speedboats from €75 (max 5 guests); Private Yachts from {$pBoat10}.
+- Currency: Official prices in EUR (€0 online deposit); guests may pay EUR, USD, GBP, or EGP (cash or card) on arrival at bank rate.
 - Transfers: {$zoneHint}
 
 Return ONLY valid JSON matching:
@@ -373,20 +374,21 @@ function lara_generate_reply(string $guestMessage, string $channel = 'messenger'
     $cleanName = $isHandle ? '' : trim((string) preg_replace('/[^\p{L}\s\'-]/u', '', $guestName));
     $firstName = $cleanName !== '' ? explode(' ', $cleanName)[0] : '';
 
-    $pIntroShore1 = lara_eur('intro-shore-1', 30);
-    $pIntroBoat1  = lara_eur('intro-boat-1', 70);
-    $pIntroBoat2  = lara_eur('intro-boat-2', 100);
+    $pIntroShore1 = lara_eur('dsd-quick-reef', 30);
+    $pIntroBoat1  = lara_eur('dsd-quick-boat', 70);
+    $pIntroBoat2  = lara_eur('dsd-2-boat', 100);
     $pDsd         = lara_eur('dsd', 85);
     $pOwd         = lara_eur('owd', 400);
     $pAowd        = lara_eur('aowd', 350);
-    $pNitrox      = lara_eur('nitrox-course', 145);
+    $pNitrox      = lara_eur('nitrox', 145);
     $pStars       = lara_eur('bundle-stars', 500);
+    $pMega        = lara_eur('bundle-mega', 600);
     $pDive2       = lara_eur('dive-2', 85);
-    $pDive6       = lara_eur('dive-6', 255);
+    $pDive6       = lara_eur('dive-6', 210);
     $pDive10      = lara_eur('dive-10', 350);
-    $pThistle     = lara_eur('thistlegorm', 150);
-    $pSnorkel     = lara_eur('white-island-adult', 55);
-    $pBoat10      = lara_eur('private-boat-10', 550);
+    $pThistle     = lara_eur('sup-thistlegorm', 150);
+    $pSnorkel     = lara_eur('snork-ras-adult', 55);
+    $pBoat10      = lara_eur('private-1-5', 550);
 
     if ($intent === 'escalation') {
         $msg = match ($lang) {
@@ -407,33 +409,42 @@ function lara_generate_reply(string $guestMessage, string $channel = 'messenger'
 
     if ($lang === 'ar') {
         $reply = match ($intent) {
-            'beginner' => "أهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🌊\nللمبتدئين بدون أي خبرة سابقة مع مدرب خاص: غطسة الشاطئ {$pIntroShore1}، أو رحلة يخت شاملة الغداء والمعدات مع غطسة تعريفية {$pIntroBoat1} (غطستان {$pIntroBoat2})، ورحلة سنوركلينج وايت آيلاند {$pSnorkel}.\nما هو موعد زيارتك واسم الفندق وعدد الأفراد؟\n{$base}/prices#calculator" . $waLineAr,
-            'courses' => "أهلاً بك في Sea College Dive Club (مركز PADI 5 نجوم بشرم الشيخ)! معك لارا 🤿\nدورة PADI Open Water بـ {$pOwd}، ودورة Advanced بـ {$pAowd}، وباقة الإثنين معاً (Stars) بـ {$pStars} (بحد أقصى 4 متدربين لكل مدرب).\nمتى تصلون إلى شرم الشيخ وكم عدد الأفراد؟\n{$base}/diving-courses-sharm-el-sheikh" . $waLineAr,
-            'certified' => "أهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🤿\nللغواصين المعتمدين (حد أقصى 4 غواصين لكل مرشد): غطستان {$pDive2}، 6 غطسات {$pDive6}، 10 غطسات {$pDive10}، وحطام Thistlegorm بـ {$pThistle}.\nما هي تواريخ رحلتك ومستوى شهادتك واسم الفندق؟\n{$base}/prices#calculator" . $waLineAr,
-            'private_boat' => "أهلاً بك في Sea College Dive Club! معك لارا 🛥️\nتبدأ اليخوت الخاصة VIP من {$pBoat10} (حتى 10 أفراد) واللانشات السريعة من €75 إلى رأس محمد أو تيران.\nما هو التاريخ المطلوب وعدد الضيوف؟\n{$base}/snorkeling-and-boats-sharm-el-sheikh" . $waLineAr,
-            default => "أهلاً وسهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🌊\nيسعدني مساعدتك — أخبرني فقط هل تبحث عن غطس للمبتدئين، غوص للمعتمدين، دورة PADI، أم رحلة سنوركلينج، وما هو موعد رحلتك؟\nيمكنك أيضاً مشاهدة الأسعار الشاملة هنا: {$base}/prices#calculator" . $waLineAr,
+            'beginner' => "أهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🌊\nللمبتدئين بدون أي خبرة سابقة مع مدرب خاص: غطسة الشاطئ {$pIntroShore1}، أو رحلة يخت شاملة الغداء والمعدات وتذكرة المحمية مع غطسة تعريفية {$pIntroBoat1} (غطستان {$pIntroBoat2})، ورحلة سنوركلينج وايت آيلاند {$pSnorkel}.\nما هو موعد زيارتك واسم الفندق وعدد الأفراد؟\n{$base}/prices#dive-calculator" . $waLineAr,
+            'courses' => "أهلاً بك في Sea College Dive Club (مركز بادي PADI 5 نجوم بشرم الشيخ)! معك لارا 🤿\nدورة PADI Open Water بـ {$pOwd}، ودورة Advanced بـ {$pAowd}، وباقة OWD+Nitrox (Stars) بـ {$pStars}، وباقة OWD+AOWD (Mega) بـ {$pMega}.\nمتى تصلون إلى شرم الشيخ وكم عدد الأفراد؟\n{$base}/diving-courses-sharm-el-sheikh" . $waLineAr,
+            'certified' => "أهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🤿\nللغواصين المعتمدين (حد أقصى 4 غواصين لكل مرشد): غطستان {$pDive2}، 6 غطسات {$pDive6}، 10 غطسات {$pDive10}، وحطام Thistlegorm +{$pThistle}.\nما هي تواريخ رحلتك ومستوى شهادتك واسم الفندق؟\n{$base}/prices#dive-calculator" . $waLineAr,
+            'private_boat' => "أهلاً بك في Sea College Dive Club! معك لارا 🛥️\nتبدأ اليخوت الخاصة VIP من {$pBoat10} واللانشات السريعة من €75 (حتى 5 أفراد) إلى رأس محمد أو تيران.\nما هو التاريخ المطلوب وعدد الضيوف؟\n{$base}/snorkeling-and-boats-sharm-el-sheikh" . $waLineAr,
+            default => "أهلاً وسهلاً بك في Sea College Dive Club بشرم الشيخ! معك لارا 🌊\nيسعدني مساعدتك — أخبرني فقط هل تبحث عن غطس للمبتدئين، غوص للمعتمدين، دورة بادي PADI، أم رحلة سنوركلينج، وما هو موعد رحلتك؟\nيمكنك أيضاً مشاهدة الأسعار الشاملة هنا: {$base}/prices#dive-calculator" . $waLineAr,
         };
         return ['should_reply' => true, 'lang' => $lang, 'intent' => $intent, 'urgent_human' => false, 'reply' => $reply];
     }
 
     if ($lang === 'ru') {
         $reply = match ($intent) {
-            'beginner' => "Здравствуйте! Это Лара, Sea College Dive Club (Шарм-эль-Шейх) 🌊\nДля новичков без опыта индивидуально с инструктором: пробное погружение с рифа {$pIntroShore1}, яхта на весь день + 1 дайв {$pIntroBoat1} (2 дайва {$pIntroBoat2}), снорклинг Белый остров {$pSnorkel}.\nВ какие даты вы в Шарме и сколько вас человек?\n{$base}/prices#calculator" . $waLineRu,
-            'courses' => "Здравствуйте! Это Лара, Sea College Dive Club (PADI 5★, Шарм-эль-Шейх) 🤿\nКурс PADI Open Water — {$pOwd}, Advanced — {$pAowd}, комбо Stars (OWD+AOWD) — {$pStars} (мини-группы до 4 человек).\nПодскажите ваши даты в Шарме?\n{$base}/diving-courses-sharm-el-sheikh" . $waLineRu,
-            'certified' => "Здравствуйте! Это Лара, Sea College Dive Club 🤿\nДля сертифицированных дайверов (макс. 4 дайвера на гида): 2 дайва {$pDive2}, 6 дайвов {$pDive6}, 10 дайвов {$pDive10}, рэк Thistlegorm {$pThistle}.\nКакие у вас даты, уровень сертификата и отель?\n{$base}/prices#calculator" . $waLineRu,
-            default => "Здравствуйте! Это Лара, Sea College Dive Club в Шарм-эль-Шейхе 🌊\nС радостью помогу! Подскажите, вас интересует пробный дайвинг для новичков, дейли-дайвинг для сертифицированных, курс PADI или снорклинг на яхте, и в какие даты?\nВсе цены и калькулятор: {$base}/prices#calculator" . $waLineRu,
+            'beginner' => "Здравствуйте! Это Лара, Sea College Dive Club (Шарм-эль-Шейх) 🌊\nДля новичков без опыта индивидуально 1-на-1 с русскоязычным инструктором: с берега {$pIntroShore1}, яхта всё включено + 1 дайв {$pIntroBoat1} (2 дайва {$pIntroBoat2}), снорклинг Белый остров {$pSnorkel} (€0 предоплаты, оплата на месте в € или $).\nВ какие даты вы в Шарме и сколько вас человек?\n{$base}/prices#dive-calculator" . $waLineRu,
+            'courses' => "Здравствуйте! Это Лара, Sea College Dive Club (PADI 5★, Шарм-эль-Шейх) 🤿\nКурс PADI Open Water на русском — {$pOwd}, Advanced — {$pAowd}, Stars (OWD+Nitrox) — {$pStars}, Mega (OWD+AOWD) — {$pMega} (€0 предоплаты, оплата на месте в € или $).\nПодскажите ваши даты в Шарме?\n{$base}/diving-courses-sharm-el-sheikh" . $waLineRu,
+            'certified' => "Здравствуйте! Это Лара, Sea College Dive Club 🤿\nДля сертифицированных дайверов (макс. 4 дайвера на гида): 2 дайва {$pDive2}, 6 дайвов {$pDive6}, 10 дайвов {$pDive10}, рэк Thistlegorm +{$pThistle}.\nКакие у вас даты, уровень сертификата и отель?\n{$base}/prices#dive-calculator" . $waLineRu,
+            default => "Здравствуйте! Это Лара, Sea College Dive Club в Шарм-эль-Шейхе 🌊\nС радостью помогу! Подскажите, вас интересует пробный дайвинг для новичков, пакеты для сертифицированных, курс PADI на русском или снорклинг на яхте, и в какие даты?\nВсе цены и калькулятор: {$base}/prices#dive-calculator" . $waLineRu,
         };
         return ['should_reply' => true, 'lang' => $lang, 'intent' => $intent, 'urgent_human' => false, 'reply' => $reply];
     }
 
-    if (in_array($lang, ['it', 'de', 'fr', 'pl', 'zh', 'es'], true)) {
+    if ($lang === 'zh') {
+        $reply = match ($intent) {
+            'beginner' => "您好" . ($firstName ? " {$firstName}" : "") . "！我是沙姆沙伊赫 Sea College 五星潜店的客服 Lara 🌊\n零基础体验潜水（1对1专属教练）：门前珊瑚礁岸潜 {$pIntroShore1}，大游艇一价全包体验 1潜 {$pIntroBoat1} / 2潜 {$pIntroBoat2}，拉斯穆罕默德白岛浮潜 {$pSnorkel}（€0定金，到店支持美金/欧元现金）。请问您的出行日期和入住酒店？\n{$base}/prices#dive-calculator" . $waLineEn,
+            'courses' => "您好" . ($firstName ? " {$firstName}" : "") . "！我是 Sea College（PADI 五星潜店）客服 Lara 🤿\n支持简体中文 PADI 官方 eLearning 电子教材：OW 考证 {$pOwd}，AOW 进阶 {$pAowd}，OW+高氧套餐 {$pStars}，OW+AOW 连报 {$pMega}（€0定金，支持电子邮箱或 WhatsApp 确认）。请问您计划哪几天来？\n{$base}/diving-courses-sharm-el-sheikh" . $waLineEn,
+            'certified' => "您好" . ($firstName ? " {$firstName}" : "") . "！我是 Sea College 客服 Lara 🤿\n持证船潜严格限每导潜最多 4 人（6个月内有潜记免测潜）：2潜 {$pDive2}，6潜 {$pDive6}（€35/潜），10潜 {$pDive10}，二战沉船 Thistlegorm +{$pThistle}。请问您的日期、证书等级和酒店？\n{$base}/prices#dive-calculator" . $waLineEn,
+            default => "您好" . ($firstName ? " {$firstName}" : "") . "！我是沙姆沙伊赫 Sea College Dive Club 的客服 Lara 🌊\n请问您计划哪几天来、一共几位，想了解新手体验潜（{$pIntroShore1}/{$pIntroBoat1}）、持证船潜（6潜 {$pDive6}）还是中文教材 PADI 考证（OW {$pOwd}）？（支持 €0 定金预订及美金/欧元到店支付）\n中文实时报价：{$base}/prices#dive-calculator" . $waLineEn,
+        };
+        return ['should_reply' => true, 'lang' => $lang, 'intent' => $intent, 'urgent_human' => false, 'reply' => $reply];
+    }
+
+    if (in_array($lang, ['it', 'de', 'fr', 'pl', 'es'], true)) {
         $reply = match ($lang) {
-            'it' => "Ciao" . ($firstName ? " {$firstName}" : "") . "! Sono Lara del Sea College Dive Club a Sharm El Sheikh 🌊\nDimmi pure in quali date sarai a Sharm, in quanti siete e se cercate prima immersione (da {$pIntroShore1}/{$pIntroBoat1}), immersioni con brevetto (da {$pDive2}), corsi PADI ({$pOwd}) o snorkeling ({$pSnorkel})!\nPreventivo rapido: {$base}/prices#calculator" . $waLineEn,
-            'de' => "Hallo" . ($firstName ? " {$firstName}" : "") . "! Hier ist Lara vom Sea College Dive Club in Sharm El Sheikh 🌊\nSag mir gern eure Reisedaten, Personenanzahl und ob ihr Schnuppertauchen (ab {$pIntroShore1}/{$pIntroBoat1}), Tauchpakete (ab {$pDive2}) oder einen PADI-Kurs ({$pOwd}) plant!\nPreisrechner: {$base}/prices#calculator" . $waLineEn,
-            'fr' => "Bonjour" . ($firstName ? " {$firstName}" : "") . " ! Ici Lara du Sea College Dive Club à Charm el-Cheikh 🌊\nDites-moi vos dates, le nombre de personnes et si vous cherchez un baptême débutant ({$pIntroShore1}/{$pIntroBoat1}), des plongées certifiées (dès {$pDive2}) ou un cours PADI ({$pOwd}) !\nTarifs : {$base}/prices#calculator" . $waLineEn,
-            'pl' => "Cześć" . ($firstName ? " {$firstName}" : "") . "! Tu Lara z Sea College Dive Club w Sharm El Sheikh 🌊\nNapisz proszę w jakich terminach jesteście w Sharm, ile osób i czy interesuje Was pierwsze nurkowanie Intro ({$pIntroShore1}/{$pIntroBoat1}), pakiet dla certyfikowanych (od {$pDive2}) czy kurs PADI ({$pOwd})!\nCennik: {$base}/prices#calculator" . $waLineEn,
-            'zh' => "您好" . ($firstName ? " {$firstName}" : "") . "！我是沙姆沙伊赫 Sea College Dive Club 的客服 Lara 🌊\n请问您计划哪几天来、一共几位，想了解新手体验潜（{$pIntroShore1}/{$pIntroBoat1}）、持证船潜（{$pDive2}起）还是 PADI 考证课程（OW {$pOwd}）？\n中文实时报价：{$base}/prices#calculator" . $waLineEn,
-            default => "¡Hola" . ($firstName ? " {$firstName}" : "") . "! Soy Lara de Sea College Dive Club en Sharm El Sheikh 🌊\nCuéntame en qué fechas vienes, cuántas personas sois y si buscáis bautismo para principiantes ({$pIntroShore1}/{$pIntroBoat1}), buceo certificado (desde {$pDive2}) o curso PADI ({$pOwd}).\nPrecios: " . SITE_URL . "/prices#calculator" . $waLineEn,
+            'it' => "Ciao" . ($firstName ? " {$firstName}" : "") . "! Sono Lara del Sea College Dive Club a Sharm El Sheikh 🌊\nDimmi pure in quali date sarai a Sharm, in quanti siete e se cercate prova sub / Battesimo del Mare ({$pIntroShore1}/{$pIntroBoat1}), pacchetti immersioni (6 imm. {$pDive6}), corso sub PADI ({$pOwd}) o escursione Ras Mohammed ({$pSnorkel})!\nPreventivo rapido: {$base}/prices#dive-calculator" . $waLineEn,
+            'de' => "Hallo" . ($firstName ? " {$firstName}" : "") . "! Hier ist Lara vom Sea College Dive Club in Sharm El Sheikh 🌊\nSag mir gern eure Reisedaten, Personenanzahl und ob ihr Schnuppertauchen (ab {$pIntroShore1}/{$pIntroBoat1}), Tauchpakete (6er {$pDive6}) oder einen PADI Tauchschein ({$pOwd}) plant!\nPreisrechner: {$base}/prices#dive-calculator" . $waLineEn,
+            'fr' => "Bonjour" . ($firstName ? " {$firstName}" : "") . " ! Ici Lara du Sea College Dive Club à Charm el-Cheikh 🌊\nDites-moi vos dates, le nombre de personnes et si vous cherchez un baptême débutant ({$pIntroShore1}/{$pIntroBoat1}), un forfait plongée (6 pl. {$pDive6}) ou un cours PADI ({$pOwd}) !\nTarifs : {$base}/prices#dive-calculator" . $waLineEn,
+            'pl' => "Cześć" . ($firstName ? " {$firstName}" : "") . "! Tu Lara z Sea College Dive Club w Sharm El Sheikh 🌊\nNapisz proszę w jakich terminach jesteście w Sharm, ile osób i czy interesuje Was intro nurkowe ({$pIntroShore1}/{$pIntroBoat1}), pakiet dla certyfikowanych (6 nurk. {$pDive6}) czy kurs PADI po polsku ({$pOwd})!\nCennik: {$base}/prices#dive-calculator" . $waLineEn,
+            default => "¡Hola" . ($firstName ? " {$firstName}" : "") . "! Soy Lara de Sea College Dive Club en Sharm El Sheikh 🌊\nCuéntame en qué fechas vienes, cuántas personas sois y si buscáis bautismo para principiantes ({$pIntroShore1}/{$pIntroBoat1}), buceo certificado (6 inmersiones {$pDive6}) o curso PADI ({$pOwd}).\nPrecios: " . SITE_URL . "/prices#dive-calculator" . $waLineEn,
         };
         return ['should_reply' => true, 'lang' => $lang, 'intent' => $intent, 'urgent_human' => false, 'reply' => $reply];
     }

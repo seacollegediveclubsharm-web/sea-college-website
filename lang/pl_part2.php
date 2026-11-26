@@ -44,9 +44,9 @@ return [
     'nav_dive_sites' => 'Miejsca nurkowe',
     'nav_gallery' => 'Galeria i Kadra',
     'footer_hub_dives' => 'Wycieczki i Pakiety Nurkowe',
-    'footer_hub_courses' => 'Kursy Nurkowania PADI',
+    'footer_hub_courses' => 'Kursy Nurkowania PADI po Polsku',
     'footer_hub_bundles' => 'Pakiety Promocyjne PADI',
-    'footer_hub_boats' => 'Snorkeling i Prywatne Łodzie',
+    'footer_hub_boats' => 'Snurkowanie, Snorkeling i Prywatne Łodzie',
 
     // ---------- Feature 1: Interactive Dive Budget & Fee Calculator ----------
     'calc_jump_chip' => 'Kalkulator budżetu nurkowego',
@@ -56,11 +56,11 @@ return [
     'calc_sub' => 'Wybierz pakiet nurkowań lub kurs PADI, dni na łodzi (10 €/dzień), opłaty parkowe (5 €/dzień), wypożyczenie sprzętu (25 €/dzień), Nitrox oraz dopłaty wrakowe — a następnie dodaj dokładny zestaw do koszyka lub wyślij na WhatsApp.',
     'calc_mode_label' => 'Tryb kalkulatora',
     'calc_mode_dives' => 'Pakiet dla certyfikowanego nurka',
-    'calc_mode_course' => 'Kurs PADI / Intro nurkowanie',
+    'calc_mode_course' => 'Kurs PADI / Intro nurkowe',
     'calc_divers_label' => 'Liczba nurków',
     'calc_divers_unit' => 'os.',
     'calc_dives_label' => 'Liczba nurkowań na osobę',
-    'calc_course_select' => 'Wybierz kurs PADI, pakiet lub intro nurkowanie',
+    'calc_course_select' => 'Wybierz kurs PADI, pakiet lub intro nurkowe',
     'calc_boat_days' => 'Dni nurkowe z łodzi',
     'calc_days_unit' => 'dni',
     'calc_boat_hint' => 'Ustaw 0 dla nurkowań z brzegu na rafie domowej House Reef (0 € za łódź i 0 € za park). Standardowy dzień na łodzi = 2 nurkowania.',
@@ -126,7 +126,7 @@ return [
     'quiz_reason_wreck' => 'Idealnie wykorzystuje Twoje uprawnienia do 30 m — odkryj najsłynniejszy wrak II wojny światowej SS Thistlegorm.',
 
     // ---------- Feature 3: Dive Sites & Seasonal Conditions Guide ----------
-    'meta_sites_title' => 'Miejsca Nurkowe Sharm El Sheikh — Mapa Raf i Temperatury Wody | Sea College',
+    'meta_sites_title' => 'Miejsca Nurkowe Sharm El Sheikh — Mapa Raf i Temperatury Wody',
     'meta_sites_desc' => 'Interaktywna mapa, głębokości i wymagane certyfikaty: Ras Mohammed, Shark & Yolanda Reef, Cieśnina Tiran, SS Thistlegorm, Dunraven, Million Hope i House Reef + tabela temperatur Morza Czerwonego.',
     'sites_eyebrow' => 'Przewodnik Nurkowy · Morze Czerwone i Południowy Synaj',
     'sites_title' => 'Miejsca nurkowe w Sharm El Sheikh i warunki sezonowe',
@@ -156,7 +156,7 @@ return [
     'home_sites_btn' => 'Otwórz mapę miejsc nurkowych',
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
-    'meta_gallery_title' => 'Podwodna Galeria Zdjęć i Wideo + Kadra Instruktorów PADI | Sea College Sharm',
+    'meta_gallery_title' => 'Podwodna Galeria Zdjęć i Wideo + Kadra PADI | Sea College Sharm',
     'meta_gallery_desc' => 'Zobacz autentyczne podwodne filmy z Morza Czerwonego, zdjęcia jachtów i motorówek oraz poznaj instruktorów Sea College Dive Club chwalonych w 3 082 opiniach Google (4.9★).',
     'gallery_eyebrow' => 'Prawdziwe ujęcia · Prawdziwi instruktorzy',
     'gallery_title' => 'Podwodna galeria zdjęć i wideo',
@@ -168,7 +168,7 @@ return [
     'gallery_next' => 'Następny materiał',
     'gallery_see_videos_btn' => 'Obejrzyj podwodne filmy i galerię',
     'team_showcase_title' => 'Poznaj instruktorów, których goście chwalą z imienia',
-    'team_showcase_sub' => 'Szkolimy po polsku, angielsku, arabsku, rosyjsku, niemiecku, włosku i francusku — potwierdza to ponad 3 082 zweryfikowanych opinii w Google (4.9★) i 129 opinii na Tripadvisor (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Szkolimy w 8 językach (po polsku, angielsku, arabsku, rosyjsku, niemiecku, włosku, francusku i chińsku) — potwierdza to ponad 3 082 zweryfikowanych opinii w Google (4.9★) i 129+ opinii na Tripadvisor (4.9 ●●●●●).',
     'team_see_all_btn' => 'Pełny zespół i galeria wideo',
     'home_gallery_title' => 'Zobacz prawdziwe ujęcia spod wody i z pokładu naszych łodzi',
     'home_gallery_sub' => 'Sprawdź przed rezerwacją, jak wyglądają nasze łodzie nurkowe, motorówki w lagunie Al Montazah, ćwiczenia w basenie i ściany koralowe Morza Czerwonego.',
@@ -225,4 +225,12 @@ return [
     'checkin_none' => 'Brak / Początkujący',
     'checkin_other' => 'CMAS / SSI / NAUI / Inna',
     'checkin_child' => 'Dziecięcy',
+
+    // ---------- Interactive SVG Dive Map Labels ----------
+    'map_south_sinai' => 'POŁUDNIOWY SYNAJ',
+    'map_gulf_suez' => 'ZATOKA SUESKA',
+    'map_gulf_aqaba' => 'ZATOKA AKABA',
+    'map_tiran' => 'Wyspa Tiran',
+    'map_ras_mohammed' => 'Ras Mohammed',
+    'map_base' => '★ Baza Sea College',
 ];

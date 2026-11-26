@@ -9,7 +9,7 @@ require __DIR__ . '/includes/bootstrap.php';
 require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
-$sc_raw_ref = trim((string) ($_GET['ref'] ?? ''));
+$sc_raw_ref = sc_get_str('ref');
 $checkin_event_id = '';
 if ($sc_raw_ref !== '') {
     if (preg_match('/^(lead_|ci_|WEB-|TRIAL-)/i', $sc_raw_ref)) {

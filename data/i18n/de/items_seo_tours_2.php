@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'sup-thistlegorm' => [
         'h1' => 'Wracktauchen an der SS Thistlegorm ab Sharm El Sheikh (WK2-Legende)',
-        'meta_title' => 'SS Thistlegorm Wracktauchen Sharm El Sheikh | +150 € | Sea College',
+        'meta_title' => 'SS Thistlegorm Wracktauchen Sharm El Sheikh | +150 €',
         'meta_desc' => 'Betauchen Sie das berühmteste Schiffswrack der Welt! Tagesfahrt ab Sharm El Sheikh zur SS Thistlegorm (+150 € Paket-Zuschlag, 16–30 m, mind. Advanced + 20 Tauchgänge).',
         'aeo_answer' => 'Die Ausfahrt zum weltberühmten WK2-Wrack SS Thistlegorm mit dem Sea College Dive Club ab Sharm El Sheikh kostet 150 € Zuschlag auf Ihr zertifiziertes Tauchpaket (frühmorgendliche Spezialausfahrt von ca. 7–8+ Stunden mit 2 Wracktauchgängen). Da der 128 Meter lange britische Frachter auf 16–30 Metern Tiefe im offenen Golf von Suez bei möglichen Strömungen liegt, sind mindestens PADI Advanced Open Water (bzw. CMAS**) plus 20 geloggte Tauchgänge sowie eine Buchung mindestens 72 Stunden im Voraus erforderlich.',
         'overview' => [
@@ -47,7 +47,7 @@ return [
 
     'sup-dunraven' => [
         'h1' => 'Wracktauchen an der SS Dunraven (1876) ab Sharm El Sheikh',
-        'meta_title' => 'SS Dunraven Wracktauchgang Sharm El Sheikh | +30 € | Sea College',
+        'meta_title' => 'SS Dunraven Wracktauchgang Sharm El Sheikh | +30 €',
         'meta_desc' => 'Tauchen Sie in eine Kathedrale aus Glasfischen! Viktorianisches Dampfsegelschiff SS Dunraven (1876, 15–29 m) ab Sharm El Sheikh (+30 € Zuschlag auf Ihr Tauchpaket).',
         'aeo_answer' => 'Der Wrackzuschlag für die historische SS Dunraven kostet im Sea College Dive Club lediglich 30 € pro zertifiziertem Taucher ergänzend zu Ihrem Tauchpaket (Buchung mindestens 72 Stunden im Voraus). Das im April 1876 am Beacon Rock (Sha\'ab Mahmud) gesunkene britische Dampfsegelschiff liegt kieloben in 15 bis 29 Metern Tiefe und verbindet stimmungsvolle Rumpf-Durchtauchmöglichkeiten voller tausender Glasfische mit einem farbenprächtigen Korallenriff-Austauchen.',
         'overview' => [
@@ -88,7 +88,7 @@ return [
 
     'sup-millionhope' => [
         'h1' => 'Wracktauchen an der MV Million Hope in Sharm El Sheikh (Nabq)',
-        'meta_title' => 'Million Hope Wracktauchen Sharm El Sheikh | +30 € | Sea College',
+        'meta_title' => 'Million Hope Wracktauchen Sharm El Sheikh | +30 €',
         'meta_desc' => 'Das größte Schiffswrack von Sharm El Sheikh (174 m Länge, 0–22 m Tiefe)! MV Million Hope bei Nabq (+30 € Zuschlag, schon ab Open Water Diver betauchbar).',
         'aeo_answer' => 'Der Zuschlag für das Wrack der MV Million Hope kostet im Sea College Dive Club 30 € pro zertifiziertem Taucher ergänzend zu Ihrem Tauchpaket (mindestens 4 Taucher, Buchung 48 Stunden im Voraus). Der 1996 im Naturschutzgebiet Nabq nördlich unserer Basis in Al Montazah gestrandete 174-Meter-Massengutfrachter liegt in hellen 0 bis 22 Metern Tiefe — und ist damit sogar für PADI Open Water Diver hervorragend zugänglich!',
         'overview' => [
@@ -129,7 +129,7 @@ return [
 
     'sup-dahab' => [
         'h1' => 'Tagesausflug Tauchen in Dahab (Blue Hole, The Bells & Canyon) ab Sharm',
-        'meta_title' => 'Dahab Tauchausflug ab Sharm El Sheikh | Blue Hole & Canyon | +115 €',
+        'meta_title' => 'Dahab Tauchausflug ab Sharm | Blue Hole & Canyon +115 €',
         'meta_desc' => 'Ganztägiger Tauchausflug von Sharm El Sheikh nach Dahab (+115 € Paket-Zuschlag): Betauchen Sie das weltberühmte Blue Hole / The Bells & den Canyon inkl. Transfer!',
         'aeo_answer' => 'Der Dahab-Tauchausflug im Sea College Dive Club kostet 115 € Zuschlag pro zertifiziertem Taucher ergänzend zu 2 Tauchgängen aus Ihrem Paket (mindestens 4 Taucher, Buchung 48 Stunden im Voraus). Die ganztägige Sinai-Exkursion beinhaltet den klimatisierten Überlandtransfer (~1 Stunde nördlich von Sharm El Sheikh), Flaschen- und Ausrüstungstransport, ein gemütliches Beduinen-Strandcamp sowie zwei geführte Tauchgänge an Dahabs berühmtem Canyon und dem Blue Hole / The Bells innerhalb sicherer Sporttauchtiefen.',
         'overview' => [
@@ -170,7 +170,7 @@ return [
 
     'snork-ras-adult' => [
         'h1' => 'White Island & Nationalpark Ras Mohammed Bootsausflug ab Sharm El Sheikh',
-        'meta_title' => 'White Island & Ras Mohammed Schnorcheltour | 55 € Erw. · 30 € Kind',
+        'meta_title' => 'Schnorchelausflug Ras Mohammed & White Island | 55 € Sharm',
         'meta_desc' => 'Ganztägige Yachttour zur White Island & nach Ras Mohammed ab Sharm El Sheikh (55 € Erwachsene, 30 € Kinder 5–12 J.) — komplett inkl. Transfer, Parkgebühr, Mittagsbuffet & Maske!',
         'aeo_answer' => 'Der ganztägige Bootsausflug zur White Island & in den Nationalpark Ras Mohammed mit dem Sea College Dive Club kostet 55 € pro Erwachsenem (30 € für Kinder von 5 bis 12 Jahren) und dauert ca. 8 Stunden ab Sharm El Sheikh. Der Preis ist zu 100 % all-inclusive: klimatisierter Hoteltransfer, Ras-Mohammed-Nationalparkgebühr, Schnorchelmaske & Schwimmweste, 2–3 geführte Schnorchel- und Sandbank-Stopps, frisch zubereitetes Mittagsbuffet und Softdrinks an Bord.',
         'overview' => [
@@ -214,7 +214,7 @@ return [
 
     'speed-2h' => [
         'h1' => 'Privates Schnellboot zur Insel Tiran (2 Stunden ab Al Montazah, Sharm)',
-        'meta_title' => 'Privates Schnellboot Insel Tiran 2 Std. | 150 € / Boot | Sea College',
+        'meta_title' => 'Privates Schnellboot Insel Tiran 2 Std. | 150 € / Boot',
         'meta_desc' => 'In nur 15 Minuten ohne Menschenmassen nach Tiran! 2-stündiges privates Schnellboot ab Al Montazah, Sharm El Sheikh (150 € für 2 Gäste, inkl. Masken, Westen & Hoteltransfer).',
         'aeo_answer' => 'Das 2-stündige Private Schnellboot zur Insel Tiran im Sea College Dive Club kostet 150 € pro Boot für 2 Gäste (maximal 5 Gäste; 3., 4. und 5. Gast jeweils +75 €). Da unsere Strandbasis in Al Montazah direkt gegenüber der Straße von Tiran liegt — dem kürzesten Startpunkt in ganz Sharm El Sheikh — erreichen Sie die türkisblauen Lagunen und Riffe von Gordon, Laguna und Jackson Reef in rund 15 Minuten statt nach stundenlanger Hafenfahrt, inklusive Masken, Schwimmwesten und Hoteltransfer.',
         'overview' => [
@@ -256,7 +256,7 @@ return [
 
     'private-6-10' => [
         'h1' => 'Privatyacht Ganztagescharter für 6–10 Gäste in Sharm El Sheikh (650 €)',
-        'meta_title' => 'Privatyacht mieten Sharm El Sheikh (6–10 Pers.) | 650 € / Tag | Sea College',
+        'meta_title' => 'Privatyacht mieten Sharm El Sheikh (6–10 Pers.) | 650 €/Tag',
         'meta_desc' => 'Ihre eigene Motoryacht im Roten Meer! Ganztägiger Privatcharter in Sharm El Sheikh für 6 bis 10 Gäste (650 € pro Boot = ab 65 €/Person) nach Ras Mohammed oder Tiran.',
         'aeo_answer' => 'Der ganztägige Privatyacht-Charter für 6 bis 10 Gäste im Sea College Dive Club in Sharm El Sheikh kostet 650 € für das gesamte Boot — bei 10 Personen also nur 65 € pro Gast (kaum 10 € mehr als ein reguläres Gruppenticket!). Für 7 bis 8 Stunden gehören Ihnen eine geräumige Rotes-Meer-Motoryacht und unsere herzliche Crew ganz allein — wahlweise Richtung Nationalpark Ras Mohammed & White Island oder zu den Riffen der Insel Tiran, kombinierbar mit Schnorcheln und 1-zu-1-Tauchen.',
         'overview' => [

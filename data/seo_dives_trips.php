@@ -28,7 +28,7 @@ $buildCertifiedPkg = static function (
             'ar' => "باقة {$dives} غطسات في شرم الشيخ — غوص بالقارب أو من الشاطئ للمعتمدين",
         ],
         'meta_title' => [
-            'en' => "{$dives} Dives Package Sharm El Sheikh | €{$price} (€{$perDive}/Dive) | Sea College",
+            'en' => "{$dives} Dives Package Sharm El Sheikh | €{$price} (€{$perDive}/Dive · PADI 5★)",
             'ar' => "باقة {$dives} غطسات في شرم الشيخ | {$price}€ ({$perDive}€ للغطسة) | سي كوليدج",
         ],
         'meta_desc' => [
@@ -147,11 +147,11 @@ return [
             'ar' => 'غطسة تجريبية سريعة للمبتدئين على الشعاب المنزلية في شرم الشيخ (30€)',
         ],
         'meta_title' => [
-            'en' => 'Quick Try Scuba Dive Sharm El Sheikh | €30 House Reef | Sea College',
+            'en' => 'Quick Try Scuba Dive Sharm El Sheikh | €30 House Reef Intro',
             'ar' => 'غطسة تجريبية سريعة في شرم الشيخ | 30€ الشعاب المنزلية | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Never dived before? Try scuba on our calm Al Montazah house reef in Sharm El Sheikh for €30. Safety briefing, full scuba gear & 1-on-1 PADI Instructor supervision.',
+            'en' => 'Never dived before? Try scuba on our calm Al Montazah house reef in Sharm El Sheikh for €30. Briefing, full scuba gear & 1-on-1 PADI Instructor supervision.',
             'ar' => 'جرّب الغوص لأول مرة في شرم الشيخ بسعر 30€ على الشعاب المنزلية الهادئة بالمنتزه. شاملة الشرح والمعدات الكاملة وإشراف مدرب PADI.',
         ],
         'aeo_answer' => [
@@ -211,7 +211,7 @@ return [
             'ar' => 'تجربة الغوص للمبتدئين (غطستان تجريبيتان) — الشعاب المنزلية في شرم الشيخ (75€)',
         ],
         'meta_title' => [
-            'en' => '2 Intro Shore Dives Sharm El Sheikh | €75 Gear Included | Sea College',
+            'en' => '2 Intro Shore Dives Sharm El Sheikh | €75 All Gear Included',
             'ar' => 'غطستان تجريبيتان من الشاطئ في شرم الشيخ | 75€ شاملة المعدات',
         ],
         'meta_desc' => [
@@ -274,11 +274,11 @@ return [
             'ar' => 'غطسة تجريبية سريعة بالقارب في شرم الشيخ — يوم كامل باليخت (70€)',
         ],
         'meta_title' => [
-            'en' => 'Try Scuba Diving by Boat Sharm El Sheikh | €70 All-Inclusive | Sea College',
+            'en' => 'Try Scuba Diving by Boat Sharm El Sheikh | €70 All-Inclusive',
             'ar' => 'غطسة تجريبية بالقارب في شرم الشيخ | 70€ شاملة الغداء والانتقالات',
         ],
         'meta_desc' => [
-            'en' => 'Full-day Red Sea yacht cruise + 1 beginner intro scuba dive in Sharm El Sheikh for €70. Includes hotel transfers, park fees, buffet lunch, drinks & scuba gear.',
+            'en' => 'Full-day Red Sea yacht trip + 1 beginner intro scuba dive in Sharm El Sheikh for €70. Includes hotel transfers, park fee, buffet lunch, drinks & scuba gear.',
             'ar' => 'رحلة يخت ليوم كامل مع غطسة تجريبية للمبتدئين في شرم الشيخ بـ70€ شاملة الانتقالات ورسوم المحمية وغداء البوفيه والمشروبات والمعدات الكاملة.',
         ],
         'aeo_answer' => [
@@ -337,11 +337,11 @@ return [
             'ar' => 'تجربة الغوص بالقارب (غطستان تجريبيتان) في شرم الشيخ — يوم كامل شامل (100€)',
         ],
         'meta_title' => [
-            'en' => 'Discover Scuba Diving by Boat Sharm | 2 Intro Dives €100 All-Inclusive',
+            'en' => 'Discover Scuba Diving Boat Sharm | 2 Intro Dives €100 All-In',
             'ar' => 'تجربة الغوص بالقارب شرم الشيخ | غطستان تجريبيتان 100€ شاملة الكل',
         ],
         'meta_desc' => [
-            'en' => 'Our #1 beginner experience in Sharm El Sheikh: full-day Red Sea yacht cruise + 2 guided 15-min scuba dives (€100). Transfers, park fees, lunch, drinks & gear included.',
+            'en' => '#1 beginner scuba trip in Sharm El Sheikh: full-day Red Sea yacht + 2 guided 15-min dives (€100). Hotel transfers, park fee, lunch, drinks & gear included.',
             'ar' => 'التجربة رقم 1 للمبتدئين في شرم الشيخ: يخت ليوم كامل + غطستان تجريبيتان (15 دقيقة لكل غطسة) بـ100€ شاملة الانتقالات والمحمية والغداء والمشروبات والمعدات.',
         ],
         'aeo_answer' => [
@@ -401,7 +401,7 @@ return [
             'ar' => 'غطسة اختبارية تنشيطية (Check Dive) في شرم الشيخ للغواصين المعتمدين (25€)',
         ],
         'meta_title' => [
-            'en' => 'Check Dive Sharm El Sheikh | €25 Refresher (>6 Months) | Sea College',
+            'en' => 'Check Dive Sharm El Sheikh | €25 Refresher (>6 Mos Inactive)',
             'ar' => 'غطسة اختبارية Check Dive شرم الشيخ | 25€ بعد انقطاع 6 أشهر',
         ],
         'meta_desc' => [
@@ -463,11 +463,11 @@ return [
             'ar' => 'مراجعة غوص شاملة (Scuba Review) في شرم الشيخ بعد انقطاع سنة فأكثر (50€)',
         ],
         'meta_title' => [
-            'en' => 'Scuba Review Refresher Sharm El Sheikh | €50 (>1 Year) | Sea College',
+            'en' => 'Scuba Review Refresher Sharm El Sheikh | €50 (>1 Yr Break)',
             'ar' => 'مراجعة الغوص Scuba Review شرم الشيخ | 50€ بعد انقطاع أكثر من عام',
         ],
         'meta_desc' => [
-            'en' => 'Haven\'t dived in over a year? Refresh your scuba skills safely in Sharm El Sheikh for €50: pool/confined coaching + guided Red Sea house reef dive.',
+            'en' => 'Haven\'t dived in over a year? Refresh your scuba skills safely in Sharm El Sheikh for €50: pool confined-water coaching + guided Red Sea house reef dive.',
             'ar' => 'منقطع عن الغوص لأكثر من سنة؟ استعد مهاراتك بأمان في شرم الشيخ بسعر 50€: تدريب مهارات بحمام السباحة + غطسة شاطئية موجهة في البحر الأحمر.',
         ],
         'aeo_answer' => [
@@ -526,11 +526,11 @@ return [
             'ar' => 'غطسة شاطئية واحدة موجهة للغواصين المعتمدين في شرم الشيخ (45€)',
         ],
         'meta_title' => [
-            'en' => 'Single Shore Dive Sharm El Sheikh | €45 House Reef | Sea College',
+            'en' => 'Single Shore Dive Sharm El Sheikh | €45 House Reef Guided',
             'ar' => 'غطسة شاطئية للمعتمدين شرم الشيخ | 45€ شاملة الانتقالات | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Short on time? Book a single guided certified shore dive on our Al Montazah house reef in Sharm El Sheikh (€45) — 12L tank, weights, PADI guide & hotel transfers.',
+            'en' => 'Short on time? Book a single guided certified shore dive on our Al Montazah house reef in Sharm El Sheikh (€45) — 12L tank, weights, PADI guide & transfers.',
             'ar' => 'احجز غطسة شاطئية واحدة للغواصين المعتمدين على الشعاب المنزلية بالمنتزه في شرم الشيخ (45€) شاملة أسطوانة 12 لتر والأوزان ومرشد PADI وانتقالات الفندق.',
         ],
         'aeo_answer' => [
@@ -588,11 +588,11 @@ return [
             'ar' => 'باقة غطستين بالقارب أو من الشاطئ في شرم الشيخ — يوم واحد للمعتمدين (85€)',
         ],
         'meta_title' => [
-            'en' => '2 Boat Dives Sharm El Sheikh | €85 Certified Day Trip | Sea College',
+            'en' => '2 Boat Dives Sharm El Sheikh | €85 Certified 1-Day Package',
             'ar' => 'رحلة غطستين بالقارب شرم الشيخ | 85€ للغواصين المعتمدين | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => '1-day certified scuba trip in Sharm El Sheikh: 2 guided boat or shore dives (€85) to Ras Mohammed, Straits of Tiran or local reefs. Tanks, weights & transfers included.',
+            'en' => '1-day certified scuba trip in Sharm El Sheikh: 2 guided boat or shore dives (€85) to Ras Mohammed or Tiran. Includes 12L tanks, weights & hotel transfers.',
             'ar' => 'يوم غوص كامل للمعتمدين في شرم الشيخ: غطستان بالقارب أو الشاطئ (85€) إلى رأس محمد أو مضيق تيران. شاملة الأسطوانات والأوزان والمرشد وانتقالات الفندق.',
         ],
         'aeo_answer' => [
@@ -722,7 +722,7 @@ return [
             'ar' => 'غطسة إضافية بعد الغطسة العاشرة — سعر مخفض 30€ في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Extra Dive After 10-Dive Package | €30/Dive | Sea College Sharm',
+            'en' => 'Extra Dive After 10-Dive Package Sharm El Sheikh | €30/Dive',
             'ar' => 'غطسة إضافية بعد باقة 10 غطسات | 30€ للغطسة | سي كوليدج',
         ],
         'meta_desc' => [
@@ -782,7 +782,7 @@ return [
             'ar' => 'غطسة ليلية أو غطسة الصباح الباكر في شرم الشيخ (+30€ إضافة)',
         ],
         'meta_title' => [
-            'en' => 'Night & Dawn Scuba Dive Sharm El Sheikh | +€30 Supplement | Sea College',
+            'en' => 'Night & Dawn Scuba Dive Sharm El Sheikh | +€30 Supplement',
             'ar' => 'غطسة ليلية أو فجرية شرم الشيخ | +30€ للغواصين المعتمدين | سي كوليدج',
         ],
         'meta_desc' => [
@@ -842,11 +842,11 @@ return [
             'ar' => 'رحلة غوص حطام سفينة ثيستلجورم (SS Thistlegorm) من شرم الشيخ (+150€)',
         ],
         'meta_title' => [
-            'en' => 'SS Thistlegorm Wreck Dive Sharm El Sheikh | +€150 | Sea College PADI 5★',
+            'en' => 'SS Thistlegorm Wreck Dive Sharm El Sheikh | +€150 (PADI 5★)',
             'ar' => 'غوص حطام سفينة ثيستلجورم شرم الشيخ | +150€ | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Dive the world-famous WWII SS Thistlegorm wreck from Sharm El Sheikh (+€150 supplement). BSA motorcycles, Bedford trucks & locomotives at 16–30 m. Book 72h ahead.',
+            'en' => 'Dive the iconic WWII SS Thistlegorm wreck from Sharm El Sheikh (+€150 supplement): BSA motorcycles, Bedford trucks & locomotives at 16–30 m. Book 72h ahead.',
             'ar' => 'اغطس في أشهر حطام سفينة من الحرب العالمية الثانية SS Thistlegorm من شرم الشيخ (+150€): دراجات نارية وشاحنات وقاطرات على عمق 16–30م. احجز قبل 72 ساعة.',
         ],
         'aeo_answer' => [
@@ -906,11 +906,11 @@ return [
             'ar' => 'غطسة حطام سفينة دنرافين التاريخية (SS Dunraven 1876) من شرم الشيخ (+30€)',
         ],
         'meta_title' => [
-            'en' => 'SS Dunraven Wreck Dive Sharm El Sheikh | +€30 Supplement | Sea College',
+            'en' => 'SS Dunraven Wreck Dive Sharm El Sheikh | +€30 (1876 Wreck)',
             'ar' => 'غوص حطام سفينة دنرافين شرم الشيخ | +30€ إضافة | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Dive the coral-encrusted 1876 SS Dunraven steam-sailship near Beacon Rock from Sharm El Sheikh (+€30 supplement). Clouds of glassfish at 15–29 m. Book 72h ahead.',
+            'en' => 'Dive the coral-covered 1876 SS Dunraven steamship near Beacon Rock from Sharm El Sheikh (+€30 supplement). Shimmering glassfish at 15–29 m. Book 72h ahead.',
             'ar' => 'اغطس في حطام السفينة البريطانية التاريخية SS Dunraven الغارقة عام 1876 قرب رأس محمد (+30€ إضافة): شعاب مرجانية وأسراب أسماك زجاجية على عمق 15–29م.',
         ],
         'aeo_answer' => [
@@ -961,20 +961,20 @@ return [
 
     'sup-millionhope' => [
         'h1' => [
-            'en' => 'Million Hope Wreck Dive in Nabq, Sharm El Sheikh — Largest Local Wreck (+€30)',
-            'ar' => 'غطسة حطام سفينة مليون هوب (Million Hope) في نبق، شرم الشيخ (+30€)',
+            'en' => 'Million Hope Wreck Dive in Nabq (El Gharqana), Sharm El Sheikh (+€30)',
+            'ar' => 'غطسة حطام سفينة مليون هوب — منطقة الغرقانة شرم الشيخ (خليج نبق +30€)',
         ],
         'meta_title' => [
             'en' => 'Million Hope Wreck Dive Sharm El Sheikh | +€30 | Sea College',
-            'ar' => 'غوص حطام سفينة مليون هوب نبق شرم الشيخ | +30€ | سي كوليدج',
+            'ar' => 'غوص منطقة الغرقانة شرم الشيخ وحطام مليون هوب نبق | +30€',
         ],
         'meta_desc' => [
             'en' => 'Dive the 174-metre Million Hope bulk carrier wreck in Nabq, Sharm El Sheikh (+€30 supplement, min. 4 divers, 0–22 m). Close to our Al Montazah base!',
-            'ar' => 'اغطس في أضخم سفينة غارقة بشرم الشيخ Million Hope بطول 174 مترًا في نبق (+30€، حد أدنى 4 غواصين، عمق 0–22م) بالقرب من مركزنا بالمنتزه.',
+            'ar' => 'اغطس في منطقة الغرقانة شرم الشيخ (حطام سفينة مليون هوب بطول 174م في محمية نبق): +30€ إضافة لعمق 0–22م قرب مركزنا بالمنتزه، مناسب لحاملي Open Water.',
         ],
         'aeo_answer' => [
-            'en' => 'The Million Hope Wreck supplement at Sea College Dive Club costs €30 per certified diver on top of your dive package (minimum 4 divers, book 48 hours ahead). Stranded in 1996 at Nabq Protected Area just north of our Al Montazah resort, this massive 174-metre carrier sits in 0–22 metres of bright water — accessible even to Open Water Divers!',
-            'ar' => 'تبلغ إضافة رحلة حطام سفينة Million Hope في سي كوليدج دايف كلوب 30€ للفرد فوق باقة الغوص (بحد أدنى 4 غواصين وحجز قبل 48 ساعة). جنحت هذه الناقلة العملاقة (بطول 174 مترًا) عام 1996 في محمية نبق شمال مركزنا بالمنتزه على عمق يتراوح بين السطح و22 مترًا، مما يجعلها مناسبة حتى لحاملي شهادة Open Water.',
+            'en' => 'The Million Hope Wreck supplement at Sea College Dive Club costs €30 per certified diver on top of your dive package (minimum 4 divers, book 48 hours ahead). Stranded in 1996 at El Gharqana in Nabq Protected Area just north of our Al Montazah resort, this massive 174-metre carrier sits in 0–22 metres of bright water — accessible even to Open Water Divers!',
+            'ar' => 'تبلغ إضافة رحلة الغوص في منطقة الغرقانة شرم الشيخ (حطام سفينة مليون هوب Million Hope) في سي كوليدج دايف كلوب 30€ للفرد فوق باقة الغوص (بحد أدنى 4 غواصين وحجز قبل 48 ساعة). جنحت هذه الناقلة العملاقة (بطول 174 مترًا) عام 1996 في منطقة الغرقانة بمحمية نبق شمال مركزنا بالمنتزه على عمق يتراوح بين السطح و22 مترًا، مما أكسب الساحل اسم «منطقة الغرقانة» وجعلها مناسبة حتى لحاملي شهادة Open Water.',
         ],
         'overview' => [
             'en' => [
@@ -982,8 +982,8 @@ return [
                 'Located right in Nabq north of Al Montazah, transfer and transit times are short, making it a favourite wreck dive for photographers and Open Water / Advanced divers alike.',
             ],
             'ar' => [
-                'بطول يتجاوز 174 مترًا، تُعد سفينة Million Hope أضخم حطام سفينة في شرم الشيخ على الإطلاق؛ وبفضل امتداد هيكلها من المياه الضحلة المشمسة حتى عمق 22 مترًا، تخترق أشعة الشمس الممرات والرافعات والمروحة العملاقة بوضوح مذهل.',
-                'يقع الموقع في محمية نبق قريبًا جدًا من مقرنا في المنتزه، مما يوفر وقت الانتقال ويجعلها مثالية للتصوير الفوتوغرافي الواسع.',
+                'بطول يتجاوز 174 مترًا، تُعد سفينة Million Hope في منطقة الغرقانة أضخم حطام سفينة في شرم الشيخ على الإطلاق؛ وبفضل امتداد هيكلها من المياه الضحلة المشمسة حتى عمق 22 مترًا، تخترق أشعة الشمس الممرات والرافعات والمروحة العملاقة بوضوح مذهل.',
+                'تقع منطقة الغرقانة في محمية نبق قريبًا جدًا من مقرنا في المنتزه، مما يوفر وقت الانتقال ويجعلها مثالية للغوص والتصوير الفوتوغرافي الواسع.',
             ],
         ],
         'specs' => [
@@ -1014,6 +1014,7 @@ return [
         'review_idx' => 2,
         'related' => ['sup-dunraven', 'sup-thistlegorm', 'sup-zodiac-early', 'wreck'],
         'faqs' => [
+            ['Why is the Million Hope area called El Gharqana (منطقة الغرقانة) in Sharm El Sheikh?', 'Local Egyptians and Red Sea captains call this northern Nabq reef El Gharqana ("The Sunken Ship Area" — منطقة الغرقانة) after the 174-metre MV Million Hope shipwreck that ran aground on the reef in 1996 along with an earlier wreck, creating a sheltered coral-and-shipwreck sanctuary just 10–15 minutes north of Al Montazah.', 'لماذا تُسمى هذه المنطقة «منطقة الغرقانة» في شرم الشيخ؟', 'تُعرف منطقة الشعاب الشمالية في محمية نبق محليًا باسم «منطقة الغرقانة شرم الشيخ» نسبةً إلى جنوح وغرق سفينة البضائع العملاقة مليون هوب (بطول 174 مترًا) عام 1996 على شعاب نبق، لتتحول المنطقة إلى مزار عالمي للغوص والسنوركل وتصوير الحطام على بُعد 10–15 دقيقة فقط شمال مقرنا بالمنتزه.'],
             ['Can Open Water Divers dive the Million Hope?', 'Yes — within your 18-metre certification limit you can explore vast sections of the decks, cranes and hull without deep penetration.', 'هل يمكن لحاملي Open Water الغوص في مليون هوب؟', 'نعم، بفضل وجود أجزاء واسعة من السفينة فوق عمق 18 مترًا يمكن لحاملي Open Water الاستمتاع بها بأمان تام.'],
             ['What if there are fewer than 4 divers in my party?', 'Send us a WhatsApp message with your dates — we regularly combine solo and couple divers onto scheduled 4+ diver Million Hope runs.', 'ماذا لو كنا أقل من 4 غواصين؟', 'راسلنا عبر واتساب بتواريخك، حيث نقوم بدمج الغواصين الأفراد والأزواج في المجموعات المجدولة للوصول للحد الأدنى (4 غواصين).'],
         ],
@@ -1025,11 +1026,11 @@ return [
             'ar' => 'غطسة بقارب الزودياك السريع (Zodiac) في شرم الشيخ ومضيق تيران (+50€)',
         ],
         'meta_title' => [
-            'en' => 'Zodiac Speedboat Scuba Dive Sharm El Sheikh | +€50 | Sea College',
+            'en' => 'Zodiac Speedboat Scuba Dive Sharm El Sheikh | +€50 Tiran',
             'ar' => 'غوص بقارب الزودياك السريع شرم الشيخ | +50€ | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Reach Tiran Island & outer drift reefs in minutes from Al Montazah by Zodiac RIB (+€50 supplement, min. 4 divers, book 48h ahead). Fast drop-offs & live pickups.',
+            'en' => 'Reach Tiran Island & outer drift reefs in minutes from Al Montazah by Zodiac RIB (+€50 supplement, min. 4 divers, 48h ahead). Fast drop-offs & live pickups.',
             'ar' => 'انطلق خلال دقائق من المنتزه إلى شعاب مضيق تيران بقارب الزودياك السريع (+50€ إضافة، حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
         ],
         'aeo_answer' => [
@@ -1084,7 +1085,7 @@ return [
             'ar' => 'غطسة زودياك الفجر المبكرة — أسماك المطرقة أو مليون هوب شرم الشيخ (+70€)',
         ],
         'meta_title' => [
-            'en' => 'Early Dawn Zodiac Dive Hammerheads Sharm | +€70 | Sea College',
+            'en' => 'Dawn Zodiac Dive Hammerheads Sharm El Sheikh | +€70 Tiran',
             'ar' => 'غطسة زودياك الفجر أسماك المطرقة شرم الشيخ | +70€ | سي كوليدج',
         ],
         'meta_desc' => [
@@ -1143,7 +1144,7 @@ return [
             'ar' => 'رحلة غوص دهب ليوم كامل من شرم الشيخ — البلو هول والكانيون (+115€)',
         ],
         'meta_title' => [
-            'en' => 'Dahab Blue Hole & Canyon Dive Trip from Sharm | +€115 | Sea College',
+            'en' => 'Dahab Blue Hole & Canyon Dive Trip from Sharm | +€115 Day',
             'ar' => 'رحلة غوص دهب البلو هول والكانيون من شرم الشيخ | +115€ | سي كوليدج',
         ],
         'meta_desc' => [

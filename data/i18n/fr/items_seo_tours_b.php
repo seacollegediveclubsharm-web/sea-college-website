@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'sup-thistlegorm' => [
         'h1' => 'Plongée Épave SS Thistlegorm au Départ de Charm el-Cheikh — Mer Rouge',
-        'meta_title' => 'Plongée Épave SS Thistlegorm Charm el-Cheikh (Sharm El Sheikh) | +150 €',
+        'meta_title' => 'Plongée Épave SS Thistlegorm Charm el-Cheikh | +150 €',
         'meta_desc' => 'Plongez sur la légendaire épave du SS Thistlegorm (1941) depuis Charm el-Cheikh (Sharm El Sheikh) ! Supplément +150 € sur forfait (2 plongées : tour extérieur & cales cargos WWII).',
         'aeo_answer' => 'L’expédition plongée sur l’épave du SS Thistlegorm chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) est proposée au supplément de +150 € en complément de 2 plongées de votre forfait certifié (durée 7 à 8 heures, réservation au moins 72 h à l’avance). Accessible dès le niveau PADI Advanced Open Water / CMAS 2★ avec minimum 20 plongées enregistrées, elle comprend un départ matinal vers Sha’ab Ali, le petit-déjeuner et déjeuner à bord, et 2 plongées exceptionnelles (16–30 m) autour des locomotives, canons antiaériens, motos BSA et camions Bedford de 1941.',
         'overview' => ['Classé parmi les cinq plus belles épaves plongeables de la planète depuis sa découverte par le Commandant Cousteau en 1955, le cargo armé britannique SS Thistlegorm (128 mètres, coulé en octobre 1941) repose droit sur sa quille entre 16 et 30 mètres à Sha’ab Ali.', 'En partant tôt le matin depuis Charm el-Cheikh, nos bateaux arrivent avant la foule des croisières : la première plongée fait le tour majestueux de la poupe armée, de la zone d’impact et des locomotives soufflées sur le sable ; la seconde pénètre les cales ouvertes remplies de motos Norton/BSA, camions Bedford, ailes d’avions et bottes Wellington intactes !'],
@@ -47,7 +47,7 @@ return [
     ],
     'sup-dunraven' => [
         'h1' => 'Plongée Épave SS Dunraven (1876) & Ras Mohammed — Charm el-Cheikh',
-        'meta_title' => 'Plongée Épave SS Dunraven Charm el-Cheikh (Sharm El Sheikh) | +30 €',
+        'meta_title' => 'Plongée Épave SS Dunraven Charm el-Cheikh | +30 €',
         'meta_desc' => 'Explorez l’épave victorienne du SS Dunraven (1876) à Beacon Rock depuis Charm el-Cheikh (Sharm El Sheikh) pour seulement +30 € de supplément ! Poissons-verres et coraux entre 15 et 29 m.',
         'aeo_answer' => 'Le supplément Plongée Épave SS Dunraven chez Sea College Dive Club à Charm el-Cheikh coûte +30 € par plongeur en complément d’une journée forfait bateau (journée complète, réservation 72 h à l’avance). Coulé en avril 1876 au sud de Ras Mohammed sur Beacon Rock, ce vapeur-voilier victorien britannique de 80 mètres repose retourné entre 15 et 29 mètres, tapissé d’alcyonaires multicolores et habité par des milliers de poissons-verres, mérous et rascasses.',
         'overview' => ['Moins lointain et beaucoup plus abordable que le Thistlegorm (+30 € seulement !), le SS Dunraven offre une ambiance mystérieuse incomparable : retournée sur le sable blanc au pied du récif de Beacon Rock, sa coque en fer datant de 1876 s’est transformée en cathédrale corallienne.', 'Pour les plongeurs à l’aise, le passage spacieux sous la voûte éclairée de rais de lumière au milieu de nuages étincelants de poissons-verres, près de la chaudière et de l’hélice, suivi d’une remontée sur un jardin de corail vierge, reste un souvenir impérissable !'],
@@ -87,7 +87,7 @@ return [
     ],
     'sup-millionhope' => [
         'h1' => 'Plongée Épave Million Hope à Nabq — La Plus Grande Épave de Charm el-Cheikh',
-        'meta_title' => 'Plongée Épave Million Hope Nabq Charm el-Cheikh (Sharm El Sheikh) | +30 €',
+        'meta_title' => 'Plongée Épave Million Hope Nabq Charm el-Cheikh | +30 €',
         'meta_desc' => 'Plongez sur le géant Million Hope (174 m, 0–22 m) dans la réserve de Nabq à Charm el-Cheikh (Sharm El Sheikh) pour +30 € de supplément ! Accessible dès Open Water Diver.',
         'aeo_answer' => 'Le supplément Plongée Épave Million Hope chez Sea College Dive Club à Charm el-Cheikh coûte +30 € par plongeur en demi-journée (minimum 4 plongeurs, réservation 48 h à l’avance). Échoué en 1996 dans la réserve protégée de Nabq à quelques minutes seulement de notre base de Ras Nasrani, ce gigantesque vraquier de 174 mètres repose entre la surface et 22 mètres de fond — ce qui en fait la seule super-épave de Mer Rouge accessible dès le niveau Open Water / Niveau 1 !',
         'overview' => ['Avec ses 174 mètres de long (46 mètres de plus que le Thistlegorm !), le Million Hope impressionne par son gigantisme vertigineux : grues immergées, structures métalliques cathédrales, gouvernail monumental et même une barge coulée juste à côté.', 'Comme notre centre Sea College est situé juste au sud de Nabq, l’accès est ultra-rapide et la faible profondeur (0 à 22 m baignés de soleil) offre un temps de fond exceptionnel sans stress de décompression.'],
@@ -127,7 +127,7 @@ return [
     ],
     'sup-dahab' => [
         'h1' => 'Expédition Plongée à Dahab (Blue Hole & Canyon) depuis Charm el-Cheikh',
-        'meta_title' => 'Excursion Plongée Dahab Blue Hole & Canyon depuis Charm el-Cheikh | +115 €',
+        'meta_title' => 'Excursion Plongée Dahab Blue Hole & Canyon Charm | +115 €',
         'meta_desc' => 'Partez une journée plonger au mythique Blue Hole (El Bells) et au Canyon de Dahab depuis Charm el-Cheikh (Sharm El Sheikh) ! +115 € sur forfait + détente bédouine face au golfe d’Aqaba.',
         'aeo_answer' => 'L’Expédition Journée Plongée à Dahab (Blue Hole & Canyon) au départ de Charm el-Cheikh chez Sea College Dive Club coûte +115 € par plongeur en complément de 2 plongées de votre forfait certifié (journée complète, minimum 4 plongeurs, réservation 48 h à l’avance avec passeport obligatoire). Elle inclut le transport climatisé aller-retour à travers les montagnes du Sinaï, l’acheminement des blocs et 2 plongées côtières mythiques guidées avec pause dans un café bédouin en bord de mer.',
         'overview' => ['À un peu plus d’une heure de route panoramique à travers le désert rose du Sinaï, Dahab offre une atmosphère bohème unique et deux des plongées du bord les plus célèbres au monde : la faille volcanique submergée du Canyon et la cheminée vertigineuse d’El Bells débouchant dans le bleu abyssal du Blue Hole !', 'Entre les deux plongées, installez-vous pieds nus sur les coussins d’un restaurant bédouin face aux montagnes d’Arabie saoudite de l’autre côté du golfe d’Aqaba — une parenthèse magique dans votre semaine à Charm el-Cheikh.'],
@@ -167,7 +167,7 @@ return [
     ],
     'snork-ras-adult' => [
         'h1' => 'Excursion Bateau Snorkeling Île Blanche & Ras Mohammed — Tout Compris (55 €)',
-        'meta_title' => 'Excursion Snorkeling Île Blanche & Ras Mohammed Charm el-Cheikh | 55 € Tout Inclus',
+        'meta_title' => 'Snorkeling Île Blanche & Ras Mohammed Charm | 55 € All-In',
         'meta_desc' => 'Croisière snorkeling tout compris vers l’Île Blanche (White Island) et Ras Mohammed depuis Charm el-Cheikh (Sharm El Sheikh) à 55 € (enfant 30 €) : transferts, taxes, buffet, boissons & masque !',
         'aeo_answer' => 'L’Excursion Bateau Snorkeling vers le Parc national de Ras Mohammed et l’Île Blanche (White Island) chez Sea College Dive Club à Charm el-Cheikh coûte 55 € par adulte et 30 € par enfant de 5 à 12 ans (gratuit moins de 5 ans) en formule 100 % tout compris (8 heures). Tout est inclus sans surprise : transferts hôtel climatisés, taxe d’entrée du parc national, déjeuner buffet fraîchement préparé à bord, boissons chaudes et fraîches, équipement snorkeling (masque, tuba, palmes, gilet) et guide en mer.',
         'overview' => ['Naviguez vers l’extrême pointe sud du Sinaï jusqu’au banc de sable immaculé de White Island — surnommé « les Maldives égyptiennes » — émergeant au milieu d’un lagon cristallin, combiné à deux arrêts snorkeling guidés sur les plus beaux jardins coralliens du Parc national de Ras Mohammed !', 'Que vous veniez en famille, en couple ou pour accompagner des proches plongeurs à bord du même yacht confortable (pont soleil ombragé, salon climatisé/spacieux, toilettes et douches d’eau douce), zéro euro supplémentaire ne vous sera réclamé pour les taxes ou le matériel.'],
@@ -208,7 +208,7 @@ return [
     ],
     'speed-2h' => [
         'h1' => 'Speedboat Privé 2 Heures vers l’Île de Tiran — Charm el-Cheikh (150 €)',
-        'meta_title' => 'Speedboat Privé Île de Tiran Charm el-Cheikh (Sharm El Sheikh) | 2h | 150 €',
+        'meta_title' => 'Speedboat Privé Île de Tiran Charm el-Cheikh 2h | 150 €',
         'meta_desc' => 'Louez votre speedboat privé 2 heures vers les lagons et récifs de l’Île de Tiran depuis Charm el-Cheikh (Sharm El Sheikh) dès 150 € pour 2 personnes : en 15 min sur place sans foule !',
         'aeo_answer' => 'La location du Speedboat Privé 2 Heures vers l’Île de Tiran chez Sea College Dive Club à Charm el-Cheikh coûte 150 € pour le bateau privé jusqu’à 2 passagers (passagers supplémentaires de la 3e à la 5e personne : +75 €/personne, taxe parc marin +5 €/personne). Au départ de notre plage d’Al Montazah / Ras Nasrani face à Tiran, vous rejoignez en seulement 15 minutes les lagons turquoise, l’épave du Lara et les récifs coralliens du Détroit de Tiran avec capitaine privé, matériel snorkeling et boissons fraîches.',
         'overview' => ['Voici le grand avantage géographique de Sea College à Ras Nasrani / Al Montazah : alors que les bateaux partis du sud mettent plus d’une heure à remonter vers Tiran, notre speedboat privé traverse le détroit en 15 minutes chrono !', 'Vous profitez ainsi d’1 h 30 pleine sur les lagons translucides de Tiran, Gordon Reef ou Thomas Reef aux horaires de votre choix (tôt le matin avant l’arrivée des yachts ou en fin d’après-midi dorée), uniquement entre vous.'],
@@ -248,7 +248,7 @@ return [
     ],
     'private-6-10' => [
         'h1' => 'Yacht Privé Journée Complète (6 à 10 Personnes) — Charm el-Cheikh (650 €)',
-        'meta_title' => 'Location Yacht Bateau Privé Charm el-Cheikh (Sharm El Sheikh) 6-10 Pers | 650 €',
+        'meta_title' => 'Yacht Privé Charm el-Cheikh (6–10 pers.) | 650 € / Jour',
         'meta_desc' => 'Privatisez un grand yacht en Mer Rouge à Charm el-Cheikh (Sharm El Sheikh) pour 6 à 10 personnes à 650 € (dès 65 €/pers., 7–8 h) : Ras Mohammed, Île Blanche ou Tiran sur mesure !',
         'aeo_answer' => 'La privatisation d’un Yacht Journée Complète pour 6 à 10 personnes chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 650 € pour l’ensemble du bateau (soit dès 65 € par personne à 10 convives, durée 7 à 8 heures). Elle vous offre votre propre yacht de croisière Mer Rouge avec capitaine, équipage complet, chef cuisinier préparant un déjeuner buffet frais à bord, boissons, équipement de snorkeling et itinéraire libre vers Ras Mohammed & White Island ou le Détroit de Tiran.',
         'overview' => ['À partir de 65 € par personne seulement pour un groupe de 10 amis ou deux familles (à peine 10 € de plus qu’un bateau collectif !), offrez-vous le luxe absolu d’un grand yacht égyptien privatisé rien que pour votre tribu pendant toute une journée en Mer Rouge.', 'C’est vous qui décidez de l’heure de départ, de la musique sur le pont supérieur, de la durée de baignade à l’Île Blanche et vous pouvez même combiner sur votre propre bateau des proches en snorkeling, des débutants en baptême et des plongeurs certifiés !'],

@@ -218,7 +218,8 @@ function comparison_table_html(string $mode, array $catalog, string $currentId):
             $note = te('from') . ' ~<bdi dir="ltr">€' . $fromPp . '</bdi> ' . te('per_person');
         } elseif ($mode === 'speedboats' && preg_match('/speed-(\d)h/', $r['id'], $m)) {
             $hrs = (int) $m[1];
-            $note = '<bdi dir="ltr">€' . (int) round($r['price'] / $hrs) . '</bdi> / h (max 6)';
+            $unitMax = t('per_hour_max5') !== 'per_hour_max5' ? t('per_hour_max5') : '/ h (max 5)';
+            $note = '<bdi dir="ltr">€' . (int) round($r['price'] / $hrs) . '</bdi> ' . e($unitMax);
         } else {
             $note = e(mb_substr(item_desc($r), 0, 68));
         }

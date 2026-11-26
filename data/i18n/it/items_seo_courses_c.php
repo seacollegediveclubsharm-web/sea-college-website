@@ -36,7 +36,7 @@ return [
         ],
         'excluded' => [
             'Manuale digitale PADI e tassa di certificazione (€85)',
-            'Supplemento barca (€10/giorno incluso pranzo), tassa parco (€5/giorno) e assicurazione sub (€7/giorno)',
+            'Supplemento barca (€10/giorno incluso pranzo), tassa parco (€5/giorno) e assicurazione sub (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
         ],
         'ideal_for' => [
             'Subacquei che desiderano un trim orizzontale perfetto e maggiore autonomia d’aria',

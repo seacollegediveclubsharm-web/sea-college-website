@@ -11,6 +11,8 @@ $page['id'] = 'prices';
 $page['canonical_path'] = '/prices';
 $page['title'] = t('meta_prices_title');
 $page['description'] = t('meta_prices_desc');
+$page['image'] = url('assets/images/fleet/sea-college-oceano-yacht-01-exterior-nov2026.jpg');
+$page['speakable'] = ['.page-hero h1', '.page-hero p'];
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_prices'), '/prices']];
 foreach ($catalog as $cat) {
     $page['schema'][] = schema_offer_catalog(loc($cat['label']), $cat);

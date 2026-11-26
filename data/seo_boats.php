@@ -11,11 +11,11 @@ return [
             'ar' => 'رحلة الجزيرة البيضاء ومحمية رأس محمد باليخت (يوم كامل) — شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'White Island & Ras Mohammed Boat Trip | €55 Adult · €30 Child',
+            'en' => 'White Island & Ras Mohammed Boat Trip | €55 Adult · €30 Kid',
             'ar' => 'رحلة الجزيرة البيضاء ورأس محمد باليخت | 55€ للبالغ و30€ للطفل',
         ],
         'meta_desc' => [
-            'en' => 'Full-day White Island & Ras Mohammed yacht cruise from Sharm El Sheikh (€55 adult, €30 child 5–12). Includes transfers, park fees, buffet lunch, drinks & gear.',
+            'en' => 'Full-day White Island & Ras Mohammed yacht trip from Sharm El Sheikh (€55 adult, €30 child 5–12). Transfers, park fee, buffet lunch, drinks & gear included.',
             'ar' => 'رحلة يخت ليوم كامل إلى الجزيرة البيضاء ومحمية رأس محمد من شرم الشيخ (55€ بالغ، 30€ طفل). شاملة الانتقالات ورسوم المحمية والغداء والمشروبات والمعدات.',
         ],
         'aeo_answer' => [
@@ -77,11 +77,11 @@ return [
             'ar' => 'تذكرة الأطفال (5–12 سنة) — رحلة يخت الجزيرة البيضاء ورأس محمد',
         ],
         'meta_title' => [
-            'en' => 'Ras Mohammed & White Island Child Ticket (5–12) | €30 | Sea College',
+            'en' => 'Ras Mohammed & White Island Child Ticket | €30 (Ages 5–12)',
             'ar' => 'تذكرة الأطفال لرحلة رأس محمد والجزيرة البيضاء (5–12 سنة) | 30€',
         ],
         'meta_desc' => [
-            'en' => 'Discounted €30 child ticket (ages 5–12) for the full-day White Island & Ras Mohammed boat trip in Sharm El Sheikh. Child life jacket, lunch, drinks & transfers included.',
+            'en' => 'Discounted €30 child ticket (ages 5–12) for the full-day White Island & Ras Mohammed boat trip in Sharm El Sheikh. Vest, lunch, drinks & transfers included.',
             'ar' => 'تذكرة مخفضة 30€ للأطفال (5–12 سنة) لرحلة يخت الجزيرة البيضاء ورأس محمد في شرم الشيخ شاملة سترة النجاة والغداء والمشروبات والانتقالات.',
         ],
         'aeo_answer' => [
@@ -140,7 +140,7 @@ return [
             'ar' => 'رحلة سنوركل نهارية من الشاطئ — الشعاب المنزلية في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Beach House Reef Snorkeling Sharm El Sheikh | €35 | Sea College',
+            'en' => 'Beach House Reef Snorkeling Sharm El Sheikh | €35 Guided',
             'ar' => 'سنوركل نهاري من الشاطئ في شرم الشيخ | 35€ | سي كوليدج',
         ],
         'meta_desc' => [
@@ -203,11 +203,11 @@ return [
             'ar' => 'رحلة سنوركل ليلية من الشاطئ مع كشاف — الشعاب المنزلية بشرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Night Snorkeling Sharm El Sheikh | €40 Incl. Torch | Sea College',
+            'en' => 'Night Snorkeling Sharm El Sheikh | €40 Incl. Torch & Guide',
             'ar' => 'سنوركل ليلي في شرم الشيخ شامل الكشاف | 40€ | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Experience the Red Sea reef after dark! Guided night beach snorkeling in Sharm El Sheikh (€40, min. 6 guests) including underwater LED torch, mask, vest & transfers.',
+            'en' => 'Explore the Red Sea reef after dark! Guided night beach snorkeling in Sharm El Sheikh (€40, min. 6 guests) with underwater LED torch, mask, vest & transfers.',
             'ar' => 'اكتشف الشعاب المرجانية ليلًا في شرم الشيخ! جولة سنوركل ليلية موجهة (40€، حد أدنى 6 ضيوف) شاملة كشاف إضاءة تحت الماء والقناع وسترة النجاة والانتقالات.',
         ],
         'aeo_answer' => [
@@ -266,7 +266,7 @@ return [
             'ar' => 'رحلة محمية رأس محمد بالباص والسنوركل (نصف يوم) — شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Ras Mohammed by Bus Snorkeling Tour | €60 | Gate of Allah & Magic Lake',
+            'en' => 'Ras Mohammed by Bus Snorkeling Tour | €60 Half-Day Sharm',
             'ar' => 'رحلة رأس محمد بالباص والسنوركل | 60€ | بوابة الله والبحيرة السحرية',
         ],
         'meta_desc' => [
@@ -329,11 +329,11 @@ return [
             'ar' => 'رحلة قارب سريع خاص لمدة ساعة (Speedboat) — الشعاب القريبة بشرم الشيخ',
         ],
         'meta_title' => [
-            'en' => '1-Hour Private Speedboat Sharm El Sheikh | €75 per Boat | Sea College',
+            'en' => '1-Hour Private Speedboat Sharm El Sheikh | €75 / Boat',
             'ar' => 'قارب سريع خاص لمدة ساعة في شرم الشيخ | 75€ للقارب | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Private 1-hour speedboat snorkeling trip in Sharm El Sheikh: €75 total for up to 3 guests (max 5; 4th & 5th +€50 each). Mask, life jacket & hotel transfers included.',
+            'en' => 'Private 1-hour speedboat snorkeling trip in Sharm El Sheikh: €75 per boat up to 3 guests (max 5; +€50 extra). Mask, life jacket & hotel transfers included.',
             'ar' => 'رحلة قارب سريع خاص للسنوركل لمدة ساعة في شرم الشيخ: 75€ للقارب حتى 3 ضيوف (بحد أقصى 5؛ الإضافي +50€) شاملة الأقنعة والسترات وانتقالات الفندق.',
         ],
         'aeo_answer' => [
@@ -392,11 +392,11 @@ return [
             'ar' => 'رحلة قارب سريع خاص لمدة ساعتين إلى جزيرة تيران — شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Tiran Island Private Speedboat (2 Hours) | €150 | Sea College Sharm',
+            'en' => 'Tiran Island Private Speedboat Sharm | 2 Hours · €150/Boat',
             'ar' => 'قارب سريع خاص لجزيرة تيران (ساعتان) | 150€ | سي كوليدج شرم الشيخ',
         ],
         'meta_desc' => [
-            'en' => 'Reach Tiran Island in minutes from Al Montazah! 2-hour private speedboat snorkeling charter (€150 for 2 guests, max 5) incl. masks, life vests & Sharm hotel transfers.',
+            'en' => 'Reach Tiran Island in 15 min from Al Montazah! 2-hour private speedboat charter in Sharm El Sheikh (€150 for 2 guests, max 5) incl. masks, vests & transfers.',
             'ar' => 'انطلق إلى جزيرة تيران خلال دقائق من المنتزه! قارب سريع خاص لمدة ساعتين (150€ لفردين، بحد أقصى 5) شامل الأقنعة والسترات وانتقالات الفندق.',
         ],
         'aeo_answer' => [
@@ -455,11 +455,11 @@ return [
             'ar' => 'رحلة قارب سريع خاص 3 ساعات — شعاب وبحيرات جزيرة تيران',
         ],
         'meta_title' => [
-            'en' => '3-Hour Tiran Island Private Speedboat | €225 | Sea College Sharm',
+            'en' => '3-Hour Tiran Private Speedboat Sharm El Sheikh | €225/Boat',
             'ar' => 'قارب سريع خاص 3 ساعات لجزيرة تيران | 225€ | سي كوليدج شرم الشيخ',
         ],
         'meta_desc' => [
-            'en' => 'Extended 3-hour private speedboat charter to Tiran Island from Al Montazah, Sharm El Sheikh (€225 for 2 guests, max 5). Multi-reef snorkeling, masks, vests & transfers.',
+            'en' => 'Extended 3-hour private speedboat charter to Tiran Island from Al Montazah, Sharm El Sheikh (€225 for 2 guests, max 5). Masks, life vests & hotel transfers.',
             'ar' => 'رحلة قارب سريع خاص ممتدة 3 ساعات إلى جزيرة تيران من المنتزه بشرم الشيخ (225€ لضيفين، أقصى 5). وقفات متعددة شاملة الأقنعة والسترات والانتقالات.',
         ],
         'aeo_answer' => [
@@ -518,7 +518,7 @@ return [
             'ar' => 'تأجير يخت وقارب خاص ليوم كامل في شرم الشيخ (من 1 إلى 5 ضيوف)',
         ],
         'meta_title' => [
-            'en' => 'Private Boat Charter Sharm El Sheikh (1–5 Pax) | €550 | Sea College',
+            'en' => 'Private Boat Charter Sharm El Sheikh (1–5 Guests) | €550',
             'ar' => 'تأجير يخت خاص في شرم الشيخ (1–5 ضيوف) | 550€ | سي كوليدج',
         ],
         'meta_desc' => [
@@ -581,7 +581,7 @@ return [
             'ar' => 'تأجير يخت وقارب خاص ليوم كامل في شرم الشيخ (من 6 إلى 10 ضيوف)',
         ],
         'meta_title' => [
-            'en' => 'Private Boat Charter Sharm El Sheikh (6–10 Pax) | €650 | Sea College',
+            'en' => 'Private Boat Charter Sharm El Sheikh (6–10 Guests) | €650',
             'ar' => 'تأجير يخت خاص في شرم الشيخ (6–10 ضيوف) | 650€ | سي كوليدج',
         ],
         'meta_desc' => [
@@ -644,11 +644,11 @@ return [
             'ar' => 'تأجير يخت خاص ليوم كامل في شرم الشيخ (من 11 إلى 15 ضيفًا)',
         ],
         'meta_title' => [
-            'en' => 'Private Yacht Charter Sharm El Sheikh (11–15 Pax) | €900 | Sea College',
+            'en' => 'Private Yacht Charter Sharm El Sheikh (11–15 Pax) | €900',
             'ar' => 'تأجير يخت خاص في شرم الشيخ (11–15 ضيفًا) | 900€ | سي كوليدج',
         ],
         'meta_desc' => [
-            'en' => 'Full-day private Red Sea motor yacht in Sharm El Sheikh for 11–15 guests (€900/boat — from €60/person!). Snorkeling & optional diving at Ras Mohammed or Tiran.',
+            'en' => 'Full-day private Red Sea motor yacht in Sharm El Sheikh for 11–15 guests (€900/boat, from €60/person). Snorkeling & optional diving at Ras Mohammed or Tiran.',
             'ar' => 'يخت خاص كبير ليوم كامل في شرم الشيخ لـ 11 إلى 15 ضيفًا (900€ لليخت — من 60€ للفرد!). سنوركل وغوص مخصص في رأس محمد أو تيران.',
         ],
         'aeo_answer' => [
@@ -706,7 +706,7 @@ return [
             'ar' => 'تأجير يخت خاص كبير ليوم كامل في شرم الشيخ (من 16 إلى 20 ضيفًا)',
         ],
         'meta_title' => [
-            'en' => 'Private Yacht Charter Sharm El Sheikh (16–20 Pax) | €1,100 | Sea College',
+            'en' => 'Private Yacht Charter Sharm El Sheikh (16–20 Pax) | €1,100',
             'ar' => 'تأجير يخت خاص في شرم الشيخ (16–20 ضيفًا) | 1,100€ | سي كوليدج',
         ],
         'meta_desc' => [

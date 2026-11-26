@@ -8,9 +8,17 @@ return static function (array $it, string $gid, string $name, string $desc, stri
 
     /* ---- 6. Courses & Specialties (spec-2, spec-3, adaptive & any course fallback) ---- */
     if (in_array($gid, ['specialty-courses', 'beginner-courses', 'advanced-rescue', 'kids-courses', 'go-pro', 'saver-bundles'], true)) {
+        $specShort = $id === 'spec-2'
+            ? 'PADI 2-TG-Spezialkurs'
+            : ($id === 'spec-3'
+                ? 'PADI UW-Navigator (3 TG)'
+                : ($id === 'adaptive' ? 'PADI Adaptive Support Diver' : $name));
+        $specMt = mb_strlen("{$specShort} Sharm El Sheikh | {$pStr}", 'UTF-8') <= 60
+            ? "{$specShort} Sharm El Sheikh | {$pStr}"
+            : "{$specShort} Sharm | {$pStr}";
         return [
             'h1' => "{$name} in Sharm El Sheikh ({$pStr})",
-            'meta_title' => "{$name} Sharm El Sheikh | {$pStr} inkl. Ausrüstung | Sea College",
+            'meta_title' => $specMt,
             'meta_desc' => "Absolvieren Sie den {$name} in unserer PADI 5 Sterne Tauchbasis in Sharm El Sheikh ({$pStr}, Dauer: {$dur}) — inklusive kompletter Leihausrüstung!",
             'aeo_answer' => "Der „{$name}“ im Sea College Dive Club in Sharm El Sheikh kostet {$pStr} pro Person und dauert {$dur}. Unter Anleitung unserer erfahrenen, deutsch- und mehrsprachigen PADI Specialty Instructors verfeinern Sie gezielt Ihre Unterwasserfertigkeiten im warmen, glasklaren Roten Meer — inklusive kompletter Leihausrüstung und Sharm-Hoteltransfer (+85 € offizielle PADI Lehrmaterial-/Brevetgebühr).",
             'overview' => [
@@ -59,9 +67,16 @@ return static function (array $it, string $gid, string $name, string $desc, stri
         $isChild = $id === 'snork-ras-child';
         $isNight = $id === 'snork-beach-night';
         $isLand  = $id === 'snork-ras-land';
+        $snkMt = $isChild
+            ? 'Ras Mohammed & White Island Kind (5–12 J.) | 30 € Sharm'
+            : ($isLand
+                ? 'Ras Mohammed Schnorchelausflug Bus Sharm | 60 € All-In'
+                : ($isNight
+                    ? 'Nachtschnorcheln Hausriff Sharm El Sheikh | 40 € Komplett'
+                    : 'Tagesschnorcheln Hausriff Sharm El Sheikh | 35 € Komplett'));
         return [
             'h1' => "{$name} in Sharm El Sheikh ({$pStr})",
-            'meta_title' => "{$name} Sharm El Sheikh | {$pStr} Komplett | Sea College",
+            'meta_title' => $snkMt,
             'meta_desc' => "Geführter Schnorchelausflug in Sharm El Sheikh: {$name} für {$pStr} ({$dur}) — inklusive Maske, Schwimmweste, Nationalparkgebühr & Hoteltransfer!",
             'aeo_answer' => "„{$name}“ mit dem Sea College Dive Club in Sharm El Sheikh kostet {$pStr} (" . ($isChild ? 'ermäßigter Kindertarif für 5–12 Jahre' : 'pro Person') . ") und dauert {$dur}. Im Komplettpreis sind der klimatisierte Hoteltransfer in Sharm El Sheikh, Schnorchelmaske, passende Schwimmweste, alle Nationalparkgebühren sowie unsere erfahrenen PADI Schnorchelguides direkt im Wasser enthalten" . ($isChild ? ' — inklusive warmem Mittagsbuffet und Softdrinks an Bord unserer Yacht!' : ($isNight ? ' — inklusive starker LED-Unterwasserlampe!' : '.')),
             'overview' => [
@@ -117,9 +132,12 @@ return static function (array $it, string $gid, string $name, string $desc, stri
         $is1h = $id === 'speed-1h';
         $basePax = $is1h ? 'bis zu 3 Gästen' : '2 Gästen';
         $extraFee = $is1h ? '+50 € für den 4. & 5. Gast' : '+100 € für den 3., 4. & 5. Gast';
+        $spdMt = $is1h
+            ? 'Privates Schnellboot Sharm El Sheikh 1 Std. | 75 € / Boot'
+            : 'Privates Schnellboot Insel Tiran 3 Std. | 225 € / Boot';
         return [
             'h1' => "{$name} ab Sharm El Sheikh ({$pStr} / Boot)",
-            'meta_title' => "{$name} Sharm El Sheikh | {$pStr} Privatboot | Sea College",
+            'meta_title' => $spdMt,
             'meta_desc' => "Exklusives Privates Schnellboot ab Al Montazah, Sharm El Sheikh: {$name} für {$pStr} pro Boot ({$basePax}) inkl. Masken, Schwimmwesten & Hoteltransfer!",
             'aeo_answer' => "„{$name}“ im Sea College Dive Club in Sharm El Sheikh kostet {$pStr} pauschal für Ihr eigenes privates Schnellboot inklusive {$basePax} (maximal 5 Personen an Bord; {$extraFee}). Direkt ab unserer türkisblauen Lagune in Al Montazah erreichen Sie ohne Umwege " . ($is1h ? 'die unberührten Korallenriffe von Ras Nasrani und Al Montazah in wenigen Minuten' : 'die berühmten Lagunen und vier Korallenriffe der Insel Tiran mit extra viel Zeit zum Schnorcheln und Entspannen') . ' — inklusive Kapitän, Masken, Schwimmwesten und Hoteltransfer.',
             'overview' => [
@@ -166,9 +184,10 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     }
 
     /* ---- 9. private-charters (private-1-5, private-11-15, private-16-20) ---- */
+    $paxTag = $id === 'private-1-5' ? '1–5 Pers.' : ($id === 'private-11-15' ? '11–15 Pers.' : '16–20 Pers.');
     return [
         'h1' => "{$name} in Sharm El Sheikh ({$pStr} / Tag)",
-        'meta_title' => "{$name} Sharm El Sheikh | {$pStr} Vollcharter | Sea College",
+        'meta_title' => "Privatyacht Sharm El Sheikh ({$paxTag}) | {$pStr}/Tag",
         'meta_desc' => "Mieten Sie Ihre eigene Motoryacht im Roten Meer: {$name} in Sharm El Sheikh ({$pStr} für das gesamte Boot, 7–8 Std.) — Ras Mohammed oder Insel Tiran!",
         'aeo_answer' => "„{$name}“ im Sea College Dive Club in Sharm El Sheikh kostet {$pStr} pauschal für die gesamte Yacht (Dauer: {$dur}). Sie chartern ein komplettes, geräumiges Rotes-Meer-Tauch- und Schnorchelboot samt Kapitän und aufmerksamer Crew exklusiv für Ihren Kreis — wahlweise Richtung Nationalpark Ras Mohammed & White Island oder zu den Korallenriffen der Straße von Tiran, beliebig kombinierbar mit Schnorcheln, 1-zu-1-Schnuppertauchen und zertifiziertem Tauchen.",
         'overview' => [

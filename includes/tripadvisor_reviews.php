@@ -107,7 +107,7 @@ function sc_fetch_ta_widget_feed(string $locId, string $lang): ?array
     $locale = ta_widget_locale($lang);
     $narrowUrl = 'https://www.tripadvisor.com/WidgetEmbed-cdsratingsonlynarrow?lang=' . rawurlencode($locale)
         . '&locationId=' . rawurlencode($locId) . '&display_version=2&uniq=412';
-    $sspUrl = 'https://www.tripadvisor.com/WidgetEmbed-selfserveprop?lang=en_US&locationId=' . rawurlencode($locId)
+    $sspUrl = 'https://www.tripadvisor.com/WidgetEmbed-selfserveprop?lang=' . rawurlencode($locale) . '&locationId=' . rawurlencode($locId)
         . '&display_version=2&uniq=411&nreviews=4&rating=true&writereviewlink=true&popIdx=true&iswide=true&border=true';
 
     $narrowBody = sc_http_get($narrowUrl, ['Accept: */*'], 4);

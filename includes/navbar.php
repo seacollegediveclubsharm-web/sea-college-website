@@ -7,6 +7,7 @@ $sc_nav = [
     ['services', '/services', 'nav_services'],
     ['dive-sites', '/dive-sites-sharm-el-sheikh', 'nav_dive_sites'],
     ['prices', '/prices', 'nav_prices'],
+    ['guides', '/guides', 'nav_guides'],
     ['gallery', '/gallery', 'nav_gallery'],
     ['faq', '/faq', 'nav_faq'],
     ['about', '/about', 'nav_about'],
@@ -26,7 +27,7 @@ $sc_nav = [
 <header class="site-header" id="top">
   <div class="container site-header__inner">
     <a class="brand" href="<?= e(page_link('/')) ?>" aria-label="<?= e(SITE_NAME) ?>">
-      <?= sc_picture('images/logo.jpg', SITE_NAME . ' logo', 48, 48, ['loading' => 'eager', 'sizes' => '48px']) ?>
+      <?= sc_picture('images/logo.jpg', SITE_NAME, 48, 48, ['loading' => 'eager', 'sizes' => '48px']) ?>
       <span class="brand__text"><strong>Sea College</strong><small>Dive Club · Sharm</small></span>
     </a>
 
@@ -39,7 +40,7 @@ $sc_nav = [
       </button>
     </div>
 
-    <nav class="site-nav" id="site-nav" aria-label="Main">
+    <nav class="site-nav" id="site-nav" aria-label="<?= te('menu') ?>">
       <ul class="site-nav__list">
         <?php $sc_active_nav = $page['nav_active'] ?? ($page['id'] ?? ''); ?>
         <?php foreach ($sc_nav as [$id, $href, $key]): ?>

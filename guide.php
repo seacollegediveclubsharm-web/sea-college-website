@@ -11,7 +11,7 @@ require ROOT_DIR . '/includes/interactive_widgets.php';
 require ROOT_DIR . '/includes/promo_banners.php';
 
 $guides  = sc_load_guides();
-$reqSlug = strtolower(trim((string) ($_GET['slug'] ?? ''), '/'));
+$reqSlug = strtolower(trim(sc_get_str('slug'), '/'));
 $g       = ($reqSlug !== '' && isset($guides[$reqSlug])) ? $guides[$reqSlug] : null;
 
 if (!$g) {

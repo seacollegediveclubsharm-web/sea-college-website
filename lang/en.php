@@ -78,7 +78,7 @@ return array_replace([
 
     // ---------- Home ----------
     'hero_eyebrow' => 'PADI 5 Star Dive Center & Resort · Sharm El Sheikh',
-    'hero_title' => 'PADI 5 Star Scuba Diving & Dive Packages in Sharm El Sheikh',
+    'hero_title' => 'Scuba Diving in Sharm El Sheikh — PADI 5 Star Dive Center & Packages',
     'hero_sub' => 'Beginner intro dives from €30, PADI courses, diving packages with transparent prices, and daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm — from our beachfront dive centre with training pool and house reef.',
     'hero_cta_primary' => 'Plan my dive on WhatsApp',
     'hero_cta_secondary' => 'See prices',
@@ -91,7 +91,7 @@ return array_replace([
     'trust_2' => 'Training pool & house reef',
     'trust_3' => 'Kids from age 8',
     'trust_4' => '8 languages spoken',
-    'explore_title' => 'Choose your Red Sea experience',
+    'explore_title' => 'Scuba Diving Trips, PADI Courses & Private Boats in Sharm El Sheikh',
     'explore_sub' => 'From your very first breath underwater to wreck diving on the Thistlegorm.',
     'exp_intro_t' => 'Try Scuba Diving',
     'exp_intro_d' => 'No experience needed — from €30',
@@ -109,9 +109,9 @@ return array_replace([
     'exp_wreck_d' => 'Thistlegorm, Dunraven, Million Hope',
     'exp_kids_t' => 'Kids & Families',
     'exp_kids_d' => 'Bubblemaker & Seal Team from 8',
-    'popular_title' => 'Most booked',
+    'popular_title' => 'Most Booked Sharm El Sheikh Dive Packages, Intro Dives & Trips',
     'popular_sub' => 'What our guests book again and again.',
-    'why_title' => 'Why divers choose Sea College',
+    'why_title' => 'Why 3,082+ Divers Rate Sea College the Best Dive Center in Sharm El Sheikh',
     'why_1_t' => 'PADI 5 Star Dive Resort',
     'why_1_d' => 'Recognised by PADI for training quality, safety and service — plus an Adopt the Blue conservation centre.',
     'why_2_t' => 'Pool, house reef & own boat',
@@ -153,7 +153,7 @@ return array_replace([
     'faq_6_a' => 'Build your booking on the prices page or message us on WhatsApp. We confirm availability and the final price. Cards, bank transfer and cash are accepted.',
 
     // ---------- Services ----------
-    'services_title' => 'Diving, PADI courses & boat trips',
+    'services_title' => 'Sharm El Sheikh Scuba Diving Packages, PADI Courses & Red Sea Boat Trips',
     'services_sub' => 'Everything we offer in Sharm El Sheikh, with clear inclusions. Tap “Add” to build your booking.',
     'svc_dive_d' => 'Guided boat and shore dives for certified divers — Ras Mohammed, Tiran, Thistlegorm and more.',
     'svc_courses_d' => 'PADI training from age 8 to Divemaster, taught in small groups with pool sessions first.',
@@ -161,7 +161,7 @@ return array_replace([
     'svc_snorkel_d' => 'Snorkeling trips, private speedboats to Tiran and full-day private boats.',
 
     // ---------- Prices / booking ----------
-    'prices_title' => 'Prices & online booking',
+    'prices_title' => 'Sharm El Sheikh Scuba Diving Prices 2026 & Online Booking (EUR)',
     'prices_sub' => 'All prices in EUR per person unless stated. Select services, add participants and send your request — we confirm on WhatsApp or email.',
     'print_btn' => 'Print / Save as PDF',
     'step_1' => 'Select services',
@@ -391,8 +391,8 @@ return array_replace([
     'quiz_reason_wreck' => 'Matches your advanced depth experience — explore the world-famous WWII SS Thistlegorm wreck.',
 
     // ---------- Feature 3: Dive Sites & Seasonal Conditions Guide ----------
-    'meta_sites_title' => 'Sharm El Sheikh Dive Sites Map & Monthly Water Temp Guide | Sea College',
-    'meta_sites_desc' => 'Interactive map, depths & certification levels for Ras Mohammed, Shark & Yolanda Reef, Straits of Tiran, SS Thistlegorm, Dunraven, Million Hope & House Reef + 12-month Red Sea temperature & visibility chart.',
+    'meta_sites_title' => 'Sharm El Sheikh Dive Sites Map: Ras Mohammed, Tiran & Wrecks',
+    'meta_sites_desc' => 'Interactive Sharm El Sheikh dive sites map: Shark & Yolanda (Ras Mohammed), Jackson Reef (Tiran), SS Thistlegorm depths, PADI levels & 22–29°C sea chart.',
     'sites_eyebrow' => 'Red Sea & South Sinai Dive Guide',
     'sites_title' => 'Sharm El Sheikh Dive Sites & Seasonal Conditions',
     'sites_sub' => 'Explore depths, currents, marine life and required PADI levels across Ras Mohammed, the Straits of Tiran, historic shipwrecks and our Al Montazah House Reef.',
@@ -525,4 +525,22 @@ return array_replace([
     'side_promo_1' => '€0 upfront card charge — pay at the dive center',
     'side_promo_2' => 'Free Sharm El Sheikh hotel pickup on dive packages',
     'side_promo_3' => 'Training pool + beachfront House Reef + dive boats',
+
+    // ---------- UI Helper Keys (8-Language Template Localization) ----------
+    'form_phone_ph' => '+44 7700 900000',
+    'upgrade_from_tag' => '[Upgrade from {item}]',
+    'gbp_review_label' => 'Google Review',
+    'business_hours_val' => 'Mon–Sun · 08:00–18:00',
+    'business_address_val' => 'Cyrene Sharm Hotel / Ivy Cyrene Island Aqua Park Resort, Al Montazah, Sharm El Sheikh',
+    'per_hour_max5' => '/ h (max 5)',
+    'related_guides_title' => 'Related Red Sea Planning Guides',
+    'home_guides_eyebrow' => 'Red Sea Dive Knowledge',
+    'home_guides_title' => 'Sharm El Sheikh Scuba Diving Planning Guides',
+    'home_guides_sub' => 'Verified PADI 5★ guides on transparent EUR pricing, Ras Mohammed vs Tiran reefs, hotel pickup zones, and first-time diving.',
+    'map_south_sinai' => 'SOUTH SINAI',
+    'map_gulf_suez' => 'GULF OF SUEZ',
+    'map_gulf_aqaba' => 'GULF OF AQABA',
+    'map_tiran' => 'Tiran Island',
+    'map_ras_mohammed' => 'Ras Mohammed',
+    'map_base' => '★ Sea College Base',
 ], (require __DIR__ . '/features_v2_i18n.php')['en'], (require __DIR__ . '/seo_faq_upgrades_i18n.php')['en']);

@@ -74,9 +74,10 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <link rel="alternate" hreflang="x-default" href="<?= e(canonical_url(DEFAULT_LANG)) ?>">
 <?php endif; ?>
 <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= e(SITE_URL . '/sitemap.xml') ?>">
+<link rel="alternate" type="text/plain" title="LLMs.txt (<?= e(strtoupper(LANG)) ?>)" href="<?= e(SITE_URL . page_link('/llms.txt')) ?>">
 <meta name="theme-color" content="#0B1D2C">
 <meta name="author" content="<?= e(SITE_NAME) ?>">
-<meta name="copyright" content="© <?= e(BUSINESS['founded'] . '–' . date('Y') . ' ' . SITE_NAME) ?>. All rights reserved.">
+<meta name="copyright" content="© <?= e(BUSINESS['founded'] . '–' . date('Y') . ' ' . SITE_NAME) ?>. <?= te('footer_rights') ?>">
 
 <!-- Open Graph / Twitter -->
 <meta property="og:type" content="<?= e($page['type'] ?? 'website') ?>">
@@ -91,6 +92,10 @@ $sc_css_file = ROOT_DIR . '/assets/css/dist/' . $sc_css_key . '.min.css';
 <?php foreach ($sc_og_locale as $sc_l => $sc_loc): if ($sc_l !== LANG): ?>
 <meta property="og:locale:alternate" content="<?= e($sc_loc) ?>">
 <?php endif; endforeach; ?>
+<?php if (LANG === 'ar'): ?>
+<meta property="og:locale:alternate" content="ar_AE">
+<meta property="og:locale:alternate" content="ar_SA">
+<?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="<?= e($sc_title) ?>">
 <meta name="twitter:description" content="<?= e($sc_desc) ?>">

@@ -15,7 +15,7 @@ require ROOT_DIR . '/includes/promo_banners.php';
 $catalog = require ROOT_DIR . '/data/catalog.php';
 $seoAll  = require ROOT_DIR . '/data/items_seo.php';
 
-$reqHub = strtolower(trim((string) ($_GET['hub'] ?? ''), '/'));
+$reqHub = strtolower(trim(sc_get_str('hub'), '/'));
 $found  = $reqHub !== '' ? catalog_find_hub($catalog, $reqHub) : null;
 
 if (!$found) {

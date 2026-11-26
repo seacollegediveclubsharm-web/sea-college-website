@@ -108,6 +108,10 @@ return [
             'title'   => 'Rastrelliere Bombole Ordinate & Ricariche Nitrox',
             'caption' => 'Bombole in alluminio da 12L e 15L, ricariche Aria Arricchita Nitrox e attrezzature revisionate ogni giorno.',
         ],
+        'tiran-briefing-video' => [
+            'title'   => 'Briefing Reef Stretto di Tiran — Thomas & Jackson Reef',
+            'caption' => 'Briefing dettagliato su mappa del nostro istruttore PADI su pareti verticali, lagune sabbiose e correnti a Tiran.',
+        ],
         23 => [
             'title'   => 'Briefing Reef Stretto di Tiran — Thomas & Jackson Reef',
             'caption' => 'Briefing dettagliato su mappa del nostro istruttore PADI su pareti verticali, lagune sabbiose e correnti a Tiran.',

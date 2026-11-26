@@ -140,10 +140,10 @@ return [
     ],
 
     'dsd-2-boat' => [
-        'h1' => 'Giornata in Yacht + 2 Immersioni Battesimo del Mare a Sharm El Sheikh (€100)',
-        'meta_title' => 'Battesimo del Mare in Barca Sharm €100 | 2 Immersioni Tutto Incluso',
-        'meta_desc' => 'Il Battesimo del Mare n°1 a Sharm El Sheikh! €100 tutto incluso: giornata intera in yacht, 2 immersioni guidate (15 min cad.), pranzo, bevande, tassa parco e transfer.',
-        'aeo_answer' => 'Il pacchetto Giornata in Yacht con 2 Immersioni Introduttive presso Sea College Dive Club a Sharm El Sheikh costa €100 tutto incluso (~8 ore, età minima 10 anni): comprende trasferimenti hotel, tassa parco marino, pranzo a buffet, bevande, attrezzatura completa e 2 immersioni guidate 1-a-1 di 15 minuti ciascuna su due diversi siti corallini del Mar Rosso.',
+        'h1' => 'Battesimo del Mare & Prova Sub in Barca a Sharm El Sheikh — 2 Immersioni (€100)',
+        'meta_title' => 'Battesimo del Mare & Prova Sub Barca Sharm €100 | 2 Tuffi',
+        'meta_desc' => 'Battesimo del Mare e prova sub in barca a Sharm El Sheikh (€100 tutto incluso): 2 immersioni 1-a-1 con istruttori in italiano, pranzo, tassa parco e transfer!',
+        'aeo_answer' => 'Il pacchetto Battesimo del Mare & Prova Sub in Barca con 2 Immersioni presso Sea College Dive Club a Sharm El Sheikh costa €100 tutto incluso (~8 ore, età minima 10 anni): comprende istruttori parlanti italiano, trasferimenti hotel, tassa parco marino, pranzo a buffet, bevande, attrezzatura completa e 2 immersioni guidate 1-a-1 di 15 minuti ciascuna su due diversi siti corallini del Mar Rosso.',
         'overview' => [
             'Ecco l’esperienza per principianti più prenotata e amata di tutta Sharm El Sheikh! Con un’unica tariffa chiara di €100 tutto incluso salpi a bordo di un confortevole yacht verso le barriere coralline più spettacolari del Mar Rosso (Stretto di Tiran o Parco Nazionale di Ras Mohammed) per effettuare ben 2 vere immersioni introduttive su due reef differenti.',
             'Accompagnato in acqua 1-a-1 dai nostri istruttori PADI (4,9★ su oltre 3.082 recensioni), nella prima immersione scopri la magia di respirare sott’acqua e nella seconda voli leggero tra torri di corallo, tartarughe, pesci napoleone e anthias arancioni — con pranzo caldo a bordo, bibite, tassa parco e trasferimenti inclusi senza tirare fuori un solo euro extra!',
@@ -214,7 +214,7 @@ return [
         ],
         'excluded' => [
             'Noleggio attrezzatura personale se non porti la tua (€25/giorno set completo o pezzi singoli)',
-            'Assicurazione subacquea giornaliera (€7/giorno)',
+            'Assicurazione subacquea temporanea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
         ],
         'ideal_for' => [
             'Subacquei brevettati la cui ultima immersione risale a 6–12 mesi fa',
@@ -258,7 +258,7 @@ return [
         ],
         'excluded' => [
             'Noleggio attrezzatura subacquea se non possiedi la tua (€25/giorno set completo)',
-            'Assicurazione subacquea giornaliera (€7/giorno)',
+            'Assicurazione subacquea temporanea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
         ],
         'ideal_for' => [
             'Subacquei brevettati che non si immergono da più di 1 anno (anche dopo 5–10+ anni di pausa!)',
@@ -267,7 +267,7 @@ return [
         ],
         'faqs' => [
             ['q' => 'Non mi immergo da 8 anni: devo rifare tutto il corso Open Water da capo?', 'a' => 'Assolutamente no! Un brevetto PADI (o SSI/CMAS/FIPSAS) non scade mai: con questa mezza giornata di Scuba Review a €50 recuperi tutta la manualità necessaria senza rifare il corso.'],
-            ['q' => 'L’attrezzatura a noleggio è inclusa nei €50?', 'a' => 'Bombola 12L e piombi sono inclusi come in tutte le uscite per brevettati; se non porti la tua attrezzatura dall’Italia, il set completo costa €25/giorno (oppure singoli pezzi da €4–€6).'],
+            ['q' => 'L’attrezzatura a noleggio è inclusa nei €50?', 'a' => 'Bombola 12L e piombi sono inclusi come in tutte le uscite per brevettati; se non porti la tua attrezzatura dall’Italia, il set completo costa €25/giorno (oppure singoli pezzi da €4–€13).'],
             ['q' => 'Posso fare lo Scuba Review prima di iniziare il corso Advanced?', 'a' => 'È la scelta più saggia in assoluto se sei fermo da oltre un anno: ti rimette perfettamente in bolla prima delle 5 Immersioni di Avventura fino a 30 m!'],
         ],
     ],
@@ -302,7 +302,7 @@ return [
         ],
         'excluded' => [
             'Supplemento barca (€10/giorno, include pranzo caldo a buffet a bordo!) e tassa parco marino (€5/giorno)',
-            'Noleggio attrezzatura personale (€25/giorno set completo) e assicurazione sub (€7/giorno o €20 per 3 giorni)',
+            'Noleggio attrezzatura personale (€25/giorno set completo) e assicurazione sub (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
             'Eventuali ricariche Nitrox EANx32 (€8/bombola 12L) o terza immersione giornaliera facoltativa',
         ],
         'ideal_for' => [
@@ -347,7 +347,7 @@ return [
         ],
         'excluded' => [
             'Supplemento barca (€10/giorno con pranzo caldo a buffet incluso!) e tassa parco (€5/giorno)',
-            'Noleggio attrezzatura se necessaria (€25/giorno completa) e assicurazione sub (€32 per 7 giorni)',
+            'Noleggio attrezzatura se necessaria (€25/giorno completa) e assicurazione sub (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
             'Ricariche Nitrox EANx32 (€8/bombola 12L) e supplementi facoltativi relitti/Dahab',
         ],
         'ideal_for' => [
@@ -358,7 +358,7 @@ return [
         'faqs' => [
             ['q' => 'Come funziona se voglio andare sulla SS Thistlegorm avendo il Pacchetto 10 Immersioni?', 'a' => 'Semplicissimo! Le 2 immersioni sul Thistlegorm vengono scalate normalmente dalle 10 del tuo pacchetto: paghi soltanto il supplemento speciale Thistlegorm di €150 per la spedizione all’alba!'],
             ['q' => 'Posso aggiungere una terza immersione nello stesso giorno in barca?', 'a' => 'Quando il programma della barca prevede la 3ª immersione opzionale (o un’immersione notturna sull’House Reef), grazie al tuo pacchetto da 10 la paghi soltanto €30 come immersione extra!'],
-            ['q' => 'Avete l’assicurazione subacquea settimanale in loco?', 'a' => 'Sì, se non hai una polizza annuale DAN attiva, puoi attivare direttamente da noi la copertura temporanea da 7 giorni (€32) o 14 giorni (€40).'],
+            ['q' => 'Avete l’assicurazione subacquea settimanale in loco?', 'a' => 'Sì, se non hai una polizza annuale DAN attiva, puoi attivare direttamente da noi la copertura temporanea: €15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni o €45 per 14 giorni.'],
         ],
     ],
 ];

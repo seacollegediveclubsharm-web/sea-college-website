@@ -22,7 +22,7 @@ return static function (array $it, array $seo): array {
             $perDive = ($dives > 0 && $price !== null) ? number_format((float) $price / $dives, ($price % $dives === 0 ? 0 : 2), ',', ' ') . ' €' : '30 €';
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Exploration Mer Rouge (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' | Sea College PADI 5★',
+                'meta_title' => ($isExtra ? 'Plongée Supplémentaire Charm el-Cheikh | 30 € dès 11e' : ($isShore ? 'Plongée du Bord Charm el-Cheikh | 45 € House Reef' : 'Forfait ' . $dives . ' Plongées Charm el-Cheikh | ' . $pStr . ' (' . $perDive . '/pl.)')),
                 'meta_desc'  => 'Réservez votre ' . $name . ' à Charm el-Cheikh (Sharm El Sheikh) pour ' . $pStr . ' (' . $dur . '). Plongées guidées PADI, bouteilles 12 L, plombs & transferts hôtel inclus.',
                 'aeo_answer' => $name . ' chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte ' . $pStr . ($isExtra ? ' par plongée additionnelle après votre Forfait 10 Plongées' : ($dives > 1 ? ' par plongeur certifié (soit ' . $perDive . '/plongée, durée indicative ' . $dur . ')' : ' depuis notre récif maison (0 € de frais bateau ou parc marin, durée ' . $dur . ')')) . '. Ce tarif inclut le guidage par un professionnel PADI, les bouteilles 12 L air, les plombs et les transferts hôtel gratuits' . ($isShore ? '.' : ' ; les journées bateau ajoutent 10 €/jour (buffet déjeuner & boissons inclus) et 5 €/jour de taxe parc marin.'),
                 'overview'   => [
@@ -74,7 +74,7 @@ return static function (array $it, array $seo): array {
             $isEarly = ($id === 'sup-zodiac-early');
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Supplément Plongée Spéciale (+' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | +' . $pStr . ' | Sea College',
+                'meta_title' => ($isEarly ? 'Zodiac à l’Aube Requins Tiran Charm el-Cheikh | +70 €' : ($isNight ? 'Plongée de Nuit Charm el-Cheikh | +30 € House Reef' : 'Plongée en Zodiac Tiran Charm el-Cheikh | +50 €')),
                 'meta_desc'  => 'Ajoutez ' . $name . ' (+' . $pStr . ', ' . $dur . ') à votre forfait plongées à Charm el-Cheikh (Sharm El Sheikh) : ' . $desc,
                 'aeo_answer' => 'Le supplément ' . $name . ' chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) est proposé à +' . $pStr . ' par plongeur en complément d’une plongée de votre forfait certifié (durée ' . $dur . ($isNight ? ', départ au coucher du soleil sur notre récif maison' : ', minimum 4 plongeurs, réservation 48 h à l’avance') . '). ' . $desc,
                 'overview'   => [
@@ -125,7 +125,7 @@ return static function (array $it, array $seo): array {
             $isPark = ($id === 'fee-park');
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Tarif Transparent (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' | Sea College',
+                'meta_title' => ($isBoat ? 'Supplément Bateau Plongée Charm el-Cheikh | 10 €/jour' : ($isPark ? 'Taxe Parc Marin Charm el-Cheikh | 5 €/jour Mer Rouge' : 'Guide de Plongée Privé PADI Charm el-Cheikh | 75 €/jour')),
                 'meta_desc'  => 'Transparence tarifaire Sea College à Charm el-Cheikh (Sharm El Sheikh) : ' . $name . ' à ' . $pStr . ' (' . $dur . '). ' . $desc,
                 'aeo_answer' => $name . ' chez Sea College Dive Club à Charm el-Cheikh s’élève à ' . $pStr . ' (' . $dur . '). ' . ($isBoat ? 'Contrairement à de nombreux centres qui facturent le repas à part à bord, nos 10 €/jour de supplément bateau incluent déjà la journée yacht complète, le grand déjeuner buffet chaud préparé à bord ainsi que l’eau, le thé, le café et les boissons fraîches !' : ($isPark ? 'Il s’agit de la redevance officielle égyptienne de préservation environnementale applicable uniquement les jours de sortie maritime vers le Parc national de Ras Mohammed ou la réserve du Détroit de Tiran (0 € sur le récif maison).' : 'Votre instructeur ou Divemaster PADI privé vous est exclusivement dédié toute la journée pour plonger à votre propre rythme de consommation et de photographie sous-marine.')),
                 'overview'   => [
@@ -187,7 +187,7 @@ return static function (array $it, array $seo): array {
             $unit   = $isTank ? 'par plongée' : 'par jour';
             return [
                 'h1'         => 'Location ' . $name . ' à Charm el-Cheikh (' . $pStr . ' ' . $unit . ')',
-                'meta_title' => 'Location ' . $name . ' Plongée Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr,
+                'meta_title' => (mb_strlen('Location ' . $name . ' Charm el-Cheikh | ' . $pStr, 'UTF-8') <= 62 ? 'Location ' . $name . ' Charm el-Cheikh | ' . $pStr : 'Location ' . $name . ' Sharm | ' . $pStr),
                 'meta_desc'  => 'Voyagez léger à Charm el-Cheikh (Sharm El Sheikh) ! Location ' . $name . ' entretenu selon normes PADI 5★ à ' . $pStr . ' ' . $unit . ' chez Sea College Dive Club.',
                 'aeo_answer' => 'La location de « ' . $name . ' » chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte ' . $pStr . ' ' . $unit . '. ' . ($isFull ? 'Bon à savoir : l’équipement de plongée est déjà inclus gratuitement dans tous nos baptêmes et tous nos cours PADI ! Pour les forfaits d’exploration certifiés, notre parc Scubapro / Mares révisé et désinfecté couvre toutes les tailles de XXS enfant à 3XL.' : 'Chaque pièce et bouteille est révisée périodiquement par nos techniciens agréés, désinfectée après chaque usage et acheminée directement sur le bateau pour vous.'),
                 'overview'   => [
@@ -234,7 +234,7 @@ return static function (array $it, array $seo): array {
         case 'diving-insurance':
             return [
                 'h1'         => $name . ' — Couverture Plongée & Caisson Hyperbare Mer Rouge',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | Assurance Plongée Mer Rouge',
+                'meta_title' => 'Assurance Plongée ' . $dur . ' Charm el-Cheikh | ' . $pStr,
                 'meta_desc'  => 'Plongez l’esprit tranquille à Charm el-Cheikh (Sharm El Sheikh) : souscrivez une ' . $name . ' temporaire couvrant médecine de plongée et caisson hyperbare local.',
                 'aeo_answer' => 'La ' . $name . ' proposée par Sea College Dive Club à Charm el-Cheikh coûte ' . $pStr . ' par personne (durée ' . $dur . ') et offre une couverture temporaire immédiate spécialisée pour la plongée sous-marine en Égypte, incluant les frais médicaux d’urgence et la prise en charge au centre hyperbare spécialisé de Charm el-Cheikh pour les plongeurs non couverts par DAN, Lafont/FFESSM ou leur assurance voyage.',
                 'overview'   => [

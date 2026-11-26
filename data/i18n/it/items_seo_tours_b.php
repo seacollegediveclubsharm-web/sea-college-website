@@ -272,7 +272,7 @@ return [
         'faqs' => [
             ['q' => 'Il prezzo di €150 è a persona o per tutta la barca?', 'a' => '€150 è il prezzo totale del motoscafo privato fino a 2 passeggeri (€75 a testa in coppia!). Se siete in 3, 4 o 5 persone, ogni ospite aggiuntivo dal 3° al 5° paga €75.'],
             ['q' => 'Qual è l’orario migliore per prenotare le 2 ore di motoscafo?', 'a' => 'Il primo turno del mattino (~08:30) ti regala Tiran completamente deserta prima dell’arrivo degli yacht giornalieri; il turno pomeridiano (~14:30–15:00) offre acqua caldissima e luce spettacolare!'],
-            ['q' => 'C’è anche un’opzione più breve o più lunga?', 'a' => 'Sì! Offriamo anche il giro veloce da 1 ora (€90 per 2 ospiti) e il tour esteso da 3 ore (€200 per 2 ospiti).'],
+            ['q' => 'C’è anche un’opzione più breve o più lunga?', 'a' => 'Sì! Offriamo anche il giro veloce da 1 ora (€75 fino a 3 ospiti) e il tour esteso da 3 ore (€225 per 2 ospiti).'],
         ],
     ],
 
@@ -315,7 +315,7 @@ return [
             'Gruppi misti di subacquei brevettati, principianti e amanti dello snorkeling che vogliono stare tutti insieme',
         ],
         'faqs' => [
-            ['q' => 'Cosa succede se siamo meno di 6 o più di 10 persone?', 'a' => 'Abbiamo taglie di barca dedicate per ogni gruppo: 1–5 ospiti (€450), 6–10 ospiti (€650), 11–15 ospiti (€850) e grandi yacht da 16–20 ospiti (€1.100)!'],
+            ['q' => 'Cosa succede se siamo meno di 6 o più di 10 persone?', 'a' => 'Abbiamo taglie di barca dedicate per ogni gruppo: 1–5 ospiti (€550), 6–10 ospiti (€650), 11–15 ospiti (€900) e grandi yacht da 16–20 ospiti (€1.100)!'],
             ['q' => 'Possiamo aggiungere pranzo fresco cucinato a bordo e immersioni subacquee?', 'a' => 'Certamente! Basta scrivercelo al momento della richiesta: il cuoco di bordo può preparare pesce/carne alla griglia o buffet egiziano, e possiamo imbarcare bombole e istruttori PADI solo per voi.'],
             ['q' => 'Con quanto anticipo conviene prenotare uno yacht privato a Sharm?', 'a' => 'Consigliamo di bloccare la data almeno 3–7 giorni prima (specialmente ad agosto, Pasqua, autunno e Capodanno) per predisporre i permessi della Guardia Costiera e l’imbarcazione migliore.'],
         ],

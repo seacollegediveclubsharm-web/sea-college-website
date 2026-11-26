@@ -11,9 +11,17 @@ return static function (array $it, string $gid, string $name, string $desc, stri
 
     if (in_array($gid, ['beginner-courses', 'advanced-rescue', 'specialty-courses', 'kids-courses', 'go-pro', 'saver-bundles'], true)) {
         $minAge = str_contains($desc, '15') ? 'Ukończone 15 lat' : (str_contains($desc, '12') ? 'Ukończone 12 lat' : 'Od 10 lat (lub zgodnie ze standardem PADI)');
+        $shortCourse = $id === 'spec-2'
+            ? 'Specjalizacja PADI (2 nurk.)'
+            : ($id === 'spec-3'
+                ? 'Nawigacja Podwodna PADI (3 nurk.)'
+                : ($id === 'adaptive' ? 'PADI Adaptive Support Diver' : $name));
+        $cMt = mb_strlen("{$shortCourse} Sharm El Sheikh | {$priceLabel}", 'UTF-8') <= 62
+            ? "{$shortCourse} Sharm El Sheikh | {$priceLabel}"
+            : "{$shortCourse} Sharm | {$priceLabel}";
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Autoryzowana Baza PADI 5 Gwiazdek",
-            'meta_title' => "{$name} Sharm El Sheikh | {$priceLabel} | Sea College PADI 5★",
+            'meta_title' => $cMt,
             'meta_desc'  => "Zrób szkolenie {$name} w Sharm El Sheikh (Szarm el-Szejk) za {$priceLabel} ({$dur}). {$desc} Kompletny sprzęt nurkowy i opieka instruktora PADI w cenie.",
             'aeo_answer' => "Szkolenie {$name} w Sea College Dive Club (autoryzowanym centrum PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh) kosztuje {$priceLabel} za osobę i trwa {$dur}. {$desc} W cenę wliczone jest wypożyczenie pełnego sprzętu nurkowego oraz prowadzenie przez wielojęzycznego instruktora PADI (+85 € opłata za oficjalny podręcznik i certyfikat PADI).",
             'overview'   => [
@@ -28,7 +36,7 @@ return static function (array $it, string $gid, string $name, string $desc, stri
                 ['Miejsce szkolenia', 'Sea College Dive Club — Cyrene Sharm, Al Montazah (Sharm El Sheikh)'],
             ],
             'steps' => [
-                ['Wprowadzenie teoretyczne i planowanie', 'Omówienie celów szkoleniowych, procedur bezpieczeństwa oraz konfiguracji sprzętu z instruktorem PADI.'],
+                ['Wprowadzenie teoretyczne i planowanie', 'Omówienie celów szkoleniowych, procedur bezpieczeństwa oraz konfiguracji sprzętu z instruktora PADI.'],
                 ['Praktyczne ćwiczenia kierunkowe', 'Krok po kroku szlifujesz kluczowe techniki specjalizacji pod bezpośrednim okiem instruktora.'],
                 ['Nurkowania zaliczeniowe w Morzu Czerwonym', 'Zastosowanie zdobytych umiejętności na żywej rafie koralowej przy widoczności 25–35 m.'],
                 ['Podsumowanie i certyfikacja PADI eCard', 'Wpis i pieczątka PADI 5 Star Resort w logbooku oraz wydanie międzynarodowego certyfikatu PADI!'],
@@ -59,9 +67,16 @@ return static function (array $it, string $gid, string $name, string $desc, stri
 
     if ($gid === 'snorkeling-trips') {
         $isNight = $id === 'snork-beach-night';
+        $snkMt = $id === 'snork-ras-child'
+            ? 'Biała Wyspa & Ras Mohammed Dziecko (5–12 lat) | 30 € Sharm'
+            : ($id === 'snork-ras-land'
+                ? 'Snurkowanie Ras Mohammed Autobusem Sharm | 60 € All-In'
+                : ($isNight
+                    ? 'Nocne Snurkowanie z Plaży Sharm El Sheikh | 40 € z Latarką'
+                    : 'Snurkowanie z Plaży (Rafa Domowa) Sharm El Sheikh | 35 €'));
         return [
-            'h1'         => "{$name} w Sharm El Sheikh — Wycieczka Snorkelingowa z Przewodnikiem",
-            'meta_title' => "{$name} Sharm El Sheikh | {$priceLabel} | Sea College",
+            'h1'         => "{$name} w Sharm El Sheikh — Wycieczka na Snurkowanie z Przewodnikiem",
+            'meta_title' => $snkMt,
             'meta_desc'  => "Zarezerwuj wycieczkę {$name} w Sharm El Sheikh (Szarm el-Szejk) za {$priceLabel} ({$dur}). {$desc}",
             'aeo_answer' => "Wycieczka {$name} z bazą Sea College Dive Club w Sharm El Sheikh kosztuje {$priceLabel} i trwa {$dur}. {$desc} Obejmuje profesjonalną opiekę przewodnika w wodzie, maskę, kamizelkę asekuracyjną, opłaty parkowe oraz klimatyzowany transfer w obie strony spod hotelu w Sharm El Sheikh.",
             'overview'   => [
@@ -73,19 +88,19 @@ return static function (array $it, string $gid, string $name, string $desc, stri
             'specs' => [
                 ['Cena biletu', $priceLabel],
                 ['Czas trwania', $dur],
-                ['Sprzęt w cenie', $isNight ? 'Latarka podwodna LED, maska i kamizelka asekuracyjna' : 'Maska do snorkelingu i kamizelka asekuracyjna'],
+                ['Sprzęt w cenie', $isNight ? 'Latarka podwodna LED, maska i kamizelka asekuracyjna' : 'Maska do snurkowania i kamizelka asekuracyjna'],
                 ['Transfery i opłaty', 'Odbiór i powrót do hotelu w Sharm El Sheikh oraz opłaty parkowe w cenie'],
                 ['Wymagane doświadczenie', 'Brak — dostępne kamizelki wypornościowe dla dorosłych i dzieci'],
             ],
             'steps' => [
                 ['Odbiór klimatyzowanym busem z hotelu', 'Wygodny przejazd spod recepcji Twojego hotelu w Sharm El Sheikh na miejsce startu wycieczki.'],
                 ['Dobór maski, kamizelki i odprawa', 'Dopasowanie sprzętu oraz krótkie omówienie zasad bezpiecznego pływania nad rafą koralową (zakaz dotykania korali!).'],
-                ['Snorkeling z przewodnikiem nad rafą', 'Odkrywanie barwnych koralowców, błazenków, papugoryb i płaszczek pod stałą opieką naszego przewodnika.'],
+                ['Snurkowanie z przewodnikiem nad rafą', 'Odkrywanie barwnych koralowców, błazenków, papugoryb i płaszczek pod stałą opieką naszego przewodnika.'],
                 ['Odpoczynek i powrót do hotelu', 'Czas na relaks, pamiątkowe zdjęcia oraz odwiezienie prosto do Twojego resortu.'],
             ],
             'included' => [
                 'Klimatyzowany transfer w obie strony z dowolnego hotelu w Sharm El Sheikh',
-                'Maska do snorkelingu oraz kamizelka asekuracyjna' . ($isNight ? ' + latarka podwodna LED' : ''),
+                'Maska do snurkowania oraz kamizelka asekuracyjna' . ($isNight ? ' + latarka podwodna LED' : ''),
                 'Opieka przewodnika Sea College w wodzie oraz bilety wstępu do strefy chronionej',
                 str_contains(strtolower($it['name'] ?? ''), 'boat') ? 'Świeży obiad w formie bufetu i napoje bezalkoholowe na jachcie' : 'Organizacja całej trasy i asekuracja z brzegu/łodzi',
             ],
@@ -108,12 +123,20 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     }
 
     if ($gid === 'private-speedboats') {
+        $extraRate = $id === 'speed-1h' ? '+50 €/os.' : ($id === 'speed-2h' ? '+75 €/os.' : '+100 €/os.');
         $extraInfo = $id === 'speed-1h'
             ? 'do 3 osób w cenie bazowej (maks. 5 osób; 4. i 5. osoba +50 €/os.)'
-            : 'dla 2 osób w cenie bazowej (maks. 5 osób; 3., 4. i 5. osoba +100 €/os.)';
+            : ($id === 'speed-2h'
+                ? 'dla 2 osób w cenie bazowej (maks. 5 osób; 3., 4. i 5. osoba +75 €/os.)'
+                : 'dla 2 osób w cenie bazowej (maks. 5 osób; 3., 4. i 5. osoba +100 €/os.)');
+        $spdMt = $id === 'speed-1h'
+            ? 'Prywatna Motorówka Sharm El Sheikh 1 godz. | 75 € / Łódź'
+            : ($id === 'speed-2h'
+                ? 'Prywatna Motorówka Wyspa Tiran 2 godz. | 150 € / Łódź'
+                : 'Prywatna Motorówka Wyspa Tiran 3 godz. | 225 € / Łódź');
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Prywatny Rejs Speedboat z Al Montazah",
-            'meta_title' => "{$name} Sharm El Sheikh | {$price} € / Łódź | Sea College",
+            'meta_title' => $spdMt,
             'meta_desc'  => "Wynajmij prywatną motorówkę ({$name}) w Sharm El Sheikh za {$price} € za łódź ({$dur}). {$desc}",
             'aeo_answer' => "Prywatny rejs motorówką {$name} w Sea College Dive Club w Sharm El Sheikh kosztuje {$price} € za całą jednostkę ({$extraInfo}) i trwa {$dur}. Startując bezpośrednio z naszej plaży w Al Montazah naprzeciwko wyspy Tiran, omijasz tłumy dużych statków i w kilka minut docierasz nad krystaliczne ogrody koralowe — z maskami, kamizelkami i transferem hotelowym w cenie.",
             'overview'   => [
@@ -135,12 +158,12 @@ return static function (array $it, string $gid, string $name, string $desc, stri
             ],
             'included' => [
                 "Prywatna motorówka z kapitanem na wyłączność ({$dur})",
-                'Maski do snorkelingu i kamizelki asekuracyjne dla uczestników',
+                'Maski do snurkowania i kamizelki asekuracyjne dla uczestników',
                 'Transfer w obie strony z hotelu w Sharm El Sheikh oraz paliwo',
                 'Zadaszenie przeciwsłoneczne bimini i drabinka zejściowa do wody',
             ],
             'excluded' => [
-                'Dopłata za dodatkowe osoby powyżej limitu bazowego (zgodnie z cennikiem: +50 € / +100 € za os., maks. 5 os.)',
+                "Dopłata za dodatkowe osoby powyżej limitu bazowego (zgodnie z cennikiem: {$extraRate}, maks. 5 os.)",
                 'Ręczniki plażowe oraz ewentualne indywidualne opłaty parkowe',
                 'Posiłki na pokładzie (na całodniowy czarter z obiadem sprawdź Prywatną Łódź od 550 €)',
             ],
@@ -158,9 +181,10 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     }
 
     if ($gid === 'private-charters') {
+        $paxPl = $id === 'private-1-5' ? '1–5 os.' : ($id === 'private-6-10' ? '6–10 os.' : ($id === 'private-11-15' ? '11–15 os.' : '16–20 os.'));
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Wynajem Prywatnego Jachtu na Cały Dzień",
-            'meta_title' => "{$name} Sharm El Sheikh | {$price} € / Jacht | Sea College",
+            'meta_title' => "Prywatny Jacht Sharm El Sheikh ({$paxPl}) | {$price} € / Dzień",
             'meta_desc'  => "Wyczarteruj prywatny jacht motorowy ({$name}) w Sharm El Sheikh za {$price} € za cały dzień (7–8 godz.). Ras Mohammed i Biała Wyspa lub Tiran tylko dla Was!",
             'aeo_answer' => "Całodniowy czarter {$name} w Sea College Dive Club w Sharm El Sheikh kosztuje {$price} € za całą prywatną jednostkę na 7–8 godzin. Wasza rodzina lub grupa przyjaciół otrzymuje przestronny jacht motorowy na Morzu Czerwonym wraz z kapitanem i załogą wyłącznie dla siebie, wybierając kierunek Park Narodowy Ras Mohammed i Biała Wyspa lub Cieśnina Tiran — z opcją snorkelingu oraz nurkowań Intro i certyfikowanych.",
             'overview'   => [

@@ -38,7 +38,7 @@ return static function (array $it, array $seo): array {
 
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Nurkowanie dla Certyfikowanych",
-            'meta_title' => "{$name} Sharm El Sheikh | {$price} € ({$perDive} €/Nurk.) | Sea College",
+            'meta_title' => ($isExtra ? 'Dodatkowe Nurkowanie po 10. Sharm El Sheikh | 30 €' : ($dives === 1 ? 'Nurkowanie z Brzegu Sharm El Sheikh | 45 € Rafa Domowa' : "Pakiet {$dives} Nurkowań Sharm El Sheikh | {$price} € ({$perDive} €/nurk.)")),
             'meta_desc'  => "Zarezerwuj imienny {$name} w Sharm El Sheikh (Szarm el-Szejk) za {$price} € ({$perDive} €/nurkowanie). Przewodnik PADI, butle 12 l, balast i transfer z hotelu w cenie!",
             'aeo_answer' => "{$name} w bazie Sea College Dive Club (PADI 5 Gwiazdek w Al Montazah, Sharm El Sheikh) kosztuje {$price} € za certyfikowanego nurka ({$perDive} € za nurkowanie{$saveTxt}) i realizowany jest w czasie: {$dur}. W cenę wliczony jest certyfikowany przewodnik PADI, aluminiowe butle 12 l z powietrzem, pas balastowy z ołowiem oraz transfery z/do hotelu w Sharm El Sheikh (w dni z łodzi obowiązuje dzienna dopłata łodziowa 10 € z obiadem i napojami oraz opłata za park morski 5 €).",
             'overview'   => [
@@ -90,7 +90,7 @@ return static function (array $it, array $seo): array {
         $minPax = str_contains($desc, '4') ? 'Minimum 4 certyfikowanych nurków (rezerwacja min. 48 h wcześniej)' : 'Certyfikowany nurek OWD lub wyżej';
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Specjalna Dopłata do Pakietu",
-            'meta_title' => "{$name} Sharm El Sheikh | Dopłata +{$price} € | Sea College PADI",
+            'meta_title' => ($id === 'sup-zodiac-early' ? 'Poranny Zodiac Rekiny Młoty Tiran Sharm | +70 €' : ($id === 'sup-zodiac' ? 'Nurkowanie z Pontonu Zodiac Sharm El Sheikh | +50 €' : 'Nurkowanie Nocne lub o Świcie Sharm El Sheikh | +30 €')),
             'meta_desc'  => "Wzbogać swój pakiet nurkowy w Sharm El Sheikh o {$name} (+{$price} €, {$dur}). {$desc}",
             'aeo_answer' => "Opcja specjalna {$name} w Sea College Dive Club w Sharm El Sheikh kosztuje +{$price} € dopłaty za osobę ponad nurkowanie z Twojego pakietu certyfikowanego i trwa około {$dur}. {$desc} Zapewnia opiekę przewodnika PADI, butlę 12 l, balast oraz pełną logistykę łodzi/pontonu RIB lub zejścia nocnego.",
             'overview'   => [
@@ -139,7 +139,7 @@ return static function (array $it, array $seo): array {
         $isGuide = ($id === 'private-guide');
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Przejrzyste Zasady i Stawki ({$priceLabel})",
-            'meta_title' => "{$name} Sharm El Sheikh | {$priceLabel} | Sea College Cennik",
+            'meta_title' => ($isGuide ? 'Prywatny Przewodnik PADI Sharm El Sheikh | 75 €/dzień' : ($id === 'fee-boat' ? 'Dopłata Łodziowa Nurkowanie Sharm El Sheikh | 10 €/dzień' : 'Opłata za Park Morski Sharm El Sheikh | 5 €/dzień')),
             'meta_desc'  => "Sprawdź dokładne zasady pozycji {$name} ({$priceLabel}) w bazie Sea College Dive Club w Sharm El Sheikh: {$desc}",
             'aeo_answer' => "Pozycja cennikowa {$name} w Sea College Dive Club w Sharm El Sheikh wynosi {$priceLabel}. {$desc} Publikujemy każdą stawkę dzienną otwarcie na stronie i w kalkulatorze budżetu, abyś znał co do euro całkowity koszt swojego wyjazdu jeszcze przed wylotem z Polski.",
             'overview'   => [
@@ -190,7 +190,7 @@ return static function (array $it, array $seo): array {
         $isTank = str_starts_with($id, 'eq-12') || str_starts_with($id, 'eq-15') || $id === 'eq-sm-tank';
         return [
             'h1'         => "Wypożyczenie: {$name} w Sharm El Sheikh ({$priceLabel})",
-            'meta_title' => "{$name} — Wypożyczalnia Sprzętu Nurkowego Sharm | {$priceLabel} | Sea College",
+            'meta_title' => (mb_strlen("{$name} — Wypożyczenie Sharm | {$price} €/dzień", 'UTF-8') <= 62 ? "{$name} — Wypożyczenie Sharm | {$price} €/dzień" : "{$name} Sharm | {$price} €/dzień"),
             'meta_desc'  => "Podróżuj z lekkim bagażem do Egiptu! Wypożycz {$name} w Sharm El Sheikh (Szarm el-Szejk) za {$priceLabel}. {$desc} Serwisowany sprzęt w bazie PADI 5★.",
             'aeo_answer' => "Dzienne wypożyczenie pozycji „{$name}” w bazie Sea College Dive Club w Sharm El Sheikh kosztuje {$priceLabel}. {$desc} Cały nasz sprzęt przechodzi regularne przeglądy autoryzowanych techników oraz dezynfekcję po każdym użyciu (pamiętaj: na wszystkich kursach PADI oraz nurkowaniach Intro pełny sprzęt podstawowy jest już wliczony w cenę 0 €!).",
             'overview'   => [
@@ -240,7 +240,7 @@ return static function (array $it, array $seo): array {
     if ($gid === 'diving-insurance') {
         return [
             'h1'         => "{$name} w Sharm El Sheikh — Ochrona Komory Dekompresyjnej",
-            'meta_title' => "{$name} Sharm El Sheikh | Ubezpieczenie Nurkowe | Sea College",
+            'meta_title' => "Ubezpieczenie Nurkowe {$dur} Sharm El Sheikh | {$price} €",
             'meta_desc'  => "Wykup krótkoterminowe {$name} w Sharm El Sheikh (Szarm el-Szejk). Obejmuje leczenie w komorze hiperbarycznej i ratownictwo medyczne nad Morzem Czerwonym.",
             'aeo_answer' => "Krótkoterminowe {$name} w Sea College Dive Club w Sharm El Sheikh kosztuje {$priceLabel} za osobę i zapewnia pełną ochronę kosztów leczenia nurkowego oraz komory dekompresyjnej (hiperbarycznej) przez okres {$dur}. Aktywacja polisy trwa zaledwie 2 minuty w naszej bazie przed pierwszym zejściem pod wodę.",
             'overview'   => [

@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'dsd-quick-reef' => [
         'h1' => 'Schnuppertauchen Kompakt am Hausriff in Sharm El Sheikh (30 €)',
-        'meta_title' => 'Schnuppertauchen Sharm El Sheikh | 30 € Hausriff | Sea College',
+        'meta_title' => 'Schnuppertauchen Sharm El Sheikh | 30 € Hausriff Komplett',
         'meta_desc' => 'Noch nie getaucht? Probieren Sie Schnuppertauchen an unserem ruhigen Hausriff in Al Montazah, Sharm El Sheikh für 30 € — inkl. Leihausrüstung & 1-zu-1 PADI Tauchlehrer!',
         'aeo_answer' => 'Das Kompakt-Schnuppertauchen am Hausriff (Quick Discover Scuba Diving) im Sea College Dive Club kostet 30 € pro Person und dauert insgesamt rund 2 Stunden an unserer PADI 5 Sterne Strandbasis im Cyrene Sharm, Al Montazah. Speziell für absolute Einsteiger ab 10 Jahren ohne Vorkenntnisse konzipiert, umfasst es eine verständliche Sicherheitseinweisung, die komplette Tauchausrüstung, Atemübungen im stehtiefen Wasser und 1 geführten 10-minütigen Tauchgang am Korallenriff.',
         'overview' => [
@@ -49,7 +49,7 @@ return [
 
     'dsd-2-reef' => [
         'h1' => 'Discover Scuba Diving (2 Schnuppertauchgänge) am Hausriff in Sharm El Sheikh',
-        'meta_title' => '2 Schnuppertauchgänge Hausriff Sharm | 75 € Komplett | Sea College',
+        'meta_title' => '2 Schnuppertauchgänge Hausriff Sharm El Sheikh | 75 €',
         'meta_desc' => 'Doppelter Tauchspaß ohne Bootsfahrt: 2 geführte 15-Minuten-Schnuppertauchgänge an unserem ruhigen Hausriff in Sharm El Sheikh (75 € inkl. Leihausrüstung & PADI Lehrer).',
         'aeo_answer' => 'Discover Scuba Diving mit 2 Schnuppertauchgängen am Hausriff kostet im Sea College Dive Club in Sharm El Sheikh 75 € pro Person und dauert rund 3 Stunden an unserer Strandbasis in Al Montazah. Für Einsteiger ab 10 Jahren ohne Vorkenntnisse beinhaltet das Paket eine ausführliche Einweisung, die komplette Tauchausrüstung und zwei 15-minütige Korallenriff-Tauchgänge mit entspannter Oberflächenpause dazwischen.',
         'overview' => [
@@ -91,7 +91,7 @@ return [
 
     'dsd-quick-boat' => [
         'h1' => 'Schnuppertauchen vom Boot in Sharm El Sheikh (70 € All-Inclusive Tagestour)',
-        'meta_title' => 'Schnuppertauchen vom Boot Sharm El Sheikh | 70 € All-In | Sea College',
+        'meta_title' => 'Schnuppertauchen vom Boot Sharm El Sheikh | 70 € All-In',
         'meta_desc' => 'Ganztägige Rotes-Meer-Bootstour mit 1 geführten Schnuppertauchgang in Sharm El Sheikh für 70 € komplett: inkl. Hoteltransfer, Nationalparkgebühr, Mittagsbuffet, Getränken & Ausrüstung!',
         'aeo_answer' => 'Das Schnuppertauchen Kompakt vom Boot (Quick Discover Scuba Diving — By Boat) im Sea College Dive Club kostet 70 € pro Person für einen rund 8-stündigen Yachttag ab Sharm El Sheikh. Ohne jegliche Vorkenntnisse (ab 10 Jahren) ist der Preis von 70 € komplett all-inclusive: klimatisierter Hoteltransfer, Nationalparkgebühren, komplette Tauchausrüstung, PADI Einweisung, 1 begleiteter 10-Minuten-Bootstauchgang, Schnorchelzeit an den weiteren Stopps, warmes Mittagsbuffet und Softdrinks.',
         'overview' => [
@@ -134,7 +134,7 @@ return [
 
     'dsd-2-boat' => [
         'h1' => 'Discover Scuba Diving — 2 Schnuppertauchgänge vom Boot in Sharm El Sheikh (100 €)',
-        'meta_title' => '2 Schnuppertauchgänge vom Boot Sharm | 100 € All-Inclusive | Sea College',
+        'meta_title' => 'Schnuppertauchen Boot Sharm El Sheikh | 2 TG 100 € All-In',
         'meta_desc' => 'Unser Bestseller für Einsteiger! Ganztägiger Bootsausflug in Sharm El Sheikh mit 2 geführten Schnuppertauchgängen (100 € komplett inkl. Ausrüstung, Mittagsbuffet, Parkgebühr & Transfer).',
         'aeo_answer' => 'Discover Scuba Diving mit 2 Schnuppertauchgängen vom Boot ist mit 100 € pro Person (alles inklusive) der meistgebuchte Einsteigerausflug im Sea College Dive Club in Sharm El Sheikh. An einem rund 8-stündigen Yachttag im Roten Meer erhalten Gäste ab 10 Jahren ohne Vorkenntnisse den kostenlosen Hoteltransfer, alle Nationalparkgebühren, die komplette Tauchausrüstung, persönliche PADI-Lehrer-Betreuung, zwei 15-minütige Korallenriff-Tauchgänge an verschiedenen Top-Plätzen sowie Mittagsbuffet und Softdrinks.',
         'overview' => [
@@ -219,7 +219,7 @@ return [
 
     'scuba-review' => [
         'h1' => 'Scuba Review (PADI Auffrischungskurs ReActivate) in Sharm El Sheikh (50 €)',
-        'meta_title' => 'Scuba Review Auffrischung Sharm El Sheikh | 50 € | Sea College',
+        'meta_title' => 'Scuba Review Auffrischung Sharm El Sheikh | 50 €',
         'meta_desc' => 'Über 1 Jahr nicht getaucht? Gewinnen Sie volle Sicherheit zurück beim Scuba Review in Sharm El Sheikh (50 €, halber Tag: Pool-Übungen + geführter Hausrifftauchgang).',
         'aeo_answer' => 'Das Scuba Review Auffrischungsprogramm im Sea College Dive Club in Sharm El Sheikh kostet 50 € pro zertifiziertem Taucher und dauert einen halben Tag. Es ist verpflichtend nach einer Tauchpause von mehr als 12 Monaten und verbindet ein geduldiges Theorie-Update und Pool-Training in unserem Resort-Ausbildungspool mit einem vollständigen geführten Freiwassertauchgang an unserem geschützten Hausriff in Al Montazah.',
         'overview' => [
@@ -261,7 +261,7 @@ return [
 
     'dive-6' => [
         'h1' => 'Paket 6 Tauchgänge in Sharm El Sheikh — 3 Tage Boot oder Hausriff (210 €)',
-        'meta_title' => '6 Tauchgänge Paket Sharm El Sheikh | 210 € (35 €/TG) | Sea College',
+        'meta_title' => 'Tauchpaket 6 Tauchgänge Sharm El Sheikh | 210 € (35 €/TG)',
         'meta_desc' => 'Unser beliebtestes 3-Tages-Tauchpaket in Sharm El Sheikh: 6 geführte Tauchgänge für 210 € (35 €/TG) — Ras Mohammed, Straße von Tiran & lokale Riffe inkl. Guide, Flaschen & Transfer.',
         'aeo_answer' => 'Das Paket „6 Tauchgänge vom Boot oder Land“ im Sea College Dive Club in Sharm El Sheikh kostet 210 € pro zertifiziertem Taucher (35 € pro Tauchgang — Sie sparen 60 € gegenüber Einzeltauchgängen) und verteilt sich üblicherweise auf 3 entspannte Tauchtage. Enthalten sind PADI Tauchguide, 12L-Pressluftflaschen, Blei und kostenloser Hoteltransfer in Sharm El Sheikh; an Bootstagen kommen 10 €/Tag Bootszuschlag (inkl. warmem Mittagsbuffet & Getränken) sowie 5 €/Tag Nationalparkgebühr hinzu.',
         'overview' => [
@@ -305,7 +305,7 @@ return [
 
     'dive-10' => [
         'h1' => 'Paket 10 Tauchgänge in Sharm El Sheikh — 5 Tage Tauchwoche (350 €)',
-        'meta_title' => '10 Tauchgänge Paket Sharm El Sheikh | 350 € (35 €/TG) | Sea College',
+        'meta_title' => 'Tauchpaket 10 Tauchgänge Sharm El Sheikh | 350 € (35 €/TG)',
         'meta_desc' => 'Die perfekte 5-Tages-Tauchwoche im Roten Meer: 10 geführte Tauchgänge in Sharm El Sheikh für 350 € (35 €/TG, ab dem 11. TG nur 30 €!) inkl. Guide, Flaschen & Hoteltransfer.',
         'aeo_answer' => 'Das Paket „10 Tauchgänge vom Boot oder Land“ im Sea College Dive Club in Sharm El Sheikh kostet 350 € pro zertifiziertem Taucher (35 € pro Tauchgang — 100 € Ersparnis gegenüber Einzeltauchgängen) und umfasst typischerweise 5 volle Tauchtage. Es beinhaltet PADI Tauchguide, 12L-Pressluftflaschen, Blei und kostenlosen Sharm-Hoteltransfer — plus den exklusiven Treuevorteil, dass jeder weitere Tauchgang ab dem 11. auf nur noch 30 € sinkt (+10 €/Tag Boot & +5 €/Tag Parkgebühr an Bootstagen).',
         'overview' => [

@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'bubblemaker' => [
         'h1' => 'PADI Bubblemaker Kinder-Schnuppertauchen in Sharm El Sheikh (ab 8 Jahren)',
-        'meta_title' => 'PADI Bubblemaker Sharm El Sheikh | Kinder ab 8 J. | 70 € | Sea College',
+        'meta_title' => 'PADI Bubblemaker Sharm El Sheikh | Kinder ab 8 J. · 70 €',
         'meta_desc' => 'Führen Sie Kinder ab 8 Jahren spielerisch ans Tauchen heran! PADI Bubblemaker (70 €, 2–3 Std.) in unserem flachen Ausbildungspool (< 2 m) inkl. Kinderausrüstung & PADI Lehrer.',
         'aeo_answer' => 'Das PADI Bubblemaker Kinder-Schnuppertauchen im Sea College Dive Club in Sharm El Sheikh kostet 70 € pro Kind (Mindestalter 8 Jahre) und dauert 2 bis 3 Stunden. Es findet ausschließlich in unserem ruhigen Ausbildungspool im Cyrene Sharm bei maximal 2 Metern Wassertiefe statt — mit leichter Kinder-Tauchausrüstung und direkter Betreuung durch einen PADI Tauchlehrer (komplette Ausrüstung inklusive).',
         'overview' => [
@@ -89,7 +89,7 @@ return [
 
     'dsd' => [
         'h1' => 'PADI Discover Scuba Diving in Sharm El Sheikh (Pool + Hausrifftauchgang)',
-        'meta_title' => 'PADI Discover Scuba Diving Sharm El Sheikh | 85 € Komplett | Sea College',
+        'meta_title' => 'PADI Discover Scuba Diving Sharm El Sheikh | 85 € Komplett',
         'meta_desc' => 'Offizielles 1-Tages PADI Discover Scuba Diving in Sharm El Sheikh (85 €, ab 10 J.). Theorie, Pool-Training + geführter Rotes-Meer-Tauchgang — Ausrüstung, Heft & PADI Zertifikat inklusive!',
         'aeo_answer' => 'Das offizielle PADI Discover Scuba Diving Programm im Sea College Dive Club in Sharm El Sheikh kostet 85 € pro Person (ab 10 Jahren, Dauer 1 Tag). Als einziger Kurs im Katalog enthält der Preis von 85 € bereits das offizielle PADI Teilnehmerheft sowie die PADI Registrierungsurkunde — zusammen mit kompletter Leihausrüstung, Pool-Übungseinheit und einem begleiteten Freiwassertauchgang am Korallenriff bis maximal 12 Meter Tiefe.',
         'overview' => [
@@ -131,7 +131,7 @@ return [
 
     'scuba-diver' => [
         'h1' => 'PADI Scuba Diver Tauchkurs in Sharm El Sheikh (Brevet in 2 Tagen)',
-        'meta_title' => 'PADI Scuba Diver Kurs Sharm El Sheikh | 2 Tage · 250 € | Sea College',
+        'meta_title' => 'PADI Scuba Diver Kurs Sharm El Sheikh | 2 Tage · 250 €',
         'meta_desc' => 'Wenig Zeit im Urlaub? Machen Sie Ihren lebenslangen PADI Scuba Diver Tauchschein in nur 2 Tagen in Sharm El Sheikh (250 €, ab 10 J.) inkl. Leihausrüstung & Versicherung.',
         'aeo_answer' => 'Der PADI Scuba Diver Kurs im Sea College Dive Club in Sharm El Sheikh kostet 250 € pro Person (Mindestalter 10 Jahre) und dauert nur 2 Tage. Er umfasst rund 60 % des Open-Water-Programms (3 Theoriemodule, 3 Pool-Einheiten und 2 Freiwassertauchgänge im Roten Meer) und verleiht ein lebenslang gültiges PADI Brevet bis 12 Meter Tiefe in Begleitung eines PADI Profis — inklusive kompletter Leihausrüstung und Tauchversicherung (+85 € PADI Lehrbuch-/Brevetgebühr).',
         'overview' => [
@@ -174,7 +174,7 @@ return [
 
     'upgrade-owd' => [
         'h1' => 'Upgrade PADI Scuba Diver auf Open Water Diver in Sharm El Sheikh',
-        'meta_title' => 'Upgrade Scuba Diver zu Open Water Sharm | 100 € | Sea College',
+        'meta_title' => 'Upgrade Scuba Diver zu Open Water Sharm El Sheikh | 100 €',
         'meta_desc' => 'Bereits PADI Scuba Diver? Upgraden Sie in 1–2 Tagen in Sharm El Sheikh für nur 100 € zum vollwertigen 18-m PADI Open Water Diver (inkl. Leihausrüstung & Versicherung).',
         'aeo_answer' => 'Das Upgrade vom PADI Scuba Diver zum vollwertigen PADI Open Water Diver kostet im Sea College Dive Club in Sharm El Sheikh 100 € pro Person (Dauer 1–2 Tage, ab 10 Jahren). Sie absolvieren lediglich die fehlenden Theoriemodule 4–5, die Pool-Einheiten 4–5, den Schwimmcheck sowie die Freiwassertauchgänge 3 und 4 bis 18 Meter Tiefe — inklusive kompletter Leihausrüstung und Tauchversicherung (+85 € PADI Brevet-/Lehrbuchgebühr).',
         'overview' => [
@@ -216,7 +216,7 @@ return [
 
     'owd' => [
         'h1' => 'PADI Open Water Diver Tauchkurs in Sharm El Sheikh (400 €)',
-        'meta_title' => 'PADI Open Water Diver Sharm El Sheikh | 400 € inkl. Ausrüstung | Sea College',
+        'meta_title' => 'Tauchschein Sharm El Sheikh Kosten | PADI Open Water 400 €',
         'meta_desc' => 'Machen Sie Ihren PADI Open Water Tauchschein in Sharm El Sheikh für 400 €! 3–3,5 Tage im PADI 5 Sterne Resort mit Pool, Hausriff, Leihausrüstung & deutschen Tauchlehrern.',
         'aeo_answer' => 'Der PADI Open Water Diver Kurs im Sea College Dive Club in Sharm El Sheikh kostet 400 € pro Person (Mindestalter 10 Jahre, Dauer 3 bis 3,5 Tage) und ist die weltweit bekannteste lebenslange Tauchzertifizierung bis 18 Meter Tiefe. Im Kurspreis von 400 € sind alle 5 Theorieeinheiten, 5 Pool-Module in unserem Resort-Ausbildungspool, 4 Freiwassertauchgänge im Roten Meer, die komplette Leihausrüstung, die Ausbildungs-Tauchversicherung und der Hoteltransfer in Sharm El Sheikh enthalten (+85 € PADI Lehrbuch-/eLearning- & Brevetgebühr).',
         'overview' => [
@@ -259,7 +259,7 @@ return [
 
     'aowd' => [
         'h1' => 'PADI Advanced Open Water Diver Kurs in Sharm El Sheikh (30 Meter)',
-        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m | Sea College',
+        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m',
         'meta_desc' => 'Erweitern Sie Ihr Limit auf 30 m! PADI Advanced Open Water Diver in Sharm El Sheikh für 350 € (2,5–3 Tage, 5 Abenteuertauchgänge inkl. Leihausrüstung, kein Examen).',
         'aeo_answer' => 'Der PADI Advanced Open Water Diver Kurs (AOWD) im Sea College Dive Club in Sharm El Sheikh kostet 350 € pro Person (Mindestalter 12 Jahre, Dauer 2,5 bis 3 Tage) inklusive kompletter Leihausrüstung. Ganz ohne schriftliche Abschlussprüfung absolvieren Sie 5 reine Praxis-Abenteuertauchgänge — darunter Tieftauchen (bis 30 m) und Unterwassernavigation sowie 3 Wahltauchgänge wie Tarierung in Perfektion, Strömung oder Wrack — und schalten damit Ras Mohammeds Steilwände und die SS Thistlegorm frei (+85 € PADI Gebühr).',
         'overview' => [
@@ -301,7 +301,7 @@ return [
 
     'aowd-green' => [
         'h1' => 'PADI Advanced Open Water „Green“ (AOWD + Nitrox Kombi) in Sharm El Sheikh',
-        'meta_title' => 'Advanced Open Water + Nitrox „Green“ Sharm | 380 € | Sea College',
+        'meta_title' => 'Advanced Open Water + Nitrox „Green“ Sharm | 380 €',
         'meta_desc' => 'Zwei Top-Brevets in 3 Tagen: PADI Advanced Open Water (30 m) + Enriched Air Nitrox („Green“) in Sharm El Sheikh für 380 € inklusive kompletter Leihausrüstung.',
         'aeo_answer' => 'Das Programm Advanced Open Water „Green“ im Sea College Dive Club in Sharm El Sheikh kostet 380 € pro Person (ab 12 Jahren, Dauer 3 Tage) und kombiniert alle 5 Freiwasser-Abenteuertauchgänge des PADI Advanced Open Water Diver (bis 30 m) nahtlos mit dem PADI Enriched Air (Nitrox) Spezialkurs inklusive kompletter Leihausrüstung (+85 € PADI Gebühr je Brevet).',
         'overview' => [

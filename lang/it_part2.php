@@ -43,10 +43,10 @@ return [
     // ---------- Nav & Footer additions ----------
     'nav_dive_sites' => 'Siti di Immersione',
     'nav_gallery' => 'Galleria & Team',
-    'footer_hub_dives' => 'Pacchetti & Gite Diving',
-    'footer_hub_courses' => 'Corsi Subacquei PADI',
-    'footer_hub_bundles' => 'Offerte Corsi PADI',
-    'footer_hub_boats' => 'Snorkeling & Barche Private',
+    'footer_hub_dives' => 'Pacchetti Immersioni Sharm',
+    'footer_hub_courses' => 'Corsi Sub & Brevetti PADI',
+    'footer_hub_bundles' => 'Offerte Pacchetti Corsi Sub',
+    'footer_hub_boats' => 'Escursioni Barca Ras Mohammed & Tiran',
 
     // ---------- Feature 1: Interactive Dive Budget & Fee Calculator ----------
     'calc_jump_chip' => 'Calcolatore Preventivo Sub',
@@ -225,4 +225,10 @@ return [
     'checkin_none' => 'Nessuno / Principiante',
     'checkin_other' => 'FIPSAS / CMAS / ANIS / Altro',
     'checkin_child' => 'Bambino',
+    'map_south_sinai' => 'SUD SINAI',
+    'map_gulf_suez' => 'GOLFO DI SUEZ',
+    'map_gulf_aqaba' => 'GOLFO DI AQABA',
+    'map_tiran' => 'Isola di Tiran',
+    'map_ras_mohammed' => 'Ras Mohammed',
+    'map_base' => '★ Base Sea College',
 ];

@@ -27,8 +27,8 @@ return [
         'desc' => 'Dokończ 2 sesje basenowe, 2 nurkowania w morzu i teorię, aby uzyskać pełną licencję Open Water do 18 m.',
     ],
     'owd' => [
-        'name' => 'Kurs PADI Open Water Diver (OWD)',
-        'desc' => 'Od 10 lat. Najpopularniejsza licencja nurkowa świata: 5 sesji w basenie + 4 nurkowania w morzu do głębokości 18 m.',
+        'name' => 'Kurs PADI Open Water Diver (Kurs OWD po Polsku)',
+        'desc' => 'Od 10 lat. Najpopularniejszy kurs OWD po polsku: 5 sesji w basenie + 4 nurkowania w morzu do 18 m ze sprzętem w cenie.',
     ],
 
     // ---------- Advanced & Rescue ----------

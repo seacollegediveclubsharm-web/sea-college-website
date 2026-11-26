@@ -238,9 +238,9 @@ $scCatalog = sc_overlay_catalog([
                     [
                         'id' => 'sup-millionhope', 'section' => 'tours', 'slug' => 'million-hope-wreck-dive-sharm-el-sheikh',
                         'name' => 'Million Hope Wreck',
-                        'name_ar' => 'غطسة حطام سفينة مليون هوب (Million Hope)',
+                        'name_ar' => 'غطسة حطام سفينة مليون هوب — منطقة الغرقانة نبق',
                         'desc' => 'Largest wreck in Sharm El Sheikh at Nabq. Min. 4 divers. Book 48 h ahead.',
-                        'desc_ar' => 'أضخم حطام سفينة في شرم الشيخ بمنطقة نبق (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
+                        'desc_ar' => 'أضخم حطام سفينة في شرم الشيخ بمنطقة الغرقانة في نبق (حد أدنى 4 غواصين، حجز قبل 48 ساعة).',
                         'price' => 30, 'duration' => 'Half day',
                         'img' => 'items/sea-college-sharm-million-hope-wreck-dive-sharm-el-sheikh.jpg',
                     ],

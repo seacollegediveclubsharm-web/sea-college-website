@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'aowd-green' => [
         'h1' => 'PADI Advanced Open Water « Green » (AOWD + Nitrox) à Charm el-Cheikh',
-        'meta_title' => 'Advanced Open Water Green (AOWD + Nitrox) Charm el-Cheikh | 380 €',
+        'meta_title' => 'Advanced Open Water + Nitrox Green Charm el-Cheikh | 380 €',
         'meta_desc' => 'Décrochez 2 brevets PADI en 3 jours à Charm el-Cheikh (Sharm El Sheikh) : Advanced Open Water (5 plongées jusqu’à 30 m) + Spécialité Air Enrichi Nitrox pour 380 € (équipement inclus).',
         'aeo_answer' => 'La formule Advanced Open Water « Green » chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 380 € par personne (dès 12 ans, durée 3 jours) et combine les 5 plongées Aventure en mer du PADI Advanced Open Water (jusqu’à 30 m) avec l’atelier pratique de la spécialité PADI Air Enrichi Nitrox, équipement complet inclus (+85 € manuel et carte PADI par certification).',
         'overview' => ['Baptisé « Green » en clin d’œil au bandeau vert et jaune des bouteilles Nitrox, ce duo est le combo technique le plus malin en plongée loisir : dès que vous descendez entre 18 et 30 mètres, c’est la saturation en azote — et non votre réserve d’air — qui écourte la plongée. Associer le brevet 30 m au Nitrox vous offre des temps sans palier nettement prolongés sur chaque épave et tombant !', 'En 3 jours seulement, vous réalisez vos 5 plongées Aventure en Mer Rouge tout en apprenant à analyser vos blocs à l’analyseur d’O₂ et à paramétrer votre ordinateur.'],
@@ -48,7 +48,7 @@ return [
     ],
     'efr' => [
         'h1' => 'Formation Premiers Secours Emergency First Response (EFR — RCP & DAE) à Charm el-Cheikh',
-        'meta_title' => 'Cours Premiers Secours EFR Charm el-Cheikh | 143 € | 1 Jour | Sea College',
+        'meta_title' => 'Cours Premiers Secours EFR Charm el-Cheikh | 143 € · 1 Jour',
         'meta_desc' => 'Formation internationale de secourisme Emergency First Response (EFR) en 1 jour à Charm el-Cheikh (143 €) : RCP, défibrillateur (DAE), premiers secours adultes & enfants. Ouvert à tous.',
         'aeo_answer' => 'La formation Emergency First Response (EFR Soins Primaires et Secondaires) chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 143 € par personne, se déroule en 1 journée dans notre salle climatisée au Cyrene Sharm et est ouverte à tous sans âge minimum ni brevet de plongée. Elle enseigne la réanimation cardio-pulmonaire (RCP), l’usage du défibrillateur (DAE), la gestion des hémorragies et les soins aux enfants, validant le prérequis obligatoire de secourisme (< 24 mois) pour le PADI Rescue Diver.',
         'overview' => ['Les urgences médicales surviennent bien plus souvent au quotidien qu’en plongée. L’EFR forge des réflexes calmes et concrets — massage cardiaque sur mannequin, pose d’un défibrillateur automatisé externe (DAE), désobstruction des voies aériennes, bandages et attelles — dans une ambiance bienveillante.', 'C’est également l’activité intelligente par excellence lors de votre dernier jour de vacances (pendant vos 18 h d’intervalle sans plongée avant l’avion) ou juste avant d’entamer votre PADI Rescue Diver (394 €).'],
@@ -89,7 +89,7 @@ return [
     ],
     'rescue' => [
         'h1' => 'Cours PADI Rescue Diver (Plongeur Sauveteur) à Charm el-Cheikh',
-        'meta_title' => 'PADI Rescue Diver Charm el-Cheikh (Sharm El Sheikh) | 394 € | 3–4 Jours',
+        'meta_title' => 'Cours PADI Rescue Diver Charm el-Cheikh | 394 € · 3–4 Jours',
         'meta_desc' => 'Devenez le binôme sur qui tout le monde peut compter ! PADI Rescue Diver à Charm el-Cheikh (394 €, 3–4 jours, dès 12 ans) : autosauvetage, gestion du stress & scénarios en mer, matériel inclus.',
         'aeo_answer' => 'Le cours PADI Rescue Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 394 € par personne, se déroule sur 3 à 4 jours (dès 12 ans) et inclut la location de l’équipement de base. Unanimement décrit par les plongeurs comme le brevet le plus gratifiant de tout le cursus, il forme à l’autosauvetage, à la détection précoce du stress, à l’administration d’oxygène d’urgence, à l’assistance d’un plongeur paniqué ou inconscient et à la coordination de 2 scénarios complets en Mer Rouge (requiert Advanced/N2 + secourisme < 24 mois ; +85 € frais PADI).',
         'overview' => ['Jusqu’à présent, vos formations portaient surtout sur votre propre sécurité. Le PADI Rescue Diver élargit votre regard à toute la palanquée : vous apprenez à repérer un équipement mal monté ou une anxiété naissante sur le pont du bateau avant même la mise à l’eau.', 'S’entraîner dans l’eau chaude et limpide de notre piscine et de notre récif maison d’Al Montazah rend les 10 exercices de sauvetage et les 2 scénarios finaux dynamiques, formateurs et franchement passionnants — bien loin des eaux froides de carrière !'],
@@ -130,7 +130,7 @@ return [
     ],
     'bundle-super' => [
         'h1' => 'Pack PADI Super — Advanced Open Water + Nitrox (Économisez 75 €)',
-        'meta_title' => 'Pack Super : PADI Advanced + Nitrox Charm el-Cheikh | 400 € (-75 €)',
+        'meta_title' => 'Pack PADI Super (Advanced + Nitrox) Charm el-Cheikh | 400 €',
         'meta_desc' => 'Déjà Open Water ou Niveau 1 ? Passez à 30 m + Nitrox en 3 jours à Charm el-Cheikh ! Pack Super (400 €, -75 €) incluant AOWD, Nitrox, équipement complet, assurance & taxes.',
         'aeo_answer' => 'Le Pack PADI Super chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 400 € par personne — soit 75 € d’économie — et se boucle en 3 jours pour les plongeurs certifiés Open Water / N1 dès 12 ans. Il comprend le PADI Advanced Open Water Diver (5 plongées Aventure jusqu’à 30 m), la spécialité PADI Air Enrichi Nitrox, la location complète d’équipement, l’assurance plongée et les taxes (+85 € manuel et carte PADI par cours).',
         'overview' => ['Si vous détenez déjà un brevet Open Water (PADI, SSI) ou un Niveau 1 FFESSM/CMAS, le Pack « Super » offre le meilleur retour sur investissement en 3 jours en Mer Rouge : vous débloquez les épaves et tombants à 30 mètres TOUT en obtenant la qualification Nitrox pour profiter de longs temps de fond !', 'Contrairement aux cours pris séparément où l’assurance plongée s’ajoute, le Pack Super (400 €) englobe les deux cours, tout le matériel, l’assurance plongée et les taxes.'],
@@ -170,7 +170,7 @@ return [
     ],
     'bundle-mega' => [
         'h1' => 'Pack PADI Mega — Open Water + Advanced Open Water (Économisez 90 €)',
-        'meta_title' => 'Pack Mega : Open Water + Advanced Charm el-Cheikh | 600 € (-90 €)',
+        'meta_title' => 'Pack PADI Mega (OWD + Advanced) Charm el-Cheikh | 600 €',
         'meta_desc' => 'Passez de grand débutant à plongeur Advanced 30 m en une semaine à Charm el-Cheikh ! Pack Mega (600 €, -90 €, ~6 jours) : 5 piscines + 9 plongées Mer Rouge, matériel & assurance inclus.',
         'aeo_answer' => 'Offre combinée la plus réservée de Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh), le Pack Mega coûte 600 € par personne — soit 90 € d’économie — sur environ 6 jours (dès 12 ans). En partant de zéro expérience, vous validez le PADI Open Water Diver (5 piscines + 4 plongées mer à 18 m) puis le PADI Advanced Open Water Diver (5 plongées Aventure jusqu’à 30 m), soit 9 plongées en Mer Rouge avec équipement complet, assurance plongée et taxes inclus (+85 € manuel et carte PADI par cours).',
         'overview' => ['La majorité des débutants terminent leur Open Water au bout de 3 jours, tombent amoureux des récifs de la Mer Rouge et rêvent immédiatement de continuer jusqu’aux tombants de 30 mètres avec leur moniteur ! Réserver le Pack « Mega » dès le départ bloque 90 € de remise et l’assurance complète sur les 6 jours.', 'Au soir du 6e jour, vous totalisez déjà 9 plongées enregistrées en Mer Rouge, une aisance remarquable sous l’eau et votre carte internationale PADI Advanced Open Water 30 m.'],
@@ -210,7 +210,7 @@ return [
     ],
     'bundle-heros' => [
         'h1' => 'Pack PADI Heros — Open Water + Advanced + Nitrox (Économisez 120 €)',
-        'meta_title' => 'Pack Heros : OWD + Advanced + Nitrox Charm el-Cheikh | 750 € (-120 €)',
+        'meta_title' => 'Pack PADI Heros (OWD + AOWD + Nitrox) Charm | 750 €',
         'meta_desc' => 'Le triple brevet ultime en Mer Rouge ! Pack Heros à Charm el-Cheikh (750 €, économisez 120 €, 6–7 jours) : PADI Open Water + Advanced (30 m) + Nitrox, équipement, assurance & taxes inclus.',
         'aeo_answer' => 'Le Pack PADI Heros chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 750 € par personne — notre plus forte réduction avec 120 € économisés — sur 6 à 7 jours (dès 12 ans). Il vous emmène de grand débutant jusqu’à TROIS licences internationales PADI (Open Water Diver, Advanced Open Water 30 m et Air Enrichi Nitrox) avec 5 séances piscine, 9+ plongées en Mer Rouge, location complète du matériel, assurance plongée et taxes incluses (+85 € manuel et carte PADI par cours).',
         'overview' => ['« Heros » réunit le trio de certifications de référence exigé par les plus belles croisières plongée du globe : autonomie 30 mètres + qualification Air Enrichi Nitrox — le tout acquis en une seule semaine fluide à partir de vos toutes premières bulles en piscine !', 'Avec 120 € d’économie directe ainsi que l’équipement intégral et l’assurance plongée couverts toute la semaine, vous quittez Charm el-Cheikh armé(e) pour toutes vos futures aventures sous-marines.'],

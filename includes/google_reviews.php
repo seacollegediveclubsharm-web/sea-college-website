@@ -28,7 +28,7 @@ function sc_gbp_seed_reviews(string $lang): array
             'author' => t("rev_{$i}_name"),
             'rating' => 5,
             'text'   => t("rev_{$i}_text"),
-            'time'   => 'Google Review',
+            'time'   => t('gbp_review_label') !== 'gbp_review_label' ? t('gbp_review_label') : 'Google Review',
             'url'    => GOOGLE_REVIEWS_URL,
         ];
     }

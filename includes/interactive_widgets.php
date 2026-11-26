@@ -414,6 +414,7 @@ function render_hotel_pickup_checker(string $context = 'prices'): string
             'n' => (string) $h['name'],
             'z' => (string) $h['zone'],
             'o' => !empty($h['onsite']) ? 1 : 0,
+            'k' => (string) ($h['kw'] ?? ''),
         ];
     }
     $cfgJson = e((string) json_encode([

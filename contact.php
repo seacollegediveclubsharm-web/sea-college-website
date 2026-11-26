@@ -11,6 +11,7 @@ $page['id'] = 'contact';
 $page['canonical_path'] = '/contact';
 $page['title'] = t('meta_contact_title');
 $page['description'] = t('meta_contact_desc');
+$page['image'] = url('assets/images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg');
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_contact'), '/contact']];
 $page['schema'][] = ['@type' => 'ContactPage', 'name' => t('contact_title'), 'about' => ['@id' => SITE_URL . '/#organization']];
 $sc_map_src = 'https://www.google.com/maps?q=' . rawurlencode(MAPS_EMBED_QUERY) . '&output=embed';
@@ -30,11 +31,11 @@ require ROOT_DIR . '/includes/header.php';
     <div class="contact-layout">
       <div>
         <?= render_hotel_pickup_checker('contact') ?>
-        <?php $form_id = 'contact'; $form_interest_default = (string) ($_GET['interest'] ?? ''); include ROOT_DIR . '/includes/lead_form.php'; ?>
+        <?php $form_id = 'contact'; $form_interest_default = sc_get_str('interest'); include ROOT_DIR . '/includes/lead_form.php'; ?>
       </div>
       <div class="contact-side">
         <aside class="card contact-card">
-          <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
+          <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?>">
             <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 380px']) ?>
           </a>
           <h2><?= te('contact_details_title') ?></h2>
@@ -47,9 +48,9 @@ require ROOT_DIR . '/includes/header.php';
             <dt><?= te('email') ?></dt>
             <dd><a href="mailto:<?= e(BUSINESS['email']) ?>" data-track="email_click"><?= e(BUSINESS['email']) ?></a></dd>
             <dt><?= te('address') ?></dt>
-            <dd><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></dd>
+            <dd><?= e(t('business_address_val') !== 'business_address_val' ? t('business_address_val') : (BUSINESS['street'] . ', ' . BUSINESS['city'])) ?></dd>
             <dt><?= te('hours') ?></dt>
-            <dd><bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></dd>
+            <dd><bdi dir="auto"><?= e(t('business_hours_val') !== 'business_hours_val' ? t('business_hours_val') : BUSINESS['hours_display']) ?></bdi></dd>
           </dl>
           <h3><?= te('map_title') ?></h3>
           <?= gbp_map_embed() ?>

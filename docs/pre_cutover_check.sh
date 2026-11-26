@@ -48,13 +48,19 @@ check_code() {
   fi
 }
 
-echo "=== 1. Core Routes, 4 Category Hubs & Security Boundaries ($BASE_URL) ==="
+echo "=== 1. Core Routes, 4 Category Hubs, 10 Guides & Security Boundaries ($BASE_URL) ==="
 for p in \
-  "/" "/services.php" "/prices.php" "/about.php" "/contact.php" "/privacy-policy.php" "/terms.php" "/sitemap.xml" "/robots.txt" \
+  "/" "/sitemap.xml" "/robots.txt" \
   "/services" "/prices" "/about" "/contact" "/faq" "/privacy-policy" "/terms" \
   "/guides" \
   "/guides/best-time-to-dive-sharm-el-sheikh" \
+  "/guides/sharm-el-sheikh-scuba-diving-prices-guide" \
+  "/guides/best-dive-center-sharm-el-sheikh-how-to-choose" \
+  "/guides/diving-from-nabq-sharks-bay-naama-hadaba-hotels" \
+  "/guides/white-island-ras-mohammed-tickets-visa-snorkeling-guide" \
   "/ru/guides/ss-thistlegorm-wreck-diving-guide" \
+  "/ru/guides/sharm-el-sheikh-scuba-diving-prices-guide" \
+  "/it/guides/best-dive-center-sharm-el-sheikh-how-to-choose" \
   "/check-in" \
   "/de/check-in" \
   "/de/faq" \
@@ -70,19 +76,16 @@ for p in \
   "/tours/white-island-ras-mohammed-boat-trip" \
   "/tours/full-scuba-equipment-rental-sharm" \
   "/courses/padi-open-water-diver-sharm-el-sheikh" \
-  "/courses/padi-open-water-diver-sharm-el-sheikh?lang=ar" \
   "/courses/mega-bundle-open-water-advanced-sharm" \
   "/dive-sites-sharm-el-sheikh" \
   "/gallery" \
   "/ar/" "/ru/" "/de/" "/it/" "/fr/" "/pl/" "/zh/" \
   "/ru/courses/padi-open-water-diver-sharm-el-sheikh?gclid=EAIaIQobChMI_test_ru" \
-  "/de/prices.php?gclid=EAIaIQobChMI_test_de" \
   "/it/diving-trips-sharm-el-sheikh" \
   "/fr/dive-sites-sharm-el-sheikh" \
   "/pl/tours/ss-thistlegorm-wreck-dive-sharm-el-sheikh" \
   "/ar/courses/padi-open-water-diver-sharm-el-sheikh" \
   "/zh/courses/padi-open-water-diver-sharm-el-sheikh?gclid=EAIaIQobChMI_test_zh" \
-  "/zh/prices.php" \
   "/assets/images/items/sea-college-sharm-padi-open-water-diver-sharm-el-sheikh.jpg" \
   "/assets/images/items/sea-college-sharm-ss-thistlegorm-wreck-dive-sharm-el-sheikh.jpg" \
   "/assets/images/items/sea-college-sharm-white-island-ras-mohammed-nizar-boat-nov2026.jpg" \
@@ -95,16 +98,20 @@ for p in \
   check_code "$p" "200"
 done
 
-check_code "/product/open-water-diver/" "301"
-check_code "/product/thistlegorm-wreck/" "301"
-check_code "/product/million-hope-jackson-reef/" "301"
-check_code "/about-us/" "301"
-check_code "/checkout/" "301"
-check_code "/tours/padi-open-water-diver-sharm-el-sheikh" "301"
+# Verify single-hop 301 canonicalization for legacy .php URLs, /en/*, missing/trailing slashes & WP slugs
+for r301 in \
+  "/services.php" "/prices.php" "/about.php" "/contact.php" "/privacy-policy.php" "/terms.php" \
+  "/de/prices.php" "/zh/prices.php" "/en/" "/en/prices" "/ru" "/prices/" \
+  "/st_tour/private-boat-snorkeling/" "/st_tour/ras-mohammed-diving/" \
+  "/product/open-water-diver/" "/product/thistlegorm-wreck/" "/product/million-hope-jackson-reef/" \
+  "/about-us/" "/checkout/" "/tours/padi-open-water-diver-sharm-el-sheikh"; do
+  check_code "$r301" "301"
+done
 check_code "/tours/non-existent-slug-xyz" "404"
 
 # Verify ?gclid= survives 301 redirects (.htaccess + PHP item.php) for active Google Ads continuity
 for legacy_gclid in \
+  "/de/prices.php?gclid=EAIaIQobChMI_test_de" \
   "/product/open-water-diver/?gclid=EAIaIQobChMI_test_legacy" \
   "/about-us/?gclid=EAIaIQobChMI_test_legacy"; do
   for attempt in 1 2 3 4; do
@@ -281,15 +288,15 @@ done
 smap_xml=$(fetch_body "/sitemap.xml")
 smap_count=$(grep -c "<loc>" <<<"$smap_xml" || true)
 smap_php_count=$(grep -c "\.php</loc>" <<<"$smap_xml" || true)
-if [[ "$smap_count" -ge 808 && "$smap_php_count" -eq 0 ]]; then
+if [[ "$smap_count" -ge 840 && "$smap_php_count" -eq 0 ]]; then
   echo "PASS [sitemap] $smap_count clean extensionless <loc> URLs (0 .php URLs)"
   pass=$((pass + 1))
 else
-  echo "FAIL [sitemap] expected >= 808 clean <loc> URLs & 0 .php URLs, got count=$smap_count php=$smap_php_count"
+  echo "FAIL [sitemap] expected >= 840 clean <loc> URLs & 0 .php URLs, got count=$smap_count php=$smap_php_count"
   fail=$((fail + 1))
 fi
 
-echo "=== 5. M1 Feeds, AEO /llms.txt, Clean Canonicals & 6 Legacy Draft Slugs ==="
+echo "=== 5. M1 Feeds, 8-Language AEO /llms.txt, Clean Canonicals & 6 Legacy Draft Slugs ==="
 if grep -q '<link rel="canonical" href="'"${BASE_URL}"'/prices">' <<<"$prices_html"; then
   echo "PASS [clean canonical] /prices"
   pass=$((pass + 1))
@@ -310,6 +317,15 @@ for m1_ep in \
   "/llms.txt" \
   "/.well-known/llms.txt" \
   "/llms-full.txt" \
+  "/ru/llms.txt" \
+  "/it/llms.txt" \
+  "/de/llms.txt" \
+  "/pl/llms.txt" \
+  "/fr/llms.txt" \
+  "/ar/llms.txt" \
+  "/zh/llms.txt" \
+  "/ru/llms-full.txt" \
+  "/it/llms-full.txt" \
   "/feeds/meta-catalog.xml" \
   "/feeds/meta-catalog-i18n.xml" \
   "/feeds/google-dsa-page-feed.csv" \

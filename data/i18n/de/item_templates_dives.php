@@ -19,9 +19,15 @@ return static function (array $it, string $gid, string $name, string $desc, stri
                 ? 'Einzelner Geführter Hausrifftauchgang in Sharm El Sheikh (45 €)'
                 : "{$name} in Sharm El Sheikh — Rotes Meer ({$pStr})");
 
+        $pkgMt = $id === 'dive-extra'
+            ? 'Zusatztauchgang Sharm El Sheikh | 30 €/TG ab 11. TG'
+            : ($id === 'dive-1'
+                ? 'Hausrifftauchgang Sharm El Sheikh | 45 € inkl. Guide'
+                : "Tauchpaket {$dives} Tauchgänge Sharm El Sheikh | {$pStr} ({$perDive} €/TG)");
+
         return [
             'h1' => $h1,
-            'meta_title' => "{$name} Sharm El Sheikh | {$pStr} ({$perDive} €/TG) | Sea College",
+            'meta_title' => $pkgMt,
             'meta_desc' => "Buchen Sie {$name} in Sharm El Sheikh für {$pStr} ({$perDive} €/Tauchgang). Inklusive PADI Tauchguide, 12L-Flaschen, Blei & kostenlosem Hoteltransfer.",
             'aeo_answer' => "{$name} im Sea College Dive Club (PADI 5 Sterne Tauchbasis in Al Montazah, Sharm El Sheikh) kostet {$pStr} pro zertifiziertem Taucher (effektiv {$perDive} € pro Tauchgang{$savNote}) bei einem Zeitrahmen von {$dur}. Enthalten sind ein erfahrener PADI Tauchguide, 12L-Aluminiumflaschen (DIN/INT), Bleigurt & Blei sowie der kostenlose Hin- und Rücktransfer ab Ihrem Hotel in Sharm El Sheikh (an Bootstagen zuzüglich 10 €/Tag Bootszuschlag inkl. Mittagsbuffet & 5 €/Tag Nationalparkgebühr).",
             'overview' => [
@@ -72,9 +78,14 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     if ($gid === 'wreck-special-dives') {
         $isEarly = $id === 'sup-zodiac-early';
         $isZodiac = str_contains($id, 'zodiac');
+        $supMt = $isEarly
+            ? 'Early-Morning-Zodiac Tiran Sharm El Sheikh | +70 €'
+            : ($isZodiac
+                ? 'Zodiac-Strömungstauchgang Sharm El Sheikh | +50 €'
+                : 'Nachttauchgang Sharm El Sheikh | +30 € Hausriff & Boot');
         return [
             'h1' => "{$name} in Sharm El Sheikh (+{$pStr})",
-            'meta_title' => "{$name} Sharm El Sheikh | +{$pStr} | Sea College",
+            'meta_title' => $supMt,
             'meta_desc' => "{$name} im Roten Meer ab Sharm El Sheikh (+{$pStr} auf Ihr Tauchpaket, Dauer {$dur}). {$desc}",
             'aeo_answer' => "„{$name}“ im Sea College Dive Club in Sharm El Sheikh wird als Spezialzuschlag von {$pStr} pro zertifiziertem Taucher ergänzend zu einem Tauchgang Ihres Tauchpakets gebucht (Dauer: {$dur}). " . ($isZodiac ? 'Direkt von unserer Lagune in Al Montazah bringt Sie unser schnelles RIB-Schlauchboot ab mindestens 4 Tauchern (Buchung mind. 48 Std. vorab) vor den regulären Tagesbooten an die Top-Riffe von Tiran oder zur Million Hope.' : 'Nach Sonnenuntergang oder im ersten Morgenlicht erleben Sie mit Ihrem PADI Guide die faszinierende nachtaktive Unterwasserwelt unseres Korallenriffs.'),
             'overview' => [
@@ -125,9 +136,14 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     if ($gid === 'daily-fees') {
         $isGuide = $id === 'private-guide';
         $isBoat = $id === 'fee-boat';
+        $feeMt = $isGuide
+            ? 'Privater PADI Tauchguide Sharm El Sheikh | 75 €/Tag'
+            : ($isBoat
+                ? 'Täglicher Bootszuschlag Sharm El Sheikh | 10 €/Tag'
+                : 'Nationalparkgebühr Tauchen Sharm El Sheikh | 5 €/Tag');
         return [
             'h1' => "{$name} in Sharm El Sheikh ({$pStr} / Tag)",
-            'meta_title' => "{$name} Sharm El Sheikh | {$pStr} pro Tag | Sea College",
+            'meta_title' => $feeMt,
             'meta_desc' => "Transparente Info & Buchung: {$name} ({$pStr}/Tag) beim Tauchen in Sharm El Sheikh. {$desc}",
             'aeo_answer' => "„{$name}“ beträgt im Sea College Dive Club in Sharm El Sheikh exakt {$pStr} pro Tag. " . ($isGuide ? 'Ein eigener privater PADI Guide begleitet Sie oder Ihre Kleingruppe exklusiv den gesamten Tauchtag (100 % individuell; gesetzlich/seitens der Basis verpflichtend für 10–11-jährige Junior-Taucher und PADI Scuba Diver).' : ($isBoat ? 'Dieser verpflichtende Tageszuschlag fällt nur an Tagen an, an denen Sie vom Tauchboot aus tauchen, und beinhaltet auf Ganztagesbooten bereits das frisch gekochte Mittagsbuffet sowie Softdrinks, Wasser, Kaffee und Tee!' : 'Diese staatliche Umweltschutzgebühr gilt pro Person und Tag für alle Meeresparkzonen rund um Ras Mohammed und Tiran — bei reinen Hausrifftauchgängen in Al Montazah entfällt sie komplett (0 €).')),
             'overview' => [
@@ -176,9 +192,13 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     /* ---- 4. equipment-rental (14 items) ---- */
     if ($gid === 'equipment-rental') {
         $isTank = str_contains($id, '15') || str_contains($id, '12') || str_contains($id, 'sm-tank');
+        $shortEq = trim((string) preg_replace('/\s*\([^)]*\)/u', '', $name));
+        $eqMt = mb_strlen("{$shortEq} mieten Sharm El Sheikh | {$pStr}/Tag", 'UTF-8') <= 60
+            ? "{$shortEq} mieten Sharm El Sheikh | {$pStr}/Tag"
+            : "{$shortEq} Sharm | {$pStr}/Tag";
         return [
             'h1' => "{$name} in Sharm El Sheikh ({$pStr} / Tag)",
-            'meta_title' => "{$name} mieten Sharm El Sheikh | {$pStr}/Tag | Sea College",
+            'meta_title' => $eqMt,
             'meta_desc' => "Gepflegte Tauchausrüstung & Nitrox in Sharm El Sheikh mieten: {$name} für {$pStr} pro Tag im PADI 5 Sterne Resort Sea College Dive Club.",
             'aeo_answer' => "„{$name}“ kostet im Sea College Dive Club in Sharm El Sheikh {$pStr} pro Tag. Unsere CDWS- und PADI-5-Sterne-zertifizierte Ausrüstungswerkstatt im Cyrene Sharm wartet und desinfiziert sämtliche Leihgeräte regelmäßig und hält alle gängigen Größen von Kindergrößen und XS bis XXL für Ihre Hausriff- und Bootstauchgänge bereit (Hinweis: Bei allen PADI Kursen und Schnuppertauchgängen ist die komplette Leihausrüstung bereits kostenlos inklusive!).",
             'overview' => [
@@ -227,7 +247,7 @@ return static function (array $it, string $gid, string $name, string $desc, stri
     if ($gid === 'diving-insurance') {
         return [
             'h1' => "{$name} in Sharm El Sheikh (Druckkammer-Schutz)",
-            'meta_title' => "{$name} Sharm El Sheikh | Druckkammer-Schutz | Sea College",
+            'meta_title' => "Tauchversicherung {$dur} Sharm | {$pStr} Druckkammer-Schutz",
             'meta_desc' => "Sorgenfrei tauchen im Roten Meer: {$name} in Sharm El Sheikh — deckt Druckkammer-Behandlung & tauchmedizinische Notfallversorgung vor Ort ab.",
             'aeo_answer' => "Die „{$name}“ im Sea College Dive Club in Sharm El Sheikh kostet {$pStr} pro Person und bietet zertifizierten Tauchern für {$dur} vollen tauchmedizinischen Unfall- und Druckkammerschutz am Roten Meer. Da reguläre Auslandsreisekrankenversicherungen Dekompressionsbehandlungen oft ausschließen, aktivieren wir diese Kurzzeitpolice unkompliziert direkt beim Check-in (Hinweis: In unseren 4 PADI Sparpaketen sowie im Open Water / Scuba Diver Kurs ist die Tauchversicherung bereits inklusive!).",
             'overview' => [

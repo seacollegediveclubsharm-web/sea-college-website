@@ -24,7 +24,7 @@ return [
     // ---------- Global UI ----------
     'skip_to_content' => 'Vai al contenuto principale',
     'nav_home' => 'Home',
-    'nav_services' => 'Immersioni & Corsi',
+    'nav_services' => 'Immersioni & Corsi Sub',
     'nav_prices' => 'Prezzi & Prenota',
     'nav_about' => 'Chi Siamo',
     'nav_contact' => 'Contatti',
@@ -77,9 +77,9 @@ return [
     'consent_policy' => 'Leggi l’informativa',
 
     // ---------- Home ----------
-    'hero_eyebrow' => 'Centro Diving PADI 5 Stelle · Sharm El Sheikh',
-    'hero_title' => 'Immergiti nel Mar Rosso con istruttori che amano insegnarlo',
-    'hero_sub' => 'Battesimo del Mare, corsi PADI in italiano e uscite giornaliere in barca a Ras Mohammed, Stretto di Tiran e relitto SS Thistlegorm — dalla nostra base sul mare con piscina didattica e House Reef.',
+    'hero_eyebrow' => 'Centro Diving PADI 5 Stelle · Istruttori in Italiano a Sharm El Sheikh',
+    'hero_title' => 'Immersioni, Corsi Sub PADI ed Escursioni in Barca a Sharm El Sheikh',
+    'hero_sub' => 'Centro diving PADI 5 Stelle fronte mare con istruttori parlanti italiano: Battesimo del Mare (prova sub), brevetto sub PADI, pacchetti immersioni ed escursioni in barca a Ras Mohammed, Isola di Tiran e relitto SS Thistlegorm — piscina privata, House Reef e €0 di acconto online.',
     'hero_cta_primary' => 'Organizza su WhatsApp',
     'hero_cta_secondary' => 'Listino prezzi',
     'kpi_rating' => 'Valutazione Google',
@@ -93,9 +93,9 @@ return [
     'trust_4' => 'Team in 7 lingue (Italiano)',
     'explore_title' => 'Scegli la tua esperienza nel Mar Rosso',
     'explore_sub' => 'Dal tuo primo respiro sott’acqua alle immersioni sul leggendario relitto SS Thistlegorm.',
-    'exp_intro_t' => 'Battesimo del Mare',
+    'exp_intro_t' => 'Battesimo del Mare (Prova Sub)',
     'exp_intro_d' => 'Zero esperienza richiesta — da €30',
-    'exp_courses_t' => 'Corsi PADI',
+    'exp_courses_t' => 'Corsi Sub & Brevetti PADI',
     'exp_courses_d' => 'Da Bubblemaker a Divemaster',
     'exp_dives_t' => 'Sub Brevettati',
     'exp_dives_d' => 'Pacchetti barca e riva da 1 a 10+ immersioni',
@@ -153,7 +153,7 @@ return [
     'faq_6_a' => 'Componi il tuo preventivo nella pagina Prezzi oppure scrivici su WhatsApp senza anticipo online. Confermiamo subito disponibilità e totale finale. Accettiamo carte di credito/debito, bonifico e contanti.',
 
     // ---------- Services ----------
-    'services_title' => 'Immersioni, corsi PADI ed escursioni in barca',
+    'services_title' => 'Pacchetti Immersioni, Corsi Sub PADI ed Escursioni a Sharm El Sheikh',
     'services_sub' => 'Tutto ciò che offriamo a Sharm El Sheikh con prezzi trasparenti. Tocca “Aggiungi” per comporre la tua prenotazione.',
     'svc_dive_d' => 'Immersioni guidate in barca e da riva per sub brevettati — Ras Mohammed, Stretto di Tiran, Thistlegorm e barriere locali.',
     'svc_courses_d' => 'Corsi PADI dagli 8 anni fino a Divemaster in piccoli gruppi, iniziando sempre nella nostra piscina didattica.',
@@ -161,7 +161,7 @@ return [
     'svc_snorkel_d' => 'Crociere snorkeling all’Isola Bianca, motoscafi privati per Tiran e yacht privati per l’intera giornata.',
 
     // ---------- Prices / booking ----------
-    'prices_title' => 'Listino prezzi & prenotazione online',
+    'prices_title' => 'Prezzi Immersioni, Corsi Sub PADI & Escursioni Sharm El Sheikh (EUR)',
     'prices_sub' => 'Tutti i prezzi sono in EUR a persona salvo diversa indicazione. Seleziona i servizi, indica partecipanti e date e invia la richiesta — confermiamo via WhatsApp o email.',
     'print_btn' => 'Stampa / Salva PDF',
     'step_1' => 'Scegli i servizi',
@@ -268,4 +268,14 @@ return [
     'map_load' => 'Carica mappa',
     'services_jump' => 'Vai alla sezione',
     'about_cta' => 'Pianifica le tue immersioni con noi',
+    'form_phone_ph' => '+39 333 123 4567',
+    'upgrade_from_tag' => '[Upgrade da {item}]',
+    'gbp_review_label' => 'Recensione Google',
+    'business_hours_val' => 'Lun–Dom · 08:00–18:00',
+    'business_address_val' => 'Cyrene Sharm Hotel / Ivy Cyrene Island Resort, Al Montazah, Sharm El Sheikh',
+    'per_hour_max5' => '/ ora (max 5)',
+    'related_guides_title' => 'Guide Utili Immersioni & Escursioni a Sharm',
+    'home_guides_eyebrow' => 'Guide Mar Rosso PADI 5★',
+    'home_guides_title' => 'Guide Immersioni, Corsi Sub ed Escursioni a Sharm El Sheikh',
+    'home_guides_sub' => 'Consigli verificati dai nostri istruttori in italiano su prezzi EUR, biglietti Ras Mohammed, visto Sinai Only e brevetti sub.',
 ];

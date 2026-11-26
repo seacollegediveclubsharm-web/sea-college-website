@@ -177,7 +177,7 @@ return [
     'gallery_next' => 'Média suivant',
     'gallery_see_videos_btn' => 'Voir les vidéos sous-marines & la galerie',
     'team_showcase_title' => 'Rencontrez les instructeurs que nos clients recommandent par leur prénom',
-    'team_showcase_sub' => 'Enseignement en français, anglais, arabe, russe, allemand, italien et polonais — salué par plus de 3 082 avis Google vérifiés (4.9★) et 129 avis Tripadvisor (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Enseignement en 8 langues (français, anglais, arabe, russe, allemand, italien, polonais et chinois) — salué par plus de 3 082 avis Google vérifiés (4.9★) et 129+ avis Tripadvisor (4.9 ●●●●●).',
     'team_see_all_btn' => 'Voir toute l’équipe & les vidéos',
     'home_gallery_title' => 'Découvrez la vie à bord & nos images réelles en Mer Rouge',
     'home_gallery_sub' => 'Observez nos yachts de plongée, nos speedboats face à Tiran, nos entraînements en piscine et les tombants coralliens avant de réserver.',
@@ -234,4 +234,12 @@ return [
     'checkin_none' => 'Aucun / Débutant',
     'checkin_other' => 'FFESSM / CMAS / ANMP / Autre',
     'checkin_child' => 'Enfant',
+
+    // ---------- Interactive SVG Dive Map Labels ----------
+    'map_south_sinai' => 'SUD-SINAÏ',
+    'map_gulf_suez' => 'GOLFE DE SUEZ',
+    'map_gulf_aqaba' => 'GOLFE D’AQABA',
+    'map_tiran' => 'Île de Tiran',
+    'map_ras_mohammed' => 'Ras Mohammed',
+    'map_base' => '★ Base Sea College',
 ];

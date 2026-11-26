@@ -32,7 +32,7 @@ $today = date('Y-m-d');
     </div>
     <div class="field">
       <label for="<?= e($form_id) ?>-phone"><?= te('form_phone') ?> *</label>
-      <input id="<?= e($form_id) ?>-phone" name="phone" type="tel" required pattern="\+?[0-9 ()\-]{6,24}" maxlength="30" autocomplete="tel" dir="ltr" placeholder="+44 7700 900000" value="<?= $val('phone') ?>">
+      <input id="<?= e($form_id) ?>-phone" name="phone" type="tel" required pattern="\+?[0-9 ()\-]{6,24}" maxlength="30" autocomplete="tel" dir="ltr" placeholder="<?= e(t('form_phone_ph') !== 'form_phone_ph' ? t('form_phone_ph') : '+44 7700 900000') ?>" value="<?= $val('phone') ?>">
     </div>
     <div class="field">
       <label for="<?= e($form_id) ?>-email"><?= te('form_email') ?></label>
@@ -44,14 +44,14 @@ $today = date('Y-m-d');
         <option value=""><?= te('select_placeholder') ?></option>
         <option value="<?= te('opt_general') ?>"><?= te('opt_general') ?></option>
         <?php $sc_sel_interest = (string) ($old['interest'] ?? ($form_interest_default ?? '')); ?>
-        <?php foreach ($catalog as $cat): ?>
-          <optgroup label="<?= e(loc($cat['label'])) ?>">
-            <?php foreach ($cat['groups'] as $g): foreach ($g['items'] as $it):
-                $isCompact = str_starts_with($it['id'], 'eq-') || str_starts_with($it['id'], 'fee-');
-                if ($isCompact && $sc_sel_interest !== $it['name']) { continue; }
-                $optLabel = (function_exists('item_name') ? item_name($it) : $it['name']) . ' — ' . money($it['price']);
+        <?php foreach ($catalog as $lfCat): ?>
+          <optgroup label="<?= e(loc($lfCat['label'])) ?>">
+            <?php foreach ($lfCat['groups'] as $lfGroup): foreach ($lfGroup['items'] as $lfItem):
+                $isCompact = str_starts_with($lfItem['id'], 'eq-') || str_starts_with($lfItem['id'], 'fee-');
+                if ($isCompact && $sc_sel_interest !== $lfItem['name']) { continue; }
+                $optLabel = (function_exists('item_name') ? item_name($lfItem) : $lfItem['name']) . ' — ' . money($lfItem['price']);
             ?>
-              <option value="<?= e($it['name']) ?>"<?= ($sc_sel_interest === $it['name']) ? ' selected' : '' ?>><?= e($optLabel) ?></option>
+              <option value="<?= e($lfItem['name']) ?>"<?= ($sc_sel_interest === $lfItem['name']) ? ' selected' : '' ?>><?= e($optLabel) ?></option>
             <?php endforeach; endforeach; ?>
           </optgroup>
         <?php endforeach; ?>

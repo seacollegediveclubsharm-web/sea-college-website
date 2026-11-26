@@ -106,16 +106,16 @@ require ROOT_DIR . '/includes/header.php';
           <circle cx="312" cy="404" r="24" fill="rgba(242,140,40,.16)"/>
           <circle cx="448" cy="208" r="26" fill="rgba(10,132,168,.28)"/>
           <!-- Geographic labels -->
-          <text x="260" y="145" fill="#5e4f37" font-size="14" font-weight="800" text-anchor="middle">SOUTH SINAI</text>
-          <text x="115" y="310" fill="#9cc6dc" font-size="11" font-weight="700" text-anchor="middle">GULF OF SUEZ</text>
-          <text x="538" y="110" fill="#9cc6dc" font-size="11" font-weight="700" text-anchor="middle">GULF OF AQABA</text>
-          <text x="488" y="252" fill="#cfe6f2" font-size="11" font-weight="700" text-anchor="middle">Tiran Island</text>
-          <text x="315" y="446" fill="#cfe6f2" font-size="11" font-weight="700" text-anchor="middle">Ras Mohammed</text>
+          <text x="260" y="145" fill="#5e4f37" font-size="14" font-weight="800" text-anchor="middle"><?= e(t('map_south_sinai') !== 'map_south_sinai' ? t('map_south_sinai') : 'SOUTH SINAI') ?></text>
+          <text x="115" y="310" fill="#9cc6dc" font-size="11" font-weight="700" text-anchor="middle"><?= e(t('map_gulf_suez') !== 'map_gulf_suez' ? t('map_gulf_suez') : 'GULF OF SUEZ') ?></text>
+          <text x="538" y="110" fill="#9cc6dc" font-size="11" font-weight="700" text-anchor="middle"><?= e(t('map_gulf_aqaba') !== 'map_gulf_aqaba' ? t('map_gulf_aqaba') : 'GULF OF AQABA') ?></text>
+          <text x="488" y="252" fill="#cfe6f2" font-size="11" font-weight="700" text-anchor="middle"><?= e(t('map_tiran') !== 'map_tiran' ? t('map_tiran') : 'Tiran Island') ?></text>
+          <text x="315" y="446" fill="#cfe6f2" font-size="11" font-weight="700" text-anchor="middle"><?= e(t('map_ras_mohammed') !== 'map_ras_mohammed' ? t('map_ras_mohammed') : 'Ras Mohammed') ?></text>
           <!-- Sea College Base star -->
           <g transform="translate(376,242)">
             <circle r="7" fill="#25D366" stroke="#fff" stroke-width="2"/>
           </g>
-          <text x="364" y="236" fill="#3a2f1d" font-size="10.5" font-weight="800" text-anchor="end">★ Sea College Base</text>
+          <text x="364" y="236" fill="#3a2f1d" font-size="10.5" font-weight="800" text-anchor="end"><?= e(t('map_base') !== 'map_base' ? t('map_base') : '★ Sea College Base') ?></text>
 
           <!-- Interactive Dive Site Pins -->
           <?php foreach ($siteData['sites'] as $idx => $s): $num = $idx + 1; ?>
@@ -246,7 +246,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container cta-band__inner">
     <div><h2><?= te('sites_cta_title') ?></h2><p><?= te('sites_cta_sub') ?></p></div>
     <div class="cta-band__btns">
-      <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('Sharm Dive Sites Plan', 'dive_sites')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="dive_sites"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
+      <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link(t('sites_title'), 'dive_sites')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="dive_sites"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
       <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices', 'dive-calculator')) ?>" data-track="cta_click" data-placement="sites_calc"><?= te('sites_cta_calc') ?></a>
     </div>
   </div>

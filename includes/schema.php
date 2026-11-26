@@ -15,14 +15,30 @@ $sc_sameAs = array_values(array_unique(array_filter([
     MAPS_URL,
 ])));
 
+$sc_alt_names = [
+    'en' => 'Sea College Dive Club — PADI 5 Star Dive Resort Sharm El Sheikh',
+    'ru' => 'Sea College Dive Club — Русскоязычный дайвинг-центр PADI 5★ Шарм-эль-Шейх',
+    'it' => 'Sea College Dive Club — Centro Diving PADI 5 Stelle Sharm El Sheikh',
+    'de' => 'Sea College Dive Club — PADI 5 Sterne Tauchbasis & Tauchschule Sharm El Sheikh',
+    'pl' => 'Sea College Dive Club — Baza i Centrum Nurkowe PADI 5★ Sharm El Sheikh',
+    'fr' => 'Sea College Dive Club — Club de Plongée Francophone PADI 5★ Charm el-Cheikh',
+    'ar' => 'سي كوليدج دايف كلوب — مركز غوص وغطس بادي PADI 5★ شرم الشيخ',
+    'zh' => 'Sea College Dive Club — 埃及红海沙姆沙伊赫 PADI 五星潜水中心',
+];
+
 $sc_business = [
     '@type' => ['LocalBusiness', 'SportsActivityLocation'],
     '@id' => $sc_org_id,
     'name' => SITE_NAME,
+    'alternateName' => $sc_alt_names[LANG] ?? $sc_alt_names['en'],
     'description' => t('meta_home_desc'),
     'url' => SITE_URL . '/',
     'logo' => url('assets/images/logo.jpg'),
-    'image' => url('assets/images/og-default.jpg'),
+    'image' => [
+        url('assets/images/hero.jpg'),
+        url('assets/images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg'),
+        url('assets/images/fleet/sea-college-oceano-yacht-01-exterior-nov2026.jpg'),
+    ],
     'telephone' => BUSINESS['phone'],
     'email' => BUSINESS['email'],
     'contactPoint' => [
@@ -33,7 +49,7 @@ $sc_business = [
         'availableLanguage' => array_keys(SUPPORTED_LANGS),
     ],
     'priceRange' => BUSINESS['price_range'],
-    'currenciesAccepted' => 'EUR, USD, EGP',
+    'currenciesAccepted' => implode(', ', array_keys(CURRENCY_RATES)),
     'paymentAccepted' => 'Cash, Credit Card, Debit Card, Bank Transfer',
     'openingHours' => BUSINESS['hours'],
     'address' => [
@@ -41,10 +57,11 @@ $sc_business = [
         'streetAddress' => BUSINESS['street'],
         'addressLocality' => BUSINESS['city'],
         'addressRegion' => BUSINESS['region'],
+        'postalCode' => BUSINESS['postal_code'] ?? '46619',
         'addressCountry' => BUSINESS['country'],
     ],
     'hasMap' => MAPS_URL,
-    'award' => BUSINESS['padi_level'],
+    'award' => t('padi_badge') !== 'padi_badge' ? t('padi_badge') : BUSINESS['padi_level'],
     'knowsLanguage' => array_keys(SUPPORTED_LANGS),
     'sameAs' => $sc_sameAs,
 ];

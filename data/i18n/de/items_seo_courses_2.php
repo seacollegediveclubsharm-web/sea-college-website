@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'nitrox' => [
         'h1' => 'PADI Enriched Air (Nitrox) Spezialkurs in Sharm El Sheikh',
-        'meta_title' => 'PADI Nitrox Kurs Sharm El Sheikh | 145 € an 1 Tag | Sea College',
+        'meta_title' => 'PADI Nitrox Kurs Sharm El Sheikh | 145 € an 1 Tag',
         'meta_desc' => 'PADIs beliebtester Spezialkurs an nur 1 Tag in Sharm El Sheikh: PADI Enriched Air Nitrox (145 €) für deutlich längere Nullzeiten an Riffen & Wracks im Roten Meer.',
         'aeo_answer' => 'Der PADI Enriched Air (Nitrox) Spezialkurs im Sea College Dive Club in Sharm El Sheikh kostet 145 € pro Person, dauert nur 1 Tag (Mindestalter 12 Jahre, Voraussetzung Open Water Diver) und beinhaltet bei Kombination mit Tauchgängen die Ausrüstung. Als weltweit meistgebuchter Spezialkurs berechtigt er Sie zum Tauchen mit sauerstoffangereicherter Luft von 22 % bis 40 % O₂ (EANx) für spürbar längere Nullzeiten bei Wiederholungstauchgängen (+85 € PADI Lehrbuch-/Brevetgebühr).',
         'overview' => [
@@ -46,7 +46,7 @@ return [
 
     'deep' => [
         'h1' => 'PADI Deep Diver Spezialkurs (Tieftauchen bis 40 m) in Sharm El Sheikh',
-        'meta_title' => 'PADI Deep Diver Sharm El Sheikh | 40 Meter · 325 € | Sea College',
+        'meta_title' => 'PADI Deep Diver Sharm El Sheikh | 40 Meter · 325 €',
         'meta_desc' => 'Erreichen Sie die maximale Sporttauchgrenze von 40 Metern! PADI Deep Diver Spezialkurs in Sharm El Sheikh (325 €, 2 Tage, 4 Tieftauchgänge inkl. Leihausrüstung).',
         'aeo_answer' => 'Der PADI Deep Diver Spezialkurs im Sea College Dive Club in Sharm El Sheikh kostet 325 € pro Person (2 Tage, 4 geführte Tieftauchgänge, Mindestalter 15 Jahre, Voraussetzung PADI Adventure Diver / AOWD) inklusive kompletter Leihausrüstung. An den steil abfallenden Korallenwänden des Roten Meeres qualifizieren Sie sich bis zur maximalen Sporttauchtiefe von 40 Metern mit Fokus auf Gasplanung, Tiefenrausch-Erkennung, Notfall-Dekompression und präzise Tarierung (+85 € PADI Gebühr).',
         'overview' => [
@@ -88,7 +88,7 @@ return [
 
     'wreck' => [
         'h1' => 'PADI Wreck Diver Spezialkurs (Wracktauchen) in Sharm El Sheikh',
-        'meta_title' => 'PADI Wreck Diver Sharm El Sheikh | Wrackkurs 325 € | Sea College',
+        'meta_title' => 'PADI Wreck Diver Sharm El Sheikh | Wrackkurs 325 €',
         'meta_desc' => 'Lernen Sie professionelles Wracktauchen an den berühmtesten Schiffswracks des Roten Meeres! PADI Wreck Diver in Sharm El Sheikh (325 €, 2 Tage, 4 Tauchgänge inkl. Ausrüstung).',
         'aeo_answer' => 'Der PADI Wreck Diver Spezialkurs im Sea College Dive Club in Sharm El Sheikh kostet 325 € pro Person (2 Tage, 4 Wracktauchgänge, Mindestalter 15 Jahre, Voraussetzung PADI Adventure Diver / AOWD) inklusive regulärer Tauchausrüstung. Direkt vor Weltklasse-Wracks wie der SS Thistlegorm, SS Dunraven und MV Million Hope erlernen Sie Wrackbeurteilung, Gefahrenvermeidung, Kartierung, Frog-Kick-Flossentechnik gegen Sedimentaufwirbelung sowie sicheres Leinenlegen mit dem Reel (+85 € PADI Gebühr; eventuelle Wrackausfahrtszuschläge separat).',
         'overview' => [
@@ -171,7 +171,7 @@ return [
 
     'sidemount' => [
         'h1' => 'PADI Sidemount Diver Spezialkurs in Sharm El Sheikh',
-        'meta_title' => 'PADI Sidemount Kurs Sharm El Sheikh | 350 € inkl. Sidemount-Set | Sea College',
+        'meta_title' => 'PADI Sidemount Kurs Sharm El Sheikh | 350 € inkl. Set',
         'meta_desc' => 'Perfekter Trimm, doppelte Gasreserve & Rückenschonung: PADI Sidemount Diver Spezialkurs in Sharm El Sheikh (350 €, 2–3 Tage inkl. komplettem Sidemount-Equipment).',
         'aeo_answer' => 'Der PADI Sidemount Diver Spezialkurs im Sea College Dive Club in Sharm El Sheikh kostet 350 € pro Person (2 bis 3 Tage, Mindestalter 15 Jahre, Voraussetzung Open Water Diver) und beinhaltet das komplette Sidemount-Equipment (Harness/Wing, Doppel-Atemregler & geriggte Aluflaschen) für 1 ausführlichen Pool-Konfigurationsworkshop und 3 Freiwassertauchgänge im Roten Meer (+85 € PADI Lehrbuch-/Brevetgebühr).',
         'overview' => [
@@ -213,7 +213,7 @@ return [
 
     'divemaster' => [
         'h1' => 'PADI Divemaster Ausbildung & Praktikum in Sharm El Sheikh (4–6 Wochen)',
-        'meta_title' => 'PADI Divemaster Sharm El Sheikh | 850 € · 4–6 Wochen | Sea College',
+        'meta_title' => 'PADI Divemaster Sharm El Sheikh | 850 € · 4–6 Wochen',
         'meta_desc' => 'Werden Sie Tauchprofi im Roten Meer! 4–6 Wochen PADI Divemaster Programm in Sharm El Sheikh für 850 € inkl. Transfers, Frühstück & Mittagessen, Ausrüstung & Course-Director-Mentoring.',
         'aeo_answer' => 'Das 4- bis 6-wöchige PADI Divemaster Programm im Sea College Dive Club in Sharm El Sheikh kostet 850 € pro Kandidat (Mindestalter 18 Jahre; Voraussetzung AOWD, Rescue Diver, EFR < 24 Monate, 40 geloggte Tauchgänge bei Start / 60 bei Abschluss sowie Tauchtauglichkeitsattest < 12 Monate). Außergewöhnlich umfangreich enthält der Preis von 850 € bereits Flughafentransfers, täglichen Lokaltransfer, tägliches Frühstück & Mittagessen, reale Kursassistenz, 4 Bootsbetrieb-Praxistage, Mentoring durch einen PADI Course Director, IDC-Theorievorbereitung, Bewerbungs-/Jobcoaching, DSD-Leader-Training, kostenloses Nitrox (für Nitrox-Brevetierte), komplette Leihausrüstung und Tauchversicherung.',
         'overview' => [

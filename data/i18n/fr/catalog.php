@@ -45,7 +45,7 @@ return [
     'groups' => [
         'intro-dives'         => 'Plongée Débutants (Baptêmes de plongée)',
         'refresh-dives'       => 'Plongées de Réadaptation',
-        'certified-packages'  => 'Forfaits Plongeurs Certifiés — Bateau ou du Bord',
+        'certified-packages'  => 'Forfaits Plongée Exploration — Bateau ou du Bord',
         'wreck-special-dives' => 'Épaves, Zodiac, Plongée de Nuit & Excursion Dahab',
         'daily-fees'          => 'Frais Journaliers & Guide Privé',
         'equipment-rental'    => 'Location d’Équipement & Blocs (par jour)',
@@ -164,10 +164,10 @@ return [
         'dsd'         => ['name' => 'PADI Discover Scuba Diving', 'desc' => 'Dès 10 ans. Initiation en piscine + plongée guidée en Mer Rouge. Équipement, livret et attestation PADI inclus !'],
         'scuba-diver' => ['name' => 'PADI Scuba Diver', 'desc' => 'Dès 10 ans. 3 séances piscine + 2 plongées en mer ; brevet à vie jusqu’à 12 m encadré par un pro PADI.'],
         'upgrade-owd' => ['name' => 'Passerelle PADI Scuba Diver → Open Water', 'desc' => 'Complétez 2 séances piscine, 2 plongées mer et la théorie finale pour obtenir votre brevet autonome Open Water 18 m.'],
-        'owd'         => ['name' => 'PADI Open Water Diver', 'desc' => 'Dès 10 ans. Le brevet de plongée le plus célèbre au monde : 5 séances piscine + 4 plongées en Mer Rouge jusqu’à 18 m.'],
+        'owd'         => ['name' => 'PADI Open Water Diver (Équivalent Niveau 1)', 'desc' => 'Dès 10 ans. Équivalent international Niveau 1 : 5 séances piscine + 4 plongées en Mer Rouge jusqu’à 18 m.'],
 
         // Advanced & Rescue
-        'aowd'       => ['name' => 'PADI Advanced Open Water Diver', 'desc' => 'Dès 12 ans. 5 plongées Aventure (dont Profonde & Orientation) vous certifiant jusqu’à 30 mètres.'],
+        'aowd'       => ['name' => 'PADI Advanced Open Water (30 m / Niveau 2)', 'desc' => 'Dès 12 ans. 5 plongées Aventure (dont Profonde & Orientation) vous certifiant jusqu’à 30 mètres.'],
         'aowd-green' => ['name' => 'Advanced Open Water « Green » (AOWD + Nitrox)', 'desc' => '5 plongées Aventure (jusqu’à 30 m) combinées avec la spécialité PADI Air Enrichi Nitrox (atelier sec).'],
         'efr'        => ['name' => 'Emergency First Response (EFR — Premiers Secours)', 'desc' => 'RCP, premiers secours, défibrillateur (DAE) et soins aux enfants. Ouvert aux plongeurs comme aux non-plongeurs.'],
         'rescue'     => ['name' => 'PADI Rescue Diver (Plongeur Sauveteur)', 'desc' => 'Dès 12 ans. Autosauvetage, prévention du stress, gestion des urgences et scénarios de sauvetage en mer.'],

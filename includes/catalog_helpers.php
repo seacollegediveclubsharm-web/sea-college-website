@@ -168,15 +168,56 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
         'url'           => $fullUrl,
         'priceCurrency' => 'EUR',
         'availability'  => 'https://schema.org/InStock',
+        'priceValidUntil' => ((int) date('Y') + 1) . '-12-31',
         'seller'        => $orgRef,
+        'hasMerchantReturnPolicy' => [
+            '@type'                => 'MerchantReturnPolicy',
+            'applicableCountry'    => 'EG',
+            'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays'   => 2,
+            'returnMethod'         => 'https://schema.org/ReturnAtKiosk',
+            'returnFees'           => 'https://schema.org/FreeReturn',
+        ],
     ];
     if ($it['price'] !== null) {
         $offer['price'] = (string) $it['price'];
     }
 
+    $credMap = [
+        'en' => ['PADI Certification / Training Credit', 'Scuba Diving Training'],
+        'ru' => ['Международный сертификат PADI / Зачёт обучения', 'Обучение дайвингу PADI'],
+        'it' => ['Brevetto Internazionale PADI / Credito Formativo', 'Formazione Subacquea PADI'],
+        'de' => ['Offizielles PADI Tauchbrevet / Internationaler Tauchschein', 'PADI Tauchausbildung'],
+        'pl' => ['Międzynarodowy Certyfikat PADI / Zaliczenie Szkolenia', 'Szkolenie Nurkowe PADI'],
+        'fr' => ['Brevet International PADI / Crédit de Formation', 'Formation Plongée PADI'],
+        'ar' => ['شهادة غوص بادي PADI دولية معتمدة', 'تدريب غوص معتمد'],
+        'zh' => ['PADI 国际潜水认证 / 官方学分', 'PADI 水肺潜水培训'],
+    ];
+    $touristMap = [
+        'en' => ['Scuba Divers', 'Snorkelers', 'Red Sea Travellers'],
+        'ru' => ['Дайверы', 'Любители снорклинга и морских прогулок', 'Отдыхающие в Шарм-эль-Шейхе'],
+        'it' => ['Subacquei', 'Amanti dello Snorkeling & Famiglie', 'Viaggiatori a Sharm El Sheikh'],
+        'de' => ['Gerätetaucher', 'Schnuppertaucher & Einsteiger', 'Schnorchler & Familien'],
+        'pl' => ['Płetwonurkowie', 'Miłośnicy Snurkowania i Rodziny', 'Turyści w Sharm El Sheikh'],
+        'fr' => ['Plongeurs sous-marins', 'Amateurs de snorkeling & Familles', 'Voyageurs en Mer Rouge'],
+        'ar' => ['الغواصون', 'عشاق السنوركلينج والرحلات البحرية', 'زوار شرم الشيخ والبحر الأحمر'],
+        'zh' => ['水肺潜水员', '浮潜游客与家庭', '埃及红海旅行者'],
+    ];
+    $areaMap = [
+        'en' => ['Sharm El Sheikh', 'Ras Mohammed', 'Straits of Tiran', 'South Sinai'],
+        'ru' => ['Шарм-эль-Шейх', 'Заповедник Рас-Мохаммед', 'Остров и пролив Тиран', 'Южный Синай'],
+        'it' => ['Sharm El Sheikh', 'Parco Nazionale di Ras Mohammed', 'Isola e Stretto di Tiran', 'Sud Sinai'],
+        'de' => ['Sharm El Sheikh', 'Nationalpark Ras Mohammed', 'Straße von Tiran', 'Süd-Sinai'],
+        'pl' => ['Sharm El Sheikh (Szarm el-Szejk)', 'Park Narodowy Ras Mohammed', 'Cieśnina Tiran', 'Południowy Synaj'],
+        'fr' => ['Charm el-Cheikh (Sharm El Sheikh)', 'Parc National Ras Mohammed', 'Détroit de Tiran', 'Sud-Sinaï'],
+        'ar' => ['شرم الشيخ', 'محمية رأس محمد', 'جزيرة ومضيق تيران', 'خليج نبق - منطقة الغرقانة'],
+        'zh' => ['沙姆沙伊赫', '拉斯穆罕默德国家公园', '蒂朗海峡', '南西奈半岛'],
+    ];
+    $credPair = $credMap[LANG] ?? $credMap['en'];
+
     $primary = [
         '@type'       => $type,
-        '@id'         => SITE_URL . item_path($it) . '#entity',
+        '@id'         => $fullUrl . '#entity',
         'name'        => $name,
         'description' => $desc,
         'url'         => $fullUrl,
@@ -190,8 +231,8 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
 
     if ($type === 'Course') {
         $primary['educationalCredentialAwarded'] = str_contains($it['name'], 'PADI') || ($it['section'] ?? '') === 'courses'
-            ? 'PADI Certification / Training Credit'
-            : 'Diving Training';
+            ? $credPair[0]
+            : $credPair[1];
         $primary['availableLanguage'] = array_keys(SUPPORTED_LANGS);
         $inst = [
             '@type'      => 'CourseInstance',
@@ -202,12 +243,13 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
                 'address' => BUSINESS['street'] . ', ' . BUSINESS['city'],
             ],
         ];
-        if (!empty($it['duration'])) {
-            $inst['courseWorkload'] = (string) $it['duration'];
+        $locDur = item_duration($it);
+        if ($locDur !== '') {
+            $inst['courseWorkload'] = $locDur;
         }
         $primary['hasCourseInstance'] = $inst;
     } elseif ($type === 'TouristTrip') {
-        $primary['touristType'] = ['Scuba Divers', 'Snorkelers', 'Red Sea Travellers'];
+        $primary['touristType'] = $touristMap[LANG] ?? $touristMap['en'];
         if (!empty($res['steps'])) {
             $stepList = [];
             $pos = 1;
@@ -223,20 +265,21 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
         }
     } else {
         $primary['category']   = $catLabel;
-        $primary['areaServed'] = ['Sharm El Sheikh', 'Ras Mohammed', 'Straits of Tiran', 'South Sinai'];
+        $primary['areaServed'] = $areaMap[LANG] ?? $areaMap['en'];
     }
 
     $nodes = [$primary];
 
-    if ($it['price'] !== null) {
+    if ($it['price'] !== null && sc_is_catalog_item($it)) {
         $nodes[] = [
             '@type'       => 'Product',
-            '@id'         => SITE_URL . item_path($it) . '#product',
+            '@id'         => $fullUrl . '#product',
             'sku'         => $it['id'],
             'name'        => item_name($it),
             'description' => item_desc($it) ?: $desc,
             'image'       => count($images) > 1 ? $images : $imgUrl,
-            'category'    => $catLabel,
+            'inLanguage'  => LANG,
+            'category'    => 'Sporting Goods > Outdoor Recreation > Water Sports > Scuba Diving & Snorkeling',
             'brand'       => ['@type' => 'Brand', 'name' => SITE_NAME],
             'offers'      => $offer,
             'aggregateRating' => [
@@ -251,14 +294,21 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
 
     if (!empty($gallery['video']['src'])) {
         $vid = $gallery['video'];
+        $isoDur = 'PT30S';
+        if (!empty($vid['dur']) && preg_match('/^(?:(\d+):)?(\d+)$/', trim((string) $vid['dur']), $dm)) {
+            $mins = (int) ($dm[1] ?? 0);
+            $secs = (int) $dm[2];
+            $isoDur = 'PT' . ($mins > 0 ? $mins . 'M' : '') . $secs . 'S';
+        }
         $nodes[] = [
             '@type'        => 'VideoObject',
-            '@id'          => SITE_URL . item_path($it) . '#video',
+            '@id'          => $fullUrl . '#video',
             'name'         => $name . ' — ' . SITE_NAME,
             'description'  => $desc,
             'thumbnailUrl' => [url('assets/' . ltrim((string) ($vid['poster'] ?? ('images/' . ($it['img'] ?? 'hero.jpg'))), '/'))],
             'contentUrl'   => url('assets/' . ltrim((string) $vid['src'], '/')),
             'uploadDate'   => '2026-01-15T08:00:00+02:00',
+            'duration'     => $isoDur,
             'publisher'    => $orgRef,
         ];
     }

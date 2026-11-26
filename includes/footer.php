@@ -46,11 +46,11 @@ declare(strict_types=1);
     <div class="footer-col">
       <h2 class="footer-title"><?= te('footer_contact') ?></h2>
       <ul class="footer-links footer-links--contact">
-        <li>📍 <?= e(BUSINESS['street']) ?>, <?= e(BUSINESS['city']) ?></li>
+        <li>📍 <?= e(t('business_address_val') !== 'business_address_val' ? t('business_address_val') : (BUSINESS['street'] . ', ' . BUSINESS['city'])) ?></li>
         <li>💬 WhatsApp: <a href="<?= e(whatsapp_link('', 'footer_contact')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="footer_contact"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></li>
         <li>📞 <a href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click"><bdi dir="ltr"><?= e(BUSINESS['phone_display']) ?></bdi></a></li>
         <li>✉️ <a href="mailto:<?= e(BUSINESS['email']) ?>" data-track="email_click"><?= e(BUSINESS['email']) ?></a></li>
-        <li>🕗 <?= te('hours') ?>: <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></li>
+        <li>🕗 <?= te('hours') ?>: <bdi dir="auto"><?= e(t('business_hours_val') !== 'business_hours_val' ? t('business_hours_val') : BUSINESS['hours_display']) ?></bdi></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -64,7 +64,7 @@ declare(strict_types=1);
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© <bdi dir="ltr"><?= e(BUSINESS['founded'] . '–' . date('Y')) ?></bdi> <strong><?= e(SITE_NAME) ?></strong> (<?= e(BUSINESS['padi_level']) ?>). <?= te('footer_rights') ?> 🔒</span>
+    <span>© <bdi dir="ltr"><?= e(BUSINESS['founded'] . '–' . date('Y')) ?></bdi> <strong><?= e(SITE_NAME) ?></strong> (<?= e(t('padi_badge') !== 'padi_badge' ? t('padi_badge') : BUSINESS['padi_level']) ?>). <?= te('footer_rights') ?> 🔒</span>
     <span class="footer-bottom__links">
       <a href="<?= e(page_link('/privacy-policy')) ?>"><?= te('footer_privacy') ?></a>
       <a href="<?= e(page_link('/terms', 'copyright')) ?>">© <?= te('footer_terms') ?></a>
@@ -80,16 +80,16 @@ declare(strict_types=1);
     <span class="minicart__sep">·</span>
     <span class="minicart__sum" data-minicart-total>€0</span>
   </div>
-  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : page_link('/prices', 'booking')) ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> →</a>
+  <a class="btn btn--primary btn--sm" href="<?= e(($page['id'] ?? '') === 'item' ? '#booking' : page_link('/prices', 'booking')) ?>" data-track="cta_click" data-placement="minicart_book"><?= te('minicart_review') ?> <?= e(sc_arrow_next()) ?></a>
 </div>
 <?php endif; ?>
 
 <?php if (!in_array(($page['id'] ?? ''), ['item', 'thanks', 'checkin'], true)): ?>
-<div class="mobile-quick-bar no-print" role="region" aria-label="Quick Contact">
+<div class="mobile-quick-bar no-print" role="region" aria-label="<?= te('footer_contact') ?>">
   <a class="btn btn--wa mobile-quick-bar__wa" href="<?= e(whatsapp_link('', 'mobile_sticky_bar')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="mobile_sticky_bar">
     <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span>
   </a>
-  <a class="btn btn--ghost-dark mobile-quick-bar__call" href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click" data-placement="mobile_sticky_bar" aria-label="Call <?= e(BUSINESS['phone_display']) ?>">📞</a>
+  <a class="btn btn--ghost-dark mobile-quick-bar__call" href="tel:<?= e(BUSINESS['phone']) ?>" data-track="phone_click" data-placement="mobile_sticky_bar" aria-label="<?= te('cta_call') ?> <?= e(BUSINESS['phone_display']) ?>">📞</a>
 </div>
 <?php endif; ?>
 

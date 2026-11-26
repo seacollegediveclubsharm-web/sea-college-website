@@ -111,10 +111,10 @@ return sc_overlay_dive_sites([
             'depth'   => '5 – 24 m',
             'level'   => ['en' => 'Open Water (18 m+)', 'ar' => 'Open Water (من 18م)'],
             'current' => ['en' => 'Light – Moderate', 'ar' => 'خفيف – متوسط'],
-            'name'    => ['en' => 'MV Million Hope Wreck (Nabq)', 'ar' => 'حطام سفينة مليون هوب (نبق)'],
+            'name'    => ['en' => 'MV Million Hope Wreck (Nabq)', 'ar' => 'حطام سفينة مليون هوب — منطقة الغرقانة (خليج نبق)'],
             'summary' => [
                 'en' => 'At 175 m long, the 1996 bulk carrier Million Hope at Nabq is the largest shipwreck in Sharm El Sheikh — shallow enough for sunlit Open Water exploration with a mobile crane beside it.',
-                'ar' => 'بطول 175 مترًا، تُعد سفينة البضائع «مليون هوب» الغارقة عام 1996 في نبق أضخم حطام سفينة في شرم الشيخ، وأعماقها الضحلة المشمسة تجعلها مثالية لحاملي Open Water.',
+                'ar' => 'بطول 175 مترًا، تُعد سفينة البضائع «مليون هوب» الغارقة عام 1996 في منطقة الغرقانة بنبق أضخم حطام سفينة في شرم الشيخ، وأعماقها الضحلة المشمسة تجعلها مثالية لحاملي Open Water.',
             ],
             'marine'  => [
                 'en' => ['Batfish schools', 'Crocodilefish', 'Nudibranchs', 'Glassfish', 'Boxfish'],

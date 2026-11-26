@@ -13,15 +13,15 @@ return [
         'slug' => 'diving-trips-sharm-el-sheikh',
         'h1' => [
             'en' => 'Scuba Diving Trips & Dive Packages in Sharm El Sheikh',
-            'ar' => 'رحلات وباقات الغوص في شرم الشيخ — البحر الأحمر',
+            'ar' => 'رحلات وباقات الغوص والغطس (دايفنج) والرحلات البحرية في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Scuba Diving Sharm El Sheikh & Diving Packages | From €30 | Max 4/Guide',
-            'ar' => 'الغوص في شرم الشيخ وباقات الغوص | من 30€ | بحد أقصى 4 غواصين للمرشد',
+            'en' => 'Sharm El Sheikh Diving Packages | €35/Dive & Intro From €30',
+            'ar' => 'باقات الغوص والغطس (دايفنج) في شرم الشيخ | من 30€ | PADI 5★',
         ],
         'meta_desc' => [
-            'en' => 'Book Sharm El Sheikh diving packages at a PADI 5★ Resort: beginner intro €30, certified 2–10 dive packs (€35/dive, max 4/guide), Ras Mohammed, Tiran & SS Thistlegorm. €0 deposit!',
-            'ar' => 'باقات ورحلات الغوص في شرم الشيخ بمنتجع PADI خمس نجوم: غطسات المبتدئين 30€، باقات المعتمدين (35€ للغطسة، حد 4 للمرشد)، رأس محمد، تيران وثيستلجورم بدون دفعة مقدمة!',
+            'en' => 'Sharm El Sheikh diving packages (PADI 5★): intro dives €30, 3–10 dive packs (€35/dive, max 4/guide), Ras Mohammed, Tiran & SS Thistlegorm. €0 deposit!',
+            'ar' => 'باقات ورحلات الغوص والغطس (دايفنج) في شرم الشيخ بمركز بادي PADI خمس نجوم: غطسات للمبتدئين 30€، باقات المعتمدين (35€/غطسة)، رأس محمد وتيران والغرقانة بدون عربون!',
         ],
         'sub' => [
             'en' => 'Daily guided boat and shore dives to Ras Mohammed National Park, the Straits of Tiran, local coral gardens and legendary Red Sea wrecks — departing from our PADI 5 Star base at Cyrene Sharm, Al Montazah.',
@@ -77,15 +77,15 @@ return [
         'slug' => 'diving-courses-sharm-el-sheikh',
         'h1' => [
             'en' => 'PADI Scuba Diving Courses in Sharm El Sheikh',
-            'ar' => 'دورات الغوص المعتمدة من PADI في شرم الشيخ',
+            'ar' => 'دورات غوص وغطس بادي PADI المعتمدة (دايفنج) في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'PADI Course Sharm El Sheikh | Open Water €400 to Divemaster | PADI 5★',
-            'ar' => 'دورات بادي شرم الشيخ | PADI Open Water بـ400€ حتى Divemaster | سي كوليدج',
+            'en' => 'PADI Courses Sharm El Sheikh | Open Water €400 (PADI 5★)',
+            'ar' => 'دورات غوص وغطس بادي PADI شرم الشيخ | Open Water بـ400€',
         ],
         'meta_desc' => [
-            'en' => 'Official PADI courses in Sharm El Sheikh (PADI 5★ Resort): Discover Scuba €85, Open Water €400, Advanced €350, Nitrox €145 & Divemaster. Full gear included & €0 deposit!',
-            'ar' => 'دورات الغوص الرسمية PADI في شرم الشيخ: غطسة المبتدئين 85€، Open Water بـ400€، Advanced بـ350€، نيتروكس 145€ وDivemaster شاملة المعدات الكاملة وانتقالات الفندق!',
+            'en' => 'Official PADI courses in Sharm El Sheikh (PADI 5★): Discover Scuba €85, Open Water €400, Advanced €350, Nitrox €145 & Divemaster. Gear included, €0 deposit!',
+            'ar' => 'دورات غوص وغطس بادي PADI الرسمية (دايفنج بشهادة دولية معتمدة) في شرم الشيخ: المبتدئين 85€، Open Water بـ400€، Advanced بـ350€ وDivemaster شاملة المعدات!',
         ],
         'sub' => [
             'en' => 'Train in warm, crystal-clear Red Sea water with an on-site training pool, air-conditioned classroom, house reef and multilingual PADI Instructors speaking English, Arabic, Russian, German, Italian and French.',
@@ -141,15 +141,15 @@ return [
         'slug' => 'padi-course-bundles-sharm-el-sheikh',
         'h1' => [
             'en' => 'PADI Course Bundles & Multi-Certification Offers in Sharm El Sheikh',
-            'ar' => 'عروض وباقات دورات PADI المدمجة في شرم الشيخ',
+            'ar' => 'عروض وباقات دورات غوص بادي PADI المدمجة (دايفنج) في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'PADI Course Bundles Sharm El Sheikh | Save up to €120 | Sea College',
-            'ar' => 'عروض دورات PADI في شرم الشيخ | وفّر حتى 120€ | سي كوليدج',
+            'en' => 'PADI Course Bundles Sharm El Sheikh | Save Up to €120',
+            'ar' => 'عروض دورات غوص بادي PADI شرم الشيخ | وفّر حتى 120€',
         ],
         'meta_desc' => [
             'en' => 'Combine PADI Open Water, Advanced Open Water & Enriched Air Nitrox in Sharm El Sheikh and save €50–€120. Includes full equipment rental, dive insurance & tax.',
-            'ar' => 'ادمج دورات PADI Open Water وAdvanced والنيتروكس في شرم الشيخ ووفّر من 50€ إلى 120€. شاملة المعدات الكاملة وتأمين الغوص والضريبة.',
+            'ar' => 'ادمج دورات غوص وغطس بادي PADI (Open Water + Advanced + نيتروكس) بشهادة دولية معتمدة في شرم الشيخ ووفّر حتى 120€ شاملة المعدات الكاملة وتأمين الغوص.',
         ],
         'sub' => [
             'en' => 'Upgrade your Red Sea holiday with our four transparent multi-course packages — Stars, Super, Mega and Heros — all including full scuba gear, dive insurance and sales tax.',
@@ -199,15 +199,15 @@ return [
         'slug' => 'snorkeling-and-boats-sharm-el-sheikh',
         'h1' => [
             'en' => 'Snorkeling Trips, Private Speedboats & Yacht Charters in Sharm El Sheikh',
-            'ar' => 'رحلات السنوركل والقوارب السريعة واليخوت الخاصة في شرم الشيخ',
+            'ar' => 'الرحلات البحرية والسنوركل والغطس والقوارب واليخوت الخاصة في شرم الشيخ',
         ],
         'meta_title' => [
-            'en' => 'Snorkeling, Speed Boat & Private Yacht Sharm El Sheikh | Ras Mohammed & Tiran',
-            'ar' => 'سنوركلينج شرم الشيخ، لانش سريع ويخت خاص | رأس محمد والجزيرة البيضاء وتيران',
+            'en' => 'Snorkeling & Private Boat Sharm El Sheikh | Tiran & Yachts',
+            'ar' => 'رحلات بحرية وسنوركل ويخت خاص شرم الشيخ | رأس محمد وتيران',
         ],
         'meta_desc' => [
-            'en' => 'Book Sharm El Sheikh boat trips: White Island & Ras Mohammed snorkeling €55 (kids €30), private Tiran speedboat €75–€225 & VIP private yacht rental €550–€1,100. Free pickup!',
-            'ar' => 'رحلات بحرية وسنوركلينج شرم الشيخ: الجزيرة البيضاء ورأس محمد باليخت 55€ (الأطفال 30€)، لانش سريع خاص لتيران من 75€ وتأجير يخت خاص من 550€ شاملة الانتقالات!',
+            'en' => 'Sharm El Sheikh boat trips & snorkeling: White Island & Ras Mohammed yacht €55 (kids €30), private Tiran speedboat €75–€225 & VIP private yachts from €550.',
+            'ar' => 'رحلات بحرية وسنوركل وغطس شرم الشيخ: الجزيرة البيضاء ورأس محمد باليخت 55€ (الأطفال 30€)، لانش سريع خاص لتيران من 75€ وتأجير يخت خاص من 550€ شاملة الانتقالات!',
         ],
         'sub' => [
             'en' => 'Crystal-clear Red Sea coral gardens for families, couples and groups — join our full-day White Island & Ras Mohammed yacht cruise, book a private speedboat to Tiran Island, or charter your own full-day boat for up to 20 guests.',

@@ -99,9 +99,9 @@ return [
     ],
 
     'dsd' => [
-        'h1' => 'PADI Discover Scuba Diving a Sharm El Sheikh — Battesimo del Mare Ufficiale',
-        'meta_title' => 'Battesimo del Mare PADI Sharm El Sheikh €85 | Libretto & Attestato Inclusi',
-        'meta_desc' => 'PADI Discover Scuba Diving a Sharm El Sheikh a €85 tutto incluso: teoria, piscina, 1 immersione guidata sul reef fino a 12 m, attrezzatura, libretto e attestato PADI inclusi!',
+        'h1' => 'Battesimo del Mare & Prova Sub PADI Discover Scuba a Sharm El Sheikh (€85)',
+        'meta_title' => 'Battesimo del Mare & Prova Sub PADI Sharm €85 | Tutto Incluso',
+        'meta_desc' => 'Battesimo del Mare e prova sub ufficiale PADI a Sharm El Sheikh (€85): istruttori parlanti italiano, piscina + reef 12m, attrezzatura e attestato inclusi!',
         'aeo_answer' => 'Il programma ufficiale PADI Discover Scuba Diving (Battesimo del Mare) presso Sea College Dive Club a Sharm El Sheikh costa €85 per 1 giornata (età minima 10 anni) e include briefing teorico, esercizi in piscina/acqua bassa, 1 immersione guidata sull’House Reef fino a 12 m, attrezzatura completa e — unico programma del listino — libretto e attestato ufficiale PADI già inclusi senza supplemento di €85.',
         'overview' => [
             'Hai sempre sognato di respirare sott’acqua tra i coralli del Mar Rosso senza impegnarti subito in un corso di più giorni? Il PADI Discover Scuba Diving (il vero «Battesimo del Mare» registrato PADI) è il modo più completo e sicuro per iniziare. A differenza delle prove rapide da 10 minuti, qui impari davvero i fondamentali in acqua confinata prima di esplorare la barriera corallina di Al Montazah fino a 12 metri di profondità.',
@@ -237,10 +237,10 @@ return [
     ],
 
     'owd' => [
-        'h1' => 'Corso PADI Open Water Diver a Sharm El Sheikh — Brevetto Internazionale 18m',
-        'meta_title' => 'Corso PADI Open Water Sharm El Sheikh €400 | Centro PADI 5 Stelle',
-        'meta_desc' => 'Prendi il brevetto PADI Open Water Diver a Sharm El Sheikh a €400 (+€85 PADI) in 3–3,5 giorni. 5 piscine + 4 immersioni Mar Rosso fino a 18m, attrezzatura e assicurazione incluse!',
-        'aeo_answer' => 'Il corso PADI Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €400 (+€85 manuale e certificazione PADI), dura 3–3,5 giorni (età minima 10 anni) e comprende 5 moduli teorici, 5 sessioni in acqua confinata, 4 immersioni nel Mar Rosso fino a 18 metri, attrezzatura subacquea completa e assicurazione subacquea incluse.',
+        'h1' => 'Corso Sub PADI Open Water Diver a Sharm El Sheikh — Brevetto Sub 18m',
+        'meta_title' => 'Corso Sub PADI Open Water Sharm €400 | Brevetto Sub 18m',
+        'meta_desc' => 'Corso sub PADI Open Water a Sharm El Sheikh (€400): brevetto sub 18m in 3,5 giorni con istruttori parlanti italiano, 5 piscine + 4 tuffi e attrezzatura incl.!',
+        'aeo_answer' => 'Il corso sub PADI Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €400 (+€85 manuale e certificazione PADI), dura 3–3,5 giorni con istruttori parlanti italiano (età minima 10 anni) e rilascia il brevetto sub internazionale fino a 18 metri con 5 moduli teorici, 5 sessioni in piscina, 4 immersioni nel Mar Rosso, attrezzatura subacquea completa e assicurazione subacquea incluse.',
         'overview' => [
             'Il PADI Open Water Diver è il brevetto subacqueo più famoso e riconosciuto al mondo — e non esiste aula migliore delle acque calde, calme e cristalline di Sharm El Sheikh per conseguirlo! In 3–3,5 giorni i nostri istruttori PADI (premiati con 4,9★ su oltre 3.082 recensioni Google) ti accompagnano passo dopo passo dal tuo primissimo respiro sott’acqua fino a pianificare ed effettuare immersioni autonome in coppia fino a 18 metri.',
             'Nella tariffa trasparente di €400 presso il nostro Centro PADI 5 Stelle ad Al Montazah sono già inclusi il noleggio completo dell’attrezzatura subacquea per tutti i giorni del corso, l’assicurazione subacquea allievo e i trasferimenti gratuiti dal tuo resort a Sharm El Sheikh. Puoi anche completare la teoria tramite PADI eLearning dall’Italia prima di partire per dedicare la vacanza solo al mare!',
@@ -313,7 +313,7 @@ return [
         'excluded' => [
             'Manuale digitale PADI e tassa di certificazione (€85)',
             'Supplemento barca (€10/giorno incluso pranzo) e tassa parco marino (€5/giorno)',
-            'Assicurazione camera iperbarica (€7/giorno o inclusa gratis nel pacchetto Super AOWD+Nitrox a €400!)',
+            'Assicurazione camera iperbarica (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni — inclusa gratis nel pacchetto Super AOWD+Nitrox a €400!)',
         ],
         'ideal_for' => [
             'Subacquei Open Water (anche appena brevettati o con brevetto SSI/CMAS/FIPSAS) che vogliono scendere fino a 30 m',

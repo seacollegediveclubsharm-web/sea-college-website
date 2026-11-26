@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'dsd-quick-reef' => [
         'h1' => 'Baptême de Plongée Rapide depuis le Récif Maison — Charm el-Cheikh (30 €)',
-        'meta_title' => 'Baptême de Plongée Récif Maison Charm el-Cheikh (Sharm El Sheikh) | 30 €',
+        'meta_title' => 'Baptême de Plongée Plage Charm el-Cheikh | 30 € House Reef',
         'meta_desc' => 'Baptême de plongée rapide depuis la plage à Charm el-Cheikh (Sharm El Sheikh) dès 30 € (2 h, dès 10 ans). Briefing sécurité, matériel inclus et plongée encadrée sur notre récif corallien.',
         'aeo_answer' => 'Le Baptême de Plongée Rapide depuis le Récif Maison chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 30 € tout compris (âge minimum 10 ans, durée totale 2 heures). Il inclut le briefing de sécurité avec votre moniteur PADI, le prêt de l’équipement complet et une première immersion encadrée main dans la main de 10 minutes sur notre récif privé au Cyrene Sharm — aucun supplément bateau ni taxe parc marin.',
         'overview' => ['Idéal pour découvrir vos toutes premières sensations de respiration sous l’eau à petit prix et sans prendre le bateau, ce baptême express démarre directement depuis notre plage privée à Ras Nasrani / Nabq.', 'Après un briefing rassurant en français et quelques respirations d’essai là où vous avez pied, votre instructeur PADI vous guide au-dessus des poissons-clowns, demoiselles bleues et coraux du House Reef.'],
@@ -47,7 +47,7 @@ return [
     ],
     'dsd-2-reef' => [
         'h1' => 'Double Baptême de Plongée Récif Maison (2 Plongées) — Charm el-Cheikh',
-        'meta_title' => '2 Baptêmes de Plongée Plage Charm el-Cheikh (Sharm El Sheikh) | 75 €',
+        'meta_title' => '2 Baptêmes de Plongée Plage Charm el-Cheikh | 75 € Complet',
         'meta_desc' => 'Profitez de 2 baptêmes de plongée depuis notre récif maison à Charm el-Cheikh (Sharm El Sheikh) pour 75 € (3 h, dès 10 ans). Briefing PADI, 2 immersions coralliennes et équipement inclus.',
         'aeo_answer' => 'La formule Double Baptême de Plongée Récif Maison chez Sea College Dive Club à Charm el-Cheikh coûte 75 € par personne (dès 10 ans, durée 3 heures). Elle comprend un briefing complet, tout l’équipement de plongée et deux immersions guidées de 15 minutes sur deux parcours distincts de notre récif corallien privé au Cyrene Sharm, avec une pause détente entre les deux plongées et zéro supplément bateau.',
         'overview' => ['Lors d’un premier baptême, les premières minutes servent à apprivoiser sa respiration ; la seconde plongée est celle où l’on se détend pleinement et où l’on savoure vraiment le spectacle sous-marin !', 'En 3 heures depuis notre plage privée sans roulis de bateau, vous réalisez deux vraies explorations coralliennes séparées par une pause thé/eau au soleil avec votre instructeur PADI.'],
@@ -87,7 +87,7 @@ return [
     ],
     'dsd-quick-boat' => [
         'h1' => 'Journée Bateau & Baptême de Plongée Mer Rouge Tout Compris — Charm el-Cheikh',
-        'meta_title' => 'Baptême de Plongée en Bateau Charm el-Cheikh (Sharm El Sheikh) | 70 € Tout Inclus',
+        'meta_title' => 'Baptême de Plongée Bateau Charm el-Cheikh | 70 € Tout Inclus',
         'meta_desc' => 'Excursion bateau tout compris avec 1 baptême de plongée à Charm el-Cheikh (Sharm El Sheikh) pour 70 € (8 h, dès 10 ans) : transferts, taxes parc, déjeuner buffet, snorkeling & matériel inclus !',
         'aeo_answer' => 'L’excursion Journée Bateau + 1 Baptême de Plongée chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 70 € par personne en formule 100 % tout compris (8 heures, dès 10 ans). Le tarif inclut déjà les transferts hôtel climatisés, le supplément bateau, les taxes de parc marin, le déjeuner buffet fraîchement préparé à bord, les boissons chaudes et fraîches, le snorkeling aux autres arrêts et 1 baptême encadré de 10 minutes avec équipement complet.',
         'overview' => ['Vivez la journée emblématique en yacht sur la Mer Rouge vers le Détroit de Tiran ou le Parc national de Ras Mohammed tout en réalisant votre premier baptême de plongée dans des lagons turquoise à visibilité cristalline (25–35 m).', 'Contrairement aux offres affichant des suppléments sur place, notre forfait à 70 € est intégralement tout compris : transferts, taxes, buffet chaud à bord, boissons, palmes-masque-tuba pour le reste de la journée et équipement complet de plongée.'],
@@ -128,7 +128,7 @@ return [
     ],
     'dsd-2-boat' => [
         'h1' => 'Journée Bateau & 2 Baptêmes de Plongée Tout Compris — Charm el-Cheikh (Best-Seller)',
-        'meta_title' => '2 Baptêmes Plongée Bateau Charm el-Cheikh (Sharm El Sheikh) | 100 € Tout Inclus',
+        'meta_title' => '2 Baptêmes Plongée Bateau Charm el-Cheikh | 100 € All-In',
         'meta_desc' => 'Notre best-seller débutants à Charm el-Cheikh (Sharm El Sheikh) : journée yacht Mer Rouge + 2 baptêmes de plongée PADI tout compris à 100 € (transferts, taxes, buffet, boissons & équipement).',
         'aeo_answer' => 'La Journée Bateau avec 2 Baptêmes de Plongée Tout Compris chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 100 € par personne (8 heures, dès 10 ans). C’est notre formule découverte n°1 : elle inclut deux immersions guidées de 15 minutes sur deux récifs différents de Tiran ou Ras Mohammed, l’équipement complet, les transferts hôtel, toutes les taxes de parc marin, le déjeuner buffet à bord, les boissons et le snorkeling au 3e mouillage.',
         'overview' => ['Pour seulement 30 € d’écart avec le baptême simple, cette journée complète en yacht offre deux vraies immersions sur deux des plus beaux jardins coralliens de la Mer Rouge : la première pour prendre confiance, la seconde pour voler en apesanteur au-dessus des tombants colorés !', 'Plébiscitée dans nos 3 082 avis Google (4,9★), cette formule 100 % tout compris réunit l’encadrement bienveillant de nos moniteurs PADI (Mo, Sam, Alex, Jimmy, Saleh), un buffet savoureux à bord et zéro frais caché.'],
@@ -169,7 +169,7 @@ return [
     ],
     'check-dive' => [
         'h1' => 'Plongée de Réadaptation (Check Dive) — Charm el-Cheikh (25 €)',
-        'meta_title' => 'Check Dive Plongée Réadaptation Charm el-Cheikh (Sharm El Sheikh) | 25 €',
+        'meta_title' => 'Check Dive Réadaptation Charm el-Cheikh | 25 € House Reef',
         'meta_desc' => 'Pas plongé depuis plus de 6 mois ? Réalisez votre Check Dive encadrée sur notre récif maison à Charm el-Cheikh (Sharm El Sheikh) pour 25 € (1,5–2 h) avant les sorties bateau.',
         'aeo_answer' => 'La Plongée de Réadaptation (Check Dive) chez Sea College Dive Club à Charm el-Cheikh coûte 25 € (durée 1,5 à 2 heures) et est requise conformément aux règles de sécurité en Mer Rouge pour tout plongeur certifié n’ayant pas plongé au cours des 6 derniers mois. Organisée depuis notre récif maison calme au Cyrene Sharm avec un guide PADI, elle inclut bouteille 12 L, plombs et vérification du lestage avant vos sorties bateau à Ras Mohammed et Tiran.',
         'overview' => ['En Égypte, la réglementation de la Chambre des Sports Nautiques (CDWS) impose une courte plongée d’évaluation en milieu protégé avant d’attaquer les plongées dérivantes profondes de Shark & Yolanda ou Jackson Reef.', 'Loin d’être une formalité ennuyeuse, cette Check Dive sur notre superbe récif maison permet d’ajuster précisément votre lestage en Mer Rouge (eau plus salée qu’en Méditerranée ou Atlantique !) et de revoir calmement vidage de masque et flottabilité.'],
@@ -209,7 +209,7 @@ return [
     ],
     'scuba-review' => [
         'h1' => 'PADI Scuba Review (ReActivate) — Remise à Niveau Plongée à Charm el-Cheikh',
-        'meta_title' => 'PADI Scuba Review ReActivate Charm el-Cheikh (Sharm El Sheikh) | 50 €',
+        'meta_title' => 'Remise à Niveau Scuba Review Charm el-Cheikh | 50 € PADI',
         'meta_desc' => 'Pas plongé depuis plus d’un an ? Retrouvez tous vos réflexes à Charm el-Cheikh (Sharm El Sheikh) avec notre PADI Scuba Review à 50 € (demi-journée : piscine + plongée récif maison).',
         'aeo_answer' => 'Le programme PADI Scuba Review (remise à niveau) chez Sea College Dive Club à Charm el-Cheikh coûte 50 € par plongeur (demi-journée) et est obligatoire pour les plongeurs certifiés n’ayant pas plongé depuis plus de 12 mois. Il combine un rappel théorique, une séance d’exercices de sécurité dans notre piscine d’entraînement et une belle plongée guidée sur le récif maison du Cyrene Sharm (bouteilles et plombs inclus ; location matériel complet +25 €/jour si besoin).',
         'overview' => ['Après un an, deux ans ou même dix ans sans mettre la tête sous l’eau, il est tout à fait normal d’avoir oublié le montage du bloc ou de se sentir rouillé avant de sauter d’un bateau au-dessus d’un tombant de 40 mètres !', 'En une demi-journée détendue avec l’un de nos instructeurs PADI patients, vous revoyez chaque geste en piscine calme avant d’enchaîner sur une vraie plongée récifale pleine de poissons tropicaux — prêt(e) à profiter à 100 % de votre forfait plongées.'],
@@ -249,7 +249,7 @@ return [
     ],
     'dive-6' => [
         'h1' => 'Forfait 6 Plongées Exploration (3 Jours) — Charm el-Cheikh (210 € · 35 €/plongée)',
-        'meta_title' => 'Forfait 6 Plongées Charm el-Cheikh (Sharm El Sheikh) | 3 Jours | 210 €',
+        'meta_title' => 'Forfait 6 Plongées Exploration Charm el-Cheikh | 210 €',
         'meta_desc' => 'Réservez votre Forfait 6 Plongées certifiées (3 jours) à Charm el-Cheikh (Sharm El Sheikh) pour 210 € (35 €/plongée) : Ras Mohammed, Détroit de Tiran & récifs locaux avec guide PADI.',
         'aeo_answer' => 'Le Forfait 6 Plongées (3 jours) pour plongeurs certifiés chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 210 € par plongeur, soit 35 € la plongée. Il inclut 6 plongées guidées par un professionnel PADI, les bouteilles 12 L air, les plombs et les transferts hôtel gratuits. Les jours de sortie en bateau ajoutent en toute transparence 10 €/jour de supplément bateau (déjeuner buffet et boissons inclus) et 5 €/jour de taxe parc marin.',
         'overview' => ['Le forfait 3 jours / 6 plongées est la formule favorite des plongeurs en séjour d’une semaine souhaitant explorer les trois joyaux de Charm el-Cheikh — Parc national de Ras Mohammed, Détroit de Tiran et récifs côtiers de Ras Nasrani — tout en gardant des journées libres en famille !', 'En petits groupes de niveau homogène guidés par nos instructeurs passionnés (Sam, Alex, Jimmy, Mosab, Saleh), vous profitez de briefings détaillés et de temps de plongée généreux (45–60 min selon consommation).'],
@@ -290,7 +290,7 @@ return [
     ],
     'dive-10' => [
         'h1' => 'Forfait 10 Plongées Exploration (5 Jours) — Charm el-Cheikh (350 € · Meilleure Valeur)',
-        'meta_title' => 'Forfait 10 Plongées Charm el-Cheikh (Sharm El Sheikh) | 5 Jours | 350 €',
+        'meta_title' => 'Forfait 10 Plongées Exploration Charm el-Cheikh | 350 €',
         'meta_desc' => 'Le forfait plongée complet Mer Rouge à Charm el-Cheikh (Sharm El Sheikh) : 10 plongées guidées (5 jours) à 350 € (35 €/plongée, et 30 € dès la 11e !) sur Ras Mohammed, Tiran & épaves.',
         'aeo_answer' => 'Le Forfait 10 Plongées (5 jours) chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 350 € par plongeur certifié (35 € par plongée, et toute plongée supplémentaire à partir de la 11e descend à seulement 30 € !). Il inclut 10 plongées guidées PADI, bouteilles 12 L air, plombs et transferts hôtel. Les sorties bateau ajoutent 10 €/jour (buffet déjeuner et boissons compris) + 5 €/jour de taxe parc marin.',
         'overview' => ['Cinq journées complètes sous l’eau vous ouvrent l’intégralité du terrain de jeu légendaire du Sud-Sinaï sans jamais refaire deux fois le même parcours : tombants vertigineux de Shark & Yolanda, dérivantes électriques des quatre récifs de Tiran, grottes de Jackfish Alley et épaves mythiques.', 'En prime, dès que vous atteignez 10 plongées, chaque plongée additionnelle passe au tarif privilège de 30 € — parfait pour ajouter une 3e plongée l’après-midi ou une plongée de nuit sur notre récif !'],

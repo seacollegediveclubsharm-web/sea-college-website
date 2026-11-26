@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 return [
     'dsd-quick-reef' => [
-        'h1' => 'Szybkie Intro Nurkowanie z Brzegu — Rafa Domowa w Sharm El Sheikh (30 €)',
-        'meta_title' => 'Intro Nurkowanie Sharm El Sheikh | 30 € Rafa Domowa | Sea College PADI',
+        'h1' => 'Szybkie Intro Nurkowe z Brzegu — Rafa Domowa w Sharm El Sheikh (30 €)',
+        'meta_title' => 'Intro Nurkowe Sharm El Sheikh | 30 € Rafa Domowa',
         'meta_desc' => 'Nigdy nie nurkowałeś? Spróbuj pierwszego oddechu pod wodą w Sharm El Sheikh (Szarm el-Szejk) za 30 € na naszej spokojnej rafie domowej Al Montazah. Pełny sprzęt i instruktor PADI 1-na-1!',
-        'aeo_answer' => 'Szybkie Intro Nurkowanie (Quick Discover Scuba Diving — House Reef) w Sea College Dive Club kosztuje 30 € za osobę i trwa około 2 godzin w naszej nadmorskiej bazie PADI 5 Gwiazdek w Al Montazah (Sharm El Sheikh). Stworzone dla osób całkowicie początkujących od 10. roku życia bez żadnego doświadczenia, obejmuje pełne omówienie bezpieczeństwa, wypożyczenie całego sprzętu nurkowego, naukę oddychania na płytkiej wodzie oraz 10-minutowe nurkowanie na rafie koralowej za rękę z instruktorem PADI.',
+        'aeo_answer' => 'Szybkie Intro Nurkowe (Quick Discover Scuba Diving — House Reef) w Sea College Dive Club kosztuje 30 € za osobę i trwa około 2 godzin w naszej nadmorskiej bazie PADI 5 Gwiazdek w Al Montazah (Sharm El Sheikh). Stworzone dla osób całkowicie początkujących od 10. roku życia bez żadnego doświadczenia, obejmuje pełne omówienie bezpieczeństwa, wypożyczenie całego sprzętu nurkowego, naukę oddychania na płytkiej wodzie oraz 10-minutowe nurkowanie na rafie koralowej za rękę z instruktorem PADI.',
         'overview' => [
             'Chcesz przekonać się, jakie to uczucie oddychać pod wodą, nie rezerwując od razu całego dnia na morzu? Nasze Szybkie Intro za 30 € pozwala wejść łagodnie z plaży prosto do przejrzystej, spokojnej wody Morza Czerwonego naprzeciwko wyspy Tiran w resorcie Cyrene Sharm.',
             'Twój instruktor PADI dopasuje kompletny sprzęt, przećwiczy z Tobą na głębokości do pasa spokojny oddech z automatu, przedmuchiwanie uszu oraz znaki ręczne, a następnie poprowadzi Cię wzdłuż barwnych wież koralowych.',
@@ -50,7 +50,7 @@ return [
 
     'dsd-2-reef' => [
         'h1' => 'Discover Scuba Diving (2 Nurkowania Intro) — Rafa Domowa Sharm El Sheikh (75 €)',
-        'meta_title' => '2 Nurkowania Intro z Brzegu Sharm El Sheikh | 75 € ze Sprzętem | Sea College',
+        'meta_title' => '2 Intro Nurkowe z Brzegu Sharm El Sheikh | 75 € Kompletnie',
         'meta_desc' => 'Dwa 15-minutowe nurkowania Intro z instruktorem PADI na naszej spokojnej rafie domowej Al Montazah w Sharm El Sheikh za 75 €. Pełny sprzęt i szkolenie w cenie!',
         'aeo_answer' => 'Pakiet Discover Scuba Diving (2 nurkowania Intro) — Rafa Domowa w Sea College Dive Club kosztuje 75 € za osobę i trwa około 3 godzin w naszej bazie przy plaży Al Montazah w Sharm El Sheikh. Przeznaczony dla osób początkujących od 10 lat, obejmuje instruktaż bezpieczeństwa, kompletny sprzęt nurkowy oraz dwa 15-minutowe nurkowania na rafie koralowej przedzielone relaksującą przerwą na powierzchni.',
         'overview' => [
@@ -93,10 +93,10 @@ return [
     ],
 
     'dsd-quick-boat' => [
-        'h1' => 'Intro Nurkowanie z Łodzi w Sharm El Sheikh — Całodniowy Rejs Jachtem (70 €)',
-        'meta_title' => 'Intro Nurkowanie z Łodzi Sharm El Sheikh | 70 € All-Inclusive | Sea College',
+        'h1' => 'Intro Nurkowe z Łodzi w Sharm El Sheikh — Całodniowy Rejs Jachtem (70 €)',
+        'meta_title' => 'Intro Nurkowe z Łodzi Sharm El Sheikh | 70 € All-Inclusive',
         'meta_desc' => 'Całodniowy rejs jachtem po Morzu Czerwonym + 1 nurkowanie Intro dla początkujących w Sharm El Sheikh za 70 €! W cenie transfer z hotelu, park morski, obiad bufetowy, napoje i sprzęt.',
-        'aeo_answer' => 'Szybkie Intro Nurkowanie z Łodzi (Quick Discover Scuba Diving — By Boat) w Sea College Dive Club kosztuje 70 € za osobę za pełny ~8-godzinny rejs jachtem z Sharm El Sheikh (Szarm el-Szejk). Nie jest wymagane żadne doświadczenie (wiek min. 10 lat): cena 70 € jest w pełni all-inclusive i zawiera odbiór oraz powrót do hotelu, opłaty za park morski, cały sprzęt nurkowy, instruktaż PADI, 10-minutowe nurkowanie z instruktorem na rafie, czas na snorkeling, świeży obiad w formie bufetu i napoje bezalkoholowe.',
+        'aeo_answer' => 'Szybkie Intro Nurkowe z Łodzi (Quick Discover Scuba Diving — By Boat) w Sea College Dive Club kosztuje 70 € za osobę za pełny ~8-godzinny rejs jachtem z Sharm El Sheikh (Szarm el-Szejk). Nie jest wymagane żadne doświadczenie (wiek min. 10 lat): cena 70 € jest w pełni all-inclusive i zawiera odbiór oraz powrót do hotelu, opłaty za park morski, cały sprzęt nurkowy, instruktaż PADI, 10-minutowe nurkowanie z instruktorem na rafie, czas na snorkeling, świeży obiad w formie bufetu i napoje bezalkoholowe.',
         'overview' => [
             'Połącz klasyczny słoneczny rejs białym jachtem po Morzu Czerwonym ze swoim pierwszym w życiu zejściem pod wodę w akwalungu! Dopłacając zaledwie 15 € do zwykłego biletu snorkelingowego, otrzymujesz kompletny sprzęt nurkowy i indywidualne zejście 1-na-1 z instruktorem PADI nad dziewiczymi ogrodami koralowymi.',
             'W przerwach między przystankami możesz snorkelować, opalać się na górnym pokładzie i zjeść świeżo przygotowany egipski obiad wspólnie z nienurkującą rodziną na tej samej łodzi.',
@@ -138,7 +138,7 @@ return [
 
     'dsd-2-boat' => [
         'h1' => 'Discover Scuba Diving z Łodzi (2 Nurkowania Intro) — Sharm El Sheikh (100 €)',
-        'meta_title' => 'Intro Nurkowanie z Łodzi Sharm (2 Zejścia) | 100 € All-In | Sea College',
+        'meta_title' => 'Intro Nurkowe z Łodzi Sharm El Sheikh | 2 Zejścia 100 €',
         'meta_desc' => 'Nasza wycieczka nr 1 dla początkujących w Sharm El Sheikh (Szarm el-Szejk): całodniowy rejs jachtem + 2 nurkowania Intro po 15 min (100 €). Transfer, park morski, obiad i sprzęt w cenie!',
         'aeo_answer' => 'Discover Scuba Diving (2 nurkowania Intro) — z Łodzi to najczęściej rezerwowana wyprawa dla osób początkujących w Sea College Dive Club w Sharm El Sheikh w cenie 100 € za osobę all-inclusive. Podczas ~8-godzinnego rejsu jachtem po Morzu Czerwonym uczestnicy od 10. roku życia (bez żadnego doświadczenia) mają w cenie transfery z hotelu, opłaty za park morski, pełny sprzęt nurkowy, opiekę instruktora PADI, dwa 15-minutowe nurkowania na dwóch różnych rafach koralowych, obiad bufetowy i napoje.',
         'overview' => [
@@ -182,7 +182,7 @@ return [
 
     'check-dive' => [
         'h1' => 'Nurkowanie Sprawdzające (Check Dive) w Sharm El Sheikh — Odświeżenie po 6+ Mies.',
-        'meta_title' => 'Check Dive Sharm El Sheikh | Odświeżenie za 25 € | Sea College PADI',
+        'meta_title' => 'Check Dive Sharm El Sheikh | Nurkowanie Sprawdzające 25 €',
         'meta_desc' => 'Przerwa w nurkowaniu powyżej 6 miesięcy? Wykonaj spokojne nurkowanie sprawdzające Check Dive (25 €, 1,5–2 godz.) na rafie domowej Al Montazah przed wypłynięciem na łódź.',
         'aeo_answer' => 'Nurkowanie sprawdzające Check Dive w Sea College Dive Club w Sharm El Sheikh kosztuje 25 € za certyfikowanego nurka i trwa od 1,5 do 2 godzin. Zgodnie z egipskimi przepisami bezpieczeństwa CDWS nad Morzem Czerwonym jest obowiązkowe, jeśli Twoje ostatnie zalogowane nurkowanie miało miejsce od 6 do 12 miesięcy temu (powyżej 12 miesięcy obowiązuje Scuba Review za 50 €). Dobierasz właściwy balast, powtarzasz oczyszczanie maski i automatu oraz sprawdzasz pływalność na spokojnej rafie domowej Al Montazah przed głębokimi nurkowaniami z łodzi.',
         'overview' => [
@@ -224,7 +224,7 @@ return [
 
     'scuba-review' => [
         'h1' => 'Scuba Review (PADI ReActivate) w Sharm El Sheikh — Odświeżenie po 1+ Roku',
-        'meta_title' => 'Scuba Review Sharm El Sheikh | Odświeżenie po Przerwie 50 € | Sea College',
+        'meta_title' => 'Scuba Review Sharm El Sheikh | Odświeżenie PADI 50 €',
         'meta_desc' => 'Nie nurkowałeś od roku lub dłużej? Zrób półdniowy program przypominający Scuba Review w Sharm El Sheikh (50 €): basen + rafa domowa z instruktorem PADI.',
         'aeo_answer' => 'Program przypominający Scuba Review w Sea College Dive Club w Sharm El Sheikh kosztuje 50 € za certyfikowanego nurka i trwa około pół dnia (3–3,5 godziny). Jest obowiązkowy, jeśli od Twojego ostatniego zalogowanego nurkowania minął ponad 1 rok. Obejmuje powtórkę kluczowej teorii bezpieczeństwa, pełną sesję ćwiczeń w naszym basenie szkoleniowym oraz nurkowanie na wodach otwartych z instruktorem PADI na rafie domowej Al Montazah (butle 12 l i balast w cenie).',
         'overview' => [
@@ -266,7 +266,7 @@ return [
 
     'dive-6' => [
         'h1' => 'Pakiet 6 Nurkowań w Sharm El Sheikh — 3 Dni z Łodzi lub z Brzegu (210 €)',
-        'meta_title' => 'Pakiet 6 Nurkowań Sharm El Sheikh | 210 € (35 €/Nurkowanie) | Sea College',
+        'meta_title' => 'Pakiet 6 Nurkowań Sharm El Sheikh | 210 € (35 €/nurk.)',
         'meta_desc' => 'Najpopularniejszy 3-dniowy pakiet dla certyfikowanych nurków w Sharm El Sheikh (210 € = 35 €/nurkowanie): Ras Mohammed, Cieśnina Tiran i lokalne rafy. Przewodnik PADI, butle i transfer w cenie!',
         'aeo_answer' => 'Pakiet 6 nurkowań z łodzi lub z brzegu w Sea College Dive Club w Sharm El Sheikh (Szarm el-Szejk) kosztuje 210 € za certyfikowanego nurka (35 € za nurkowanie — oszczędzasz 60 € względem pojedynczych zejść) i standardowo obejmuje 3 dni nurkowe. W cenę wliczony jest przewodnik PADI, aluminiowe butle 12 l z powietrzem, pas balastowy z ołowiem oraz transfery z/do hotelu w Sharm El Sheikh (w dni z łodzi obowiązuje dopłata łodziowa 10 €/dzień z obiadem i napojami oraz opłata parkowa 5 €/dzień).',
         'overview' => [
@@ -311,7 +311,7 @@ return [
 
     'dive-10' => [
         'h1' => 'Pakiet 10 Nurkowań w Sharm El Sheikh — Pełny 5-Dniowy Tydzień Nurkowy (350 €)',
-        'meta_title' => 'Pakiet 10 Nurkowań Sharm El Sheikh | 350 € (35 €/Nurk.) | Sea College',
+        'meta_title' => 'Pakiet 10 Nurkowań Sharm El Sheikh | 350 € (35 €/nurk.)',
         'meta_desc' => 'Pełne wakacje nurkowe w Sharm El Sheikh (Szarm el-Szejk): pakiet 10 nurkowań za 350 € (35 €/nurkowanie, a każde kolejne tylko 30 €!). Ras Mohammed, Tiran, wraki i transfery w cenie.',
         'aeo_answer' => 'Pakiet 10 nurkowań z łodzi lub z brzegu w Sea College Dive Club w Sharm El Sheikh kosztuje 350 € za certyfikowanego nurka (35 € za nurkowanie — oszczędność aż 100 € względem pojedynczych nurkowań), a każde dodatkowe nurkowanie powyżej dziesiątego kosztuje już tylko 30 €! Rozłożony zazwyczaj na 5 dni, obejmuje przewodnika PADI, butle 12 l z powietrzem, balast i transfery z hoteli w Sharm El Sheikh (w dni łodziowe dochodzi dopłata łodziowa 10 €/dzień z obiadem oraz opłata parkowa 5 €/dzień).',
         'overview' => [

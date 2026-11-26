@@ -494,10 +494,10 @@ return [
         'qb_reserve_cta' => 'Réserver',
         'qb_pickup_tag' => 'Transfert : {hotel}',
 
-        'meta_guides_title' => 'Guides Plongée Sharm El Sheikh, Tarifs & Conseils Mer Rouge | Sea College',
-        'meta_guides_desc' => 'Guides PADI 5 Étoiles pour plonger à Sharm El Sheikh : meilleures saisons et températures, épave SS Thistlegorm, Ras Mohammed vs Tiran, baptême débutant et budget 2026.',
+        'meta_guides_title' => 'Guides Plongée Charm el-Cheikh (Sharm El Sheikh) & Mer Rouge',
+        'meta_guides_desc' => 'Guides PADI 5★ pour plonger à Charm el-Cheikh (Sharm El Sheikh) : saisons, températures, baptême débutant, épave Thistlegorm, Ras Mohammed vs Tiran & budget.',
         'guides_eyebrow' => 'Guides & Conseils PADI 5★ · Mer Rouge',
-        'guides_title' => 'Guides de Plongée à Sharm El Sheikh & Conseils Pratiques',
+        'guides_title' => 'Guides de Plongée à Charm el-Cheikh (Sharm El Sheikh) & Conseils Mer Rouge',
         'guides_sub' => 'Guides rédigés par nos instructeurs : saisons de la Mer Rouge, épaves mythiques, parcs marins, première plongée et budget transparent 2026.',
         'guides_read_time' => '{min} min de lecture',
         'guides_updated' => 'Mis à jour {date}',

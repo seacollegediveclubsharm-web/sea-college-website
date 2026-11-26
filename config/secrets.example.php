@@ -38,4 +38,8 @@ return [
 
     // 6. Google Sheets Leads & Google Ads OCT CRM Webhook (Sheet 1ItvQGWnrHwnSbyGDoGNtV2CkVwNJXIyU_aaIFxIOGbc)
     'CRM_WEBHOOK_URL' => 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec',
+
+    // 7. SEO & AEO Search Intelligence Sync (php docs/gsc_semrush_sync.php)
+    'SEMRUSH_API_KEY'          => '', // Semrush API v3 key for Position Tracking & Domain Organic sync
+    'GSC_SERVICE_ACCOUNT_JSON' => '', // Absolute path or raw JSON of Google Cloud Service Account granted Viewer on https://seacollegediveclub.com/
 ];

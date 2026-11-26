@@ -61,9 +61,9 @@ define('SUPPORTED_LANGS', [
 ]);
 define('RTL_LANGS', ['ar']);
 define('PRIMARY_CURRENCY', 'EUR');
-// Indicative conversion rates for the currency switcher (display only).
-define('CURRENCY_RATES', ['EUR' => 1.0, 'USD' => 1.08, 'GBP' => 0.85, 'EGP' => 52.0]);
-define('CURRENCY_SYMBOLS', ['EUR' => '€', 'USD' => '$', 'GBP' => '£', 'EGP' => 'E£']);
+// Indicative conversion rates for the currency switcher (display only; checkout locked in EUR).
+define('CURRENCY_RATES', ['EUR' => 1.0, 'USD' => 1.08, 'GBP' => 0.85, 'PLN' => 4.30, 'AED' => 3.97, 'SAR' => 4.05, 'CNY' => 7.85, 'EGP' => 52.0]);
+define('CURRENCY_SYMBOLS', ['EUR' => '€', 'USD' => '$', 'GBP' => '£', 'PLN' => 'zł', 'AED' => 'د.إ', 'SAR' => 'ر.س', 'CNY' => '¥', 'EGP' => 'E£']);
 define('PRICE_VALIDITY_NOTE', 'Prices in EUR per person unless stated. Final price confirmed at booking.');
 
 /* ---------------------------------------------------------------
@@ -72,6 +72,7 @@ define('PRICE_VALIDITY_NOTE', 'Prices in EUR per person unless stated. Final pri
 define('BUSINESS', [
     'legal_name'   => 'Sea College Dive Club',
     'street'       => 'Cyrene Sharm Hotel / Ivy Cyrene Island Aqua Park Resort, Al Montazah',
+    'postal_code'  => '46619',
     'city'         => 'Sharm El Sheikh',
     'region'       => 'South Sinai',
     'country'      => 'EG',

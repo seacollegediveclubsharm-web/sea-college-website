@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'aowd-green' => [
         'h1' => 'Kurs PADI Advanced Open Water „Green” (AOWD + Nitrox) w Sharm El Sheikh',
-        'meta_title' => 'Advanced Open Water + Nitrox „Green” Sharm | 380 € | Sea College',
+        'meta_title' => 'Advanced Open Water + Nitrox „Green” Sharm | 380 €',
         'meta_desc' => 'Połącz kurs PADI Advanced Open Water (30 m) ze specjalizacją Enriched Air Nitrox w 3 dni w Sharm El Sheikh za 380 € — pełny sprzęt nurkowy w cenie!',
         'aeo_answer' => 'Kurs Advanced Open Water „Green” w Sea College Dive Club w Sharm El Sheikh kosztuje 380 € za osobę (minimalny wiek: 12 lat, czas trwania: 3 dni) i łączy wszystkie 5 nurkowań przygodowych PADI Advanced Open Water (do 30 m) z warsztatami specjalizacji PADI Enriched Air (Nitrox), zawierając wypożyczenie pełnego sprzętu nurkowego (+85 € opłata PADI za każdy z dwóch certyfikatów).',
         'overview' => [
@@ -47,7 +47,7 @@ return [
 
     'efr' => [
         'h1' => 'Kurs Pierwszej Pomocy Emergency First Response (EFR) w Sharm El Sheikh',
-        'meta_title' => 'Kurs Pierwszej Pomocy EFR Sharm El Sheikh | 1 Dzień · 143 € | Sea College',
+        'meta_title' => 'Kurs Pierwszej Pomocy EFR Sharm El Sheikh | 143 €',
         'meta_desc' => 'Międzynarodowy 1-dniowy kurs pierwszej pomocy i RKO Emergency First Response (EFR) w Sharm El Sheikh za 143 €. Wymagany przed kursem PADI Rescue Diver — otwarty dla każdego!',
         'aeo_answer' => 'Kurs Emergency First Response (EFR Primary & Secondary Care — pomoc wstępna i drugorzędna) w Sea College Dive Club w Sharm El Sheikh kosztuje 143 € za osobę, trwa 1 dzień w naszej klimatyzowanej sali wykładowej w Cyrene Sharm i nie wymaga żadnych uprawnień nurkowych ani limitu wieku. Uczysz się RKO (CPR) dorosłych i dzieci, użycia defibrylatora AED, postępowania przy zadławieniu, krwotokach i wstrząsie — spełniając obowiązkowy 24-miesięczny wymóg do kursu PADI Rescue Diver.',
         'overview' => [
@@ -88,7 +88,7 @@ return [
 
     'rescue' => [
         'h1' => 'Kurs PADI Rescue Diver w Sharm El Sheikh — Nurek Ratownik',
-        'meta_title' => 'Kurs PADI Rescue Diver Sharm El Sheikh | 394 € · 3–4 Dni | Sea College',
+        'meta_title' => 'Kurs PADI Rescue Diver Sharm El Sheikh | 394 € · 3–4 Dni',
         'meta_desc' => 'Zostań pewniejszym partnerem pod wodą na kursie PADI Rescue Diver w Sharm El Sheikh (394 €, 3–4 dni, pełny sprzęt w cenie). Autoratownictwo i scenariusze akcji na Morzu Czerwonym.',
         'aeo_answer' => 'Kurs PADI Rescue Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 394 € za osobę, trwa od 3 do 4 dni (minimalny wiek: 12 lat) i obejmuje wypożyczenie pełnego sprzętu nurkowego. Uznawany przez nurków za najbardziej satysfakcjonujący kurs PADI, uczy autoratownictwa, wczesnego rozpoznawania stresu u partnera, podawania tlenu ratunkowego, holowania spanikowanego lub nieprzytomnego nurka oraz prowadzenia pełnych akcji ratunkowych (wymagany Adventure/AOWD + EFR z ostatnich 24 mies.; +85 € opłata PADI).',
         'overview' => [
@@ -129,7 +129,7 @@ return [
 
     'nitrox' => [
         'h1' => 'Specjalizacja PADI Enriched Air Nitrox w Sharm El Sheikh (1 Dzień)',
-        'meta_title' => 'Kurs PADI Nitrox Sharm El Sheikh | 1 Dzień · 145 € | Sea College',
+        'meta_title' => 'Kurs PADI Nitrox Sharm El Sheikh | 1 Dzień · 145 €',
         'meta_desc' => 'Najpopularniejsza specjalizacja PADI na świecie! Zrób kurs Enriched Air Nitrox w Sharm El Sheikh w 1 dzień za 145 € i wydłuż czas bezdekompresyjny na rafach i wrakach.',
         'aeo_answer' => 'Kurs specjalizacyjny PADI Enriched Air (Nitrox) Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 145 € za osobę, trwa zaledwie 1 dzień (minimalny wiek: 12 lat, wymagany certyfikat Open Water Diver) i zawiera sprzęt szkoleniowy. Jako najpopularniejsza specjalizacja PADI na świecie uprawnia Cię do nurkowania na mieszankach wzbogaconych w tlen do 40% O₂ (EANx22–EANx40), dając znacznie dłuższy czas bezdekompresyjny podczas powtarzalnych nurkowań w Morzu Czerwonym (+85 € opłata PADI).',
         'overview' => [
@@ -170,7 +170,7 @@ return [
 
     'deep' => [
         'h1' => 'Specjalizacja PADI Deep Diver w Sharm El Sheikh — Nurkowanie Głębokie do 40 m',
-        'meta_title' => 'Kurs PADI Deep Diver Sharm El Sheikh | 40 m · 325 € | Sea College',
+        'meta_title' => 'Kurs PADI Deep Diver Sharm El Sheikh | 40 m · 325 €',
         'meta_desc' => 'Zdobądź maksymalne uprawnienia rekreacyjne do 40 m na kursie PADI Deep Diver w Sharm El Sheikh (325 €, 2 dni, 4 nurkowania głębokie na ścianach koralowych, sprzęt w cenie).',
         'aeo_answer' => 'Kurs specjalizacyjny PADI Deep Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 325 € za osobę (2 dni, 4 nurkowania głębokie, minimalny wiek: 15 lat, wymagany stopień min. PADI Adventure Diver) i zawiera pełny sprzęt nurkowy. Szkolenie na słynnych pionowych ścianach Morza Czerwonego daje maksymalne rekreacyjne uprawnienia do głębokości 40 metrów, obejmując zarządzanie rezerwą gazu (SAC), rozpoznawanie narkozy azotowej, procedury awaryjnej dekompresji i pływalność na głębokości (+85 € opłata PADI).',
         'overview' => [
@@ -212,7 +212,7 @@ return [
 
     'wreck' => [
         'h1' => 'Specjalizacja PADI Wreck Diver w Sharm El Sheikh — Kurs Nurkowania Wrakowego',
-        'meta_title' => 'Kurs PADI Wreck Diver Sharm El Sheikh | 4 Nurkowania · 325 € | Sea College',
+        'meta_title' => 'Kurs PADI Wreck Diver Sharm El Sheikh | Wrakowy 325 €',
         'meta_desc' => 'Ucz się nurkowania wrakowego tam, gdzie leżą SS Thistlegorm, Dunraven i Million Hope! Kurs PADI Wreck Diver w Sharm El Sheikh (325 €, 2 dni, 4 nurkowania, sprzęt w cenie).',
         'aeo_answer' => 'Specjalizacja PADI Wreck Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 325 € za osobę (2 dni, 4 nurkowania wrakowe, minimalny wiek: 15 lat, wymagany min. PADI Adventure Diver) i zawiera standardowy sprzęt nurkowy. Szkoląc się w sąsiedztwie światowej sławy wraków — SS Thistlegorm, SS Dunraven i MV Million Hope — opanowujesz rekonesans i mapowanie wraku, technikę żabki (frog-kick) bez wzbijania osadu oraz układanie linki poręczowej z kołowrotka przy bezpiecznej penetracji (+85 € opłata PADI; dopłaty rejsowe do wraków płatne osobno).',
         'overview' => [
@@ -254,7 +254,7 @@ return [
 
     'night' => [
         'h1' => 'Specjalizacja PADI Night Diver w Sharm El Sheikh — Kurs Nurkowania Nocnego',
-        'meta_title' => 'Kurs PADI Night Diver Sharm El Sheikh | 3 Wieczory · 265 € | Sea College',
+        'meta_title' => 'Kurs PADI Night Diver Sharm El Sheikh | 3 Nocne · 265 €',
         'meta_desc' => 'Odkryj Morze Czerwone po zmroku! Specjalizacja PADI Night Diver w Sharm El Sheikh (265 €, 3 wieczory, sprzęt w cenie): ośmiornice, tancerki hiszpańskie i bioluminescencja.',
         'aeo_answer' => 'Kurs specjalizacyjny PADI Night Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 265 € za osobę (3 wieczorne nurkowania z instruktorem, minimalny wiek: 12 lat, wymagany certyfikat Open Water Diver) i zawiera standardowy sprzęt nurkowy. Zaczynając na naszej spokojnej, dobrze znanej rafie domowej w Al Montazah, opanowujesz operowanie latarką główną i zapasową, komunikację światłem, nocną nawigację na kompas oraz obserwację polujących skrzydlic, ośmiornic i zjawiska bioluminescencji (+85 € opłata PADI).',
         'overview' => [

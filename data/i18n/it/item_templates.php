@@ -18,9 +18,20 @@ return static function (array $it, array $seo): array {
 
     switch ($gid) {
         case 'certified-packages':
+            $dives = 1;
+            if (preg_match('/^dive-(\d+)$/', $id, $m)) {
+                $dives = (int) $m[1];
+            }
+            $isExtra = ($id === 'dive-extra');
+            $perDive = (isset($it['price']) && $it['price'] !== null && $dives > 0 && !$isExtra) ? (int) round(((int) $it['price']) / $dives) : 30;
+            $pkgMetaTitle = $isExtra
+                ? "Immersione Extra (dopo 10ª) Sharm El Sheikh {$price} | PADI 5★"
+                : ($dives === 1
+                    ? "1 Immersione da Riva Sharm El Sheikh {$price} | House Reef PADI 5★"
+                    : "Pacchetto {$dives} Immersioni Sharm El Sheikh {$price} | €{$perDive}/imm. PADI 5★");
             return [
                 'h1' => $name . ' a Sharm El Sheikh — Subacquei Brevettati',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $price . ' | Centro PADI 5 Stelle',
+                'meta_title' => $pkgMetaTitle,
                 'meta_desc' => 'Prenota ' . $name . ' a Sharm El Sheikh a ' . $price . $save . '. Immersioni guidate a Ras Mohammed, Stretto di Tiran e reef locali con guida PADI, bombole 12L e transfer inclusi.',
                 'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh costa ' . $price . $save . ' (' . $dur . '), è strettamente personale per subacquei brevettati e include guida PADI 5 Stelle, bombole aria da 12L, zavorra e trasferimenti A/R dagli hotel di Sharm (+€10/giorno barca con pranzo & +€5/giorno tassa parco nei giorni su yacht).',
                 'overview' => [
@@ -50,7 +61,7 @@ return static function (array $it, array $seo): array {
                 'excluded' => [
                     'Supplemento barca (€10/giorno incluso pranzo caldo a buffet!) e tassa parco (€5/giorno)',
                     'Noleggio attrezzatura personale (€25/giorno set completo o singoli pezzi)',
-                    'Assicurazione subacquea (€7/giorno o settimanale €32) ed eventuale Nitrox (€8/bombola 12L)',
+                    'Assicurazione subacquea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni) ed eventuale Nitrox (€8/bombola 12L)',
                 ],
                 'ideal_for' => [
                     'Subacquei brevettati in vacanza a Sharm El Sheikh che cercano piccoli gruppi e sicurezza 5 Stelle',
@@ -64,10 +75,68 @@ return static function (array $it, array $seo): array {
                 ],
             ];
 
+        case 'wreck-special-dives':
+            $supMetaTitle = match ($id) {
+                'sup-night'        => "Immersione Notturna & Alba Sharm El Sheikh +{$price} | PADI 5★",
+                'sup-zodiac'       => "Immersione Gommone Zodiac Sharm El Sheikh +{$price} | PADI 5★",
+                'sup-zodiac-early' => "Zodiac all’Alba (Squali Martello) Sharm +{$price} | PADI 5★",
+                default            => mb_substr("{$name} Sharm +{$price} | PADI 5★", 0, 61),
+            };
+            return [
+                'h1' => $name . ' a Sharm El Sheikh — Immersione Speciale Mar Rosso',
+                'meta_title' => $supMetaTitle,
+                'meta_desc' => 'Prenota ' . $name . ' a Sharm El Sheikh (+' . $price . ' sul tuo pacchetto sub): ' . $desc,
+                'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh prevede un supplemento di +' . $price . ' a persona in aggiunta a un’immersione del tuo pacchetto certificato (' . $dur . '): ' . $desc,
+                'overview' => [
+                    'Arricchisci il tuo pacchetto immersioni a Sharm El Sheikh con ' . $name . ' (+' . $price . ', durata ' . $dur . '): dalle uscite veloci in gommone RIB (Zodiac) all’alba per avvistare squali martello e grandi pelagici a Tiran fino alla magia notturna dell’House Reef di Al Montazah.',
+                    $desc . ' Ogni uscita speciale si svolge in piccoli gruppi con briefing dedicato, procedure di sicurezza PADI 5 Stelle e trasferimenti gratuiti dal tuo resort a Sharm El Sheikh.',
+                ],
+                'specs' => [
+                    ['Supplemento Pacchetto', '+' . $price . ' a persona (oltre all’immersione del pacchetto)'],
+                    ['Durata', $dur],
+                    ['Requisito', 'Subacqueo brevettato Open Water / Advanced (secondo il profilo)'],
+                    ['Prenotazione', str_contains($id, 'zodiac') ? 'Minimo 4 subacquei · prenotare 48h prima' : 'Prenotazione presso il centro o via WhatsApp'],
+                    ['Base di Partenza', 'Sea College Dive Club, Al Montazah (di fronte a Tiran)'],
+                ],
+                'steps' => [
+                    ['Briefing Tecnico Dedicato', 'Spiegazione di segnali luminosi notturni o procedure di ingresso/recupero dal gommone veloce Zodiac.'],
+                    ['Controllo Attrezzatura Speciale', 'Verifica di pedagno SMB, computer subacqueo ed eventuale torcia LED primaria/riserva.'],
+                    ['Immersione Guidata nel Mar Rosso', 'Esplorazione con guida PADI esperta tra pelagici all’alba, drift sulle pareti di Tiran o cacciatori notturni del reef.'],
+                    ['Rientro ad Al Montazah & Logbook', 'Doccia calda, tè/caffè al centro diving, timbro PADI 5★ e rientro in hotel.'],
+                ],
+                'included' => [
+                    'Organizzazione uscita speciale ' . $name . ' con Guida PADI 5 Stelle',
+                    'Bombola aria 12L e zavorra (coperte dal tuo pacchetto immersioni)',
+                    'Uso gommone RIB veloce Zodiac (per le formule Zodiac)',
+                    'Trasferimenti A/R dagli hotel di Sharm El Sheikh',
+                ],
+                'excluded' => [
+                    'Quota immersione base del pacchetto ed eventuale tassa Parco Marino (€5/giorno, €0 sull’House Reef)',
+                    'Noleggio torcia subacquea LED (€6/giorno per notturna) o set attrezzatura (€25/giorno)',
+                    'Assicurazione subacquea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni) e Nitrox (€8 per 12L)',
+                ],
+                'ideal_for' => [
+                    'Subacquei brevettati con buon controllo dell’assetto in cerca di emozioni forti e avvistamenti rari',
+                    'Amanti degli squali martello all’alba a Jackson Reef (estate) e delle pareti in corrente',
+                    'Fotografi macro affascinati da polpi, pesci leone, danzatrici spagnole e bioluminescenza notturna',
+                ],
+                'faqs' => [
+                    ['q' => 'Serve un pacchetto immersioni attivo per prenotare questo supplemento?', 'a' => 'Sì, i supplementi speciali si abbinano a un’immersione scalata dal tuo pacchetto personale per sub brevettati (da 1 a 10+ immersioni).'],
+                    ['q' => 'Cosa succede se viaggio da solo e lo Zodiac richiede minimo 4 subacquei?', 'a' => 'Scrivici le tue date su WhatsApp: raggruppiamo regolarmente sub singoli e coppie per formare l’equipaggio minimo di 4 partecipanti!'],
+                    ['q' => 'Dove si svolge l’immersione notturna?', 'a' => 'Principalmente sul nostro tranquillo e ricchissimo House Reef di Al Montazah, con ingresso comodo da riva e docce calde a pochi passi.'],
+                ],
+            ];
+
         case 'daily-fees':
+            $feeMetaTitle = match ($id) {
+                'fee-boat'      => "Supplemento Barca Sharm El Sheikh {$pLbl} | Pranzo Incl.",
+                'fee-park'      => "Tassa Parco Marino Ras Mohammed & Tiran Sharm | {$pLbl}",
+                'private-guide' => "Guida Subacquea Privata PADI Sharm El Sheikh | {$pLbl}",
+                default         => mb_substr("{$name} Sharm {$pLbl} | PADI 5★", 0, 61),
+            };
             return [
                 'h1' => $name . ' — Supplementi & Servizi Sub a Sharm El Sheikh',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $pLbl . ' | Listino Ufficiale Sea College',
+                'meta_title' => $feeMetaTitle,
                 'meta_desc' => $name . ' presso Sea College Dive Club Sharm El Sheikh (' . $pLbl . '): ' . $desc,
                 'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh ha una tariffa ufficiale trasparente di ' . $pLbl . ' (' . $dur . '): ' . $desc,
                 'overview' => [
@@ -111,9 +180,26 @@ return static function (array $it, array $seo): array {
             ];
 
         case 'equipment-rental':
+            $eqShort = match ($id) {
+                'eq-full'     => 'Set Completo Sub',
+                'eq-mask'     => 'Maschera Sub',
+                'eq-fins'     => 'Pinne Sub',
+                'eq-bcd'      => 'GAV Subacqueo',
+                'eq-reg'      => 'Erogatore Completo',
+                'eq-wetsuit'  => 'Muta Sub 3–5mm',
+                'eq-boots'    => 'Calzari Neoprene',
+                'eq-computer' => 'Computer Subacqueo',
+                'eq-torch'    => 'Torcia Sub LED',
+                'eq-15air'    => 'Bombola 15L Aria',
+                'eq-15nx'     => 'Bombola 15L Nitrox',
+                'eq-12nx'     => 'Bombola 12L Nitrox',
+                'eq-sm-tank'  => 'Bombola Sidemount',
+                'eq-sm-full'  => 'Set Sidemount',
+                default       => mb_substr($name, 0, 20),
+            };
             return [
                 'h1' => 'Noleggio ' . $name . ' a Sharm El Sheikh (' . $pLbl . ')',
-                'meta_title' => 'Noleggio ' . $name . ' Sharm El Sheikh ' . $pLbl . ' | Attrezzatura Sub PADI 5★',
+                'meta_title' => "Noleggio {$eqShort} Sharm | {$pLbl} · PADI 5★",
                 'meta_desc' => 'Viaggia leggero in aereo! Noleggio ' . $name . ' revisionato e igienizzato a Sharm El Sheikh a ' . $pLbl . ' presso Sea College Dive Club PADI 5 Stelle.',
                 'aeo_answer' => 'Il noleggio di ' . $name . ' presso Sea College Dive Club a Sharm El Sheikh costa ' . $pLbl . ' (' . $desc . '), con attrezzatura delle migliori marche subacquee regolarmente revisionata, sanificata e disponibile in tutte le taglie dal XS al XXL.',
                 'overview' => [
@@ -142,12 +228,12 @@ return static function (array $it, array $seo): array {
                 'excluded' => [
                     'Pacchetto immersioni guidate (nota: bombola 12L e piombi sono sempre inclusi nei pacchetti!)',
                     'Smarrimento o danneggiamento colposo dell’attrezzatura in acqua',
-                    'Assicurazione subacquea personale (€7/giorno)',
+                    'Assicurazione subacquea temporanea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
                 ],
                 'ideal_for' => [
                     'Subacquei italiani che volano con solo bagaglio a mano o valigia leggera',
                     'Chi possiede già maschera e computer ma preferisce noleggiare GAV, erogatore o muta in loco',
-                    'Subacquei che vogliono aggiungere computer subacqueo (€6/g) o torcia LED (€6/g) per relitti e notturne',
+                    'Subacquei che vogliono aggiungere computer subacqueo (€10/giorno) o torcia LED (€6/giorno) per relitti e notturne',
                 ],
                 'faqs' => [
                     ['q' => 'Conviene noleggiare i singoli pezzi o il Set Completo (€25/giorno)?', 'a' => 'Se ti servono più di 3–4 articoli, il Noleggio Attrezzatura Completa a €25/giorno (muta, GAV, erogatore, maschera e pinne) è nettamente più conveniente rispetto ai pezzi singoli!'],
@@ -159,7 +245,7 @@ return static function (array $it, array $seo): array {
         case 'diving-insurance':
             return [
                 'h1' => $name . ' a Sharm El Sheikh — Copertura Camera Iperbarica',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $price . ' | Polizza Sub Temporanea',
+                'meta_title' => "Assicurazione Sub {$dur} Sharm | {$price} · Camera Iperbarica",
                 'meta_desc' => 'Immergiti protetto nel Mar Rosso! Attiva subito ' . $name . ' (' . $price . ') presso Sea College Dive Club Sharm El Sheikh: copertura medica subacquea e camera iperbarica.',
                 'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh costa ' . $price . ' per ' . $dur . ' e garantisce copertura assicurativa immediata per incidenti subacquei e trattamenti in camera iperbarica nel Sud Sinai per i subacquei privi di polizza annuale DAN attiva.',
                 'overview' => [
@@ -192,7 +278,7 @@ return static function (array $it, array $seo): array {
                 ],
                 'ideal_for' => [
                     'Subacquei certificati in vacanza che si immergono 1–2 volte l’anno senza abbonamento annuale DAN',
-                    'Allievi di corsi avanzati o specialità singole che necessitano di copertura di 1, 3, 7 o 14 giorni',
+                    'Allievi di corsi avanzati o specialità singole che necessitano di copertura di 3, 7, 10 o 14 giorni',
                     'Chi vuole evitare qualsiasi scoperto sanitario all’estero',
                 ],
                 'faqs' => [
@@ -203,9 +289,15 @@ return static function (array $it, array $seo): array {
             ];
 
         case 'specialty-courses':
+            $specMetaTitle = match ($id) {
+                'spec-2'   => "Specialità PADI (2 Immersioni) Sharm El Sheikh | {$price}",
+                'spec-3'   => "Specialità Navigazione Sub PADI Sharm El Sheikh | {$price}",
+                'adaptive' => "PADI Adaptive Support Diver Sharm El Sheikh | {$price}",
+                default    => mb_substr("{$name} Sharm | {$price} · PADI 5★", 0, 61),
+            };
             return [
                 'h1' => 'Corso ' . $name . ' a Sharm El Sheikh — Specialità Ufficiale PADI',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $price . ' | Specialità PADI 5 Stelle',
+                'meta_title' => $specMetaTitle,
                 'meta_desc' => 'Consegui il brevetto ' . $name . ' a Sharm El Sheikh a ' . $price . ' (' . $dur . ') presso Sea College Dive Club PADI 5 Stelle. Valido per PADI Master Scuba Diver!',
                 'aeo_answer' => 'Il corso ' . $name . ' presso il Centro Diving PADI 5 Stelle Sea College a Sharm El Sheikh costa ' . $price . ' (' . $dur . '), include istruzione pratica dedicata nel Mar Rosso, noleggio attrezzatura standard e trasferimenti hotel, ed è valido come credito per il grado d’élite PADI Master Scuba Diver.',
                 'overview' => [
@@ -234,7 +326,7 @@ return static function (array $it, array $seo): array {
                 'excluded' => [
                     'Manuale digitale PADI e tassa di certificazione (€85 per ogni specialità certificata)',
                     'Supplemento barca (€10/giorno incluso pranzo) e tassa parco (€5/giorno) nei giorni su yacht',
-                    'Assicurazione subacquea giornaliera (€7/giorno)',
+                    'Assicurazione subacquea temporanea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
                 ],
                 'ideal_for' => [
                     'Subacquei Open Water e Advanced che vogliono affinare assetto, corrente, navigazione o fotografia',
@@ -249,9 +341,16 @@ return static function (array $it, array $seo): array {
             ];
 
         case 'snorkeling-trips':
+            $snorkMetaTitle = match ($id) {
+                'snork-ras-child'   => "Isola Bianca & Ras Mohammed Yacht (Bimbi 5–12) Sharm | {$price}",
+                'snork-beach-day'   => "Snorkeling Guidato House Reef Sharm El Sheikh | {$price}",
+                'snork-beach-night' => "Snorkeling Notturno con Torcia Sharm El Sheikh | {$price}",
+                'snork-ras-land'    => "Escursione Ras Mohammed in Bus & Snorkeling Sharm | {$price}",
+                default             => mb_substr("{$name} Sharm | {$price}", 0, 61),
+            };
             return [
                 'h1' => $name . ' a Sharm El Sheikh — Snorkeling Guidato Mar Rosso',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $price . ' | Escursione Snorkeling',
+                'meta_title' => $snorkMetaTitle,
                 'meta_desc' => 'Prenota ' . $name . ' a Sharm El Sheikh a ' . $price . ' (' . $dur . '): ' . $desc,
                 'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh costa ' . $price . ' (' . $dur . ') e offre snorkeling guidato in totale sicurezza sopra le barriere coralline più ricche del Mar Rosso con guida PADI, attrezzatura snorkeling e trasferimenti hotel inclusi.',
                 'overview' => [
@@ -289,7 +388,7 @@ return static function (array $it, array $seo): array {
                 ],
                 'faqs' => [
             ['q' => 'Anche chi non sa nuotare bene può partecipare?', 'a' => 'Assolutamente sì! Indossando il giubbotto galleggiante resti in superficie senza alcuno sforzo e la nostra guida in acqua dispone sempre di salvagente di supporto.'],
-            ['q' => 'Com’è lo Snorkeling Notturno sull’House Reef (€45)?', 'a' => 'È un’esperienza incredibile: armato di torcia subacquea osservi dall’alto pesci leone, murene, ricci diadema, stelle gorgonocefale e il plancton bioluminescente nell’acqua calma di Al Montazah!'],
+            ['q' => 'Com’è lo Snorkeling Notturno sull’House Reef (€40)?', 'a' => 'È un’esperienza incredibile: armato di torcia subacquea osservi dall’alto pesci leone, murene, ricci diadema, stelle gorgonocefale e il plancton bioluminescente nell’acqua calma di Al Montazah!'],
             ['q' => 'Serve il visto da $25 per Ras Mohammed (via mare o via terra)?', 'a' => 'No! Il Parco Nazionale di Ras Mohammed è accessibile con il normale timbro gratuito «Sinai Only» (per l’escursione via terra porta con te il passaporto originale).'],
                 ],
             ];
@@ -298,9 +397,17 @@ return static function (array $it, array $seo): array {
         case 'private-charters':
         default:
             $isSpeed = ($gid === 'private-speedboats');
+            $boatMetaTitle = match ($id) {
+                'speed-1h'      => "Motoscafo Privato 1 Ora Sharm El Sheikh | {$price}/barca",
+                'speed-3h'      => "Motoscafo Privato Isola di Tiran (3h) Sharm | {$price}/barca",
+                'private-1-5'   => "Barca Privata Giornaliera (1–5 Ospiti) Sharm | {$price}/barca",
+                'private-11-15' => "Yacht Privato Giornaliero (11–15 Ospiti) Sharm | {$price}",
+                'private-16-20' => "Yacht Privato Giornaliero (16–20 Ospiti) Sharm | {$price}",
+                default         => mb_substr("{$name} Sharm | {$pLbl}", 0, 61),
+            };
             return [
                 'h1' => $name . ' a Sharm El Sheikh — Barca Esclusiva nel Mar Rosso',
-                'meta_title' => $name . ' Sharm El Sheikh ' . $pLbl . ' | Noleggio Barca Privata',
+                'meta_title' => $boatMetaTitle,
                 'meta_desc' => 'Vivi il Mar Rosso in totale privacy! ' . $name . ' a Sharm El Sheikh a ' . $pLbl . ' (' . $dur . '): Stretto di Tiran o Ras Mohammed & Isola Bianca su misura per voi.',
                 'aeo_answer' => $name . ' presso Sea College Dive Club a Sharm El Sheikh costa ' . $pLbl . ' (' . $dur . '): ' . $desc . ' Ideale per coppie, famiglie e gruppi italiani che desiderano esplorare Tiran o Ras Mohammed con orari e soste 100% personalizzati.',
                 'overview' => [
@@ -341,7 +448,7 @@ return static function (array $it, array $seo): array {
                 ],
                 'faqs' => [
                     ['q' => 'Il prezzo indicato è a persona o per l’intera barca?', 'a' => 'La tariffa di ' . $price . ' si intende per l’intera imbarcazione privata per la capienza indicata (' . $desc . '), rendendola convenientissima se divisa tra i partecipanti!'],
-                    ['q' => 'Possiamo fare anche immersioni con le bombole dalla nostra barca privata?', 'a' => 'Assolutamente sì su gli yacht giornalieri (e snorkeling su motoscafi): possiamo imbarcare un istruttore PADI dedicato, bombole e attrezzature sia per brevettati sia per chi vuole fare il Battesimo del Mare!'],
+                    ['q' => 'Possiamo fare anche immersioni con le bombole dalla nostra barca privata?', 'a' => 'Assolutamente sì sugli yacht giornalieri (e snorkeling sui motoscafi): possiamo imbarcare un istruttore PADI dedicato, bombole e attrezzature sia per brevettati sia per chi vuole fare il Battesimo del Mare!'],
                     ['q' => 'Cosa succede in caso di vento forte o mare mosso?', 'a' => 'La sicurezza viene sempre al primo posto: se la Capitaneria chiude la navigazione per meteo avverso, spostiamo gratuitamente l’uscita al primo giorno utile o rimborsiamo senza penali.'],
                 ],
             ];

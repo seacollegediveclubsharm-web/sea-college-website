@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 return [
     'dive-packages' => [
-        'h1' => 'Tauchen & Tauchpakete in Sharm El Sheikh — Rotes Meer',
-        'meta_title' => 'Tauchen Sharm El Sheikh & Tauchpakete Rotes Meer | Ab 30 € | Sea College',
-        'meta_desc' => 'Geführtes Tauchen in Sharm El Sheikh: Schnuppertauchen ab 30 €, Tauchpakete für Zertifizierte (35 €/Tauchgang), Wracktauchen SS Thistlegorm, Ras Mohammed & Tiran.',
-        'sub' => 'Tägliche geführte Boots- und Hausrifftauchgänge zum Nationalpark Ras Mohammed, zur Straße von Tiran, bunten Korallengärten und berühmten Schiffswracks — direkt ab unserer PADI 5 Sterne Tauchbasis im Cyrene Sharm, Al Montazah.',
-        'aeo_answer' => 'Der Sea College Dive Club (offizielles PADI 5 Sterne Dive Resort in Al Montazah, Sharm El Sheikh) bietet Schnuppertauchen für Einsteiger ab 30 € am Hausriff bzw. 70 €–100 € vom Tauchboot sowie persönliche Tauchpakete für zertifizierte Taucher ab 45 € (Einzeltauchgang am Hausriff) bis 350 € für 10 Boots- oder Landtauchgänge (35 €/Tauchgang, jeder weitere Tauchgang ab dem 11. nur 30 €). Alle Tauchpakete beinhalten PADI Guide, 12L-Pressluftflaschen, Blei und kostenlosen Hoteltransfer in Sharm El Sheikh; an Bootstagen kommen 10 €/Tag Bootszuschlag (inkl. Mittagsbuffet & Getränken auf Ganztagesbooten) und 5 €/Tag Nationalparkgebühr hinzu.',
+        'h1' => 'Tauchen & Tauchpakete Rotes Meer in Sharm El Sheikh',
+        'meta_title' => 'Tauchen Sharm El Sheikh | Tauchpakete Rotes Meer ab 30 €',
+        'meta_desc' => 'Geführte Tauchpakete Rotes Meer in Sharm El Sheikh: Schnuppertauchen ab 30 €, Pakete ab 35 €/TG, Wracktauchen SS Thistlegorm, Ras Mohammed & Tiran (0 € Anzahlung).',
+        'sub' => 'Tägliche geführte Boots- und Hausrifftauchgänge sowie Tauchpakete Rotes Meer zum Nationalpark Ras Mohammed, zur Straße von Tiran und berühmten Schiffswracks — direkt ab unserer deutschsprachigen PADI 5 Sterne Tauchbasis im Cyrene Sharm, Al Montazah.',
+        'aeo_answer' => 'Der Sea College Dive Club (offizielle PADI 5 Sterne Tauchbasis & deutschsprachige Tauchschule in Al Montazah, Sharm El Sheikh) bietet Schnuppertauchen ab 30 € am Hausriff bzw. 70 €–100 € vom Tauchboot sowie Tauchpakete Rotes Meer für zertifizierte Taucher ab 45 € (Einzeltauchgang am Hausriff) bis 350 € für 10 Boots- oder Landtauchgänge (35 €/Tauchgang, jeder weitere Tauchgang ab dem 11. nur 30 €). Alle Tauchpakete beinhalten PADI Guide, 12L-Pressluftflaschen, Blei und kostenlosen Hoteltransfer in Sharm El Sheikh; an Bootstagen kommen 10 €/Tag Bootszuschlag (inkl. Mittagsbuffet & Getränken auf Ganztagesbooten) und 5 €/Tag Nationalparkgebühr hinzu.',
         'highlights' => [
-            'Persönliche Tauchpakete von 1 bis 10+ Tauchgängen — ab 3 Tauchgängen sinkt der Preis auf 35 €/Tauchgang, nach dem 10. Tauchgang auf nur 30 €.',
+            'Persönliche Tauchpakete Rotes Meer von 1 bis 10+ Tauchgängen — ab 3 Tauchgängen sinkt der Preis auf 35 €/Tauchgang, nach dem 10. Tauchgang auf nur 30 €.',
             'Weltklasse-Tauchgebiete: Shark & Yolanda Reef (Ras Mohammed), Jackson, Woodhouse, Thomas & Gordon Reef (Straße von Tiran), SS Thistlegorm, SS Dunraven und Million Hope.',
             'Einsteigerfreundliches Hausriff & eigener Ausbildungspool direkt im Cyrene Sharm — Schnuppertauchen ohne Vorkenntnisse ab 10 Jahren.',
             'Gepflegter Ausrüstungsverleih vor Ort (25 €/Tag Komplettset) sowie 12L/15L Enriched Air Nitrox, Sidemount, Trimix und Rebreather-Support.',
@@ -18,7 +18,7 @@ return [
         'faqs' => [
             [
                 'q' => 'Was kostet Tauchen in Sharm El Sheikh für zertifizierte Taucher?',
-                'a' => 'Im Sea College Dive Club kostet ein geführter Hausrifftauchgang 45 €, ein 2er-Paket (1 Tag vom Boot oder Land) 85 €, und Pakete von 3 bis 10 Tauchgängen kosten einheitlich 35 € pro Tauchgang (105 € für 3, 210 € für 6, 350 € für 10 Tauchgänge; ab dem 11. Tauchgang 30 €). An Bootstagen fallen 10 € Bootsgebühr und 5 € Nationalparkgebühr pro Tag an; eine komplette Leihausrüstung kostet bei Bedarf 25 €/Tag.',
+                'a' => 'Im Sea College Dive Club kostet ein geführter Hausrifftauchgang 45 €, ein 2er-Paket (1 Tag vom Boot oder Land) 85 €, und Tauchpakete Rotes Meer von 3 bis 10 Tauchgängen kosten einheitlich 35 € pro Tauchgang (105 € für 3, 210 € für 6, 350 € für 10 Tauchgänge; ab dem 11. Tauchgang 30 €). An Bootstagen fallen 10 € Bootsgebühr und 5 € Nationalparkgebühr pro Tag an; eine komplette Leihausrüstung kostet bei Bedarf 25 €/Tag.',
             ],
             [
                 'q' => 'Brauche ich vor den Bootstauchgängen einen Check Dive oder ein Scuba Review?',
@@ -36,29 +36,29 @@ return [
     ],
 
     'padi-courses' => [
-        'h1' => 'PADI Tauchkurse in Sharm El Sheikh — Vom Einsteiger bis zum Profi',
-        'meta_title' => 'PADI Tauchkurs Sharm El Sheikh | Open Water bis Divemaster | Sea College',
-        'meta_desc' => 'Tauchen lernen in einer PADI 5 Sterne Tauchbasis in Sharm El Sheikh: Kinder Bubblemaker 70 €, Discover Scuba 85 €, PADI Open Water Diver 400 €, Advanced 350 € & Specialties.',
-        'sub' => 'Lernen Sie im warmen, glasklaren Roten Meer mit eigenem Ausbildungspool, klimatisiertem Schulungsraum, geschütztem Hausriff und deutschsprachigen PADI Tauchlehrern.',
-        'aeo_answer' => 'Der Sea College Dive Club ist ein offizielles PADI 5 Sterne Dive Resort im Cyrene Sharm (Al Montazah, Sharm El Sheikh) und unterrichtet das gesamte PADI Ausbildungsprogramm auf Deutsch und 6 weiteren Sprachen: Kinderkurse im Pool ab 8 Jahren (Bubblemaker 70 €, Seal Team 170 €), Einsteigerkurse ab 10 Jahren (PADI Discover Scuba Diving 85 € komplett inkl. Zertifikat, Scuba Diver 250 €, PADI Open Water Diver 400 € in 3–3,5 Tagen), Advanced Open Water (350 €), Rescue Diver (394 €), 8 PADI Spezialkurse (120 €–350 €) sowie das 4–6-wöchige Divemaster-Programm (850 €). Die komplette Tauchausrüstung ist in jedem Kurspreis enthalten; die offizielle PADI Lehrbuch-/eLearning- & Brevetgebühr beträgt 85 € pro Kurs (beim Discover Scuba Diving bereits inklusive).',
+        'h1' => 'Tauchschein machen in Sharm El Sheikh — Deutsche PADI 5★ Tauchschule',
+        'meta_title' => 'Tauchschein machen Sharm El Sheikh | PADI 5★ Tauchschule',
+        'meta_desc' => 'Tauchschein machen in unserer deutschsprachigen PADI 5★ Tauchschule in Sharm El Sheikh: Bubblemaker 70 €, Discover Scuba 85 €, Open Water 400 € & Advanced 350 €.',
+        'sub' => 'Tauchschein machen im warmen, glasklaren Roten Meer: Als deutsche PADI Tauchschule in Sharm El Sheikh bieten wir eigenen Ausbildungspool, klimatisierten Schulungsraum, geschütztes Hausriff und deutschsprachige PADI Tauchlehrer.',
+        'aeo_answer' => 'Der Sea College Dive Club ist ein offizielles PADI 5 Sterne Dive Resort und Ihre deutschsprachige PADI Tauchschule im Cyrene Sharm (Al Montazah, Sharm El Sheikh). Wir unterrichten das gesamte PADI Ausbildungsprogramm in 8 Sprachen inklusive Deutsch: Kinderkurse im Pool ab 8 Jahren (Bubblemaker 70 €, Seal Team 170 €), Tauchschein machen ab 10 Jahren (PADI Discover Scuba Diving 85 € komplett inkl. Zertifikat, Scuba Diver 250 €, PADI Open Water Diver 400 € in 3–3,5 Tagen), Advanced Open Water (350 €), Rescue Diver (394 €), 8 PADI Spezialkurse (120 €–350 €) sowie das Divemaster-Programm (850 €). Die komplette Tauchausrüstung ist in jedem Kurspreis enthalten; die offizielle PADI Lehrbuch-/eLearning- & Brevetgebühr beträgt 85 € pro Kurs (beim Discover Scuba Diving bereits inklusive).',
         'highlights' => [
-            'Entspannter Stufenaufbau: Erste Atemzüge im flachen Resort-Ausbildungspool, sicheres Üben am ruhigen Hausriff und erst danach Ausfahrten mit dem Tauchboot.',
-            'Komplette Leihausrüstung in jedem PADI Kurspreis inklusive — keinerlei zusätzliche Mietkosten während Ihrer Ausbildung.',
-            'Theorie flexibel vorab zu Hause per PADI eLearning erledigen oder vor Ort mit Ihrem deutschsprachigen Tauchlehrer lernen.',
+            'Stressfrei Tauchschein machen: Erste Atemzüge im flachen Resort-Ausbildungspool, sicheres Üben am ruhigen Hausriff und erst danach Ausfahrten mit dem Tauchboot.',
+            'Komplette Leihausrüstung in jedem PADI Kurspreis inklusive — keinerlei versteckte Mietkosten während Ihrer Ausbildung.',
+            'Deutsche PADI Tauchschule: Theorie flexibel vorab zu Hause per deutschem PADI eLearning erledigen oder vor Ort mit Ihrem deutschsprachigen PADI Tauchlehrer lernen.',
             'Kombinieren Sie Open Water, Advanced und Nitrox in unseren PADI Sparpaketen und sparen Sie 50 € bis 120 €.',
         ],
         'faqs' => [
             [
-                'q' => 'Wie viele Tage dauert der PADI Open Water Diver Kurs in Sharm El Sheikh?',
-                'a' => 'Der PADI Open Water Diver Kurs dauert 3 bis 3,5 Tage und umfasst 5 Theorieeinheiten, 5 Pool-Module im flachen Wasser sowie 4 Freiwassertauchgänge im Roten Meer bis maximal 18 Meter Tiefe. Mit PADI eLearning vor dem Urlaub gewinnen Sie vor Ort noch mehr Freizeit.',
+                'q' => 'Wie viele Tage dauert es, den PADI Open Water Tauchschein in Sharm El Sheikh zu machen?',
+                'a' => 'Den PADI Open Water Diver Tauchschein machen Sie in 3 bis 3,5 Tagen: 5 Theorieeinheiten, 5 Pool-Module im flachen Wasser sowie 4 Freiwassertauchgänge im Roten Meer bis maximal 18 Meter Tiefe. Mit deutschem PADI eLearning vor dem Urlaub gewinnen Sie vor Ort noch mehr Freizeit.',
             ],
             [
                 'q' => 'Ist die PADI Zertifizierungs- und Lehrbuchgebühr (85 €) im Kurspreis enthalten?',
                 'a' => 'Beim PADI Discover Scuba Diving (85 €) sind das offizielle PADI-Heft und die Teilnahmeurkunde bereits inklusive. Bei allen Brevetkursen (Scuba Diver, Open Water, Advanced, Rescue, Specialties) fällt die offizielle PADI Lehrmaterial-/eLearning- & Brevetgebühr von 85 € pro Kurs separat an, sofern Sie eLearning nicht bereits selbst bei PADI erworben haben.',
             ],
             [
-                'q' => 'Ab welchem Alter können Kinder einen Tauchkurs machen?',
-                'a' => 'Kinder mit 8 und 9 Jahren starten sicher im Ausbildungspool (< 2 m Tiefe) beim PADI Bubblemaker (70 €) oder PADI Seal Team (170 €). Ab dem 10. Geburtstag können Kinder den international gültigen Junior Open Water Diver erwerben (12 m Tiefenlimit für 10–11-Jährige).',
+                'q' => 'Ab welchem Alter können Kinder einen Tauchschein machen?',
+                'a' => 'Kinder mit 8 und 9 Jahren starten sicher im Ausbildungspool (< 2 m Tiefe) beim PADI Bubblemaker (70 €) oder PADI Seal Team (170 €). Ab dem 10. Geburtstag können Kinder den international gültigen Junior Open Water Tauchschein machen (12 m Tiefenlimit für 10–11-Jährige).',
             ],
             [
                 'q' => 'Wie lange muss ich nach dem Tauchkurs bis zum Rückflug warten?',
@@ -69,7 +69,7 @@ return [
 
     'offers' => [
         'h1' => 'PADI Kurs-Sparpakete & Kombi-Angebote in Sharm El Sheikh',
-        'meta_title' => 'PADI Kurs-Pakete Sharm El Sheikh | Bis zu 120 € sparen | Sea College',
+        'meta_title' => 'PADI Kurs-Pakete Sharm El Sheikh | Bis 120 € sparen',
         'meta_desc' => 'Kombinieren Sie PADI Open Water, Advanced Open Water & Enriched Air Nitrox in Sharm El Sheikh und sparen Sie 50 €–120 €. Inklusive Leihausrüstung, Tauchversicherung & Steuern.',
         'sub' => 'Holen Sie das Maximum aus Ihrem Urlaub am Roten Meer mit unseren vier transparenten PADI Kombi-Paketen — Stars, Super, Mega und Heros — jeweils inklusive kompletter Tauchausrüstung, Tauchversicherung und Steuern.',
         'aeo_answer' => 'Der Sea College Dive Club bietet in Sharm El Sheikh vier PADI Kurs-Kombipakete an, die sämtliche genannten Kurse, die komplette Leihausrüstung, die Tauchversicherung und Steuern enthalten: Super (Advanced Open Water + Nitrox) für 400 € (75 € Ersparnis), Stars (Open Water + Nitrox) für 500 € (50 € Ersparnis), Mega (Open Water + Advanced Open Water) für 600 € (90 € Ersparnis) und Heros (Open Water + Advanced + Nitrox) für 750 € (120 € Ersparnis). Die offiziellen PADI Lehrmaterialien & Brevetgebühren (85 € je Kurs) sowie tägliche Boots-/Parkgebühren bei Bootsausfahrten werden je Kurs bzw. Bootstag berechnet.',
@@ -100,11 +100,11 @@ return [
     ],
 
     'snorkeling' => [
-        'h1' => 'Schnorchelausflüge, Private Schnellboote & Privatyachten in Sharm El Sheikh',
-        'meta_title' => 'Schnorcheln & Privatboot Sharm El Sheikh | Ras Mohammed & Insel Tiran',
-        'meta_desc' => 'White Island & Ras Mohammed Yachttour 55 € (Kinder 30 €), Hausriff- & Nachtschnorcheln ab 35 €, Privates Schnellboot nach Tiran ab 75 € & Privatyachten ab 550 €.',
-        'sub' => 'Farbenprächtige Korallengärten im glasklaren Roten Meer für Familien, Paare und Gruppen — erleben Sie unsere Ganztagesyacht zur White Island & nach Ras Mohammed, ein privates Schnellboot zur Insel Tiran oder Ihre eigene Privatyacht für bis zu 20 Gäste.',
-        'aeo_answer' => 'Der Sea College Dive Club organisiert täglich geführte Schnorcheltouren und Privatboote in Sharm El Sheikh: ganztägige Yachtausflüge zur White Island & in den Nationalpark Ras Mohammed (55 € Erwachsene, 30 € Kinder 5–12 Jahre — alles inklusive mit Mittagsbuffet, Getränken, Maske, Weste, Hoteltransfer & Parkgebühr), geführtes Hausriff-Schnorcheln am Tag (35 €) und bei Nacht mit Lampe (40 €), Ras Mohammed per Bus (60 €), private Schnellboote für 2–5 Gäste (75 € für 1 Std. lokale Riffe, 150 € für 2 Std. Tiran, 225 € für 3 Std. Tiran) sowie ganztägige Privatyachten (550 € für 1–5 Gäste bis 1.100 € für 16–20 Gäste).',
+        'h1' => 'Schnorchelausflug Ras Mohammed, White Island & Privatboote Sharm El Sheikh',
+        'meta_title' => 'Schnorchelausflug Ras Mohammed & Privatboot Sharm | Ab 35 €',
+        'meta_desc' => 'Schnorchelausflug Ras Mohammed & White Island 55 € (Kinder 30 €), Hausriff-Schnorcheln ab 35 €, Privates Schnellboot Insel Tiran ab 75 € & Privatyacht ab 550 €.',
+        'sub' => 'Farbenprächtige Korallengärten im glasklaren Roten Meer für Familien, Paare und Gruppen — erleben Sie unseren Schnorchelausflug Ras Mohammed & White Island auf der Ganztagesyacht, ein privates Schnellboot zur Insel Tiran oder Ihre eigene Privatyacht für bis zu 20 Gäste.',
+        'aeo_answer' => 'Der Sea College Dive Club organisiert täglich geführte Schnorchelausflüge und Privatboote in Sharm El Sheikh: den Ganztages-Schnorchelausflug Ras Mohammed & White Island per Yacht (55 € Erwachsene, 30 € Kinder 5–12 Jahre — Komplettpreis inklusive Mittagsbuffet, Getränken, Maske, Weste, Hoteltransfer & Parkgebühr), geführtes Hausriff-Schnorcheln am Tag (35 €) und bei Nacht mit Lampe (40 €), Ras Mohammed per Bus (60 €), private Schnellboote für 2–5 Gäste (75 € für 1 Std. lokale Riffe, 150 € für 2 Std. Tiran, 225 € für 3 Std. Tiran) sowie ganztägige Privatyachten (550 € für 1–5 Gäste bis 1.100 € für 16–20 Gäste).',
         'highlights' => [
             'Höchste Sicherheit für Familien: Schwimmwesten in allen Größen, Schnorchelmasken, Hotelabholung und PADI Guides direkt mit im Wasser.',
             'Familienvorteil: Kinder von 5 bis 12 Jahren fahren auf der Ganztagesyacht nach White Island & Ras Mohammed für nur 30 € mit.',

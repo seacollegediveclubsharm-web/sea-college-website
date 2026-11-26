@@ -5,19 +5,19 @@ declare(strict_types=1);
 return [
     // ---------- Intro Dives ----------
     'dsd-quick-reef' => [
-        'name' => 'Szybkie Intro Nurkowanie (Discover Scuba) — Rafa Domowa',
+        'name' => 'Szybkie Intro Nurkowe (Discover Scuba) — Rafa Domowa',
         'desc' => 'Szkolenie wstępne + 1 nurkowanie z brzegu na rafie (10 min pod wodą). Pełny sprzęt w cenie.',
     ],
     'dsd-2-reef' => [
-        'name' => 'Discover Scuba Diving (2 nurkowania Intro) — Rafa Domowa',
+        'name' => 'Discover Scuba Diving (2 Intro Nurkowe) — Rafa Domowa',
         'desc' => 'Szkolenie wstępne + 2 nurkowania z brzegu (po 15 min każde). Pełny sprzęt nurkowy w cenie.',
     ],
     'dsd-quick-boat' => [
-        'name' => 'Szybkie Intro Nurkowanie (Discover Scuba) — z Łodzi',
+        'name' => 'Szybkie Intro Nurkowe (Discover Scuba) — z Łodzi',
         'desc' => 'Instruktaż + 1 nurkowanie z łodzi (10 min). Obiad, napoje, transfery, opłata parkowa i sprzęt w cenie.',
     ],
     'dsd-2-boat' => [
-        'name' => 'Discover Scuba Diving (2 nurkowania Intro) — z Łodzi',
+        'name' => 'Discover Scuba Diving (2 Intro Nurkowe) — z Łodzi',
         'desc' => 'Instruktaż + 2 nurkowania z łodzi (po 15 min). Obiad, napoje, transfery, opłata parkowa i sprzęt w cenie.',
     ],
 
@@ -199,24 +199,24 @@ return [
 
     // ---------- Snorkeling Trips ----------
     'snork-ras-adult' => [
-        'name' => 'Biała Wyspa i Ras Mohammed łodzią — Dorosły',
-        'desc' => 'Całodniowy rejs jachtem: maska, kamizelka, obiad w formie bufetu i napoje, transfer z hotelu oraz opłata parkowa.',
+        'name' => 'Snurkowanie Biała Wyspa i Ras Mohammed łodzią — Dorosły',
+        'desc' => 'Całodniowy rejs jachtem (snurkowanie): maska, kamizelka, obiad bufetowy i napoje, transfer z hotelu oraz opłata parkowa.',
     ],
     'snork-ras-child' => [
-        'name' => 'Biała Wyspa i Ras Mohammed łodzią — Dziecko (5–12 lat)',
+        'name' => 'Snurkowanie Biała Wyspa i Ras Mohammed łodzią — Dziecko (5–12 lat)',
         'desc' => 'Całodniowy bilet rodzinny (5–12 lat): dziecięca kamizelka, maska, obiad, napoje, transfer z hotelu i opłata parkowa.',
     ],
     'snork-beach-day' => [
-        'name' => 'Snorkeling z plaży — Dzień (Rafa Domowa)',
-        'desc' => 'Dzienna wycieczka snorkelingowa z przewodnikiem (min. 6 osób). Maska, kamizelka, transfery i opłaty w cenie.',
+        'name' => 'Snurkowanie z plaży — Dzień (Rafa Domowa)',
+        'desc' => 'Dzienna wycieczka na snurkowanie z przewodnikiem (min. 6 osób). Maska, kamizelka, transfery i opłaty w cenie.',
     ],
     'snork-beach-night' => [
-        'name' => 'Nocny snorkeling z plaży z latarką (Rafa Domowa)',
+        'name' => 'Nocne snurkowanie z plaży z latarką (Rafa Domowa)',
         'desc' => 'Wieczorna przygoda na rafie z przewodnikiem (min. 6 osób). Latarka podwodna, maska, kamizelka i transfer w cenie.',
     ],
     'snork-ras-land' => [
-        'name' => 'Snorkeling w Ras Mohammed lądem (Autobusem)',
-        'desc' => 'Półdniowa wycieczka do parku: Brama Allaha, namorzyny, Jezioro Magiczne i snorkeling na rafie (min. 6 osób).',
+        'name' => 'Snurkowanie w Ras Mohammed lądem (Autobusem)',
+        'desc' => 'Półdniowa wycieczka do parku: Brama Allaha, namorzyny, Jezioro Magiczne i snurkowanie na rafie (min. 6 osób).',
     ],
 
     // ---------- Private Speedboats ----------

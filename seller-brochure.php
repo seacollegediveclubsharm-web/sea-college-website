@@ -20,7 +20,8 @@ header('X-Robots-Tag: noindex, nofollow');
 header('Cache-Control: no-store, must-revalidate');
 
 $pdo = sc_erp_pdo();
-$rawSeller = trim((string) ($_GET['seller'] ?? ($_COOKIE['sc_seller'] ?? 'fady')));
+$rawCookieSeller = $_COOKIE['sc_seller'] ?? 'fady';
+$rawSeller = sc_get_str('seller', is_scalar($rawCookieSeller) ? (string) $rawCookieSeller : 'fady');
 $sellerRow = $pdo ? (sc_erp_resolve_seller($pdo, $rawSeller) ?: sc_erp_resolve_seller($pdo, 'fady.sales')) : null;
 $sellerSlug = $sellerRow ? (string) ($sellerRow['referral_code'] ?: 'fady') : 'fady';
 $sellerNameEn = $sellerRow ? (string) $sellerRow['display_name_en'] : 'Sea College Concierge';
@@ -29,10 +30,10 @@ $sellerNameAr = $sellerRow ? (string) $sellerRow['display_name_ar'] : 'مستش�
 sc_apply_seller_referral($sellerSlug);
 
 $supportedLangs = ['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'];
-$reqLang = strtolower(trim((string) ($_GET['lang'] ?? LANG)));
+$reqLang = strtolower(sc_get_str('lang', LANG));
 $lang = in_array($reqLang, $supportedLangs, true) ? $reqLang : 'en';
 $isRtl = ($lang === 'ar');
-$focusTrip = trim((string) ($_GET['trip'] ?? ''));
+$focusTrip = sc_get_str('trip');
 
 $prevLang = $GLOBALS['SC_LANG'] ?? 'en';
 $GLOBALS['SC_LANG'] = $lang;

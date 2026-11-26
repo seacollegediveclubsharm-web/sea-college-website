@@ -14,7 +14,7 @@ return static function (array $it, array $seo, string $id, string $gid, string $
             $isAdapt = ($id === 'adaptive');
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Certification Officielle PADI (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' | PADI 5★',
+                'meta_title' => ($isSpec2 ? 'Spécialité PADI 2 Plongées Charm el-Cheikh | 145 €' : ($isSpec3 ? 'Orientation Sous-Marine PADI Charm el-Cheikh | 250 €' : 'PADI Adaptive Support Diver Charm el-Cheikh | 120 €')),
                 'meta_desc'  => 'Passez votre ' . $name . ' à Charm el-Cheikh (Sharm El Sheikh) pour ' . $pStr . ' (' . $dur . ', équipement complet inclus) chez Sea College PADI 5★ !',
                 'aeo_answer' => 'La formation officielle ' . $name . ' chez Sea College Dive Club (Centre PADI 5 Étoiles #26104236 à Charm el-Cheikh) coûte ' . $pStr . ' (durée ' . $dur . ', équipement complet de plongée inclus ; +85 € manuel officiel & carte de certification PADI). ' . ($isSpec2 ? 'Vous choisissez votre spécialité à 2 plongées parmi Maîtrise de la flottabilité (PPB), Plongée dérivante (Drift), Bateau (Boat), Naturaliste sous-marin ou Photographie numérique.' : ($isSpec3 ? 'En 3 plongées dédiées (ex. Orientation sous-marine / Underwater Navigator), vous maîtrisez compas, repères naturels et retour précis au mouillage.' : 'En une demi-journée (1 atelier piscine + 1 atelier mer, dès 15 ans, prérequis OWD + EFR < 24 mois), le brevet PADI Adaptive Support Diver vous apprend à accompagner avec empathie et sécurité des plongeurs en situation de handicap physique ou cognitif.')),
                 'overview'   => [
@@ -64,7 +64,7 @@ return static function (array $it, array $seo, string $id, string $gid, string $
             $isLand  = ($id === 'snork-ras-land');
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Mer Rouge (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' | Sea College',
+                'meta_title' => ($isChild ? 'Île Blanche & Ras Mohammed Enfant (5–12 ans) | 30 € Charm' : ($isLand ? 'Ras Mohammed & Snorkeling en Bus Charm el-Cheikh | 60 €' : ($isNight ? 'Snorkeling de Nuit Plage Charm el-Cheikh | 40 € Lampe LED' : 'Snorkeling Guidé Plage Charm el-Cheikh | 35 € Tout Inclus'))),
                 'meta_desc'  => 'Réservez ' . $name . ' à Charm el-Cheikh (Sharm El Sheikh) pour ' . $pStr . ' (' . $dur . ') : récifs coralliens de Mer Rouge, guide pro & transferts inclus !',
                 'aeo_answer' => $name . ' chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte ' . $pStr . ' par personne (durée ' . $dur . ($isChild ? ', tarif enfant de 5 à 12 ans en formule bateau 100 % tout compris vers Ras Mohammed & l’Île Blanche' : ', départ dès 6 participants') . '). ' . $desc,
                 'overview'   => [
@@ -117,7 +117,7 @@ return static function (array $it, array $seo, string $id, string $gid, string $
             $is1h = ($id === 'speed-1h');
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Excursion Privée Rapide (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' Bateau Privé',
+                'meta_title' => ($is1h ? 'Speedboat Privé Charm el-Cheikh 1 h | 75 € / Bateau' : 'Speedboat Privé Île de Tiran 3 h | 225 € / Bateau'),
                 'meta_desc'  => 'Privatisez votre ' . $name . ' à Charm el-Cheikh (Sharm El Sheikh) dès ' . $pStr . ' : départ direct face à Tiran, capitaine privé, snorkeling & boissons fraîches !',
                 'aeo_answer' => 'La location du ' . $name . ' chez Sea College Dive Club à Charm el-Cheikh coûte ' . $pStr . ' pour le bateau privatisé (' . ($is1h ? 'jusqu’à 3 passagers inclus ; 4e et 5e pers. +50 €/pers. sur les récifs locaux de Ras Nasrani' : 'pour 2 passagers inclus ; 3e à 5e pers. +100 €/pers. pour 3 heures complètes autour des lagons et récifs de l’Île de Tiran en 15 minutes de traversée, +5 €/pers. taxe parc') . ').',
                 'overview'   => [
@@ -168,7 +168,7 @@ return static function (array $it, array $seo, string $id, string $gid, string $
             $fromPp = ($price !== null && $maxPax > 0) ? (int) round((float) $price / $maxPax) . ' €' : '';
             return [
                 'h1'         => $name . ' à Charm el-Cheikh — Croisière Privée Mer Rouge (' . $pStr . ')',
-                'meta_title' => $name . ' Charm el-Cheikh (Sharm El Sheikh) | ' . $pStr . ' | Yacht Privé',
+                'meta_title' => 'Yacht Privé Charm el-Cheikh (' . $minPax . '–' . $maxPax . ' pers.) | ' . $pStr,
                 'meta_desc'  => 'Privatisez un grand yacht avec chef & équipage à Charm el-Cheikh (Sharm El Sheikh) : ' . $name . ' à ' . $pStr . ($fromPp ? ' (dès ' . $fromPp . '/pers.)' : '') . ' vers Ras Mohammed ou Tiran !',
                 'aeo_answer' => 'La formule ' . $name . ' chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte ' . $pStr . ' pour l’intégralité du yacht privatisé pendant 7 à 8 heures' . ($fromPp ? ' (soit dès ' . $fromPp . ' par personne à ' . $maxPax . ' convives !)' : '') . '. Elle comprend votre yacht exclusif avec capitaine, marins, chef préparant un grand déjeuner buffet frais à bord, boissons toute la journée, matériel et guide snorkeling, transferts privés et itinéraire au choix vers Ras Mohammed & l’Île Blanche ou le Détroit de Tiran.',
                 'overview'   => [

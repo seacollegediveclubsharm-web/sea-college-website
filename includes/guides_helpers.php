@@ -134,11 +134,25 @@ function schema_guide_article(array $g): array
     foreach ($g['sections'] as $s) {
         $wordText .= $s['h2'] . ' ' . implode(' ', $s['paras']) . ' ' . implode(' ', $s['bullets']) . ' ';
     }
-    $wordCount = max(350, count(preg_split('/\s+/u', trim($wordText)) ?: []));
+    $wordCount = LANG === 'zh'
+        ? max(350, (int) preg_match_all('/\p{Han}|[A-Za-z0-9]+/u', $wordText))
+        : max(350, count(preg_split('/\s+/u', trim($wordText)) ?: []));
+
+    $aboutMap = [
+        'en' => ['Sharm El Sheikh, Red Sea, Egypt', 'Scuba Diving'],
+        'ru' => ['Шарм-эль-Шейх, Красное море, Египет', 'Дайвинг и обучение PADI'],
+        'it' => ['Sharm El Sheikh, Mar Rosso, Egitto', 'Immersioni e Corsi Sub PADI'],
+        'de' => ['Sharm El Sheikh, Rotes Meer, Ägypten', 'Tauchen & PADI Tauchschule'],
+        'pl' => ['Sharm El Sheikh (Szarm el-Szejk), Morze Czerwone, Egipt', 'Nurkowanie i Kursy PADI'],
+        'fr' => ['Charm el-Cheikh (Sharm El Sheikh), Mer Rouge, Égypte', 'Plongée sous-marine & Cours PADI'],
+        'ar' => ['شرم الشيخ، البحر الأحمر، مصر', 'الغوص والغطس ودورات بادي PADI'],
+        'zh' => ['埃及红海沙姆沙伊赫', '水肺潜水与 PADI 考证'],
+    ];
+    $aboutPair = $aboutMap[LANG] ?? $aboutMap['en'];
 
     $article = [
         '@type'            => 'Article',
-        '@id'              => SITE_URL . guide_path($g) . '#article',
+        '@id'              => $fullUrl . '#article',
         'headline'         => $g['title'],
         'description'      => $g['meta_desc'] ?: $g['excerpt'],
         'image'            => [$imgUrl],
@@ -150,8 +164,8 @@ function schema_guide_article(array $g): array
         'publisher'        => $orgRef,
         'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $fullUrl],
         'about'            => [
-            ['@type' => 'Place', 'name' => 'Sharm El Sheikh, Red Sea, Egypt'],
-            ['@type' => 'Thing', 'name' => 'Scuba Diving'],
+            ['@type' => 'Place', 'name' => $aboutPair[0]],
+            ['@type' => 'Thing', 'name' => $aboutPair[1]],
         ],
     ];
 

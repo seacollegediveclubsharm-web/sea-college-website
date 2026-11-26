@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'sidemount' => [
         'h1' => 'Specjalizacja PADI Sidemount Diver w Sharm El Sheikh — Konfiguracja Boczna',
-        'meta_title' => 'Kurs PADI Sidemount Diver Sharm El Sheikh | 350 € | Sea College',
+        'meta_title' => 'Kurs PADI Sidemount Diver Sharm El Sheikh | 350 €',
         'meta_desc' => 'Odciąż kręgosłup i zyskaj idealny poziomy trym! Kurs PADI Sidemount Diver w Sharm El Sheikh (350 €, 2–3 dni, basen + 3 nurkowania w morzu, pełny sprzęt Sidemount w cenie).',
         'aeo_answer' => 'Specjalizacja PADI Sidemount Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 350 € za osobę (2–3 dni, minimalny wiek: 15 lat, wymagany Open Water Diver) i obejmuje pełny zestaw uprzęży/skrzydła Sidemount, dwa automaty oraz olinowane butle podczas 1 sesji konfiguracji w basenie i 3 nurkowań w Morzu Czerwonym. Konfiguracja boczna odciąża odcinek lędźwiowy kręgosłupa, zapewnia doskonały trym i podwójną niezależną redundancję gazu (+85 € opłata PADI).',
         'overview' => [
@@ -46,7 +46,7 @@ return [
 
     'divemaster' => [
         'h1' => 'Staż Zawodowy PADI Divemaster w Sharm El Sheikh (4–6 Tygodni)',
-        'meta_title' => 'Kurs PADI Divemaster Sharm El Sheikh | Staż 4–6 Tyg. · 850 € | Sea College',
+        'meta_title' => 'Kurs PADI Divemaster Sharm El Sheikh | Staż 850 €',
         'meta_desc' => 'Zostań profesjonalistą PADI nad Morzem Czerwonym! 4–6-tygodniowy staż PADI Divemaster w Sharm El Sheikh (850 €): transfery z lotniska, śniadania i obiady, sprzęt, ubezpieczenie i mentoring Course Directora.',
         'aeo_answer' => 'Cztero- do sześciotygodniowy program zawodowy PADI Divemaster w Sea College Dive Club w Sharm El Sheikh kosztuje 850 € za kandydata (minimalny wiek: 18 lat; wymagane AOWD, Rescue Diver, EFR z ostatnich 24 mies., 40 zalogowanych nurkowań na start / 60 do certyfikacji oraz zaświadczenie lekarskie z ostatnich 12 mies.). Wyjątkowo bogaty pakiet 850 € obejmuje transfery z lotniska w Sharm, codzienny transport lokalny, śniadania i obiady w dni szkoleniowe, asystowanie przy prawdziwych kursantach, 4 dni operacji łodziowych, mentoring PADI Course Directora, przygotowanie do teorii IDC, warsztaty CV, uprawnienia DSD Leader, darmowe bicia Nitroxem (dla certyfikowanych), pełny sprzęt oraz ubezpieczenie nurkowe.',
         'overview' => [
@@ -89,7 +89,7 @@ return [
 
     'bundle-stars' => [
         'h1' => 'Pakiet PADI Stars — Kurs Open Water Diver + Nitrox w Sharm El Sheikh',
-        'meta_title' => 'Pakiet PADI Stars (OWD + Nitrox) Sharm El Sheikh | 500 € (-50 €) | Sea College',
+        'meta_title' => 'Pakiet PADI Stars (OWD + Nitrox) Sharm | 500 € (-50 €)',
         'meta_desc' => 'Zdobądź licencję PADI Open Water Diver (18 m) oraz specjalizację Enriched Air Nitrox w 4 dni w Sharm El Sheikh za 500 € (oszczędzasz 50 €!). Sprzęt i ubezpieczenie w cenie.',
         'aeo_answer' => 'Pakiet kursów PADI Stars w Sea College Dive Club w Sharm El Sheikh kosztuje 500 € za osobę — co oznacza oszczędność 50 € względem rezerwacji osobno — i trwa około 4 dni (minimalny wiek: 12 lat). Łączy pełny kurs PADI Open Water Diver (do 18 m) z kursem PADI Enriched Air (Nitrox), zawierając w cenie podatek, oba szkolenia, wypożyczenie pełnego sprzętu nurkowego oraz ubezpieczenie nurkowe (+85 € opłata PADI za każdy certyfikat).',
         'overview' => [
@@ -131,7 +131,7 @@ return [
 
     'bundle-super' => [
         'h1' => 'Pakiet PADI Super — Kurs Advanced Open Water + Nitrox w Sharm El Sheikh',
-        'meta_title' => 'Pakiet PADI Super (AOWD + Nitrox) Sharm El Sheikh | 400 € (-75 €) | Sea College',
+        'meta_title' => 'Pakiet PADI Super (AOWD + Nitrox) Sharm | 400 € (-75 €)',
         'meta_desc' => 'Masz już OWD? Zdobądź PADI Advanced Open Water (30 m) + Nitrox w 3 dni w Sharm El Sheikh za 400 € (oszczędzasz 75 €!) — pełny sprzęt i ubezpieczenie nurkowe w cenie!',
         'aeo_answer' => 'Pakiet PADI Super w Sea College Dive Club w Sharm El Sheikh kosztuje 400 € za osobę — dając aż 75 € oszczędności — i trwa 3 dni dla certyfikowanych nurków Open Water w wieku 12+. Obejmuje pełny kurs PADI Advanced Open Water Diver (5 nurkowań w Morzu Czerwonym do 30 m) oraz specjalizację PADI Enriched Air (Nitrox), wypożyczenie pełnego sprzętu, ubezpieczenie nurkowe i podatek (+85 € opłata PADI za każdy certyfikat).',
         'overview' => [
@@ -172,7 +172,7 @@ return [
 
     'bundle-mega' => [
         'h1' => 'Pakiet PADI Mega — Open Water + Advanced Open Water w Sharm El Sheikh',
-        'meta_title' => 'Pakiet PADI Mega (OWD + AOWD) Sharm El Sheikh | 600 € (-90 €) | Sea College',
+        'meta_title' => 'Pakiet PADI Mega (OWD + AOWD) Sharm El Sheikh | 600 €',
         'meta_desc' => 'Nasz bestseller! Przejdź od zera do certyfikowanego nurka PADI Advanced (30 m) w 6 dni w Sharm El Sheikh za 600 € (oszczędzasz 90 €!). 9 nurkowań w morzu, sprzęt i ubezpieczenie w cenie.',
         'aeo_answer' => 'Najczęściej wybierany pakiet łączony w Sea College Dive Club — Pakiet Mega — kosztuje 600 € za osobę (oszczędność 90 €) i trwa około 6 dni w Sharm El Sheikh (minimalny wiek: 12 lat). Zaczynając całkowicie od zera, kończysz zarówno PADI Open Water Diver (5 sesji basenowych + 4 nurkowania w morzu do 18 m), jak i PADI Advanced Open Water Diver (5 nurkowań przygodowych do 30 m) — łącznie aż 9 nurkowań w Morzu Czerwonym z pełnym sprzętem, ubezpieczeniem nurkowym i podatkiem w cenie (+85 € opłata PADI za kurs).',
         'overview' => [
@@ -213,7 +213,7 @@ return [
 
     'bundle-heros' => [
         'h1' => 'Pakiet PADI Heros — Open Water + Advanced + Nitrox w Sharm El Sheikh',
-        'meta_title' => 'Pakiet PADI Heros (OWD + AOWD + Nitrox) Sharm | 750 € (-120 €) | Sea College',
+        'meta_title' => 'Pakiet PADI Heros (OWD + AOWD + Nitrox) Sharm | 750 €',
         'meta_desc' => 'Nasza największa zniżka (-120 €)! Zdobądź aż 3 licencje PADI (Open Water + Advanced 30 m + Nitrox) w 6–7 dni w Sharm El Sheikh za 750 € — pełny sprzęt i ubezpieczenie w cenie!',
         'aeo_answer' => 'Pakiet PADI Heros w Sea College Dive Club w Sharm El Sheikh kosztuje 750 € za osobę — zapewniając największą oszczędność aż 120 € — i trwa od 6 do 7 dni (minimalny wiek: 12 lat). Prowadzi Cię od absolutnego debiutanta do posiadacza TRZECH międzynarodowych licencji PADI (Open Water Diver, Advanced Open Water Diver do 30 m oraz Enriched Air Nitrox Diver), obejmując 5 sesji basenowych, 9+ nurkowań w Morzu Czerwonym, pełny sprzęt, ubezpieczenie nurkowe i podatek (+85 € opłata PADI za każdy z trzech kursów).',
         'overview' => [

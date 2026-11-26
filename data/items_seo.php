@@ -61,6 +61,10 @@ return sc_overlay_items_seo([
         'white-island-snorkeling-trip-to-ras-mohamed-by-boat' => 'snork-ras-adult',
         'snorkeling-from-beach-day-time'                 => 'snork-beach-day',
         'night-snorkeling-from-beach'                    => 'snork-beach-night',
+        'padi-discover-scuba-diving-boat-2-dives'        => 'dsd-2-boat',
+        'private-boat-snorkeling'                        => 'speed-2h',
+        'ras-mohamed-by-boat'                            => 'snork-ras-adult',
+        'ras-mohamed'                                    => 'snork-ras-adult',
     ],
     'legacy_slugs' => [
         'padi-advanced-open-water-sharm'           => 'aowd',
@@ -72,5 +76,9 @@ return sc_overlay_items_seo([
         'heros-bundle-owd-aowd-nitrox-sharm'       => 'bundle-heros',
         'private-speed-boat-2-hours-sharm'         => 'speed-2h',
         'private-speedboat-tiran-2-hours'          => 'speed-2h',
+        'padi-discover-scuba-diving-boat-2-dives'  => 'dsd-2-boat',
+        'private-boat-snorkeling'                  => 'speed-2h',
+        'ras-mohamed-by-boat'                      => 'snork-ras-adult',
+        'ras-mohamed'                              => 'snork-ras-adult',
     ],
 ]);

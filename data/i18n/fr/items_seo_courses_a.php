@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'bubblemaker' => [
         'h1' => 'PADI Bubblemaker à Charm el-Cheikh — Initiation Plongée Enfants dès 8 ans',
-        'meta_title' => 'PADI Bubblemaker Charm el-Cheikh (Sharm El Sheikh) | Enfants 8+ | 70 €',
+        'meta_title' => 'PADI Bubblemaker Charm el-Cheikh | Enfants dès 8 ans · 70 €',
         'meta_desc' => 'Initiez vos enfants dès 8 ans à la plongée à Charm el-Cheikh (Sharm El Sheikh) ! PADI Bubblemaker (70 €, 2–3 h) en piscine peu profonde (< 2 m) avec matériel enfant inclus.',
         'aeo_answer' => 'Le programme PADI Bubblemaker chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 70 € par enfant (âge minimum 8 ans) et dure 2 à 3 heures. Organisé exclusivement dans notre piscine d’entraînement calme au Cyrene Sharm (profondeur strictement inférieure à 2 mètres), il permet aux enfants de respirer sous l’eau pour la première fois avec un équipement adapté à leur morphologie sous la supervision directe d’un instructeur PADI, tout le matériel étant inclus.',
         'overview' => ['PADI Bubblemaker est la façon la plus ludique et la plus sûre pour les enfants de 8 et 9 ans (ou plus âgés préférant le calme du bassin) de faire leurs toutes premières bulles sous l’eau pendant que leurs parents les encouragent et les prennent en photo depuis le bord de la piscine.', 'Grâce à des bouteilles légères, gilets stabilisateurs et détendeurs taille enfant dans une eau limpide à moins de 2 mètres, nos moniteurs patients transforment la respiration au détendeur, l’équilibre et les jeux aquatiques en souvenir inoubliable de vacances en Mer Rouge.'],
@@ -48,7 +48,7 @@ return [
     ],
     'seal-team' => [
         'h1' => 'Cours Enfants PADI Seal Team à Charm el-Cheikh (AquaMissions 1 à 5)',
-        'meta_title' => 'PADI Seal Team Charm el-Cheikh (Sharm El Sheikh) | Enfants 8+ | 170 €',
+        'meta_title' => 'PADI Seal Team Charm el-Cheikh | Enfants dès 8 ans · 170 €',
         'meta_desc' => 'Journée complète d’aventure en piscine PADI Seal Team à Charm el-Cheikh (170 €, dès 8 ans). Les enfants réalisent les AquaMissions 1 à 5 avec matériel complet inclus.',
         'aeo_answer' => 'Le programme PADI Seal Team chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 170 € par enfant (dès 8 ans) et se déroule sur 1 journée complète dans notre piscine d’entraînement. Les jeunes plongeurs accomplissent les AquaMissions PADI 1 à 5 — maîtrise de la respiration, compensation des oreilles, vidage de masque, récupération du détendeur et flottabilité neutre — avec tout le matériel taille enfant inclus.',
         'overview' => ['Pour les enfants de 8 et 9 ans qui veulent aller plus loin qu’un simple baptême, PADI Seal Team transforme l’apprentissage en cinq « AquaMissions » captivantes qui forgent de vrais réflexes de plongeur avant l’âge de 10 ans.', 'Dispensé en tout petit comité dans notre bassin calme d’Al Montazah par notre équipe saluée pour sa douceur avec les enfants, ce programme développe autonomie, esprit d’équipe et respect du monde marin.'],
@@ -89,7 +89,7 @@ return [
     ],
     'dsd' => [
         'h1' => 'Programme Officiel PADI Discover Scuba Diving à Charm el-Cheikh (Piscine + Mer)',
-        'meta_title' => 'PADI Discover Scuba Diving Charm el-Cheikh | 85 € Tout Inclus | Sea College',
+        'meta_title' => 'PADI Discover Scuba Diving Charm el-Cheikh | 85 € Complet',
         'meta_desc' => 'Baptême officiel PADI Discover Scuba Diving sur 1 jour à Charm el-Cheikh (85 €, dès 10 ans) : théorie, exercices en piscine + plongée Mer Rouge — matériel, livret & attestation PADI inclus !',
         'aeo_answer' => 'Le programme officiel PADI Discover Scuba Diving chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 85 € par personne (dès 10 ans, durée 1 jour). C’est la SEULE formule où le livret officiel PADI, l’enregistrement eLearning et l’attestation de réussite PADI sont déjà inclus dans le tarif de 85 € (aucun supplément de 85 € !), avec tout l’équipement de plongée, une séance complète en piscine et une plongée guidée sur notre récif corallien de Mer Rouge.',
         'overview' => ['Quelle est la différence entre un baptême rapide à 30 € et ce programme PADI Discover Scuba Diving à 85 € ? Ce cursus officiel vous offre une vraie séance préparatoire dans notre piscine d’entraînement avant d’aller en mer, vous enregistre officiellement chez PADI avec livret et certificat, et peut même valider les exercices de la plongée 1 si vous enchaînez sur le brevet Open Water !', 'Parce que vous apprivoisez tranquillement le détendeur, le vidage de masque et la flottabilité dans une eau calme où vous avez pied avant de rejoindre les poissons-clowns du récif maison, même les grands débutants appréhensifs se sentent 100 % sereins.'],
@@ -130,7 +130,7 @@ return [
     ],
     'scuba-diver' => [
         'h1' => 'Brevet PADI Scuba Diver à Charm el-Cheikh — Certification en 2 Jours',
-        'meta_title' => 'Cours PADI Scuba Diver Charm el-Cheikh (Sharm El Sheikh) | 2 Jours · 250 €',
+        'meta_title' => 'Cours PADI Scuba Diver Charm el-Cheikh | 2 Jours · 250 €',
         'meta_desc' => 'Peu de temps en vacances ? Obtenez votre brevet officiel PADI Scuba Diver en 2 jours à Charm el-Cheikh (250 €, dès 10 ans) : 3 séances piscine + 2 plongées mer 12 m, matériel & assurance inclus.',
         'aeo_answer' => 'Le cours PADI Scuba Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 250 € par personne (dès 10 ans) et se valide en seulement 2 jours. Couvrant environ 60 % du cursus Open Water (3 modules théoriques, 3 séances piscine et 2 plongées en Mer Rouge), il délivre une carte de certification PADI valable à vie pour plonger jusqu’à 12 mètres partout dans le monde accompagné d’un professionnel PADI, avec équipement complet et assurance plongée inclus (+85 € manuel et certification PADI).',
         'overview' => ['Votre planning d’excursions à Charm el-Cheikh est serré mais vous voulez repartir avec une vraie carte de certification PADI reconnue à vie ? Le PADI Scuba Diver se boucle en deux jours seulement et pourra être transformé à tout moment en brevet Open Water 18 m complet via notre passerelle à 100 € !', 'La plus grande richesse de couleurs coralliennes de la Mer Rouge se situant dans les 12 premiers mètres baignés de soleil, ce brevet vous ouvre immédiatement de superbes plongées encadrées avec équipement et assurance inclus pendant le cours.'],
@@ -171,7 +171,7 @@ return [
     ],
     'upgrade-owd' => [
         'h1' => 'Passerelle PADI Scuba Diver vers Open Water Diver à Charm el-Cheikh (18 m)',
-        'meta_title' => 'Passerelle Scuba Diver vers Open Water Charm el-Cheikh | 100 € | Sea College',
+        'meta_title' => 'Passerelle Scuba Diver → Open Water Charm el-Cheikh | 100 €',
         'meta_desc' => 'Déjà titulaire du PADI Scuba Diver ? Passez au brevet complet PADI Open Water 18 m en 1 à 2 jours à Charm el-Cheikh pour 100 € (2 piscines + 2 plongées mer, équipement & assurance inclus).',
         'aeo_answer' => 'La passerelle PADI Scuba Diver vers PADI Open Water Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 100 € par personne (durée 1 à 2 jours, dès 10 ans). Vous validez simplement les 2 modules théoriques restants, 2 séances piscine, le test de natation et les 2 dernières plongées en Mer Rouge jusqu’à 18 mètres, avec équipement complet et assurance plongée inclus (+85 € frais de certification/manuel PADI).',
         'overview' => ['Transformez votre carte Scuba Diver (limitée à 12 m) en brevet international autonome PADI Open Water Diver 18 mètres en seulement 1 à 2 jours dans les eaux chaudes de Charm el-Cheikh — et accédez désormais à tous nos forfaits plongeurs certifiés standard sans guide privé obligatoire !', 'Même si votre Scuba Diver date de plusieurs années, nos moniteurs reprennent vos bases en douceur dans notre piscine lors des séances 4 et 5 avant de rejoindre le récif corallien.'],
@@ -212,7 +212,7 @@ return [
     ],
     'owd' => [
         'h1' => 'Cours PADI Open Water Diver à Charm el-Cheikh — Votre Brevet International 18 m',
-        'meta_title' => 'Cours PADI Open Water Charm el-Cheikh (Sharm El Sheikh) | 400 € | PADI 5★',
+        'meta_title' => 'Cours PADI Open Water (Niveau 1) Charm el-Cheikh | 400 €',
         'meta_desc' => 'Passez votre brevet international PADI Open Water Diver à Charm el-Cheikh (400 €, 3–3,5 jours, dès 10 ans) : 5 séances piscine + 4 plongées Mer Rouge jusqu’à 18 m — équipement & assurance inclus.',
         'aeo_answer' => 'Le cours PADI Open Water Diver chez Sea College Dive Club (centre PADI 5 Étoiles au Cyrene Sharm, Al Montazah, Charm el-Cheikh / Sharm El Sheikh) coûte 400 € par personne, dure 3 à 3,5 jours et accueille les grands débutants dès 10 ans sans aucune expérience préalable. Ce tarif comprend les 5 modules théoriques, 5 séances dans notre piscine d’entraînement, 4 plongées en Mer Rouge (vous certifiant à vie jusqu’à 18 m dans le monde entier), la location complète de l’équipement et l’assurance plongée ; les frais officiels de manuel/eLearning et carte PADI sont de 85 €.',
         'overview' => ['Il existe peu d’endroits sur Terre aussi magiques que Charm el-Cheikh pour passer son premier brevet de plongée PADI Open Water Diver (équivalent Niveau 1 international) : une eau chaude toute l’année, 20 à 35 m de visibilité, et une piscine d’entraînement située à quelques pas seulement d’un récif corallien foisonnant de vie.', 'Avec nos instructeurs francophones et multilingues — tels que Mosab, Wessam, Alex et Sam, encensés dans plus de 3 082 avis Google (4.9★) — vous progressez sans stress de la piscine peu profonde vers le récif maison puis vers nos sorties en bateau.'],
@@ -255,7 +255,7 @@ return [
     ],
     'aowd' => [
         'h1' => 'Cours PADI Advanced Open Water Diver à Charm el-Cheikh — Brevet 30 Mètres',
-        'meta_title' => 'PADI Advanced Open Water Charm el-Cheikh | 350 € | 5 Plongées Aventure',
+        'meta_title' => 'PADI Advanced Open Water 30 m Charm el-Cheikh | 350 €',
         'meta_desc' => 'Accédez aux tombants et épaves à 30 m en Mer Rouge ! PADI Advanced Open Water à Charm el-Cheikh (350 €, 2,5–3 jours, dès 12 ans) : 5 plongées Aventure, équipement inclus.',
         'aeo_answer' => 'Le cours PADI Advanced Open Water Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 350 € par personne (dès 12 ans, durée 2,5 à 3 jours) et inclut la location complète de l’équipement sur 5 plongées Aventure en Mer Rouge — sans examen écrit final ! Vous réalisez la plongée Profonde (vous certifiant jusqu’à 30 m, ou 21 m pour les 12–14 ans) et la plongée d’Orientation sous-marine, complétées par 3 plongées au choix telles qu’Épave, Dérivante, Maîtrise de la flottabilité ou Nuit (+85 € manuel et carte PADI).',
         'overview' => ['L’Advanced Open Water est 100 % axé sur la pratique et le plaisir en mer : zéro examen théorique en salle, cinq superbes plongées Aventure en Mer Rouge et l’ouverture immédiate de la zone des 30 mètres pour explorer Shark & Yolanda Reef, Jackson Reef et le mythique SS Thistlegorm !', 'Comme le raconte Maren Z. dans son avis Google 5★ après avoir validé son AOWD jusqu’à 30 m sur épave avec notre instructeur Alex, nos moniteurs perfectionnent votre palmage, votre consommation d’air et votre aisance dans le courant à chaque immersion.'],

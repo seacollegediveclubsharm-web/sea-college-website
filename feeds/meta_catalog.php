@@ -229,12 +229,16 @@ foreach ($catalog as $catKey => $cat) {
             $mainImgUrl = SITE_URL . '/assets/' . $imgRel;
 
             $extraImgs = [];
-            foreach (($itemGalleries[$id] ?? []) as $gEntry) {
+            $galPhotos = isset($itemGalleries[$id]['photos']) && is_array($itemGalleries[$id]['photos'])
+                ? $itemGalleries[$id]['photos']
+                : (is_array($itemGalleries[$id] ?? null) ? $itemGalleries[$id] : []);
+            foreach ($galPhotos as $gEntry) {
                 $gSrc = is_array($gEntry) ? (string) ($gEntry['src'] ?? '') : (string) $gEntry;
                 if ($gSrc === '' || str_ends_with(strtolower($gSrc), '.mp4')) {
                     continue;
                 }
-                $gRel = 'images/' . ltrim($gSrc, '/');
+                $cleanGSrc = ltrim($gSrc, '/');
+                $gRel = str_starts_with($cleanGSrc, 'images/') ? $cleanGSrc : ('images/' . $cleanGSrc);
                 if ($gRel !== $imgRel && is_file(ROOT_DIR . '/assets/' . $gRel)) {
                     $extraImgs[] = SITE_URL . '/assets/' . $gRel;
                 }

@@ -74,17 +74,24 @@ function asset(string $path): string
     return '/assets/' . $clean . '?v=' . $v;
 }
 
-/* ---------------- i18n & Clean Language Subdirectory Routing ---------------- */
+/* ---------------- Scalar-safe GET helper & Clean Language Subdirectory Routing ---------------- */
+function sc_get_str(string $key, string $default = ''): string
+{
+    $v = $_GET[$key] ?? $default;
+    return is_scalar($v) ? trim((string) $v) : $default;
+}
+
 function sc_detect_lang(): string
 {
     $supported = array_keys(SUPPORTED_LANGS);
     // 1) Explicit ?lang= (populated by .htaccess /ru/... rewrite or legacy ?lang=xx links)
-    $q = isset($_GET['lang']) ? strtolower(trim((string) $_GET['lang'])) : '';
+    $q = strtolower(sc_get_str('lang'));
     if ($q !== '' && in_array($q, $supported, true)) {
         return $q;
     }
     // 2) Explicit POST lang (for /handlers/lead_capture.php, diver_checkin.php, newsletter.php)
-    $p = isset($_POST['lang']) ? strtolower(trim((string) $_POST['lang'])) : '';
+    $rawPost = $_POST['lang'] ?? '';
+    $p = is_scalar($rawPost) ? strtolower(trim((string) $rawPost)) : '';
     if ($p !== '' && in_array($p, $supported, true)) {
         return $p;
     }
@@ -97,13 +104,23 @@ function sc_detect_lang(): string
             return $detected;
         }
     }
-    // 4) Unprefixed URLs (/, /prices.php, /tours/...) are deterministically English (DEFAULT_LANG)
+    // 4) Unprefixed URLs (/, /prices, /tours/...) are deterministically English (DEFAULT_LANG)
     return DEFAULT_LANG;
 }
 
 define('LANG', sc_detect_lang());
 define('IS_RTL', in_array(LANG, RTL_LANGS, true));
 define('DIR', IS_RTL ? 'rtl' : 'ltr');
+
+function sc_arrow_next(): string
+{
+    return IS_RTL ? '←' : '→';
+}
+
+function sc_arrow_prev(): string
+{
+    return IS_RTL ? '→' : '←';
+}
 
 $GLOBALS['SC_STRINGS'] = require ROOT_DIR . '/lang/en.php';
 if (LANG !== 'en' && is_file(ROOT_DIR . '/lang/' . LANG . '.php')) {
@@ -407,7 +424,7 @@ function sc_sanitize_meta_cookie(string $val): string
 function sc_resolve_fbc(?array $attr = null, string $postedFbc = ''): string
 {
     $cookieFbc = sc_sanitize_meta_cookie((string) ($_COOKIE['_fbc'] ?? ''));
-    $urlFbclid = isset($_GET['fbclid']) ? trim((string) preg_replace('/[^\w\-]/', '', (string) $_GET['fbclid'])) : '';
+    $urlFbclid = trim((string) preg_replace('/[^\w\-]/', '', sc_get_str('fbclid')));
     if ($urlFbclid !== '') {
         if ($cookieFbc !== '' && str_ends_with($cookieFbc, '.' . $urlFbclid)) {
             return $cookieFbc;
@@ -511,7 +528,7 @@ function sc_capture_attribution(): void
 
     $found = [];
     foreach (UTM_KEYS as $k) {
-        if (isset($_GET[$k]) && $_GET[$k] !== '') {
+        if (isset($_GET[$k]) && is_scalar($_GET[$k]) && (string) $_GET[$k] !== '') {
             $found[$k] = substr(preg_replace('/[^\w\-\.\~\:\/@ ]/u', '', (string) $_GET[$k]) ?? '', 0, 200);
         }
     }

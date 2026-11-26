@@ -76,17 +76,20 @@ function sc_build_item_traveller_faqs(array $it): array
     $id      = (string) ($it['id'] ?? '');
 
     $allInGear = in_array($profile, ['kids', 'intro_reef', 'intro_boat', 'dsd_course', 'course_beginner', 'course_cert', 'bundle', 'snorkeling', 'speedboat', 'private_yacht'], true);
-    $isBoatAllIn = in_array($profile, ['intro_boat', 'snorkeling', 'speedboat', 'private_yacht'], true);
+    $isParkIncludedAllIn = in_array($profile, ['intro_boat', 'snorkeling'], true);
+    $isPrivateBoatCharter = in_array($profile, ['speedboat', 'private_yacht'], true);
     $isBeginnerNoSwim = in_array($profile, ['kids', 'intro_reef', 'intro_boat', 'dsd_course', 'snorkeling', 'speedboat', 'private_yacht'], true);
 
     switch ($lang) {
         case 'ru':
             $qPrice = "Входит ли всё в цену {$price} за «{$name}» и есть ли скрытые сборы в порту?";
-            $aPrice = $isBoatAllIn
-                ? "Официальная прямая цена «{$name}» составляет {$price} без скрытых портовых сборов и с €0 предоплаты онлайн (оплата на месте в EUR, USD, GBP или EGP). Трансфер, работа экипажа/инструктора и снаряжение уже включены; отдельно оплачивается только государственный сбор морского заповедника €5/чел. при входе в Рас-Мохаммед или Тиран."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "Прямая онлайн-цена «{$name}» — {$price} с €0 предоплаты онлайн и без скрытых наценок. Всё дайв-снаряжение включено. Дополнительно оплачиваются только официальный учебник/сертификат PADI PIC (€85 за курс, кроме DSD) и сборы в дни выхода на яхте (€10 яхта с обедом + €5 заповедник)."
-                    : "Прямая онлайн-цена «{$name}» — {$price} (€0 предоплаты онлайн, оплата в дайв-центре в EUR/USD/EGP). Никаких скрытых портовых сборов: в дни погружений с яхты фиксированно добавляются только €10/день сбор яхты (включая горячий обед и напитки) + €5/день сбор заповедника; с домашнего рифа доплат нет.");
+            $aPrice = $isParkIncludedAllIn
+                ? "Да, всё включено! Официальная прямая цена «{$name}» — {$price} с €0 предоплаты онлайн (зарубежная карта не нужна: оплата на месте наличными в EUR €, USD $ или EGP). Трансфер из отеля, яхта, горячий обед с напитками, снаряжение и государственный сбор заповедника (€5) УЖЕ ВКЛЮЧЕНЫ в стоимость — €0 доплат в марине!"
+                : ($isPrivateBoatCharter
+                    ? "Официальная прямая цена аренды «{$name}» — {$price} с €0 предоплаты онлайн (оплата на месте в EUR €, USD $, GBP или EGP). Трансфер, работа капитана и снаряжение для снорклинга включены; отдельно оплачивается только билет морского заповедника (€5/чел. при входе в Рас-Мохаммед или Тиран)."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "Прямая онлайн-цена «{$name}» — {$price} с €0 предоплаты онлайн (оплата на месте в € или $) и без скрытых наценок. Всё дайв-снаряжение включено. Дополнительно оплачиваются только официальный учебник/сертификат PADI PIC (€85 за курс, кроме DSD) и сборы в дни выхода на яхте (€10 яхта с обедом + €5 заповедник)."
+                        : "Прямая онлайн-цена «{$name}» — {$price} (€0 предоплаты онлайн, оплата в дайв-центре в EUR/USD/EGP). Никаких скрытых портовых сборов: в дни погружений с яхты фиксированно добавляются только €10/день сбор яхты (включая горячий обед и напитки) + €5/день сбор заповедника; с домашнего рифа доплат нет."));
 
             $qPickup = "Из каких районов Шарм-эль-Шейха предоставляется бесплатный трансфер на «{$name}»?";
             $aPickup = "Бесплатный кондиционированный трансфер туда-обратно охватывает все 6 курортных зон Шарм-эль-Шейха (75+ отелей): Набк-Бей (~07:45), Шаркс-Бей и SOHO (~08:05), Наама-Бей (~07:50), Хадаба и Рас-Ум-эль-Сид (~07:35), Старый город (~07:35) и Рас-Насрани / Аль-Монтаза (0–5 мин, база на пляже Cyrene Sharm). Возвращение с яхты около 16:30.";
@@ -96,8 +99,8 @@ function sc_build_item_traveller_faqs(array $it): array
                 : "Какой сертификат, возраст и навыки плавания нужны для «{$name}»?";
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
-                    ? "Опыт и спортивное плавание не требуются! Программа проводится с 8 лет в мелком тренировочном бассейне (<2 м) под прямым контролем инструктора PADI в детском снаряжении."
-                    : "Опыт и умение плавать НЕ требуются! Инструктор PADI сопровождает новичков индивидуально 1-на-1 за руку и контролирует плавучесть (для снорклинга выдаются удобные жилеты).")
+                    ? "Опыт и спортивное плавание не требуются! Программа проводится с 8 лет в мелком тренировочном бассейне (<2 м) под прямым контролем русскоязычного инструктора PADI в детском снаряжении."
+                    : "Опыт и умение плавать НЕ требуются! Русскоязычный инструктор PADI сопровождает новичков индивидуально 1-на-1 за руку и контролирует плавучесть (для снорклинга выдаются удобные жилеты).")
                 : ($id === 'sup-thistlegorm'
                     ? "Для погружения на SS Thistlegorm требуется сертификат не ниже PADI Advanced Open Water (30 м) и минимум 20 зарегистрированных дайвов."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
@@ -120,34 +123,36 @@ function sc_build_item_traveller_faqs(array $it): array
 
         case 'it':
             $qPrice = "Il prezzo di {$price} per «{$name}» è trasparente e senza costi nascosti al porto?";
-            $aPrice = $isBoatAllIn
-                ? "Sì: la tariffa diretta online per «{$name}» è {$price} con €0 di acconto online e zero tasse portuali nascoste (paghi al diving in EUR, USD, GBP o EGP). Transfer, yacht, istruttore/guida e attrezzatura sono inclusi; si aggiunge solo il biglietto governativo del Parco Marino (€5/persona a Ras Mohammed o Tiran)."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "La tariffa diretta di «{$name}» è {$price} (€0 acconto online, attrezzatura completa inclusa). Gli unici extra trasparenti sono il kit digitale/brevetto ufficiale PADI PIC (€85/corso, già incluso nel DSD) e gli eventuali giorni in barca (€10 barca con pranzo + €5 parco marino)."
-                    : "La tariffa diretta di «{$name}» è {$price} con €0 di acconto online e zero sorprese al molo. Nelle uscite in barca i supplementi giornalieri sono fissi e dichiarati: €10/giorno barca (con pranzo caldo a buffet e bevande) + €5/giorno Parco Marino; da riva sull’House Reef non c’è alcun supplemento.");
+            $aPrice = $isParkIncludedAllIn
+                ? "Sì, 100% tutto incluso! La tariffa diretta online per «{$name}» è {$price} con €0 di acconto online e zero tasse portuali nascoste (paghi al centro diving in EUR, USD, GBP o EGP). Transfer hotel, yacht, pranzo a buffet, bevande, attrezzatura e anche il biglietto del Parco Marino (€5) sono GIÀ INCLUSI nel prezzo!"
+                : ($isPrivateBoatCharter
+                    ? "Sì: la tariffa diretta online per «{$name}» è {$price} con €0 di acconto online e zero sorprese al porto. Transfer, barca privata, capitano e kit snorkeling sono inclusi; si aggiunge solo il biglietto governativo del Parco Marino (€5/persona per Tiran o Ras Mohammed)."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "La tariffa diretta di «{$name}» è {$price} (€0 acconto online, attrezzatura completa inclusa). Gli unici extra trasparenti sono il kit digitale/brevetto ufficiale PADI PIC (€85/corso, già incluso nel DSD) e gli eventuali giorni in barca (€10 barca con pranzo + €5 parco marino)."
+                        : "La tariffa diretta di «{$name}» è {$price} con €0 di acconto online e zero sorprese al molo. Nelle uscite in barca i supplementi giornalieri sono fissi e dichiarati: €10/giorno barca (con pranzo caldo a buffet e bevande) + €5/giorno Parco Marino; da riva sull’House Reef non c’è alcun supplemento."));
 
-            $qPickup = "Quali zone hotel di Sharm El Sheikh hanno il transfer gratuito per «{$name}»?";
-            $aPickup = "Il transfer climatizzato gratuito A/R copre tutte le 6 zone di Sharm El Sheikh (75+ resort): Nabq Bay (~07:45), Sharks Bay & SOHO (~08:05), Naama Bay (~07:50), Hadaba & Ras Um El Sid (~07:35), Old Market (~07:35) e Ras Nasrani / Al Montazah (0–5 min, siamo sulla spiaggia del Cyrene Sharm). Rientro in hotel verso le 16:30.";
+            $qPickup = "Quali zone hotel e villaggi di Sharm El Sheikh hanno il transfer gratuito per «{$name}»?";
+            $aPickup = "Il transfer climatizzato gratuito A/R copre tutte le 6 zone e i villaggi italiani di Sharm El Sheikh (75+ resort, inclusi Domina Coral Bay, Reef Oasis, Veraclub, Bravo e Rixos): Nabq Bay (~07:45), Sharks Bay & SOHO (~08:05), Naama Bay (~07:50), Hadaba & Ras Um El Sid (~07:35), Old Market (~07:35) e Ras Nasrani / Al Montazah (0–5 min, sulla spiaggia del Cyrene Sharm). Rientro verso le 16:30.";
 
             $qReq = $isBeginnerNoSwim
-                ? "Serve saper nuotare o avere esperienza per «{$name}»?"
-                : "Quali requisiti di brevetto, età o nuoto servono per «{$name}»?";
+                ? "Serve saper nuotare o avere esperienza sub per «{$name}»?"
+                : "Quali requisiti di brevetto sub, età o nuoto servono per «{$name}»?";
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
-                    ? "Nessuna esperienza richiesta! Riservato ai bimbi dagli 8 anni nella nostra piscina bassa (<2 m) con attrezzatura baby e istruttore PADI dedicato."
-                    : "Non serve alcuna esperienza né saper nuotare! Nei Battesimi del Mare l’istruttore PADI ti segue 1-a-1 per mano controllando l’assetto (e per lo snorkeling forniamo giubbotti salvagente comodi).")
+                    ? "Nessuna esperienza richiesta! Riservato ai bimbi dagli 8 anni nella nostra piscina bassa (<2 m) con attrezzatura baby e istruttore PADI parlante italiano."
+                    : "Non serve alcuna esperienza né saper nuotare! Nella prova sub / Battesimo del Mare l’istruttore PADI in italiano ti segue 1-a-1 per mano controllando l’assetto (e per lo snorkeling forniamo giubbotti salvagente comodi).")
                 : ($id === 'sup-thistlegorm'
-                    ? "Per il relitto SS Thistlegorm (16–30 m) servono il brevetto PADI Advanced Open Water (o equivalente 30 m) e almeno 20 immersioni registrate."
+                    ? "Per il relitto SS Thistlegorm (16–30 m) servono il brevetto sub PADI Advanced Open Water (o equivalente FIPSAS/CMAS/SSI 30 m) e almeno 20 immersioni registrate."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
                         ? "Aperto ai principianti dai 10 anni in su senza esperienza sub; gli standard PADI richiedono solo una nuotata base di 200 m senza limiti di tempo e 10 minuti di galleggiamento."
-                        : "È richiesto il brevetto subacqueo (Open Water o superiore, età min. 10 anni). Ricorda le 18–24 ore di intervallo di superficie prima del volo secondo linee guida PADI/DAN."));
+                        : "È richiesto il brevetto subacqueo (PADI Open Water, FIPSAS, CMAS, ANIS, SSI o equivalente, età min. 10 anni). Ricorda le 18–24 ore di intervallo di superficie prima del volo."));
 
             $qGroup = "Quanti sub ci sono per guida PADI e possiamo salire in coppia con un principiante?";
-            $aGroup = "Garantiamo piccoli gruppi con MASSIMO 4 sub brevettati per guida PADI (e supervisione individuale 1-a-1 nei Battesimi). Le coppie miste sono benvenute sullo stesso grande yacht (Oceano, Nizar, Omar 4): chi ha il brevetto si immerge e il partner fa snorkeling o Battesimo del Mare pranzando insieme!";
+            $aGroup = "Garantiamo piccoli gruppi con MASSIMO 4 sub brevettati per guida PADI (e supervisione individuale 1-a-1 nelle prove sub). Le coppie miste sono benvenute sullo stesso grande yacht (Oceano, Nizar, Omar 4): chi ha il brevetto si immerge e il partner fa snorkeling o Battesimo del Mare pranzando insieme!";
 
             $qCheck = "Devo fare il Check Dive prima di «{$name}» o posso saltarlo?";
             $aCheck = $isBeginnerNoSwim || $profile === 'course_beginner'
-                ? "Nessun check dive separato richiesto: il briefing e l’ambientamento in acqua bassa sono già parte integrante del programma con il tuo istruttore PADI."
+                ? "Nessun check dive separato richiesto: il briefing in italiano e l’ambientamento in acqua bassa sono già parte integrante del programma."
                 : "Regola Salta-Check-Dive: se hai almeno un’immersione registrata negli ultimi 6 mesi (logbook o app PADI/SSI), SALTI il check dive separato e sali direttamente in barca! Tra 6 e 12 mesi serve un Check Dive (€25); oltre 12 mesi uno Scuba Review (€50).";
 
             $qGear = "Il noleggio attrezzatura è incluso e quanto costa il Nitrox 32%?";
@@ -158,14 +163,16 @@ function sc_build_item_traveller_faqs(array $it): array
 
         case 'pl':
             $qPrice = "Czy cena {$price} za „{$name}” jest pełna i bez ukrytych opłat portowych?";
-            $aPrice = $isBoatAllIn
-                ? "Tak! Bezpośrednia cena online za „{$name}” wynosi {$price} przy 0 € zaliczki i zero ukrytych opłat w marinie (płatność na miejscu w EUR, USD, GBP lub EGP). Transfer, rejs, opieka instruktora i sprzęt są w cenie; dochodzi jedynie państwowy bilet do parku morskiego (€5/os. w Ras Mohammed lub Tiran)."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "Cena bezpośrednia „{$name}” to {$price} (0 € zaliczki online, pełny sprzęt nurkowy w cenie). Dodatkowe koszty są w 100% jawne: oficjalny podręcznik i certyfikat PADI PIC (€85/kurs, w DSD już w cenie) oraz dni łodziowe (€10 łódź z obiadem + €5 park morski)."
-                    : "Cena bezpośrednia „{$name}” to {$price} z 0 € zaliczki online i bez niespodzianek w porcie. W dni nurkowania z łodzi obowiązują stałe dopłaty: €10/dzień za jacht (z ciepłym obiadem i napojami) + €5/dzień opłaty parkowej; na rafie domowej brak dopłat.");
+            $aPrice = $isParkIncludedAllIn
+                ? "Tak, 100% All-In! Bezpośrednia cena online za „{$name}” wynosi {$price} przy 0 € zaliczki i zero ukrytych opłat w marinie (płatność na miejscu w EUR, USD, GBP lub EGP). Transfer z hotelu, jacht, ciepły obiad z napojami, sprzęt oraz bilet do parku morskiego (5 €) są JUŻ WLICZONE w cenę!"
+                : ($isPrivateBoatCharter
+                    ? "Tak! Bezpośrednia cena online za „{$name}” wynosi {$price} przy 0 € zaliczki i zero ukrytych opłat w porcie. Transfer, prywatna łódź, kapitan i sprzęt do snurkowania są w cenie; dochodzi jedynie państwowy bilet do parku morskiego (5 €/os. w Ras Mohammed lub Tiran)."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "Cena bezpośrednia „{$name}” to {$price} (0 € zaliczki online, pełny sprzęt nurkowy w cenie). Dodatkowe koszty są w 100% jawne: oficjalny podręcznik i certyfikat PADI PIC (85 €/kurs, w DSD już w cenie) oraz dni łodziowe (10 € łódź z obiadem + 5 € park morski)."
+                        : "Cena bezpośrednia „{$name}” to {$price} z 0 € zaliczki online i bez niespodzianek w porcie. W dni nurkowania z łodzi obowiązują stałe dopłaty: 10 €/dzień za jacht (z ciepłym obiadem i napojami) + 5 €/dzień opłaty parkowej; na rafie domowej brak dopłat."));
 
-            $qPickup = "Z jakich stref hotelowych w Sharm El Sheikh jest darmowy transfer na „{$name}”?";
-            $aPickup = "Darmowy klimatyzowany transfer w obie strony obejmuje wszystkie 6 stref Sharm El Sheikh (75+ hoteli): Nabq Bay (~07:45), Sharks Bay i SOHO (~08:05), Naama Bay (~07:50), Hadaba i Ras Um El Sid (~07:35), Old Market (~07:35) oraz Ras Nasrani / Al Montazah (0–5 min, baza na plaży Cyrene Sharm). Powrót około 16:30.";
+            $qPickup = "Z jakich stref hotelowych w Sharm El Sheikh (Szarm el-Szejk) jest darmowy transfer na „{$name}”?";
+            $aPickup = "Darmowy klimatyzowany transfer w obie strony obejmuje wszystkie 6 stref Sharm El Sheikh / Szarm el-Szejk (75+ hoteli): Nabq Bay (~07:45), Sharks Bay i SOHO (~08:05), Naama Bay (~07:50), Hadaba i Ras Um El Sid (~07:35), Old Market (~07:35) oraz Ras Nasrani / Al Montazah (0–5 min, baza na plaży Cyrene Sharm). Powrót około 16:30.";
 
             $qReq = $isBeginnerNoSwim
                 ? "Czy muszę umieć pływać lub mieć doświadczenie, aby zarezerwować „{$name}”?"
@@ -173,110 +180,116 @@ function sc_build_item_traveller_faqs(array $it): array
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
                     ? "Nie trzeba doświadczenia ani stylów pływackich! Zajęcia od 8. roku życia odbywają się w płytkim basenie (<2 m) w sprzęcie dziecięcym pod opieką instruktora PADI."
-                    : "Nie trzeba umieć pływać ani mieć doświadczenia! Podczas intro instruktor PADI prowadzi Cię indywidualnie 1-na-1 za rękę i kontroluje wyporność (do snorkelingu zapewniamy kamizelki asekuracyjne).")
+                    : "Nie trzeba umieć pływać ani mieć doświadczenia! Podczas intro nurkowego instruktor PADI prowadzi Cię indywidualnie 1-na-1 za rękę i kontroluje wyporność (do snurkowania / snorkelingu zapewniamy kamizelki asekuracyjne).")
                 : ($id === 'sup-thistlegorm'
                     ? "Na wrak SS Thistlegorm (16–30 m) wymagany jest certyfikat min. PADI Advanced Open Water oraz co najmniej 20 zalogowanych nurkowań."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
                         ? "Kurs jest dostępny od 10 lat bez wcześniejszego doświadczenia; standardy PADI wymagają jedynie spokojnego przepłynięcia 200 m bez limitu czasu i 10 minut unoszenia się na wodzie."
-                        : "Wymagany jest certyfikat nurkowy (Open Water lub wyższy, min. 10 lat). Przed lotem powrotnym zachowaj 18–24 godz. przerwy powierzchniowej (PADI/DAN)."));
+                        : "Wymagany jest certyfikat nurkowy (kurs OWD / Open Water lub wyższy, min. 10 lat). Przed lotem powrotnym zachowaj 18–24 godz. przerwy powierzchniowej (PADI/DAN)."));
 
             $qGroup = "Ilu nurków przypada na przewodnika PADI i czy pary mieszane mogą płynąć razem?";
-            $aGroup = "Utrzymujemy kameralne grupy: MAKSYMALNIE 4 certyfikowanych nurków na jednego przewodnika PADI (oraz opieka 1-na-1 podczas intro). Pary mogą płynąć na tym samym dużym jachcie (Oceano, Nizar, Omar 4): jedna osoba nurkuje w pakiecie, a druga snorkeluje lub robi intro!";
+            $aGroup = "Utrzymujemy kameralne grupy: MAKSYMALNIE 4 certyfikowanych nurków na jednego przewodnika PADI (oraz opieka 1-na-1 podczas intro nurkowego). Pary mogą płynąć na tym samym dużym jachcie (Oceano, Nizar, Omar 4): jedna osoba nurkuje w pakiecie, a druga idzie na snurkowanie lub robi intro nurkowe z łodzi!";
 
             $qCheck = "Czy przed „{$name}” muszę robić Check Dive, czy mogę go pominąć?";
             $aCheck = $isBeginnerNoSwim || $profile === 'course_beginner'
                 ? "Osobny check dive nie jest potrzebny — pełne wprowadzenie na płytkiej wodzie z instruktorem PADI jest już częścią Twojego programu."
-                : "Zasada pominięcia Check Dive: jeśli masz zalogowane nurkowanie z ostatnich 6 miesięcy (logbook lub aplikacja PADI/SSI), POMIJASZ osobny check dive i od razu płyniesz jachtem! Przy przerwie 6–12 mies. obowiązuje Check Dive (€25), powyżej 12 mies. — Scuba Review (€50).";
+                : "Zasada pominięcia Check Dive: jeśli masz zalogowane nurkowanie z ostatnich 6 miesięcy (logbook lub aplikacja PADI/SSI), POMIJASZ osobny check dive i od razu płyniesz jachtem! Przy przerwie 6–12 mies. obowiązuje Check Dive (25 €), powyżej 12 mies. — Scuba Review (50 €).";
 
             $qGear = "Czy wypożyczenie sprzętu jest w cenie i ile kosztuje Nitrox 32%?";
             $aGear = $allInGear
-                ? "Pełny zestaw zdezynfekowanego sprzętu Cressi/Mares jest już WLICZONY w cenę „{$name}” bez dopłat! Dla nurków z uprawnieniami Nitrox butla 12L EAN32 kosztuje €8."
-                : "Butle 12L z powietrzem oraz pas balastowy z ołowiem są w cenie. Pełny zestaw wypożyczanego sprzętu Cressi/Mares kosztuje €25/dzień (pojedyncze elementy €4–€13/dzień), a butla Nitrox 32% (12L) — €8.";
+                ? "Pełny zestaw zdezynfekowanego sprzętu Cressi/Mares jest już WLICZONY w cenę „{$name}” bez dopłat! Dla nurków z uprawnieniami Nitrox butla 12L EAN32 kosztuje 8 €."
+                : "Butle 12L z powietrzem oraz pas balastowy z ołowiem są w cenie. Pełny zestaw wypożyczanego sprzętu Cressi/Mares kosztuje 25 €/dzień (pojedyncze elementy 4–13 €/dzień), a butla Nitrox 32% (12L) — 8 €.";
             break;
 
         case 'de':
-            $qPrice = "Ist der Preis von {$price} für „{$name}“ transparent und ohne versteckte Hafengebühren?";
-            $aPrice = $isBoatAllIn
-                ? "Ja! Der direkte Online-Preis für „{$name}“ beträgt {$price} mit 0 € Online-Anzahlung und null versteckten Hafengebühren (Zahlung vor Ort in EUR, USD, GBP oder EGP). Transfer, Boot, Betreuung und Ausrüstung sind inklusive; es fällt lediglich die staatliche Nationalparkgebühr (€5/Person für Ras Mohammed/Tiran) an."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "Der Direktpreis für „{$name}“ liegt bei {$price} (0 € Online-Anzahlung, komplette Leihausrüstung inklusive). Klar ausgewiesene Extras sind nur die offizielle PADI eLearning-/Zertifikatsgebühr (€85/Kurs, beim DSD bereits enthalten) sowie Bootstage (€10 Boot inkl. Mittagsbuffet + €5 Parkgebühr)."
-                    : "Der Direktpreis für „{$name}“ beträgt {$price} bei 0 € Online-Anzahlung und ohne Überraschungen am Hafen. An Bootstagen gelten feste Tageszuschläge: €10/Tag Bootszuschlag (inkl. Mittagsbuffet & Softdrinks) + €5/Tag Nationalparkgebühr; am Hausriff entfallen beide Gebühren.");
+            $qPrice = "Ist der Komplettpreis von {$price} für „{$name}“ transparent und ohne versteckte Hafengebühren?";
+            $aPrice = $isParkIncludedAllIn
+                ? "Ja, 100 % Komplettpreis! Der direkte Online-Preis für „{$name}“ beträgt {$price} mit 0 € Online-Anzahlung und null versteckten Hafengebühren (Zahlung vor Ort in EUR, USD, GBP oder EGP). Hoteltransfer, Yacht, Mittagsbuffet, Getränke, Ausrüstung und sogar die staatliche Nationalparkgebühr (5 €) sind BEREITS INKLUSIVE!"
+                : ($isPrivateBoatCharter
+                    ? "Ja! Der direkte Online-Preis für „{$name}“ beträgt {$price} mit 0 € Online-Anzahlung und ohne versteckte Gebühren. Transfer, Privatboot, Kapitän und Schnorchelset sind inklusive; vor Ort fällt nur die staatliche Nationalparkgebühr (5 €/Person für Ras Mohammed oder Tiran) an."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "Der Direktpreis für „{$name}“ liegt bei {$price} (0 € Online-Anzahlung, komplette Leihausrüstung inklusive). Klar ausgewiesene Extras sind nur die offizielle PADI eLearning-/Zertifikatsgebühr (85 €/Kurs, beim DSD bereits enthalten) sowie Bootstage (10 € Boot inkl. Mittagsbuffet + 5 € Parkgebühr)."
+                        : "Der Direktpreis für „{$name}“ beträgt {$price} bei 0 € Online-Anzahlung und ohne Überraschungen am Hafen. An Bootstagen gelten feste Tageszuschläge: 10 €/Tag Bootszuschlag (inkl. Mittagsbuffet & Softdrinks) + 5 €/Tag Nationalparkgebühr; am Hausriff entfallen beide Gebühren."));
 
             $qPickup = "Aus welchen Hotelzonen in Sharm El Sheikh ist der Transfer für „{$name}“ kostenlos?";
-            $aPickup = "Unser kostenloser klimatisierter Hin- & Rücktransfer deckt alle 6 Hotelzonen in Sharm El Sheikh ab (75+ Resorts): Nabq Bay (~07:45), Sharks Bay & SOHO (~08:05), Naama Bay (~07:50), Hadaba & Ras Um El Sid (~07:35), Old Market (~07:35) sowie Ras Nasrani / Al Montazah (0–5 Min. – direkt am Strand des Cyrene Sharm). Rückkehr ca. 16:30 Uhr.";
+            $aPickup = "Unser kostenloser klimatisierter Hin- & Rücktransfer deckt alle 6 Hotelzonen in Sharm El Sheikh ab (75+ Resorts): Nabq Bay (~07:45), Sharks Bay & SOHO (~08:05), Naama Bay (~07:50), Hadaba & Ras Um El Sid (~07:35), Alter Markt / Old Market (~07:35) sowie Ras Nasrani / Al Montazah (0–5 Min. – direkt am Strand des Cyrene Sharm). Rückkehr ca. 16:30 Uhr.";
 
             $qReq = $isBeginnerNoSwim
                 ? "Brauche ich Vorerfahrung oder sichere Schwimmkenntnisse für „{$name}“?"
-                : "Welche Voraussetzungen (Brevet, Alter, Schwimmen) gelten für „{$name}“?";
+                : "Welche Voraussetzungen (Tauchschein, Alter, Schwimmen) gelten für „{$name}“?";
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
-                    ? "Keine Vorerfahrung nötig! Ab 8 Jahren tauchen Kinder im flachen Trainingspool (<2 m) mit speziellem Kinderequipment direkt an der Seite ihres PADI-Instructors."
-                    : "Weder Taucherfahrung noch Schwimmabzeichen erforderlich! Beim Schnuppertauchen begleitet Sie Ihr PADI-Instructor 1-zu-1 an der Hand und steuert Ihre Tarierung (für Schnorchler stehen Schwimmwesten bereit).")
+                    ? "Keine Vorerfahrung nötig! Ab 8 Jahren tauchen Kinder im flachen Trainingspool (<2 m) mit speziellem Kinderequipment direkt an der Seite ihres deutschsprachigen PADI-Tauchlehrers."
+                    : "Weder Taucherfahrung noch Schwimmabzeichen erforderlich! Beim Schnuppertauchen begleitet Sie Ihr deutschsprachiger PADI-Tauchlehrer 1-zu-1 an der Hand und steuert Ihre Tarierung (für Schnorchler stehen Schwimmwesten bereit).")
                 : ($id === 'sup-thistlegorm'
                     ? "Für die SS Thistlegorm (16–30 m) benötigen Sie mindestens PADI Advanced Open Water (oder 30-m-Äquivalent) und 20 geloggte Tauchgänge."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
-                        ? "Geeignet für Einsteiger ab 10 Jahren ohne Vorerfahrung; PADI-Standards verlangen lediglich 200 m Schwimmen ohne Zeitlimit und 10 Minuten Wassertreten/Schweben."
-                        : "Voraussetzung ist ein Tauchbrevet (Open Water oder höher, Mindestalter 10 Jahre). Bitte 18–24 Stunden Flugpause nach dem letzten Tauchgang einplanen (PADI/DAN)."));
+                        ? "Geeignet für Einsteiger ab 10 Jahren ohne Vorerfahrung; PADI-Standards für den Tauchschein verlangen lediglich 200 m Schwimmen ohne Zeitlimit und 10 Minuten Wassertreten/Schweben."
+                        : "Voraussetzung ist ein Tauchschein / Tauchbrevet (Open Water oder höher, Mindestalter 10 Jahre). Bitte 18–24 Stunden Flugpause nach dem letzten Tauchgang einplanen (PADI/DAN)."));
 
             $qGroup = "Wie groß sind die Gruppen pro PADI-Guide und können Paare gemeinsam aufs Boot?";
-            $aGroup = "Zertifizierte Gruppen sind bei uns strikt auf MAXIMAL 4 Taucher pro PADI-Guide begrenzt (beim Schnuppertauchen 1-zu-1 Betreuung). Gemischte Paare fahren gemeinsam auf unseren großen Yachten (Oceano, Nizar, Omar 4): ein Partner taucht im Paket, der andere schnorchelt oder macht einen Boot-Schnuppertauchgang!";
+            $aGroup = "Zertifizierte Gruppen sind bei uns strikt auf MAXIMAL 4 Taucher pro PADI-Guide begrenzt (beim Schnuppertauchen 1-zu-1 Betreuung). Gemischte Paare fahren gemeinsam auf unseren großen Yachten (Oceano, Nizar, Omar 4): ein Partner taucht im Paket, der andere macht einen Schnorchelausflug oder Boot-Schnuppertauchgang!";
 
             $qCheck = "Muss ich vor „{$name}“ einen Check-Dive machen oder entfällt er?";
             $aCheck = $isBeginnerNoSwim || $profile === 'course_beginner'
-                ? "Kein separater Check-Dive nötig – die ruhige Eingewöhnung im Flachwasser mit Ihrem PADI-Instructor ist bereits fester Bestandteil des Programms."
-                : "Check-Dive-Skip-Regel: Mit einem geloggten Tauchgang innerhalb der letzten 6 Monate (Logbuch oder PADI/SSI-App) ÜBERSPRINGEN Sie den separaten Check-Dive und starten an Tag 1 direkt vom Boot! Bei 6–12 Monaten Pause gilt ein €25 Check Dive, ab 12 Monaten ein €50 Scuba Review.";
+                ? "Kein separater Check-Dive nötig – die ruhige Eingewöhnung im Flachwasser mit Ihrem PADI-Tauchlehrer ist bereits fester Bestandteil des Programms."
+                : "Check-Dive-Skip-Regel: Mit einem geloggten Tauchgang innerhalb der letzten 6 Monate (Logbuch oder PADI/SSI-App) ÜBERSPRINGEN Sie den separaten Check-Dive und starten an Tag 1 direkt vom Boot! Bei 6–12 Monaten Pause gilt ein 25 € Check Dive, ab 12 Monaten ein 50 € Scuba Review.";
 
             $qGear = "Ist die Leihausrüstung inklusive und was kostet Nitrox 32 %?";
             $aGear = $allInGear
-                ? "Die komplette gewartete Cressi/Mares-Ausrüstung ist im Preis von „{$name}“ bereits zu 100 % INKLUSIVE! Für zertifizierte Nitrox-Taucher kostet eine 12L-EAN32-Flasche €8."
-                : "12L-Aluflaschen und Blei sind inklusive. Ohne eigene Ausrüstung kostet das komplette Cressi/Mares-Leihset €25/Tag (Einzelteile €4–€13/Tag) und eine 12L-Nitrox-32%-Füllung €8.";
+                ? "Die komplette gewartete Cressi/Mares-Ausrüstung ist im Komplettpreis von „{$name}“ bereits zu 100 % INKLUSIVE! Für zertifizierte Nitrox-Taucher kostet eine 12L-EAN32-Flasche 8 €."
+                : "12L-Aluflaschen und Blei sind inklusive. Ohne eigene Ausrüstung kostet das komplette Cressi/Mares-Leihset 25 €/Tag (Einzelteile 4–13 €/Tag) und eine 12L-Nitrox-32%-Füllung 8 €.";
             break;
 
         case 'fr':
             $qPrice = "Le tarif de {$price} pour « {$name} » est-il garanti sans frais cachés à la marina ?";
-            $aPrice = $isBoatAllIn
-                ? "Oui ! Le tarif direct en ligne de « {$name} » est de {$price} avec 0 € d’acompte et zéro frais cachés au port (règlement sur place en EUR, USD, GBP ou EGP). Transfert hôtel, yacht, moniteur et matériel sont inclus ; seule la taxe gouvernementale du parc marin (€5/pers. à Ras Mohammed ou Tiran) s’ajoute."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "Le tarif direct de « {$name} » est de {$price} (0 € d’acompte en ligne, équipement complet inclus). Seuls s’ajoutent en toute transparence le kit/certification officielle PADI PIC (€85/cours, déjà inclus pour le DSD) et les éventuelles sorties bateau (€10 bateau déjeuner inclus + €5 parc marin)."
-                    : "Le tarif direct de « {$name} » est de {$price} avec 0 € d’acompte en ligne et zéro mauvaise surprise. Les jours bateau ajoutent uniquement €10/jour de supplément yacht (déjeuner buffet chaud & boissons inclus) + €5/jour de parc marin ; aucun supplément sur le récif maison.");
+            $aPrice = $isParkIncludedAllIn
+                ? "Oui, 100 % tout compris ! Le tarif direct en ligne de « {$name} » est de {$price} avec 0 € d’acompte et zéro frais cachés au port (règlement sur place en EUR, USD, GBP ou EGP). Navette hôtel, yacht, déjeuner buffet, boissons, équipement et même le billet du parc marin (5 €) sont DÉJÀ INCLUS !"
+                : ($isPrivateBoatCharter
+                    ? "Oui ! Le tarif direct en ligne de « {$name} » est de {$price} avec 0 € d’acompte et zéro frais cachés à la marina. Transfert, bateau privé, capitaine et kit snorkeling sont inclus ; seule la taxe gouvernementale du parc marin (5 €/pers. à Ras Mohammed ou Tiran) s’ajoute."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "Le tarif direct de « {$name} » est de {$price} (0 € d’acompte en ligne, équipement complet inclus). Seuls s’ajoutent en toute transparence le kit/certification officielle PADI PIC (85 €/cours, déjà inclus pour le DSD) et les éventuelles sorties bateau (10 € bateau déjeuner inclus + 5 € parc marin)."
+                        : "Le tarif direct de « {$name} » est de {$price} avec 0 € d’acompte en ligne et zéro mauvaise surprise. Les jours bateau ajoutent uniquement 10 €/jour de supplément yacht (déjeuner buffet chaud & boissons inclus) + 5 €/jour de parc marin ; aucun supplément sur le récif maison."));
 
-            $qPickup = "Quelles zones hôtelières de Sharm El Sheikh incluent la navette gratuite pour « {$name} » ?";
-            $aPickup = "Le transfert climatisé aller-retour gratuit couvre les 6 zones de Sharm El Sheikh (75+ hôtels) : Nabq Bay (~07h45), Sharks Bay & SOHO (~08h05), Naama Bay (~07h50), Hadaba & Ras Um El Sid (~07h35), Old Market (~07h35) et Ras Nasrani / Al Montazah (0–5 min, sur la plage du Cyrene Sharm). Retour vers 16h30.";
+            $qPickup = "Quelles zones hôtelières de Charm el-Cheikh (Sharm El Sheikh) incluent la navette gratuite pour « {$name} » ?";
+            $aPickup = "Le transfert climatisé aller-retour gratuit couvre les 6 zones de Charm el-Cheikh / Sharm El Sheikh (75+ hôtels) : Nabq Bay (~07h45), Sharks Bay & SOHO (~08h05), Naama Bay (~07h50), Hadaba & Ras Um El Sid (~07h35), Old Market (~07h35) et Ras Nasrani / Al Montazah (0–5 min, sur la plage du Cyrene Sharm). Retour vers 16h30.";
 
             $qReq = $isBeginnerNoSwim
                 ? "Faut-il savoir nager ou avoir déjà plongé pour réserver « {$name} » ?"
                 : "Quels sont les prérequis (niveau, âge, natation) pour « {$name} » ?";
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
-                    ? "Aucune expérience requise ! Dès 8 ans dans notre piscine peu profonde (<2 m) avec matériel enfant adapté et supervision directe d’un instructeur PADI."
-                    : "Aucune expérience ni savoir nager requis ! En baptême, votre instructeur PADI vous guide en 1-contre-1 par la main et gère votre gilet (gilets de flottaison fournis en snorkeling).")
+                    ? "Aucune expérience requise ! Dès 8 ans dans notre piscine peu profonde (<2 m) avec matériel enfant adapté et supervision directe d’un moniteur PADI francophone."
+                    : "Aucune expérience ni savoir nager requis ! En baptême de plongée, votre moniteur PADI francophone vous guide en 1-contre-1 par la main et gère votre gilet (gilets de flottaison fournis en snorkeling).")
                 : ($id === 'sup-thistlegorm'
-                    ? "Pour l’épave du SS Thistlegorm (16–30 m), le niveau PADI Advanced Open Water (ou équivalent 30 m) et un minimum de 20 plongées enregistrées sont requis."
+                    ? "Pour l’épave du SS Thistlegorm (16–30 m), le niveau PADI Advanced Open Water (ou Niveau 2 FFESSM/CMAS 30 m) et un minimum de 20 plongées enregistrées sont requis."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
                         ? "Accessible dès 10 ans sans expérience préalable ; les standards PADI demandent simplement une nage de 200 m sans chrono et 10 minutes de flottaison."
-                        : "Réservé aux plongeurs certifiés (Open Water ou plus, dès 10 ans). Prévoyez un intervalle de sécurité de 18 à 24 h avant votre vol retour (normes PADI/DAN)."));
+                        : "Réservé aux plongeurs certifiés (Niveau 1 / Open Water ou supérieur, dès 10 ans). Prévoyez un intervalle de sécurité de 18 à 24 h avant votre vol retour (normes PADI/DAN)."));
 
             $qGroup = "Combien y a-t-il de plongeurs par guide PADI et un couple mixte peut-il monter sur le même yacht ?";
             $aGroup = "Nous limitons nos palanquées certifiées à un MAXIMUM strict de 4 plongeurs par guide PADI (et 1-contre-1 en baptême). Les couples mixtes embarquent ensemble sur nos grands yachts (Oceano, Nizar, Omar 4) : le certifié plonge pendant que son partenaire fait du snorkeling ou un baptême bateau !";
 
             $qCheck = "Puis-je éviter le Check Dive avant « {$name} » ?";
             $aCheck = $isBeginnerNoSwim || $profile === 'course_beginner'
-                ? "Aucun check dive séparé n’est requis : l’initiation progressive en eau peu profonde avec votre instructeur PADI fait déjà partie du programme."
-                : "Règle d’exemption du Check Dive : si vous justifiez d’une plongée enregistrée dans les 6 derniers mois (carnet ou appli PADI/SSI), vous ÉVITEZ le check dive séparé et partez directement en bateau ! Arrêt de 6–12 mois : Check Dive (€25) ; plus de 12 mois : Scuba Review (€50).";
+                ? "Aucun check dive séparé n’est requis : l’initiation progressive en eau peu profonde avec votre moniteur PADI francophone fait déjà partie du programme."
+                : "Règle d’exemption du Check Dive : si vous justifiez d’une plongée enregistrée dans les 6 derniers mois (carnet ou appli PADI/SSI), vous ÉVITEZ le check dive séparé et partez directement en bateau ! Arrêt de 6–12 mois : Check Dive (25 €) ; plus de 12 mois : Scuba Review (50 €).";
 
             $qGear = "La location de l’équipement est-elle incluse et combien coûte le Nitrox 32 % ?";
             $aGear = $allInGear
-                ? "Tout l’équipement complet Cressi/Mares désinfecté est 100 % INCLUS sans supplément dans « {$name} » ! Pour les certifiés Nitrox, le bloc 12L EAN32 est à €8."
-                : "Les blocs 12L air et plombs sont inclus. Sans matériel personnel, le pack complet Cressi/Mares est à €25/jour (pièces à l’unité €4–€13/jour) et le bloc Nitrox 32 % (12L) à €8.";
+                ? "Tout l’équipement complet Cressi/Mares désinfecté est 100 % INCLUS sans supplément dans « {$name} » ! Pour les certifiés Nitrox, le bloc 12L EAN32 est à 8 €."
+                : "Les blocs 12L air et plombs sont inclus. Sans matériel personnel, le pack complet Cressi/Mares est à 25 €/jour (pièces à l’unité 4–13 €/jour) et le bloc Nitrox 32 % (12L) à 8 €.";
             break;
 
         case 'ar':
             $qPrice = "هل سعر {$price} لـ «{$name}» شامل وبدون أي رسوم مارينا خفية؟";
-            $aPrice = $isBoatAllIn
-                ? "نعم! السعر المباشر عبر الموقع لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة وبدون أي رسوم مارينا خفية (الدفع صباح الرحلة باليورو أو الدولار أو الجنيه). السعر يشمل انتقالات الفندق واليخت والمعدات والإشراف؛ وتُضاف فقط تذكرة المحمية الحكومية (5€ للفرد عند دخول رأس محمد أو تيران)."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "السعر المباشر لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة ويشمل معدات الغوص الكاملة. الإضافات الوحيدة المعلنة بوضوح هي رسوم كتاب وشهادة PADI الرسمية (85€ للدورة، ومشمولة مجانًا في DSD) ورسوم أيام اليخت إن وجدت (10€ لليخت بالغداء + 5€ للمحمية)."
-                    : "السعر المباشر لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة وصفر رسوم خفية في المارينا. في أيام القارب تُضاف فقط رسوم ثابتة وواضحة: 10€ يوميًا لليخت (شاملة الغداء والمشروبات) + 5€ رسوم المحمية؛ بينما لا توجد أي رسوم إضافية على الشعاب المنزلية.");
+            $aPrice = $isParkIncludedAllIn
+                ? "نعم، شامل 100% بدون أي إضافات! السعر المباشر عبر الموقع لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة وبدون أي رسوم مارينا خفية (الدفع صباح الرحلة باليورو أو الدولار أو الجنيه أو البطاقات الخليجية). السعر يشمل انتقالات الفندق واليخت والغداء والمشروبات والمعدات وتذكرة المحمية الحكومية (5€) بالكامل!"
+                : ($isPrivateBoatCharter
+                    ? "نعم! السعر المباشر لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة وبدون أي رسوم مارينا خفية. السعر يشمل الانتقالات والقارب الخاص والطاقم وأدوات السنوركلينج؛ وتُضاف فقط تذكرة المحمية الحكومية (5€ للفرد عند دخول رأس محمد أو تيران)."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "السعر المباشر لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة ويشمل معدات الغوص الكاملة. الإضافات الوحيدة المعلنة بوضوح هي رسوم كتاب وشهادة بادي PADI الرسمية (85€ للدورة، ومشمولة مجانًا في DSD) ورسوم أيام اليخت إن وجدت (10€ لليخت بالغداء + 5€ للمحمية)."
+                        : "السعر المباشر لـ «{$name}» هو {$price} بـ 0€ دفعة مقدمة وصفر رسوم خفية في المارينا. في أيام القارب تُضاف فقط رسوم ثابتة وواضحة: 10€ يوميًا لليخت (شاملة الغداء والمشروبات) + 5€ رسوم المحمية؛ بينما لا توجد أي رسوم إضافية على الشعاب المنزلية."));
 
             $qPickup = "ما هي مناطق فنادق شرم الشيخ المشمولة بالتوصيل المجاني في «{$name}»؟";
             $aPickup = "يشمل التوصيل المجاني المكيف ذهابًا وإيابًا جميع مناطق شرم الشيخ الست (+75 فندقًا): خليج نبق (~07:45)، شاركس باي وسوهو (~08:05)، خليج نعمة (~07:50)، الهضبة ورأس أم السيد (~07:35)، السوق القديم (~07:35)، ورأس نصراني والمنتزه (0–5 دقائق، مقرنا مباشرة على شاطئ سيرين شرم). العودة للفندق نحو 16:30.";
@@ -291,7 +304,7 @@ function sc_build_item_traveller_faqs(array $it): array
                 : ($id === 'sup-thistlegorm'
                     ? "للغوص على حطام SS Thistlegorm (عمق 16–30م) يُشترط شهادة PADI Advanced Open Water على الأقل مع 20 غطسة مسجلة."
                     : ($profile === 'course_beginner' || $profile === 'bundle'
-                        ? "متاحة للمبتدئين تمامًا من سن 10 سنوات؛ وتشترط معايير PADI للشهادات الدولية فقط سباحة 200 متر بدون وقت محدد والطفو لمدة 10 دقائق."
+                        ? "متاحة للمبتدئين تمامًا من سن 10 سنوات؛ وتشترط معايير بادي PADI للشهادات الدولية فقط سباحة 200 متر بدون وقت محدد والطفو لمدة 10 دقائق."
                         : "يُشترط حمل شهادة غوص معتمدة (Open Water فأعلى، من سن 10 سنوات)، مع مراعاة ترك 18–24 ساعة قبل رحلة الطيران وفق قواعد PADI وDAN."));
 
             $qGroup = "كم عدد الغواصين مع كل مرشد PADI وهل يمكن للأزواج (معتمد + مبتدئ) ركوب نفس اليخت؟";
@@ -310,11 +323,13 @@ function sc_build_item_traveller_faqs(array $it): array
 
         case 'zh':
             $qPrice = "「{$name}」的 {$price} 欧元价格是一价透明吗？有没有码头隐形费用？";
-            $aPrice = $isBoatAllIn
-                ? "完全透明！「{$name}」官网直订价为 {$price}，在线预订 €0 定金，绝无任何码头隐形收费（当天到店支持欧元/美元/英镑/埃镑现金或刷卡）。价格已含接送、游艇、教练与装备；进入穆罕默德角或蒂朗保护区仅需付政府海洋公园门票 €5/人。"
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "「{$name}」官网直订价为 {$price}（€0 预付定金，已免费包含全套潜水装备）。唯一公开透明的另付项仅为 PADI 官方电子教材与证书签发费（€85/门，DSD 已免费包含）及船潜日附加费（€10 游艇含热午餐 + €5 海洋公园费）。"
-                    : "「{$name}」官网直订价为 {$price}，€0 预付定金，100% 零隐形消费。船潜日仅收固定透明附加费：€10/天游艇费（含现做自助热午餐与软饮）+ €5/天海洋公园费；门前珊瑚礁岸潜无任何附加费。");
+            $aPrice = $isParkIncludedAllIn
+                ? "100% 一价全包！「{$name}」官网直订价为 {$price}，在线预订 €0 定金，绝无任何码头隐形收费（到店支持美金现钞 USD、欧元 EUR、埃镑或刷卡）。价格已完整包含酒店接送、大游艇、现做自助热午餐、软饮、装备以及 €5 政府海洋公园门票！"
+                : ($isPrivateBoatCharter
+                    ? "完全透明！「{$name}」包船官网直订价为 {$price}，在线预订 €0 定金，零码头隐形收费。价格已含酒店接送、私人快艇/游艇、船长及浮潜面镜呼吸管；进入拉斯穆罕默德国家公园（穆罕默德角）或蒂朗岛仅需付政府海洋公园门票 €5/人。"
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "「{$name}」官网直订价为 {$price}（€0 预付定金，已免费包含全套潜水装备）。唯一公开透明的另付项仅为 PADI 官方电子教材与证书签发费（€85/门，DSD 已免费包含）及船潜日附加费（€10 游艇含热午餐 + €5 海洋公园费）。"
+                        : "「{$name}」官网直订价为 {$price}，€0 预付定金，100% 零隐形消费。船潜日仅收固定透明附加费：€10/天游艇费（含现做自助热午餐与软饮）+ €5/天海洋公园费；门前珊瑚礁岸潜无任何附加费。"));
 
             $qPickup = "预订「{$name}」包含沙姆沙伊赫哪些酒店区域的免费接送？";
             $aPickup = "免费空调专车往返接送覆盖沙姆全部 6 大酒店区（75+ 家度假村）：纳布克湾 Nabq（约07:45）、鲨鱼湾 Sharks Bay & SOHO（约08:05）、娜玛湾 Naama Bay（约07:50）、哈达巴 Hadaba（约07:35）、老市场 Old Market（约07:35）及 Al Montazah（0–5分钟，潜店就在 Cyrene Sharm 海滩内），下午约 16:30 送回酒店。";
@@ -324,12 +339,12 @@ function sc_build_item_traveller_faqs(array $it): array
                 : "参加「{$name}」需要什么潜水证书、年龄或游泳条件？";
             $aReq = $isBeginnerNoSwim
                 ? ($profile === 'kids'
-                    ? "完全不需要经验或泳姿要求！满 8 周岁儿童即可在潜店浅水训练池（<2米）穿戴儿童专属轻便装备，由 PADI 教练全程贴身指导。"
-                    : "零基础、不会游泳均可参加！体验潜水由 PADI 教练 1对1 全程牵手带潜并控制浮力背心（浮潜免费提供合身救生衣与浮潜向导）。")
+                    ? "完全不需要经验或泳姿要求！满 8 周岁儿童即可在潜店浅水训练池（<2米）穿戴儿童专属轻便装备，由资深 PADI 教练全程贴身指导。"
+                    : "零基础、不会游泳均可参加！体验潜水由资深 PADI 教练 1对1 全程牵手带潜并控制浮力背心（浮潜免费提供合身救生衣与浮潜向导）。")
                 : ($id === 'sup-thistlegorm'
                     ? "二战沉船 SS Thistlegorm（16–30米）要求持有 PADI AOW 进阶证书（或同等30米资质）且至少 20 潜记录。"
                     : ($profile === 'course_beginner' || $profile === 'bundle'
-                        ? "满 10 周岁零基础即可报名；按 PADI 国际考证标准，仅需完成不限时的 200 米游泳及 10 分钟水面漂浮测试。"
+                        ? "满 10 周岁零基础即可报名（提供简体中文 PADI 官方 eLearning 电子教材）；按 PADI 国际考证标准，仅需完成不限时的 200 米游泳及 10 分钟水面漂浮测试。"
                         : "需持有有效潜水员证书（OW 开放水域或以上，满 10 周岁）。按 PADI/DAN 规范，多次潜水后请预留 18–24 小时禁飞时间。"));
 
             $qGroup = "每个 PADI 导潜最多带几个人？持证潜员能和新手伴侣同船出海吗？";
@@ -348,11 +363,13 @@ function sc_build_item_traveller_faqs(array $it): array
 
         default: // 'en'
             $qPrice = "Is the {$price} price for {$name} transparent with zero hidden marina fees?";
-            $aPrice = $isBoatAllIn
-                ? "Yes! Our direct online rate for {$name} is {$price} with €0 upfront card deposit and 100% zero hidden marina fees (pay on arrival in EUR, USD, GBP, or EGP). Hotel transfers, yacht/boat, instructor/guide supervision, and gear are included; only the €5 Egyptian Marine Park entry ticket applies when entering Ras Mohammed or Tiran reserves."
-                : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
-                    ? "Our direct online price for {$name} is {$price} with €0 upfront deposit and full scuba equipment included. Every optional/statutory extra is disclosed upfront: the official PADI eLearning/manual & PIC card fee (€85/course, already included free in DSD) plus €10 Boat Supplement (with buffet lunch) & €5 Marine Park Fee on boat training days."
-                    : "Our direct online price for {$name} is {$price} with €0 upfront card deposit and 100% zero surprise marina charges. On boat days, fixed daily supplements are disclosed upfront: €10/day Boat Supplement (includes freshly cooked lunch & soft drinks) + €5/day Marine Park Fee; Al Montazah House Reef shore dives have zero boat or park fees.");
+            $aPrice = $isParkIncludedAllIn
+                ? "Yes — 100% all-inclusive! Our direct online rate for {$name} is {$price} with €0 upfront card deposit and zero hidden marina fees (pay on arrival in EUR, USD, GBP, or EGP). Return hotel transfers, motor yacht, buffet lunch, soft drinks, gear, and even the €5 Egyptian Marine Park entry ticket are ALREADY INCLUDED!"
+                : ($isPrivateBoatCharter
+                    ? "Yes! Our direct online charter rate for {$name} is {$price} with €0 upfront card deposit and zero hidden marina fees (pay on arrival in EUR, USD, GBP, or EGP). Hotel transfers, private boat, captain, and snorkeling gear are included; only the statutory €5/person Egyptian Marine Park entry ticket applies for Ras Mohammed or Tiran."
+                    : ($profile === 'bundle' || $profile === 'course_beginner' || $profile === 'course_cert'
+                        ? "Our direct online price for {$name} is {$price} with €0 upfront deposit and full scuba equipment included. Every optional/statutory extra is disclosed upfront: the official PADI eLearning/manual & PIC card fee (€85/course, already included free in DSD) plus €10 Boat Supplement (with buffet lunch) & €5 Marine Park Fee on boat training days."
+                        : "Our direct online price for {$name} is {$price} with €0 upfront card deposit and 100% zero surprise marina charges. On boat days, fixed daily supplements are disclosed upfront: €10/day Boat Supplement (includes freshly cooked lunch & soft drinks) + €5/day Marine Park Fee; Al Montazah House Reef shore dives have zero boat or park fees."));
 
             $qPickup = "Which Sharm El Sheikh hotel zones get free pickup for {$name}?";
             $aPickup = "Complimentary air-conditioned return hotel transfers cover all 6 Sharm El Sheikh resort zones (75+ hotels): Nabq Bay (~07:45), Sharks Bay & SOHO Square (~08:05), Naama Bay (~07:50), Hadaba & Ras Um El Sid (~07:35), Old Market (~07:35), and Ras Nasrani / Al Montazah (0–5 min — right on Cyrene Sharm beach). Full-day boats return around 16:30.";
@@ -830,7 +847,11 @@ function upgrade_product_card(array $it, string $badgeKey, array $sourceItem): s
     $saveTxt = sc_save_badge_text($it);
     $save    = $saveTxt !== '' ? '<span class="pcard__save">' . $saveTxt . '</span>' : '';
 
-    $waTopic = $title . ($it['price'] !== null ? ' (' . money($it['price']) . ')' : '') . ' [Upgrade from ' . item_name($sourceItem) . ']';
+    $srcName = item_name($sourceItem);
+    $upgTag  = t('upgrade_from_tag') !== 'upgrade_from_tag'
+        ? t('upgrade_from_tag', ['item' => $srcName])
+        : ('[Upgrade from ' . $srcName . ']');
+    $waTopic = $title . ($it['price'] !== null ? ' (' . money($it['price']) . ')' : '') . ' ' . $upgTag;
     $waHref  = whatsapp_link($waTopic, 'upgrade_card_wa');
     $waSvg   = '<svg class="icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.82 14.01c-.24.68-1.41 1.3-1.95 1.38-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.17-4.94-4.36-.15-.19-1.18-1.57-1.18-3s.75-2.12 1.01-2.41c.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.82 2.01.89 2.15.07.15.12.31.02.5-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.3-.13.59.17.29.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.35 1.46.29.15.46.12.63-.07.17-.19.73-.85.92-1.14.19-.29.39-.24.65-.15.27.1 1.7.8 1.99.95.29.15.48.22.56.34.07.12.07.7-.17 1.38z"/></svg>';
 

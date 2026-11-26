@@ -208,7 +208,7 @@ function sc_overlay_gallery_team(array $galData): array
     }
     foreach ($galData['media'] as $idx => &$m) {
         $hasExplicitId = isset($m['id']) && is_string($m['id']) && $m['id'] !== '';
-        $mo = $hasExplicitId ? ($ov['media'][$m['id']] ?? null) : ($ov['media'][$idx] ?? null);
+        $mo = ($hasExplicitId && isset($ov['media'][$m['id']])) ? $ov['media'][$m['id']] : ($ov['media'][$idx] ?? null);
         if (is_array($mo)) {
             if (!empty($mo['title'])) {
                 $m['title'][$lang] = $mo['title'];

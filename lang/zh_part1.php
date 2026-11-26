@@ -53,7 +53,7 @@ return [
     'wa_greeting' => '您好 Sea College Dive Club！',
     'wa_interest' => '我想咨询/预订：{topic}。',
     'location_sharm' => '沙姆沙伊赫',
-    'indicative_rate' => '仅供参考汇率换算，实际结算以欧元 (EUR) 或当地等值货币为准。',
+    'indicative_rate' => '人民币 (¥) 等金额仅作参考汇率换算；潜店按欧元 (EUR) 结算，现场亦支持落地签备余美金 (USD) 现钞、埃镑 (EGP) 及 Visa/Mastercard 刷卡。',
 
     // ---------- Footer ----------
     'footer_about' => '坐落于沙姆沙伊赫 Al Montazah 海滨 Cyrene Sharm 内的官方 PADI 五星潜水度假村——提供红海水肺潜水、PADI 考证课程、浮潜及私人游艇包船。',
@@ -79,7 +79,7 @@ return [
     // ---------- Home ----------
     'hero_eyebrow' => 'PADI 五星潜水度假村 · 埃及沙姆沙伊赫',
     'hero_title' => '与真正热爱教学的潜导一起，潜入纯净红海',
-    'hero_sub' => '零基础体验水肺潜水、PADI 全系列考证课程，以及每日前往拉斯穆罕默德国家公园、蒂朗海峡与蒂斯尔戈姆号沉船 (SS Thistlegorm) 的出海船潜——从拥有教学泳池与私家房礁的海滨基地直接出发。',
+    'hero_sub' => '零基础体验水肺潜水、PADI 全系列考证课程（支持简体中文官方教材），以及每日前往拉斯穆罕默德国家公园（穆罕默德角）、蒂朗海峡与蒂斯尔戈姆号沉船 (SS Thistlegorm) 的出海船潜——从拥有教学泳池与私家房礁的海滨基地直接出发。',
     'hero_cta_primary' => '通过 WhatsApp 定制潜水行程',
     'hero_cta_secondary' => '查看价格表',
     'kpi_rating' => 'Google 评分',
@@ -90,7 +90,7 @@ return [
     'trust_1' => '沙姆酒店免费接送',
     'trust_2' => '专属教学泳池与房礁',
     'trust_3' => '8 岁起儿童可参加',
-    'trust_4' => '支持 8 种语言服务',
+    'trust_4' => '中文 PADI 教材 · 8 语种服务',
     'explore_title' => '选择您的红海潜水与出海体验',
     'explore_sub' => '从人生第一次水下呼吸，到探秘二战传奇沉船蒂斯尔戈姆号 (SS Thistlegorm)。',
     'exp_intro_t' => '体验水肺潜水',
@@ -117,7 +117,7 @@ return [
     'why_2_t' => '教学泳池 + 私家房礁 + 自有潜水船',
     'why_2_d' => '初学者先在平静泳池练习技巧，再前往海滨房礁适应，最后安心搭乘大船出海。',
     'why_3_t' => '耐心细致的多语种教练团队',
-    'why_3_d' => '支持中文、英语、俄语、意大利语、波兰语、德语、法语及阿拉伯语沟通与服务。',
+    'why_3_d' => '提供简体中文 PADI 官方 eLearning 教材与中文客服对接，搭配极富耐心的多语种资深 PADI 教练团队。',
     'why_4_t' => '欧元明码标价，零隐形消费',
     'why_4_d' => '预订前清晰列明所有费用包含项与每日出海/国家公园附加费，绝无现场套路。',
     'why_5_t' => '沙姆沙伊赫酒店免费接送',
@@ -162,7 +162,7 @@ return [
 
     // ---------- Prices / booking ----------
     'prices_title' => '透明欧元价格表与在线预订',
-    'prices_sub' => '除特别注明按船计费外，所有价格均为每人欧元 (EUR) 报价。选择服务项目、填写人数与日期即可发送预订请求，我们将通过 WhatsApp 或邮件快速确认。',
+    'prices_sub' => '除特别注明按船计费外，所有价格均为每人欧元 (EUR) 报价。选择服务项目、填写人数与日期即可发送预订请求，我们将通过电子邮箱（国内无需翻墙直收确认单）或 WhatsApp 快速确认。',
     'print_btn' => '打印 / 保存为 PDF 价格单',
     'step_1' => '选择潜水/课程项目',
     'step_2' => '人数与出行日期',
@@ -181,7 +181,7 @@ return [
     // ---------- Forms ----------
     'form_title_booking' => '发送您的预订申请',
     'form_name' => '您的姓名（拼音或中文）',
-    'form_phone' => '手机号 / WhatsApp 号码',
+    'form_phone' => '手机号（支持 +86）或 WhatsApp 号码',
     'form_email' => '电子邮箱',
     'form_interest' => '感兴趣的项目',
     'form_people' => '参加人数',
@@ -226,14 +226,14 @@ return [
 
     // ---------- Contact ----------
     'contact_title' => '联系我们与快速预订',
-    'contact_sub' => '通过 WhatsApp 发送消息可获最快即时回复；您也可以填写在线表格，我们的团队将第一时间与您联系。',
+    'contact_sub' => '填写在线表格即可通过电子邮箱（国内无需翻墙直收确认单）接收预订确认；您也可以直接发送 WhatsApp 消息获取最快即时回复。',
     'contact_details_title' => '联系详情',
     'map_title' => '潜店地理位置',
     'open_maps' => '在 Google 地图中打开',
 
     // ---------- Thank you ----------
     'thanks_title' => '感谢您——预订申请已成功提交！',
-    'thanks_text' => '我们的团队将尽快为您核实档期、最终欧元报价与酒店接送时间。如需即时回复，欢迎直接点击 WhatsApp 与我们对话。',
+    'thanks_text' => '我们的团队将尽快通过电子邮箱（国内无需翻墙直收确认单）及 WhatsApp 为您核实档期、最终欧元报价与酒店接送时间。',
     'thanks_back' => '返回首页',
     'checkin_title' => '可选步骤：提前完成潜店快速登记 (Fast-Track Check-in)',
     'checkin_sub' => '提前填写潜水证编号与租赁装备尺码，到店立省 15 分钟准备时间，装备提前为您备妥。',
@@ -294,7 +294,7 @@ return [
     'related_title' => '黄金搭配与相似推荐项目',
     'reserve_online' => '在线预订或咨询档期',
     'ask_whatsapp' => 'WhatsApp 在线提问',
-    'instant_confirm_note' => '线上预订 €0 免刷卡押金——我们的团队将通过 WhatsApp 或邮件为您确认名额与酒店接送时间。',
+    'instant_confirm_note' => '线上预订 €0 免刷卡押金——我们将通过电子邮箱（国内无需翻墙直收确认单）及 WhatsApp 为您确认名额与酒店接送时间。',
     'verified_guest_review' => 'Google 认证潜客真实好评',
     'view_category_hub' => '查看该类别完整指南',
     'all_category_items' => '浏览分类专题页',
@@ -313,4 +313,16 @@ return [
     'footer_hub_courses' => 'PADI 国际潜水考证课程',
     'footer_hub_bundles' => 'PADI 课程省钱联报套餐',
     'footer_hub_boats' => '红海浮潜与私人游艇包船',
+
+    // ---------- Localization & Guides Helper Keys ----------
+    'form_phone_ph' => '+86 138 0000 0000',
+    'upgrade_from_tag' => '[由「{item}」升级]',
+    'gbp_review_label' => 'Google 认证评价',
+    'business_hours_val' => '每日 · 08:00–18:00',
+    'business_address_val' => '沙姆沙伊赫 Al Montazah 海滨 Cyrene Sharm / Ivy Cyrene Island 度假村内',
+    'per_hour_max5' => '/ 小时（最多5人）',
+    'related_guides_title' => '相关红海潜水与行前实用攻略',
+    'home_guides_eyebrow' => '沙姆沙伊赫红海潜水百科与行前攻略',
+    'home_guides_title' => '红海潜水价格、PADI 考证、酒店接送与落地签全指南',
+    'home_guides_sub' => '出发前读懂沙姆沙伊赫船潜费用明细、PADI OW/AOW 考证规划、中国护照 $25 落地签规则及白岛拉斯穆罕默德出海贴士。',
 ];

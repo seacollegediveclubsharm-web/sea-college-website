@@ -717,7 +717,9 @@
     }
     [['name', T.name], ['interest', T.interest], ['people', T.people], ['date', T.date], ['hotel', T.hotel], ['level', T.level]].forEach(function (p) {
       var v = get(p[0]);
-      if (p[0] === 'level' && v && form.elements.level.selectedIndex > 0) { v = form.elements.level.options[form.elements.level.selectedIndex].text; }
+      if ((p[0] === 'level' || p[0] === 'interest') && v && form.elements[p[0]] && form.elements[p[0]].selectedIndex > 0) {
+        v = form.elements[p[0]].options[form.elements[p[0]].selectedIndex].text;
+      }
       if (v) { lines.push((p[1] || p[0]) + ': ' + v); }
     });
     var msg = get('message'); if (msg) { lines.push('', msg); }
@@ -885,13 +887,14 @@
     }
 
     function matchHotel(q) {
-      var clean = String(q || '').trim().toLowerCase();
+      var clean = normSearch(q);
       if (clean.length < 2) { return null; }
       for (var i = 0; i < hotels.length; i++) {
-        if (hotels[i].n.toLowerCase() === clean) { return hotels[i]; }
+        if (normSearch(hotels[i].n) === clean) { return hotels[i]; }
       }
       for (var j = 0; j < hotels.length; j++) {
-        if (hotels[j].n.toLowerCase().indexOf(clean) !== -1) { return hotels[j]; }
+        var hay = normSearch(hotels[j].n + ' ' + (hotels[j].k || ''));
+        if (hay.indexOf(clean) !== -1) { return hotels[j]; }
       }
       return null;
     }
@@ -940,6 +943,19 @@
     }
   });
   syncHotelInputs();
+
+  /* ---------------- Shared Multilingual / Arabic Search Normalization ---------------- */
+  function normSearch(s) {
+    return String(s || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+      .replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627')
+      .replace(/\u0629/g, '\u0647')
+      .replace(/\u0649/g, '\u064A')
+      .replace(/\u0624/g, '\u0648')
+      .replace(/\u0626/g, '\u064A');
+  }
 
   /* ---------------- Click-to-load & scroll-triggered Google Map + Tripadvisor ---------------- */
   function mountMap(box) {
@@ -993,11 +1009,11 @@
     var emptyMsg = $('[data-filter-empty]');
     if (!inp) { return; }
     function applyFilter() {
-      var q = String(inp.value || '').trim().toLowerCase();
+      var q = normSearch(inp.value);
       if (rst) { rst.hidden = q === ''; }
       var shown = 0;
       $$('[data-filter-item]').forEach(function (el) {
-        var hay = (el.getAttribute('data-filter-item') || '').toLowerCase();
+        var hay = normSearch(el.getAttribute('data-filter-item') || '');
         var match = q === '' || hay.indexOf(q) !== -1;
         el.hidden = !match;
         if (match) { shown += 1; }
@@ -1971,7 +1987,7 @@
     var activeCat = 'all';
 
     function filterFaqs() {
-      var q = searchInp ? String(searchInp.value || '').trim().toLowerCase() : '';
+      var q = searchInp ? normSearch(searchInp.value) : '';
       var totalShown = 0;
       sections.forEach(function (sec) {
         var catKey = sec.getAttribute('data-faq-section');
@@ -1979,7 +1995,7 @@
         var entries = $$('[data-faq-entry]', sec);
         var secShown = 0;
         entries.forEach(function (det) {
-          var hay = det.getAttribute('data-faq-entry') || '';
+          var hay = normSearch(det.getAttribute('data-faq-entry') || '');
           var show = catMatch && (q === '' || hay.indexOf(q) !== -1);
           det.hidden = !show;
           if (show) {

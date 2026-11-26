@@ -21,6 +21,7 @@ define('SC_NO_SESSION', true);
 require_once dirname(__DIR__) . '/config/site_config.php';
 
 @header_remove('X-Powered-By');
+header('X-Robots-Tag: noindex, nofollow');
 
 $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($method, ['GET', 'POST', 'HEAD', 'OPTIONS'], true)) {
@@ -341,7 +342,7 @@ $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if ($errno !== 0 || $status === 0 || $body === false) {
-    http_response_code(502);
+    http_response_code(in_array($method, ['GET', 'HEAD'], true) ? 204 : 202);
     header('Cache-Control: no-store');
     header('CDN-Cache-Control: no-store');
     exit;

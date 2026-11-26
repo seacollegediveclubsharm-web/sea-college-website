@@ -7,24 +7,28 @@ declare(strict_types=1);
 return [
     'dive-packages' => [
         'h1' => 'Wycieczki i Pakiety Nurkowe w Sharm El Sheikh (Szarm el-Szejk)',
-        'meta_title' => 'Nurkowanie Sharm El Sheikh — Pakiety i Intro od 30 € | Sea College PADI 5★',
-        'meta_desc' => 'Nurkowanie w Morzu Czerwonym w Sharm El Sheikh (Szarm el-Szejk): intro dla początkujących od 30 €, pakiety 1–10 nurkowań (35 €/nurkowanie), wrak SS Thistlegorm, Ras Mohammed i Tiran.',
-        'sub' => 'Codzienne rejsy nurkowe i zejścia z brzegu do Parku Narodowego Ras Mohammed, Cieśniny Tiran, na lokalne ogrody koralowe oraz legendarne wraki Morza Czerwonego — prosto z naszej bazy PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah.',
-        'aeo_answer' => 'Sea College Dive Club (autoryzowana baza nurkowa PADI 5 Gwiazdek w dzielnicy Al Montazah w Sharm El Sheikh / Szarm el-Szejk) oferuje nurkowania próbne Discover Scuba Diving dla osób bez doświadczenia już od 30 € na rafie domowej lub 70–100 € podczas całodniowego rejsu łodzią, a także imienne pakiety dla certyfikowanych nurków od 45 € (pojedyncze nurkowanie z brzegu) do 350 € za pakiet 10 nurkowań (35 €/nurkowanie oraz 30 € za każde kolejne nurkowanie po dziesiątym). Pakiety zawierają opiekę przewodnika PADI, butle aluminiowe 12 l z powietrzem, balast i transfery z hoteli w Sharm El Sheikh; w dni nurkowania z łodzi obowiązuje dopłata łodziowa (10 €/dzień z obiadem i napojami) oraz opłata za park morski (5 €/dzień).',
+        'meta_title' => 'Nurkowanie Sharm El Sheikh (Szarm el-Szejk) | Pakiety od 30 €',
+        'meta_desc' => 'Nurkowanie w Morzu Czerwonym w Sharm El Sheikh (Szarm el-Szejk): intro nurkowe od 30 €, pakiety 1–10 nurkowań (35 €/nurk.), wrak SS Thistlegorm, Ras Mohammed i Tiran.',
+        'sub' => 'Codzienne rejsy nurkowe, intro nurkowe i zejścia z brzegu do Parku Narodowego Ras Mohammed, Cieśniny Tiran oraz na legendarne wraki Morza Czerwonego — w centrum i bazie nurkowej PADI 5★ z polskojęzyczną kadrą w Cyrene Sharm, Al Montazah.',
+        'aeo_answer' => 'Sea College Dive Club (autoryzowane centrum i baza nurkowa PADI 5 Gwiazdek z kadrą mówiącą po polsku w Al Montazah, Sharm El Sheikh / Szarm el-Szejk) oferuje intro nurkowe (Discover Scuba Diving) dla początkujących już od 30 € na rafie domowej lub 70–100 € z łodzi, a także imienne pakiety dla certyfikowanych nurków od 45 € (pojedyncze nurkowanie z brzegu) do 350 € za pakiet 10 nurkowań (35 €/nurkowanie oraz 30 € za każde kolejne po dziesiątym). Pakiety zawierają opiekę przewodnika PADI, butle 12 l, balast i transfery z hoteli w Sharm El Sheikh; w dni z łodzi obowiązuje dopłata łodziowa (10 €/dzień z obiadem i napojami) oraz opłata za park morski (5 €/dzień).',
         'highlights' => [
             'Imienne pakiety od 1 do 10+ nurkowań — od 3 nurkowań stawka spada do 35 € za nurkowanie, a po 10. nurkowaniu do zaledwie 30 €.',
             'Kultowe rejony Morza Czerwonego: Shark & Yolanda Reef (Ras Mohammed), rafy Jackson, Woodhouse, Thomas i Gordon (Cieśnina Tiran) oraz wraki SS Thistlegorm, SS Dunraven i Million Hope.',
-            'Bezpieczna rafa domowa i basen szkoleniowy na miejscu w Cyrene Sharm — spróbuj pierwszego oddechu pod wodą bez żadnego doświadczenia od 10. roku życia.',
+            'Bezpieczna rafa domowa i basen szkoleniowy na miejscu w Cyrene Sharm — intro nurkowe bez żadnego doświadczenia od 10. roku życia pod okiem polskojęzycznej kadry.',
             'Kompletna wypożyczalnia sprzętu (25 €/dzień za pełny zestaw) oraz bicie butli 12 l / 15 l wzbogaconym powietrzem Nitrox, konfiguracja Sidemount, Trimix i wsparcie CCR.',
         ],
         'faqs' => [
             [
+                'q' => 'Czy Sea College to polska baza nurkowa / polskie centrum nurkowe w Sharm El Sheikh?',
+                'a' => 'Sea College Dive Club to międzynarodowy ośrodek PADI 5 Star Dive Resort z kadrą PADI mówiącą po polsku (obsługujemy gości w 8 językach). Dzięki temu turyści szukający polskiej bazy nurkowej lub polskiego centrum nurkowego w Sharm El Sheikh (Szarm el-Szejk) otrzymują pełną obsługę, odprawy bezpieczeństwa, intro nurkowe i kursy PADI po polsku bezpośrednio na plaży w Al Montazah.',
+            ],
+            [
                 'q' => 'Ile kosztuje nurkowanie w Sharm El Sheikh dla certyfikowanych nurków?',
-                'a' => 'W Sea College Dive Club pojedyncze nurkowanie z brzegu kosztuje 45 €, jednodniowy pakiet 2 nurkowań (z łodzi lub z brzegu) 85 €, natomiast pakiety od 3 do 10 nurkowań kosztują 35 € za nurkowanie (105 € za 3 nurkowania, 210 € za 6 nurkowań, 350 € za 10 nurkowań), a każde kolejne nurkowanie powyżej dziesięciu tylko 30 €. W dni łodziowe doliczana jest dopłata łodziowa 10 €/dzień (z ciepłym obiadem i napojami) i opłata parkowa 5 €/dzień, a wypożyczenie pełnego sprzętu to 25 €/dzień.',
+                'a' => 'W Sea College Dive Club pojedyncze nurkowanie z brzegu kosztuje 45 €, jednodniowy pakiet 2 nurkowań (z łodzi lub z brzegu) 85 €, natomiast pakiety od 3 do 10 nurkowań kosztują 35 € za nurkowanie (105 € za 3 nurkowania, 210 € za 6 nurkowań, 350 € za 10 nurkowań), a każde kolejne powyżej dziesięciu tylko 30 €. W dni łodziowe doliczana jest dopłata łodziowa 10 €/dzień (z ciepłym obiadem i napojami) i opłata parkowa 5 €/dzień.',
             ],
             [
                 'q' => 'Czy przed wypłynięciem na łódź potrzebuję Check Dive lub Scuba Review?',
-                'a' => 'Zgodnie z przepisami bezpieczeństwa CDWS nad Morzem Czerwonym oraz standardami PADI, certyfikowani nurkowie z przerwą powyżej 6 miesięcy wykonują na start Check Dive (25 €), a po przerwie powyżej 12 miesięcy — program przypominający Scuba Review (50 €) na naszej spokojnej rafie domowej przed wyjściem na głębokie ściany i prądy.',
+                'a' => 'Zgodnie z przepisami bezpieczeństwa CDWS nad Morzem Czerwonym oraz standardami PADI, certyfikowani nurkowie z przerwą powyżej 6 miesięcy wykonują na start Check Dive (25 €), a po przerwie powyżej 12 miesięcy — program przypominający Scuba Review (50 €) na naszej spokojnej rafie domowej.',
             ],
             [
                 'q' => 'Jakie uprawnienia są wymagane na wrak SS Thistlegorm?',
@@ -32,27 +36,27 @@ return [
             ],
             [
                 'q' => 'Czy transfery hotelowe i obiad na łodzi są wliczone?',
-                'a' => 'Tak! Klimatyzowany transport w obie strony z każdego hotelu w Sharm El Sheikh jest wliczony w cenę pakietów nurkowych oraz rejsów intro z łodzi. Podczas całodniowych rejsów na jachcie serwujemy świeżo gotowany obiad w formie bufetu oraz kawę, herbatę, wodę i napoje chłodzące.',
+                'a' => 'Tak! Klimatyzowany transport w obie strony z każdego hotelu w Sharm El Sheikh jest wliczony w cenę pakietów nurkowych oraz rejsów intro nurkowego z łodzi. Podczas całodniowych rejsów na jachcie serwujemy świeżo gotowany obiad w formie bufetu oraz napoje.',
             ],
         ],
     ],
 
     'padi-courses' => [
-        'h1' => 'Kursy Nurkowania PADI w Sharm El Sheikh (Szarm el-Szejk)',
-        'meta_title' => 'Kursy PADI Sharm El Sheikh | Od Open Water 400 € po Divemaster | Sea College',
-        'meta_desc' => 'Zrób kurs nurkowania w autoryzowanej bazie PADI 5 Gwiazdek w Sharm El Sheikh: Bubblemaker dla dzieci 70 €, Discover Scuba 85 €, Open Water Diver 400 €, Advanced 350 € i specjalizacje.',
-        'sub' => 'Ucz się w ciepłej, przejrzystej wodzie Morza Czerwonego, korzystając z własnego basenu szkoleniowego, klimatyzowanej sali wykładowej, rafy domowej oraz opieki wielojęzycznych instruktorów PADI (w tym w języku polskim).',
-        'aeo_answer' => 'Sea College Dive Club to oficjalny ośrodek PADI 5 Star Dive Resort w Cyrene Sharm (Al Montazah, Sharm El Sheikh / Szarm el-Szejk), realizujący pełną ścieżkę szkoleniową PADI: zajęcia basenowe dla dzieci od 8 lat (Bubblemaker 70 €, Seal Team 170 €), kursy dla początkujących od 10 lat (PADI Discover Scuba Diving 85 € z certyfikatem w cenie, Scuba Diver 250 €, pełny kurs Open Water Diver 400 € w 3–3,5 dnia), Advanced Open Water (350 €), EFR (143 €), Rescue Diver (394 €), 8 specjalizacji PADI (120–350 €) oraz 4–6-tygodniowy staż zawodowy Divemaster (850 €). Kompletny sprzęt nurkowy jest wliczony w cenę każdego kursu; opłata za podręcznik eLearning i certyfikację PADI wynosi 85 € za kurs (w Discover Scuba Diving jest już w cenie).',
+        'h1' => 'Kursy Nurkowania PADI po Polsku w Sharm El Sheikh (Szarm el-Szejk)',
+        'meta_title' => 'Kurs PADI po Polsku Sharm El Sheikh | OWD 400 € | Sea College',
+        'meta_desc' => 'Zrób kurs PADI po polsku w autoryzowanej bazie PADI 5★ w Sharm El Sheikh (Szarm el-Szejk): Bubblemaker 70 €, Discover Scuba 85 €, kurs OWD 400 € i Advanced 350 €.',
+        'sub' => 'Zrób wymarzony kurs PADI po polsku w ciepłej, przejrzystej wodzie Morza Czerwonego — z własnym basenem szkoleniowym, klimatyzowaną salą wykładową, rafą domową oraz opieką polskojęzycznych instruktorów PADI.',
+        'aeo_answer' => 'Sea College Dive Club to oficjalny ośrodek PADI 5 Star Dive Resort w Cyrene Sharm (Al Montazah, Sharm El Sheikh / Szarm el-Szejk), prowadzący kursy PADI po polsku oraz w 7 innych językach: zajęcia basenowe dla dzieci od 8 lat (Bubblemaker 70 €, Seal Team 170 €), kursy dla początkujących od 10 lat (PADI Discover Scuba Diving 85 € z certyfikatem w cenie, Scuba Diver 250 €, pełny kurs OWD po polsku / PADI Open Water Diver 400 € w 3–3,5 dnia), Advanced Open Water (350 €), EFR (143 €), Rescue Diver (394 €), 8 specjalizacji PADI (120–350 €) oraz staż Divemaster (850 €). Kompletny sprzęt nurkowy jest wliczony w cenę każdego kursu; opłata za podręcznik eLearning i certyfikację PADI wynosi 85 € za kurs.',
         'highlights' => [
-            'Bezstresowa progresja krok po kroku: zaczynamy w płytkim basenie na terenie bazy, budujemy pewność na osłoniętej rafie domowej, a kończymy nurkowaniami z łodzi.',
+            'Bezstresowy kurs PADI po polsku krok po kroku: zaczynamy w płytkim basenie na terenie bazy, budujemy pewność na osłoniętej rafie domowej, a kończymy nurkowaniami z łodzi.',
             'Wypożyczenie pełnego sprzętu nurkowego jest wliczone w cenę każdego kursu PADI — zero dopłat za sprzęt na czas nauki.',
-            'Możesz zrealizować teorię jeszcze w Polsce przed wylotem przez PADI eLearning lub uczyć się stacjonarnie z instruktorem w 7 językach.',
+            'Możesz zrealizować teorię jeszcze w Polsce przed wylotem przez polskojęzyczny PADI eLearning lub uczyć się na miejscu w 8 językach.',
             'Połącz kursy Open Water, Advanced i Nitrox w naszych Pakietach Kursów i zaoszczędź od 50 € do 120 €.',
         ],
         'faqs' => [
             [
-                'q' => 'Ile dni trwa kurs PADI Open Water Diver w Sharm El Sheikh?',
-                'a' => 'Kurs PADI Open Water Diver trwa od 3 do 3,5 dnia i obejmuje 5 modułów teorii, 5 sesji ćwiczeń w naszym basenie szkoleniowym oraz 4 nurkowania na wodach otwartych Morza Czerwonego do głębokości 18 metrów. Przerobienie eLearningu przed przylotem pozwala jeszcze lepiej wykorzystać czas urlopu.',
+                'q' => 'Ile dni trwa kurs OWD po polsku (PADI Open Water Diver) w Sharm El Sheikh?',
+                'a' => 'Kurs PADI Open Water Diver trwa od 3 do 3,5 dnia i obejmuje 5 modułów teorii po polsku, 5 sesji ćwiczeń w naszym basenie szkoleniowym oraz 4 nurkowania na wodach otwartych Morza Czerwonego do głębokości 18 metrów. Przerobienie polskiego eLearningu przed przylotem pozwala jeszcze lepiej wykorzystać czas urlopu.',
             ],
             [
                 'q' => 'Czy opłata 85 € za certyfikat i podręcznik PADI jest wliczona w cenę kursu?',
@@ -70,11 +74,11 @@ return [
     ],
 
     'offers' => [
-        'h1' => 'Pakiety Kursów PADI i Promocje Łączone w Sharm El Sheikh',
-        'meta_title' => 'Pakiety Kursów PADI Sharm El Sheikh | Oszczędź do 120 € | Sea College',
+        'h1' => 'Pakiety Kursów PADI i Promocje Łączone w Sharm El Sheikh (Szarm el-Szejk)',
+        'meta_title' => 'Pakiety Kursów PADI Sharm El Sheikh | Oszczędź do 120 €',
         'meta_desc' => 'Połącz kursy PADI Open Water, Advanced Open Water i Nitrox w Sharm El Sheikh (Szarm el-Szejk) i oszczędź od 50 € do 120 €. Sprzęt, ubezpieczenie nurkowe i podatek w cenie.',
         'sub' => 'Wykorzystaj w pełni urlop nad Morzem Czerwonym dzięki czterem przejrzystym pakietom szkoleniowym — Stars, Super, Mega i Heros — z pełnym sprzętem nurkowym, ubezpieczeniem na czas szkolenia i podatkiem w cenie.',
-        'aeo_answer' => 'Sea College Dive Club w Sharm El Sheikh oferuje cztery promocyjne pakiety kursów PADI obejmujące wszystkie wymienione szkolenia, pełny sprzęt nurkowy, ubezpieczenie nurkowe i podatek: Super (Advanced Open Water + Nitrox) za 400 € (oszczędność 75 €), Stars (Open Water + Nitrox) za 500 € (oszczędność 50 €), Mega (Open Water + Advanced Open Water) za 600 € (oszczędność 90 €) oraz flagowy pakiet Heros (Open Water + Advanced + Nitrox) za 750 € (oszczędność 120 €). Oficjalne podręczniki i opłaty certyfikacyjne PADI (85 € za każdy certyfikat) rozliczane są osobno.',
+        'aeo_answer' => 'Sea College Dive Club w Sharm El Sheikh (Szarm el-Szejk) oferuje cztery promocyjne pakiety kursów PADI obejmujące wszystkie wymienione szkolenia, pełny sprzęt nurkowy, ubezpieczenie nurkowe i podatek: Super (Advanced Open Water + Nitrox) za 400 € (oszczędność 75 €), Stars (Open Water + Nitrox) za 500 € (oszczędność 50 €), Mega (Open Water + Advanced Open Water) za 600 € (oszczędność 90 €) oraz flagowy pakiet Heros (Open Water + Advanced + Nitrox) za 750 € (oszczędność 120 €). Oficjalne podręczniki i opłaty certyfikacyjne PADI (85 € za każdy certyfikat) rozliczane są osobno.',
         'highlights' => [
             'Realna oszczędność od 50 € do 120 € w porównaniu z pojedynczą rezerwacją kursów i ubezpieczenia nurkowego.',
             'Ubezpieczenie nurkowe jest wliczone we wszystkie 4 pakiety — również podczas kursów Advanced i Nitrox.',
@@ -102,32 +106,32 @@ return [
     ],
 
     'snorkeling' => [
-        'h1' => 'Snorkeling, Biała Wyspa, Prywatne Motorówki i Jachty w Sharm El Sheikh',
-        'meta_title' => 'Snorkeling Biała Wyspa & Prywatna Łódź Sharm El Sheikh | Od 35 € | Sea College',
-        'meta_desc' => 'Rejs jachtem na Białą Wyspę i Ras Mohammed 55 € (dzieci 30 €), snorkeling z plaży i nocny od 35 €, prywatna motorówka na Tiran od 75 € oraz prywatne jachty od 550 €.',
-        'sub' => 'Krystalicznie czyste ogrody koralowe Morza Czerwonego dla rodzin, par i grup znajomych — popłyń na całodniowy rejs do Parku Ras Mohammed i na Białą Wyspę, wynajmij prywatną motorówkę na Tiran lub wyczarteruj własny jacht do 20 osób.',
-        'aeo_answer' => 'Sea College Dive Club organizuje codzienne wycieczki snorkelingowe oraz czartery prywatnych łodzi w Sharm El Sheikh (Szarm el-Szejk): całodniowy rejs jachtem na Białą Wyspę i do Parku Narodowego Ras Mohammed (55 € dorosły, 30 € dziecko 5–12 lat — w cenie obiad bufetowy, napoje, maska, kamizelka, transfery i opłaty parkowe), snorkeling z przewodnikiem na rafie domowej w dzień (35 €) i w nocy z latarką (40 €), wyprawę lądową autobusem do Ras Mohammed (60 €), prywatne motorówki Speedboat dla 2–5 osób (75 € za 1 godz. lokalne rafy, 150 € za 2 godz. Tiran, 225 € za 3 godz. Tiran) oraz całodniowy czarter prywatnych łodzi i jachtów (od 550 € dla 1–5 gości do 1 100 € dla 16–20 gości).',
+        'h1' => 'Snurkowanie (Snorkeling), Biała Wyspa, Prywatne Motorówki i Jachty w Sharm El Sheikh',
+        'meta_title' => 'Snurkowanie Biała Wyspa & Ras Mohammed Sharm | Od 35 €',
+        'meta_desc' => 'Snurkowanie (snorkeling) w Sharm El Sheikh (Szarm el-Szejk): rejs na Białą Wyspę i Ras Mohammed 55 € (dzieci 30 €), snurkowanie z plaży 35 € i motorówka na Tiran od 75 €.',
+        'sub' => 'Krystalicznie czyste ogrody koralowe Morza Czerwonego dla rodzin, par i grup znajomych — wybierz snurkowanie (snorkeling) podczas całodniowego rejsu do Parku Ras Mohammed i na Białą Wyspę, wynajmij prywatną motorówkę na Tiran lub wyczarteruj własny jacht do 20 osób.',
+        'aeo_answer' => 'Sea College Dive Club organizuje codzienne wycieczki na snurkowanie (snorkeling) oraz czartery prywatnych łodzi w Sharm El Sheikh (Szarm el-Szejk): całodniowy rejs jachtem na Białą Wyspę i do Parku Narodowego Ras Mohammed (55 € dorosły, 30 € dziecko 5–12 lat — w cenie obiad bufetowy, napoje, maska, kamizelka, transfery i opłaty parkowe), snurkowanie z przewodnikiem na rafie domowej w dzień (35 €) i w nocy z latarką (40 €), wyprawę lądową autobusem do Ras Mohammed (60 €), prywatne motorówki Speedboat dla 2–5 osób (75 € za 1 godz. lokalne rafy, 150 € za 2 godz. Tiran, 225 € za 3 godz. Tiran) oraz całodniowy czarter prywatnych jachtów (od 550 € dla 1–5 gości do 1 100 € dla 16–20 gości).',
         'highlights' => [
-            'Pełne bezpieczeństwo rodzinne: kamizelki asekuracyjne, maski, transfery z hotelu oraz opieka przewodnika PADI w wodzie wliczone w wycieczki snorkelingowe.',
+            'Pełne bezpieczeństwo rodzinne: kamizelki asekuracyjne, maski do snurkowania, transfery z hotelu oraz opieka przewodnika PADI w wodzie.',
             'Dzieci w wieku 5–12 lat płyną na całodniowy rejs jachtem na Białą Wyspę i Ras Mohammed za jedyne 30 €.',
             'Omiń tłumy dzięki prywatnej motorówce (1, 2 lub 3 godziny) prosto z naszej laguny Al Montazah na turkusowe rafy wyspy Tiran w 15 minut.',
-            'Wyczarteruj cały prywatny jacht dla 1–20 osób — dopasuj godzinę wypłynięcia, przystanki na rafach oraz opcjonalne nurkowania intro 1-na-1.',
+            'Wyczarteruj cały prywatny jacht dla 1–20 osób — dopasuj godzinę wypłynięcia, przystanki na snurkowanie oraz opcjonalne intro nurkowe 1-na-1.',
         ],
         'faqs' => [
             [
-                'q' => 'Czy osoby słabo pływające mogą wziąć udział w rejsie na Białą Wyspę i Ras Mohammed?',
-                'a' => 'Oczywiście! Zapewniamy kamizelki ratunkowe i asekuracyjne w rozmiarach dziecięcych i dorosłych, a nasi przewodnicy wchodzą do wody razem z grupą na każdym przystanku, dbając o komfort i bezpieczeństwo.',
+                'q' => 'Czy osoby słabo pływające mogą wziąć udział w snurkowaniu na Białej Wyspie i w Ras Mohammed?',
+                'a' => 'Oczywiście! Zapewniamy kamizelki ratunkowe i asekuracyjne w rozmiarach dziecięcych i dorosłych, a nasi przewodnicy wchodzą do wody razem z grupą na każdym przystanku snurkowania, dbając o komfort i bezpieczeństwo.',
             ],
             [
                 'q' => 'Jak liczona jest cena prywatnej motorówki (Speedboat) na wyspę Tiran?',
                 'a' => 'Cena bazowa obejmuje prywatną motorówkę na wyłączność, kapitana, maski, kamizelki i transfery w Sharm: 75 € za 1 godzinę (do 3 osób; 4. i 5. osoba +50 €/os.), 150 € za 2 godziny na Tiran (dla 2 osób; 3.–5. osoba +75 €/os.) lub 225 € za 3 godziny na Tiran (dla 2 osób; 3.–5. osoba +100 €/os.).',
             ],
             [
-                'q' => 'Czy podczas prywatnego czarteru jachtu możemy połączyć snorkeling z nurkowaniem Intro?',
-                'a' => 'Tak! Rodziny i grupy przyjaciół bardzo często wynajmują prywatną łódź (550 € dla 1–5 os., 650 € dla 6–10 os., 900 € dla 11–15 os., 1 100 € dla 16–20 os.), aby wspólnie snorkelować, a chętni mogą dokonać pierwszego zejścia pod wodę 1-na-1 z naszym instruktorem PADI.',
+                'q' => 'Czy podczas prywatnego czarteru jachtu możemy połączyć snurkowanie z intro nurkowym?',
+                'a' => 'Tak! Rodziny i grupy przyjaciół bardzo często wynajmują prywatną łódź (550 € dla 1–5 os., 650 € dla 6–10 os., 900 € dla 11–15 os., 1 100 € dla 16–20 os.), aby wspólnie uprawiać snurkowanie, a chętni mogą odbyć pierwsze intro nurkowe 1-na-1 z naszym instruktorem PADI.',
             ],
             [
-                'q' => 'Co zabrać ze sobą na całodniowy rejs snorkelingowy?',
+                'q' => 'Co zabrać ze sobą na całodniowy rejs na snurkowanie?',
                 'a' => 'Wystarczy zdjęcie paszportu w telefonie (do listy pasażerów w marinie), strój kąpielowy, ręcznik plażowy, okulary przeciwsłoneczne i krem z filtrem bezpieczny dla rafy koralowej.',
             ],
         ],

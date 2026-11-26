@@ -14,27 +14,27 @@ $catalog       = require ROOT_DIR . '/data/catalog.php';
 $seoAll        = require ROOT_DIR . '/data/items_seo.php';
 $itemGalleries = is_file(ROOT_DIR . '/data/item_galleries.php') ? (require ROOT_DIR . '/data/item_galleries.php') : [];
 
-/* ---- 1. Legacy WooCommerce /product/<slug>/ 301 redirect ---- */
-$legacy = strtolower(trim((string) ($_GET['legacy'] ?? ''), '/'));
+/* ---- 1. Legacy WooCommerce /product/<slug>/ & Shinetheme /st_tour/<slug>/ 301 redirect ---- */
+$legacy = strtolower(trim(sc_get_str('legacy'), '/'));
 if ($legacy !== '') {
     $allById = catalog_all_items($catalog);
-    $mappedId = $seoAll['legacy_products'][$legacy] ?? null;
+    $mappedId = $seoAll['legacy_products'][$legacy] ?? ($seoAll['legacy_slugs'][$legacy] ?? null);
     if ($mappedId && isset($allById[$mappedId])) {
-        header('Location: ' . sc_with_campaign_query(item_url($allById[$mappedId])), true, 301);
+        header('Location: ' . SITE_URL . sc_with_campaign_query(item_url($allById[$mappedId])), true, 301);
         exit;
     }
     $byDirectSlug = catalog_find_by_slug($catalog, $legacy);
     if ($byDirectSlug) {
-        header('Location: ' . sc_with_campaign_query(item_url($byDirectSlug)), true, 301);
+        header('Location: ' . SITE_URL . sc_with_campaign_query(item_url($byDirectSlug)), true, 301);
         exit;
     }
-    header('Location: ' . sc_with_campaign_query(page_link('/diving-courses-sharm-el-sheikh')), true, 301);
+    header('Location: ' . SITE_URL . sc_with_campaign_query(page_link('/services')), true, 301);
     exit;
 }
 
 /* ---- 2. Lookup item by slug & enforce canonical section (/tours vs /courses) ---- */
-$reqSection = strtolower(trim((string) ($_GET['section'] ?? '')));
-$reqSlug    = strtolower(trim((string) ($_GET['slug'] ?? ''), '/'));
+$reqSection = strtolower(sc_get_str('section'));
+$reqSlug    = strtolower(trim(sc_get_str('slug'), '/'));
 $it         = $reqSlug !== '' ? catalog_find_by_slug($catalog, $reqSlug) : null;
 
 if (!$it && $reqSlug !== '') {
@@ -42,7 +42,7 @@ if (!$it && $reqSlug !== '') {
     if ($mappedSlugId) {
         $allById = catalog_all_items($catalog);
         if (isset($allById[$mappedSlugId])) {
-            header('Location: ' . sc_with_campaign_query(item_url($allById[$mappedSlugId])), true, 301);
+            header('Location: ' . SITE_URL . sc_with_campaign_query(item_url($allById[$mappedSlugId])), true, 301);
             exit;
         }
     }
@@ -55,7 +55,7 @@ if (!$it) {
 
 $expectedSection = ($it['section'] ?? 'tours') === 'courses' ? 'courses' : 'tours';
 if ($reqSection !== '' && $reqSection !== $expectedSection) {
-    header('Location: ' . sc_with_campaign_query(item_url($it)), true, 301);
+    header('Location: ' . SITE_URL . sc_with_campaign_query(item_url($it)), true, 301);
     exit;
 }
 
@@ -345,13 +345,13 @@ require ROOT_DIR . '/includes/header.php';
           <div class="book-card__actions">
             <?= add_button($it) ?>
             <a class="btn btn--primary btn--block" href="#booking" data-qb-reserve data-track="cta_click" data-placement="item_book_anchor"><?= te('reserve_online') ?></a>
-            <a class="btn btn--wa btn--block" href="<?= e(whatsapp_link($it['name'], 'item_sidebar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_quickbook">
+            <a class="btn btn--wa btn--block" href="<?= e(whatsapp_link(item_name($it), 'item_sidebar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_quickbook">
               <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('ask_whatsapp') ?></span>
             </a>
           </div>
           <p class="book-card__note"><?= te('instant_confirm_note') ?></p>
           <hr class="book-card__hr">
-          <a class="book-card__hub" href="<?= e(hub_url($cat)) ?>">← <?= te('view_category_hub') ?>: <?= e($catLabel) ?></a>
+          <a class="book-card__hub" href="<?= e(hub_url($cat)) ?>"><?= e(sc_arrow_prev()) ?> <?= te('view_category_hub') ?>: <?= e($catLabel) ?></a>
         </div>
 
         <div class="cart card no-print" data-cart aria-labelledby="cart-title">
@@ -395,6 +395,46 @@ require ROOT_DIR . '/includes/header.php';
 </section>
 <?php endif; ?>
 
+<?php
+require_once ROOT_DIR . '/includes/guides_helpers.php';
+$scItemGuidesAll = sc_load_guides();
+$scMatchedGuides = [];
+foreach ($scItemGuidesAll as $ig) {
+    if (in_array($it['id'], $ig['related_ids'] ?? [], true)) {
+        $scMatchedGuides[] = $ig;
+    }
+}
+if (count($scMatchedGuides) < 2) {
+    foreach (['sharm-el-sheikh-scuba-diving-prices-guide', 'best-time-to-dive-sharm-el-sheikh', 'flying-after-diving-and-medical-rules-egypt'] as $fbGSlug) {
+        if (isset($scItemGuidesAll[$fbGSlug]) && !in_array($scItemGuidesAll[$fbGSlug], $scMatchedGuides, true)) {
+            $scMatchedGuides[] = $scItemGuidesAll[$fbGSlug];
+        }
+        if (count($scMatchedGuides) >= 3) {
+            break;
+        }
+    }
+}
+$scMatchedGuides = array_slice($scMatchedGuides, 0, 3);
+if ($scMatchedGuides): ?>
+<section class="section no-print" id="related-guides">
+  <div class="container">
+    <header class="section__head section__head--row">
+      <div>
+        <p class="eyebrow">📘 <?= te('nav_guides') ?></p>
+        <h2 dir="auto"><?= e(t('related_guides_title') !== 'related_guides_title' ? t('related_guides_title') : t('nav_guides')) ?></h2>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="<?= e(page_link('/guides')) ?>"><?= te('nav_guides') ?> <?= e(sc_arrow_next()) ?></a>
+    </header>
+    <div class="chips">
+      <?php foreach ($scMatchedGuides as $mg): ?>
+        <a class="chip" href="<?= e(guide_url($mg)) ?>" dir="auto">📘 <?= e($mg['title']) ?> <?= e(sc_arrow_next()) ?></a>
+      <?php endforeach; ?>
+      <a class="chip" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>" dir="auto">🗺️ <?= te('nav_dive_sites') ?> <?= e(sc_arrow_next()) ?></a>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
 <?php if ($faqs): ?>
 <section class="section section--tint section--item-faq" id="faq">
   <div class="container">
@@ -413,7 +453,7 @@ require ROOT_DIR . '/includes/header.php';
       <?= faq_pairs_html($faqs) ?>
     </div>
     <p class="item-faq-more no-print">
-      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="item_faq_hub">❓ <?= te('item_faq_view_all') ?> →</a>
+      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="item_faq_hub">❓ <?= te('item_faq_view_all') ?> <?= e(sc_arrow_next()) ?></a>
       <a class="btn btn--wa" href="<?= e(whatsapp_link(item_name($it) . ' — FAQ', 'item_faq_wa')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="item_faq_wa">
         <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('ask_whatsapp') ?></span>
       </a>
@@ -431,7 +471,7 @@ require ROOT_DIR . '/includes/header.php';
     <?php endif; ?>
   </div>
   <div class="mobile-item-bar__btns">
-    <a class="btn btn--wa btn--sm" href="<?= e(whatsapp_link($it['name'], 'item_sticky_bar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_sticky_bar">
+    <a class="btn btn--wa btn--sm" href="<?= e(whatsapp_link(item_name($it), 'item_sticky_bar')) ?>" target="_blank" rel="noopener" data-qb-wa data-placement="item_sticky_bar">
       <?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('qb_wa_cta') ?></span>
     </a>
     <a class="btn btn--primary btn--sm" href="#booking" data-qb-reserve data-track="cta_click" data-placement="item_sticky_reserve"><?= te('qb_reserve_cta') ?></a>

@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'nitrox' => [
         'h1' => 'Spécialité PADI Air Enrichi Nitrox (Enriched Air) à Charm el-Cheikh',
-        'meta_title' => 'Cours PADI Nitrox Charm el-Cheikh (Sharm El Sheikh) | 145 € | 1 Jour',
+        'meta_title' => 'Cours PADI Nitrox Charm el-Cheikh | 145 € en 1 Jour',
         'meta_desc' => 'La spécialité PADI n°1 au monde en 1 jour à Charm el-Cheikh (145 €, dès 12 ans) : prolongez vos temps sans palier sur les épaves et tombants de Mer Rouge, analysez vos blocs O₂.',
         'aeo_answer' => 'Le cours PADI Air Enrichi (Nitrox) chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 145 € par personne, se valide en 1 journée (dès 12 ans, prérequis Open Water / N1) et inclut l’équipement. Spécialité la plus populaire de PADI, elle vous certifie à plonger aux mélanges suroxygénés de 22 % à 40 % d’O₂ (EANx32/36) pour augmenter nettement vos temps sans décompression lors de plongées successives en Mer Rouge (+85 € manuel et carte PADI).',
         'overview' => ['Lors d’un séjour de plusieurs jours sur les tombants de Ras Mohammed, du détroit de Tiran ou sur l’épave du SS Thistlegorm (18–30 m), c’est presque toujours la limite de non-décompression (NDL) de votre ordinateur — et non le manomètre — qui impose la remontée. Respirer du Nitrox 32 % réduit l’absorption d’azote et allonge significativement votre plaisir au fond.', 'Directement à notre station de gonflage sur place, vous apprenez à calibrer un analyseur électronique d’oxygène, à étiqueter votre bloc et à régler la profondeur maximale d’utilisation (MOD) sur votre ordinateur de plongée.'],
@@ -48,7 +48,7 @@ return [
     ],
     'deep' => [
         'h1' => 'Spécialité PADI Deep Diver (Plongée Profonde 40 m) à Charm el-Cheikh',
-        'meta_title' => 'Cours PADI Deep Diver 40 m Charm el-Cheikh (Sharm El Sheikh) | 325 €',
+        'meta_title' => 'Cours PADI Deep Diver 40 m Charm el-Cheikh | 325 €',
         'meta_desc' => 'Qualifiez-vous jusqu’à la limite maximale loisir de 40 m à Charm el-Cheikh ! PADI Deep Diver (325 €, 2 jours, 4 plongées profondes, dès 15 ans, matériel inclus) sur les murs de Mer Rouge.',
         'aeo_answer' => 'La spécialité PADI Deep Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 325 € par personne (2 jours, 4 plongées profondes en mer, dès 15 ans, prérequis Adventure Diver ou Advanced/N2) et inclut tout l’équipement. Sur les célèbres tombants verticaux de Mer Rouge, elle vous certifie jusqu’à 40 mètres (plafond mondial de la plongée loisir) en maîtrisant la planification des gaz, la narcose et les procédures de sécurité (+85 € manuel et carte PADI).',
         'overview' => ['Charm el-Cheikh est mondialement réputée pour ses tombants vertigineux — Shark Reef, Ras Umm Sid, Jackson et Thomas Reef — où gorgones géantes, corail noir et bancs de barracudas se détachent dans le grand bleu entre 30 et 40 mètres.', 'En quatre plongées progressives sur deux jours avec des moniteurs chevronnés comme Alex, vous apprenez à calculer votre consommation (SAC), gérer vos pressions de retour, prévenir la narcose à l’azote et tenir des paliers irréprochables au parachute.'],
@@ -89,7 +89,7 @@ return [
     ],
     'wreck' => [
         'h1' => 'Spécialité PADI Wreck Diver (Plongée sur Épaves) à Charm el-Cheikh',
-        'meta_title' => 'Cours PADI Wreck Diver Charm el-Cheikh | 325 € | Épaves Mer Rouge',
+        'meta_title' => 'Cours PADI Wreck Diver Épaves Charm el-Cheikh | 325 €',
         'meta_desc' => 'Formez-vous sur les épaves mythiques de Mer Rouge ! Spécialité PADI Wreck Diver à Charm el-Cheikh (325 €, 2 jours, 4 plongées, dès 15 ans, matériel inclus) : cartographie, fil d’Ariane & pénétration.',
         'aeo_answer' => 'La spécialité PADI Wreck Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 325 € par personne (2 jours, 4 plongées sur épaves, dès 15 ans, prérequis Adventure Diver ou Advanced/N2) et inclut le matériel de plongée standard. Au pied des épaves légendaires SS Thistlegorm, SS Dunraven et Million Hope, vous maîtrisez l’évaluation des structures, le palmage anti-vase (frog kick), la cartographie et la pose du fil d’Ariane (+85 € frais PADI ; suppléments épaves selon sites choisis).',
         'overview' => ['Peu de destinations au monde rivalisent avec Charm el-Cheikh pour apprendre la plongée sur épave : locomotives et motos de 1941 dans les cales du SS Thistlegorm, coque victorienne inversée du SS Dunraven (1876) tapissée de poissons de verre, ou superstructure géante du Million Hope à Nabq.', 'Au lieu d’observer uniquement de l’extérieur, le cours PADI Wreck Diver vous apprend à identifier les risques sous plafond, évoluer en frog kick sans soulever une particule de sédiment et dérouler/récupérer proprement un dévidoir dans la zone de lumière.'],
@@ -130,7 +130,7 @@ return [
     ],
     'night' => [
         'h1' => 'Spécialité PADI Night Diver (Plongée de Nuit) à Charm el-Cheikh',
-        'meta_title' => 'Cours PADI Night Diver Charm el-Cheikh | 265 € | 3 Plongées de Nuit',
+        'meta_title' => 'Cours PADI Night Diver Charm el-Cheikh | 3 Nuits · 265 €',
         'meta_desc' => 'Explorez la Mer Rouge après le coucher du soleil ! Spécialité PADI Night Diver à Charm el-Cheikh (265 €, 3 soirées, dès 12 ans, matériel inclus) : communication lampe, compas & faune nocturne.',
         'aeo_answer' => 'La spécialité PADI Night Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 265 € par personne (3 plongées de nuit guidées, dès 12 ans, prérequis Open Water / N1) et inclut l’équipement standard. Au départ rassurant de notre récif maison d’Al Montazah, vous maîtrisez l’éclairage principal/secours, les signaux lumineux, l’orientation nocturne au compas et l’observation des poulpes, danseuses espagnoles et plancton bioluminescent (+85 € manuel et carte PADI).',
         'overview' => ['Un récif que vous connaissez de jour ressemble à une tout autre planète à 19h00 : le corail déploie ses polypes, les poissons-perroquets dorment dans leur cocon de mucus, murènes et rascasses partent en chasse dans le faisceau de votre phare (qui restitue des rouges et orangés éclatants !), et un geste dans l’obscurité fait scintiller la bioluminescence.', 'En trois soirées détendues, nos moniteurs dissipent toute appréhension grâce à un balisage lumineux clair de la mise à l’eau et de petits groupes sereins.'],
@@ -171,7 +171,7 @@ return [
     ],
     'sidemount' => [
         'h1' => 'Spécialité PADI Sidemount Diver (Montage Latéral) à Charm el-Cheikh',
-        'meta_title' => 'Cours PADI Sidemount Diver Charm el-Cheikh | 350 € | 2–3 Jours',
+        'meta_title' => 'Cours PADI Sidemount Diver Charm el-Cheikh | 350 €',
         'meta_desc' => 'Adoptez un trim horizontal parfait et une double redondance gaz ! Spécialité PADI Sidemount à Charm el-Cheikh (350 €, 2–3 jours, 1 piscine + 3 plongées mer, équipement Sidemount inclus).',
         'aeo_answer' => 'Le cours PADI Sidemount Diver chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 350 € par personne (2 à 3 jours, dès 15 ans, prérequis Open Water / N1) et inclut le prêt complet du harnais/wing Sidemount, des doubles détendeurs et des blocs gréés sur 1 séance de réglage en piscine et 3 plongées en Mer Rouge. Le montage latéral soulage le dos sur les échelles bateau, procure un équilibre horizontal remarquable et double la sécurité en gaz (+85 € frais PADI).',
         'overview' => ['Autrefois réservé aux spéléonautes, le Sidemount a conquis les plongeurs loisirs et photographes du monde entier : fini le bloc lourd sur les vertèbres en remontant à l’échelle ! Vous mousquetonnez vos bouteilles aluminium 12L directement dans l’eau, gardez les robinetteries sous les yeux et planez parfaitement à plat au-dessus du corail.', 'Comme Sea College Dive Club dispose sur place d’équipements Sidemount complets, de blocs gréés, de Nitrox et de gaz techniques, vous bénéficiez d’un vrai réglage sur mesure dans notre piscine jusqu’à ce que chaque bungee et routage de flexible épouse votre morphologie.'],
@@ -212,10 +212,10 @@ return [
     ],
     'divemaster' => [
         'h1' => 'Stage Professionnel PADI Divemaster à Charm el-Cheikh (4 à 6 Semaines — Go Pro)',
-        'meta_title' => 'Stage PADI Divemaster Charm el-Cheikh (Sharm El Sheikh) | 850 € | 4–6 Semaines',
+        'meta_title' => 'Stage PADI Divemaster Charm el-Cheikh | 850 € · 4–6 Sem.',
         'meta_desc' => 'Devenez pro dans un centre PADI 5 Étoiles à Charm el-Cheikh ! Programme PADI Divemaster 4–6 semaines (850 €) incluant transferts aéroport/quotidiens, petit-déjeuner & déjeuner, matériel, assurance & Nitrox gratuit.',
         'aeo_answer' => 'Le programme professionnel PADI Divemaster de 4 à 6 semaines chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 850 € par candidat (dès 18 ans ; prérequis AOWD, Rescue Diver, EFR < 24 mois, 40 plongées pour débuter / 60 pour certifier, certificat médical < 12 mois). Exceptionnellement complet, ce forfait de 850 € inclut les transferts aéroport, les trajets quotidiens vers le centre, le petit-déjeuner et le déjeuner chaque jour, l’assistance sur de vrais élèves, 4 journées dédiées aux opérations bateau, du mentorat Course Director, la préparation théorique IDC, un atelier CV/emploi, le Nitrox gratuit (si certifié Nitrox), tout l’équipement et l’assurance plongée !',
-        'overview' => ['Franchir le cap du PADI Divemaster change votre façon de plonger — et souvent votre vie. Plutôt que d’enchaîner des jeux de rôle artificiels, notre mentorat de 4 à 6 semaines vous plonge au cœur de l’activité réelle d’un centre PADI 5 Étoiles noté 4.9★ en Mer Rouge.', 'En plus de polir vos 24 démonstrations techniques à la perfection, de cartographier un site et d’assister nos moniteurs en 7 langues, vous bénéficiez d’entretiens avec des PADI Course Directors pour préparer la théorie d’un futur monitorat (IDC) et bâtir un CV recherché par les centres du monde entier.'],
+        'overview' => ['Franchir le cap du PADI Divemaster change votre façon de plonger — et souvent votre vie. Plutôt que d’enchaîner des jeux de rôle artificiels, notre mentorat de 4 à 6 semaines vous plonge au cœur de l’activité réelle d’un centre PADI 5 Étoiles noté 4.9★ en Mer Rouge.', 'En plus de polir vos 24 démonstrations techniques à la perfection, de cartographier un site et d’assister nos moniteurs en 8 langues, vous bénéficiez d’entretiens avec des PADI Course Directors pour préparer la théorie d’un futur monitorat (IDC) et bâtir un CV recherché par les centres du monde entier.'],
         'specs' => [
             ['Frais de formation', '850 € (stage immersif complet de 4 à 6 semaines)'],
             ['Prérequis d’entrée', '18 ans+ · AOWD + Rescue · EFR (< 24 m) · 40 plongées · Certificat médical (< 12 m)'],
@@ -254,7 +254,7 @@ return [
     ],
     'bundle-stars' => [
         'h1' => 'Pack PADI Stars — Open Water Diver + Air Enrichi Nitrox (Économisez 50 €)',
-        'meta_title' => 'Pack Stars : PADI Open Water + Nitrox Charm el-Cheikh | 500 € (-50 €)',
+        'meta_title' => 'Pack PADI Stars (OWD + Nitrox) Charm el-Cheikh | 500 €',
         'meta_desc' => 'Débutez la plongée avec la spécialité n°1 incluse ! Pack Stars à Charm el-Cheikh (500 €, économisez 50 €, ~4 jours) : PADI Open Water + Nitrox, équipement complet, assurance & taxes inclus.',
         'aeo_answer' => 'Le Pack de cours PADI Stars chez Sea College Dive Club à Charm el-Cheikh (Sharm El Sheikh) coûte 500 € par personne — soit 50 € d’économie immédiate — et se déroule sur environ 4 jours (dès 12 ans). Il réunit le brevet complet PADI Open Water Diver (18 m) et la spécialité PADI Air Enrichi Nitrox, incluant les taxes, les deux formations, la location complète d’équipement et l’assurance plongée (+85 € manuel et carte PADI par cours).',
         'overview' => ['Pourquoi repartir avec un seul brevet quand une demi-journée d’atelier d’analyse d’oxygène en plus vous permet de rentrer de vacances avec DEUX cartes internationales PADI — Open Water Diver ET Nitrox — prêt(e) pour toutes les croisières et séjours plongée dans le monde ?', 'Tout est regroupé de manière limpide à 500 € : les deux cours complets, la location intégrale du matériel, l’assurance plongée et les taxes.'],

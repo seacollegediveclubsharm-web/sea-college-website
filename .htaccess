@@ -23,11 +23,14 @@ AddDefaultCharset UTF-8
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Dynamic sitemap, robots, AI/AEO llms.txt & Meta/Google product catalog feeds
+  # Dynamic sitemap, robots, 8-language AI/AEO llms.txt & Meta/Google product catalog feeds
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
   RewriteRule ^robots\.txt$ robots.php [L]
+  RewriteRule ^en/(?:\.well-known/)?(llms(?:-full)?\.txt)$ /$1 [R=301,L,QSA]
   RewriteRule ^(?:\.well-known/)?llms\.txt$ llms.php [L,QSA]
   RewriteRule ^(?:\.well-known/)?llms-full\.txt$ llms.php?full=1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(?:\.well-known/)?llms\.txt$ llms.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(?:\.well-known/)?llms-full\.txt$ llms.php?lang=$1&full=1 [L,QSA]
   RewriteRule ^feeds/meta-catalog\.xml$ feeds/meta_catalog.php [L,QSA]
   RewriteRule ^feeds/meta-catalog-i18n\.xml$ feeds/meta_catalog.php?mode=i18n [L,QSA]
   RewriteRule ^feeds/meta-catalog-(en|ru|it|pl|de|fr|ar|zh)\.xml$ feeds/meta_catalog.php?lang=$1 [L,QSA]
@@ -48,7 +51,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^(wp-admin|wp-login\.php|wp-config\.php|xmlrpc\.php|wp-cron\.php|wp-json|phpmyadmin|pma|adminer|cgi-bin|vendor|node_modules)(/|$) - [F,L,NC]
 
   # Return HTTP 410 Gone on dead legacy WordPress paths & query bloat (?p=, ?page_id=, ?add-to-cart=, /wp-content/, /feed/) so Google de-indexes old WP bloat fast
-  RewriteRule ^(wp-content|wp-includes|feed|comments/feed|author|wp-trackback\.php)(/|$) - [G,L,NC]
+  RewriteRule ^(wp-content|wp-includes|feed|comments/feed|author|wp-trackback\.php|tag|category|product-tag|st_hotel|st_car|st_rental|location)(/|$) - [G,L,NC]
   RewriteCond %{QUERY_STRING} (^|&)(p|page_id|attachment_id|post_type|replytocom|add-to-cart|remove_item|wc-ajax)=[0-9a-zA-Z_%-]+ [NC]
   RewriteRule ^$ - [G,L]
 
@@ -105,42 +108,67 @@ AddDefaultCharset UTF-8
   RewriteRule ^(?:en/)?tours/(?:private-speed-boat-2-hours-sharm|private-speedboat-tiran-2-hours)/?$ /tours/tiran-island-private-speedboat-2-hours [R=301,L,QSA]
   RewriteRule ^(ru|it|pl|de|fr|ar|zh)/tours/(?:private-speed-boat-2-hours-sharm|private-speedboat-tiran-2-hours)/?$ /$1/tours/tiran-island-private-speedboat-2-hours [R=301,L,QSA]
 
-  # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/..., /en/...)
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/?$ index.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/r/([a-zA-Z0-9._-]+)/?$ index.php?lang=$1&seller=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2&trip=$3 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?lang=$1&seller=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|faq|privacy-policy|terms|thank-you|404)(\.php)?/?$ $2.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/check-in(\.php)?/?$ check-in.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides(\.php)?/?$ guides.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/guides/([a-z0-9-]+)/?$ guide.php?lang=$1&slug=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh/?$ dive-sites.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/gallery(\.php)?/?$ gallery.php?lang=$1 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?lang=$1&hub=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)/?$ item.php?lang=$1&slug=$3&section=$2 [L,QSA]
-  RewriteRule ^(en|ru|it|pl|de|fr|ar|zh)/product/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
+  # Single-hop 301 canonicalization (fixes GSC "Alternative page with proper canonical tag" & duplicate .php / /en / slash URLs)
+  RewriteRule ^en/?$ / [R=301,L,QSA]
+  RewriteRule ^en/(services|prices|about|contact|faq|privacy-policy|terms|thank-you|check-in|guides|gallery)\.php/?$ /$1 [R=301,L,QSA]
+  RewriteRule ^en/dive-sites\.php/?$ /dive-sites-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^en/(.+?)/?$ /$1 [R=301,L,QSA]
+
+  RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+  RewriteRule ^index\.php$ / [R=301,L,QSA]
+  RewriteCond %{THE_REQUEST} \s/+dive-sites\.php[\s?] [NC]
+  RewriteRule ^dive-sites\.php$ /dive-sites-sharm-el-sheikh [R=301,L,QSA]
+  RewriteCond %{THE_REQUEST} \s/+(services|prices|about|contact|faq|privacy-policy|terms|thank-you|check-in|guides|gallery)\.php[\s?/] [NC]
+  RewriteRule ^(services|prices|about|contact|faq|privacy-policy|terms|thank-you|check-in|guides|gallery)\.php$ /$1 [R=301,L,QSA]
+
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/dive-sites\.php/?$ /$1/dive-sites-sharm-el-sheikh [R=301,L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|faq|privacy-policy|terms|thank-you|check-in|guides|gallery)\.php/?$ /$1/$2 [R=301,L,QSA]
+
+  # Enforce trailing slash on localized homepages (/ru -> /ru/) to match sitemap.php & canonical_url()
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)$ /$1/ [R=301,L,QSA]
+
+  # Strip trailing slash on non-root, non-lang-home paths (/prices/ -> /prices) while excluding /st_tour/ & /product/ legacy handlers
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/(ru|it|pl|de|fr|ar|zh)/$
+  RewriteCond %{REQUEST_URI} !^/(?:(ru|it|pl|de|fr|ar|zh)/)?(product|st_tour)/ [NC]
+  RewriteRule ^(.+)/$ /$1 [R=301,L,QSA]
+
+  # Clean Google Ads & SEO Language Subdirectory URLs (/ru/..., /it/..., /pl/..., /de/..., /fr/..., /ar/..., /zh/...)
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/$ index.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/r/([a-zA-Z0-9._-]+)$ index.php?lang=$1&seller=$2 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)$ seller-brochure.php?lang=$1&seller=$2&trip=$3 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/s/([a-zA-Z0-9._-]+)$ seller-brochure.php?lang=$1&seller=$2 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(services|prices|about|contact|faq|privacy-policy|terms|thank-you|404)$ $2.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/check-in$ check-in.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/guides$ guides.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/guides/([a-z0-9-]+)$ guide.php?lang=$1&slug=$2 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/dive-sites-sharm-el-sheikh$ dive-sites.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/gallery$ gallery.php?lang=$1 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)$ category.php?lang=$1&hub=$2 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(tours|courses)/([a-z0-9-]+)$ item.php?lang=$1&slug=$3&section=$2 [L,QSA]
+  RewriteRule ^(ru|it|pl|de|fr|ar|zh)/(?:product|st_tour)/([a-z0-9-]+)/?$ item.php?lang=$1&legacy=$2 [L,QSA]
 
   # Clean top-level pages, Guides Hub/Articles, Check-In Portal, Internal ERP Mobile App, Dive Sites & Gallery (default English)
-  RewriteRule ^(services|prices|about|contact|faq|privacy-policy|terms|thank-you)/?$ $1.php [L,QSA]
-  RewriteRule ^check-in/?$ check-in.php [L,QSA]
-  RewriteRule ^app/?$ erp-app.php [L,QSA]
-  RewriteRule ^r/([a-zA-Z0-9._-]+)/?$ index.php?seller=$1 [L,QSA]
-  RewriteRule ^s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?seller=$1&trip=$2 [L,QSA]
-  RewriteRule ^s/([a-zA-Z0-9._-]+)/?$ seller-brochure.php?seller=$1 [L,QSA]
-  RewriteRule ^guides/?$ guides.php [L,QSA]
-  RewriteRule ^guides/([a-z0-9-]+)/?$ guide.php?slug=$1 [L,QSA]
-  RewriteRule ^dive-sites-sharm-el-sheikh/?$ dive-sites.php [L,QSA]
-  RewriteRule ^gallery/?$ gallery.php [L,QSA]
+  RewriteRule ^(services|prices|about|contact|faq|privacy-policy|terms|thank-you)$ $1.php [L,QSA]
+  RewriteRule ^check-in$ check-in.php [L,QSA]
+  RewriteRule ^app$ erp-app.php [L,QSA]
+  RewriteRule ^r/([a-zA-Z0-9._-]+)$ index.php?seller=$1 [L,QSA]
+  RewriteRule ^s/([a-zA-Z0-9._-]+)/([a-zA-Z0-9._-]+)$ seller-brochure.php?seller=$1&trip=$2 [L,QSA]
+  RewriteRule ^s/([a-zA-Z0-9._-]+)$ seller-brochure.php?seller=$1 [L,QSA]
+  RewriteRule ^guides$ guides.php [L,QSA]
+  RewriteRule ^guides/([a-z0-9-]+)$ guide.php?slug=$1 [L,QSA]
+  RewriteRule ^dive-sites-sharm-el-sheikh$ dive-sites.php [L,QSA]
+  RewriteRule ^gallery$ gallery.php [L,QSA]
 
   # Category Hub SEO URLs (default English)
-  RewriteRule ^(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)/?$ category.php?hub=$1 [L,QSA]
+  RewriteRule ^(diving-trips-sharm-el-sheikh|diving-courses-sharm-el-sheikh|padi-course-bundles-sharm-el-sheikh|snorkeling-and-boats-sharm-el-sheikh)$ category.php?hub=$1 [L,QSA]
 
   # Individual Tour & PADI Course SEO/AEO pages (default English)
-  RewriteRule ^(tours|courses)/([a-z0-9-]+)/?$ item.php?section=$1&slug=$2 [L,QSA]
+  RewriteRule ^(tours|courses)/([a-z0-9-]+)$ item.php?section=$1&slug=$2 [L,QSA]
 
-  # Legacy WordPress/WooCommerce /product/<slug>/ 301 redirects
-  RewriteRule ^product/([a-z0-9-]+)/?$ item.php?legacy=$1 [L,QSA]
-  RewriteRule ^product/?$ /services [R=301,L,QSA]
+  # Legacy WordPress/WooCommerce /product/<slug>/ & Shinetheme /st_tour/<slug>/ 301 redirects
+  RewriteRule ^(?:product|st_tour)/([a-z0-9-]+)/?$ item.php?legacy=$1 [L,QSA]
+  RewriteRule ^(?:product|st_tour)/?$ /services [R=301,L,QSA]
 </IfModule>
 
 # Block source/data/backup/archive files (while allowing dynamic Google CSV ad feeds in /feeds/ and PWA manifest.json)

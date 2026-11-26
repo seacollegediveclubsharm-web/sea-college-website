@@ -7,8 +7,8 @@ declare(strict_types=1);
 return [
     'bubblemaker' => [
         'h1' => ['en' => 'PADI Bubblemaker Kids Scuba Experience in Sharm El Sheikh (Age 8+)', 'ar' => 'تجربة غوص الأطفال PADI Bubblemaker في شرم الشيخ (من سن 8 سنوات)'],
-        'meta_title' => ['en' => 'PADI Bubblemaker Sharm El Sheikh | Kids Age 8+ | €70 | Sea College', 'ar' => 'برنامج غوص الأطفال PADI Bubblemaker بشرم الشيخ | سن 8+ | 70€'],
-        'meta_desc' => ['en' => 'Introduce children aged 8+ to scuba diving in Sharm El Sheikh! PADI Bubblemaker (€70, 2–3 hours) in our shallow pool (<2 m) with child scuba gear & PADI Instructor.', 'ar' => 'عرّف طفلك (من سن 8 سنوات) على عالم الغوص في شرم الشيخ! برنامج PADI Bubblemaker (70€، 2–3 ساعات) في حمام السباحة (<2م) مع مدرب PADI شاملة المعدات.'],
+        'meta_title' => ['en' => 'PADI Bubblemaker Sharm El Sheikh | Kids Age 8+ Pool (€70)', 'ar' => 'برنامج غوص الأطفال PADI Bubblemaker بشرم الشيخ | سن 8+ | 70€'],
+        'meta_desc' => ['en' => 'Introduce kids aged 8+ to scuba diving in Sharm El Sheikh! PADI Bubblemaker (€70, 2–3h) in our shallow <2 m pool with child scuba gear & PADI Instructor.', 'ar' => 'عرّف طفلك (من سن 8 سنوات) على عالم الغوص في شرم الشيخ! برنامج PADI Bubblemaker (70€، 2–3 ساعات) في حمام السباحة (<2م) مع مدرب PADI شاملة المعدات.'],
         'aeo_answer' => [
             'en' => 'PADI Bubblemaker at Sea College Dive Club in Sharm El Sheikh costs €70 per child (minimum age 8) and lasts 2 to 3 hours. Held exclusively in our calm on-site training pool at Cyrene Sharm (maximum depth under 2 metres), children breathe underwater for the first time using child-sized scuba equipment under direct PADI Instructor supervision, with all equipment included.',
             'ar' => 'تبلغ تكلفة برنامج PADI Bubblemaker للأطفال في سي كوليدج دايف كلوب بشرم الشيخ 70€ للطفل (من سن 8 سنوات فأكثر) ويستغرق 2 إلى 3 ساعات. يُقام البرنامج بالكامل داخل حمام السباحة المخصص للتدريب في سيرين شرم بعمق لا يتجاوز مترين، مع معدات غوص بمقاسات الأطفال وإشراف مباشر من مدرب PADI (شامل المعدات بالكامل).',
@@ -113,12 +113,12 @@ return [
     ],
 
     'dsd' => [
-        'h1' => ['en' => 'PADI Discover Scuba Diving Program in Sharm El Sheikh (Pool + Reef Dive)', 'ar' => 'برنامج PADI Discover Scuba Diving للمبتدئين في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Discover Scuba Diving Sharm El Sheikh | €85 All-In | Sea College', 'ar' => 'برنامج PADI Discover Scuba Diving بشرم الشيخ | 85€ شامل الشهادة'],
-        'meta_desc' => ['en' => 'Official 1-day PADI Discover Scuba Diving in Sharm El Sheikh (€85, age 10+). Theory, pool skill practice + guided Red Sea shore dive — gear, booklet & PADI certificate included!', 'ar' => 'برنامج PADI الرسمي لاكتشاف الغوص في شرم الشيخ (85€، سن 10+). شرح نظري وتدريب مسبح + غطسة بحرية مع شمول المعدات والكتيب وشهادة PADI!'],
+        'h1' => ['en' => 'PADI Discover Scuba Diving Program in Sharm El Sheikh (Pool + Reef Dive)', 'ar' => 'دورة غوص بادي PADI التمهيدية للمبتدئين (Discover Scuba) في شرم الشيخ'],
+        'meta_title' => ['en' => 'PADI Discover Scuba Diving Sharm El Sheikh | €85 All-In', 'ar' => 'دورة غوص بادي PADI للمبتدئين شرم الشيخ | 85€ شامل الشهادة'],
+        'meta_desc' => ['en' => 'Official 1-day PADI Discover Scuba Diving in Sharm El Sheikh (€85, age 10+): pool skills + Red Sea shore dive — gear, booklet & PADI certificate included!', 'ar' => 'دورة غوص بادي PADI التمهيدية للمبتدئين بشرم الشيخ (85€، سن 10+): مسبح + غطسة بحرية شاملة المعدات وشهادة بادي والتمهيد لشهادة غوص دولية معتمدة!'],
         'aeo_answer' => [
             'en' => 'The official PADI Discover Scuba Diving program at Sea College Dive Club in Sharm El Sheikh costs €85 per person (minimum age 10, duration 1 day) and is the ONLY course where the PADI booklet, eLearning registration and official PADI recognition certificate are already included in the €85 price alongside full scuba equipment, shallow pool skill training and a supervised open water Red Sea reef dive.',
-            'ar' => 'يبلغ سعر برنامج PADI Discover Scuba Diving الرسمي في سي كوليدج دايف كلوب بشرم الشيخ 85€ للفرد (من سن 10 سنوات، لمدة يوم واحد)، وهو البرنامج الوحيد الذي يشمل في سعره الـ 85€ الكتيب الرسمي وتسجيل شهادة إتمام التجربة من PADI إلى جانب معدات الغوص الكاملة والتدريب في حمام السباحة وغطسة البحر المفتوح فوق الشعاب المرجانية.',
+            'ar' => 'يبلغ سعر برنامج PADI Discover Scuba Diving الرسمي في سي كوليدج دايف كلوب بشرم الشيخ 85€ للفرد (من سن 10 سنوات، لمدة يوم واحد)، وهو البرنامج الوحيد الذي يشمل في سعره الـ 85€ الكتيب الرسمي وشهادة إتمام التجربة من بادي PADI إلى جانب معدات الغوص الكاملة والتدريب في حمام السباحة وغطسة البحر المفتوح — ويُعد الخطوة التمهيدية الأولى لمن يرغب في استكمال دورة غوص بادي PADI وشهادة غوص دولية معتمدة.',
         ],
         'overview' => [
             'en' => [
@@ -126,7 +126,7 @@ return [
                 'Because you practise regulator recovery, mask clearing and buoyancy in our calm training pool before entering the Red Sea house reef, nervous first-timers feel 100% relaxed and in control.',
             ],
             'ar' => [
-                'يتميز برنامج PADI Discover Scuba Diving الرسمي (85€) عن الغطسة التجريبية السريعة بكونه يتضمن تدريبًا متكاملًا على المهارات الأساسية في حمام السباحة أولًا، مع تسجيلك رسميًا في نظام PADI ومنحك كتيب وشهادة إتمام التجربة.',
+                'يتميز برنامج PADI Discover Scuba Diving الرسمي (85€) عن الغطسة التجريبية السريعة بكونه يتضمن تدريبًا متكاملًا على المهارات الأساسية في حمام السباحة أولًا، مع تسجيلك رسميًا في نظام PADI ومنحك كتيب وشهادة إتمام التجربة وامتياز احتساب المهارات عند الترقية إلى دورة غوص بادي PADI وشهادة غوص دولية معتمدة (Open Water).',
                 'بفضل التدرب المسبق في المسبح الهادئ قبل النزول إلى الشعاب المنزلية في البحر الأحمر، يشعر المبتدئون بالاطمئنان التام والتحكم المريح تحت الماء.',
             ],
         ],
@@ -168,8 +168,8 @@ return [
 
     'scuba-diver' => [
         'h1' => ['en' => 'PADI Scuba Diver Course in Sharm El Sheikh (2-Day Certification)', 'ar' => 'دورة شهادة PADI Scuba Diver في شرم الشيخ (يومان)'],
-        'meta_title' => ['en' => 'PADI Scuba Diver Course Sharm El Sheikh | 2 Days · €250 | Sea College', 'ar' => 'دورة PADI Scuba Diver في شرم الشيخ | يومان · 250€ | سي كوليدج'],
-        'meta_desc' => ['en' => 'Short on holiday time? Earn your lifelong PADI Scuba Diver certification in just 2 days in Sharm El Sheikh (€250, age 10+). 3 pool + 2 Red Sea dives to 12 m, gear & insurance included.', 'ar' => 'وقتك قصير في الإجازة؟ احصل على شهادة PADI Scuba Diver الدائمة خلال يومين فقط في شرم الشيخ (250€، سن 10+) شاملة المعدات وتأمين الغوص.'],
+        'meta_title' => ['en' => 'PADI Scuba Diver Course Sharm El Sheikh | 2 Days · €250', 'ar' => 'دورة PADI Scuba Diver في شرم الشيخ | يومان · 250€ | سي كوليدج'],
+        'meta_desc' => ['en' => 'Short on holiday time? Earn your lifelong PADI Scuba Diver license in 2 days in Sharm El Sheikh (€250, age 10+): 3 pool + 2 Red Sea dives, gear & insurance.', 'ar' => 'وقتك قصير في الإجازة؟ احصل على شهادة PADI Scuba Diver الدائمة خلال يومين فقط في شرم الشيخ (250€، سن 10+) شاملة المعدات وتأمين الغوص.'],
         'aeo_answer' => [
             'en' => 'The PADI Scuba Diver course at Sea College Dive Club in Sharm El Sheikh costs €250 per person (minimum age 10) and takes just 2 days. Covering roughly 60% of the Open Water curriculum (3 knowledge modules, 3 pool sessions and 2 open water Red Sea dives), it awards a lifelong PADI certification qualifying you to dive down to 12 metres anywhere in the world accompanied by a PADI Professional, with equipment and dive insurance included (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة PADI Scuba Diver في سي كوليدج دايف كلوب بشرم الشيخ 250€ للفرد (من سن 10 سنوات) وتُنجز خلال يومين فقط. تغطي الدورة نحو 60% من منهج Open Water (3 وحدات نظرية و3 تدريبات مسبح وغطستان بالبحر الأحمر)، وتمنحك شهادة PADI دولية دائمة تؤهلك للغوص حتى عمق 12 مترًا برفقة محترف PADI، شاملة المعدات وتأمين الغوص (+85€ رسوم كتاب وشهادة PADI).',
@@ -222,7 +222,7 @@ return [
     'upgrade-owd' => [
         'h1' => ['en' => 'Upgrade PADI Scuba Diver to Open Water Diver in Sharm El Sheikh', 'ar' => 'ترقية شهادة PADI Scuba Diver إلى Open Water في شرم الشيخ'],
         'meta_title' => ['en' => 'Upgrade Scuba Diver to Open Water Sharm | €100 | Sea College', 'ar' => 'ترقية شهادة Scuba Diver إلى Open Water بشرم الشيخ | 100€'],
-        'meta_desc' => ['en' => 'Already a PADI Scuba Diver? Upgrade to full 18 m PADI Open Water Diver in 1–2 days in Sharm El Sheikh for €100 (2 pool + 2 open water dives, gear & insurance included).', 'ar' => 'تحمل شهادة PADI Scuba Diver؟ قم بترقيتها إلى شهادة Open Water الكاملة (18م) خلال 1–2 يوم في شرم الشيخ مقابل 100€ شاملة المعدات والتأمين.'],
+        'meta_desc' => ['en' => 'Already a PADI Scuba Diver? Upgrade to full 18 m PADI Open Water Diver in 1–2 days in Sharm El Sheikh (€100): 2 pool + 2 sea dives, gear & insurance included.', 'ar' => 'تحمل شهادة PADI Scuba Diver؟ قم بترقيتها إلى شهادة Open Water الكاملة (18م) خلال 1–2 يوم في شرم الشيخ مقابل 100€ شاملة المعدات والتأمين.'],
         'aeo_answer' => [
             'en' => 'Upgrading from PADI Scuba Diver to full PADI Open Water Diver at Sea College Dive Club in Sharm El Sheikh costs €100 per person (1 to 2 days, minimum age 10). You complete the remaining 2 knowledge development modules, 2 confined-water pool sessions, surface swim check and 2 open water Red Sea dives (Dives 3 & 4 up to 18 metres), with scuba equipment and dive insurance included (+€85 PADI certification/manual fee).',
             'ar' => 'تبلغ تكلفة ترقية شهادة PADI Scuba Diver إلى شهادة PADI Open Water الكاملة في سي كوليدج دايف كلوب بشرم الشيخ 100€ للفرد (خلال 1–2 يوم، من سن 10 سنوات). تُكمل فيها الوحدتين النظريتين المتبقيتين وجلستين في المسبح وغطستين في البحر المفتوح حتى عمق 18 مترًا، شاملة المعدات وتأمين الغوص (+85€ رسوم شهادة وكتاب PADI).',
@@ -273,12 +273,12 @@ return [
     ],
 
     'owd' => [
-        'h1' => ['en' => 'PADI Open Water Diver Course in Sharm El Sheikh (Full Certification)', 'ar' => 'دورة غواص المياه المفتوحة PADI Open Water في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Open Water Course Sharm El Sheikh | €400 | PADI 5 Star Resort', 'ar' => 'دورة PADI Open Water في شرم الشيخ | 400€ | منتجع PADI خمس نجوم'],
-        'meta_desc' => ['en' => 'Earn your lifelong PADI Open Water Diver license in Sharm El Sheikh (€400, 3–3.5 days, age 10+). 5 pool + 4 Red Sea dives to 18 m — full equipment & dive insurance included.', 'ar' => 'احصل على رخصة الغوص الدولية مدى الحياة PADI Open Water في شرم الشيخ (400€، 3–3.5 أيام، سن 10+). 5 جلسات مسبح + 4 غطسات بحر أحمر شاملة المعدات والتأمين.'],
+        'h1' => ['en' => 'PADI Open Water Diver Course in Sharm El Sheikh (Full Certification)', 'ar' => 'دورة غوص بادي PADI Open Water في شرم الشيخ — شهادة غوص دولية معتمدة'],
+        'meta_title' => ['en' => 'PADI Open Water Course Sharm El Sheikh | €400 (PADI 5★)', 'ar' => 'دورة غوص بادي PADI Open Water شرم الشيخ | 400€ شهادة معتمدة'],
+        'meta_desc' => ['en' => 'Earn your lifelong PADI Open Water Diver license in Sharm El Sheikh (€400, 3–3.5 days, age 10+): 5 pool + 4 Red Sea dives to 18 m, full gear & dive insurance.', 'ar' => 'سجّل في دورة غوص بادي PADI Open Water بشرم الشيخ (400€، 3–3.5 أيام) واحصل على شهادة غوص دولية معتمدة مدى الحياة لعمق 18م شاملة المعدات وتأمين الغوص.'],
         'aeo_answer' => [
             'en' => 'The PADI Open Water Diver course at Sea College Dive Club (a PADI 5 Star Dive Resort at Cyrene Sharm, Al Montazah, Sharm El Sheikh) costs €400 per person, lasts 3 to 3.5 days, and welcomes beginners from age 10 with zero prior diving experience. The price includes 5 knowledge modules, 5 confined-water pool sessions, 4 open water Red Sea dives (qualifying you to 18 m worldwide for life), full scuba equipment rental and diving insurance; the official PADI manual/eLearning & certification card fee is €85.',
-            'ar' => 'تبلغ تكلفة دورة PADI Open Water Diver في سي كوليدج دايف كلوب (منتجع PADI خمس نجوم في سيرين شرم بالمنتزه، شرم الشيخ) 400€ للفرد، وتستغرق من 3 إلى 3.5 أيام للمبتدئين من سن 10 سنوات دون أي خبرة سابقة. يشمل السعر 5 وحدات نظرية و5 تدريبات في حمام السباحة و4 غطسات في البحر الأحمر (تؤهلك لعمق 18 مترًا مدى الحياة حول العالم) وتأجير المعدات الكاملة وتأمين الغوص، وتُضاف رسوم كتاب وشهادة PADI الرسمية بقيمة 85€.',
+            'ar' => 'تبلغ تكلفة دورة غوص بادي PADI Open Water Diver في سي كوليدج دايف كلوب (منتجع PADI خمس نجوم في سيرين شرم بالمنتزه، شرم الشيخ) 400€ للفرد، وتستغرق من 3 إلى 3.5 أيام للمبتدئين من سن 10 سنوات دون أي خبرة سابقة، وتمنحك شهادة غوص دولية معتمدة مدى الحياة. يشمل السعر 5 وحدات نظرية و5 تدريبات في حمام السباحة و4 غطسات في البحر الأحمر (تؤهلك لعمق 18 مترًا حول العالم) وتأجير المعدات الكاملة وتأمين الغوص، وتُضاف رسوم كتاب وشهادة PADI الرسمية بقيمة 85€.',
         ],
         'overview' => [
             'en' => [
@@ -286,8 +286,8 @@ return [
                 'At Sea College Dive Club you progress calmly from waist-deep pool water to sheltered reef dives and boat excursions — coached in English, Arabic, Russian, German, Italian or French by the same instructors praised across 3,082+ Google reviews.',
             ],
             'ar' => [
-                'تُعد شرم الشيخ واحدة من أفضل وجهات العالم للحصول على رخصة PADI Open Water الدولية بفضل المياه الدافئة طوال العام، ومدى الرؤية الفائق (20–30 مترًا)، ووجود حمام سباحة تدريبي وشعاب منزلية مباشرة في مقرنا.',
-                'تتدرج معنا بهدوء من المياه الضحلة بالمسبح إلى الشعاب المنزلية ثم البحر المفتوح مع مدربين صبورين يتحدثون 6 لغات وحاصلين على إشادة أكثر من 3,082 ضيفًا على جوجل.',
+                'تُعد شرم الشيخ واحدة من أفضل وجهات العالم للالتحاق بـ دورة غوص بادي PADI وشهادة غوص دولية معتمدة (Open Water) بفضل المياه الدافئة طوال العام، ومدى الرؤية الفائق (20–30 مترًا)، ووجود حمام سباحة تدريبي وشعاب منزلية مباشرة في مقرنا.',
+                'تتدرج معنا بهدوء من المياه الضحلة بالمسبح إلى الشعاب المنزلية ثم البحر المفتوح مع مدربين صبورين يتحدثون 8 لغات وحاصلين على إشادة أكثر من 3,082 ضيفًا على جوجل.',
             ],
         ],
         'specs' => [
@@ -330,8 +330,8 @@ return [
 
     'aowd' => [
         'h1' => ['en' => 'PADI Advanced Open Water Diver Course in Sharm El Sheikh (30 m License)', 'ar' => 'دورة الغوص المتقدم PADI Advanced Open Water في شرم الشيخ (30 مترًا)'],
-        'meta_title' => ['en' => 'PADI Advanced Open Water Sharm El Sheikh | €350 | 5 Adventure Dives', 'ar' => 'دورة PADI Advanced Open Water بشرم الشيخ | 350€ | 5 غطسات'],
-        'meta_desc' => ['en' => 'Unlock 30 m Red Sea walls & wrecks! PADI Advanced Open Water Diver in Sharm El Sheikh (€350, 2.5–3 days, age 12+): 5 Adventure Dives incl. Deep & Navigation, gear included.', 'ar' => 'تأهل للغوص حتى 30 مترًا في شرم الشيخ! دورة PADI Advanced Open Water (350€، 2.5–3 أيام، سن 12+): 5 غطسات مغامرة شاملة العميق والملاحة والمعدات.'],
+        'meta_title' => ['en' => 'PADI Advanced Open Water Sharm El Sheikh | €350 (30m Dive)', 'ar' => 'دورة PADI Advanced Open Water بشرم الشيخ | 350€ | 5 غطسات'],
+        'meta_desc' => ['en' => 'Unlock 30 m Red Sea walls & wrecks! PADI Advanced Open Water in Sharm El Sheikh (€350, 2.5–3 days, age 12+): 5 Adventure Dives, Deep, Nav & gear included.', 'ar' => 'تأهل للغوص حتى 30 مترًا في شرم الشيخ! دورة PADI Advanced Open Water (350€، 2.5–3 أيام، سن 12+): 5 غطسات مغامرة شاملة العميق والملاحة والمعدات.'],
         'aeo_answer' => [
             'en' => 'The PADI Advanced Open Water Diver course at Sea College Dive Club in Sharm El Sheikh costs €350 per person (minimum age 12, duration 2.5 to 3 days) and includes all scuba equipment across 5 open water Adventure Dives — no written final exam required! You complete Deep Adventure Dive (certifying you to 30 m / 21 m for ages 12–14) and Underwater Navigation plus 3 electives such as Wreck, Drift, Peak Performance Buoyancy or Night (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة PADI Advanced Open Water في سي كوليدج دايف كلوب بشرم الشيخ 350€ للفرد (من سن 12 سنة، لمدة 2.5–3 أيام) وتشمل معدات الغوص الكاملة خلال 5 غطسات مغامرة في البحر المفتوح دون اختبار تحريري نهائي! تشمل غطستين أساسيتين (العميق حتى 30م والملاحة بالبوصلة) مع 3 غطسات اختيارية مثل الطفو المثالي أو التيارات أو الحطام (+85€ رسوم كتاب وشهادة PADI).',
@@ -384,8 +384,8 @@ return [
 
     'aowd-green' => [
         'h1' => ['en' => 'PADI Advanced Open Water "Green" (AOWD + Enriched Air Nitrox) in Sharm El Sheikh', 'ar' => 'دورة Advanced Open Water Green (المتقدم + النيتروكس) في شرم الشيخ'],
-        'meta_title' => ['en' => 'Advanced Open Water Green (AOWD + Nitrox) Sharm | €380 | Sea College', 'ar' => 'دورة Advanced Open Water Green بشرم الشيخ | 380€ | سي كوليدج'],
-        'meta_desc' => ['en' => 'Earn two PADI certifications in 3 days in Sharm El Sheikh: Advanced Open Water Diver (5 dives to 30 m) + Enriched Air Nitrox Dry Specialty for €380 (gear included).', 'ar' => 'احصل على شهادتي PADI خلال 3 أيام في شرم الشيخ: الغوص المتقدم (5 غطسات حتى 30م) + تخصص النيتروكس الجاف مقابل 380€ شاملة المعدات.'],
+        'meta_title' => ['en' => 'Advanced Open Water + Nitrox Sharm El Sheikh | €380 Combo', 'ar' => 'دورة Advanced Open Water Green بشرم الشيخ | 380€ | سي كوليدج'],
+        'meta_desc' => ['en' => 'Earn 2 PADI certifications in 3 days in Sharm El Sheikh: Advanced Open Water (5 dives to 30 m) + Enriched Air Nitrox Specialty for €380, full gear included.', 'ar' => 'احصل على شهادتي PADI خلال 3 أيام في شرم الشيخ: الغوص المتقدم (5 غطسات حتى 30م) + تخصص النيتروكس الجاف مقابل 380€ شاملة المعدات.'],
         'aeo_answer' => [
             'en' => 'Advanced Open Water "Green" at Sea College Dive Club in Sharm El Sheikh costs €380 per person (minimum age 12, duration 3 days) and pairs all 5 open water Adventure Dives of PADI Advanced Open Water (to 30 m) with the PADI Enriched Air (Nitrox) dry specialty workshop, including full scuba equipment rental (+€85 PADI manual/cert fee per certification).',
             'ar' => 'تبلغ تكلفة برنامج Advanced Open Water Green في سي كوليدج دايف كلوب بشرم الشيخ 380€ للفرد (من سن 12 سنة، لمدة 3 أيام)، ويجمع بين الغطسات الخمس لدورة الغوص المتقدم (حتى 30م) وورشة تخصص الهواء المخصب (النيتروكس) في آن واحد مع شمول معدات الغوص الكاملة (+85€ رسوم كتاب وشهادة PADI لكل شهادة).',
@@ -438,7 +438,7 @@ return [
     'efr' => [
         'h1' => ['en' => 'Emergency First Response (EFR) CPR, AED & First Aid Course in Sharm El Sheikh', 'ar' => 'دورة الإسعافات الأولية والإنعاش القلبي EFR في شرم الشيخ'],
         'meta_title' => ['en' => 'Emergency First Response (EFR) Course Sharm | €143 | 1 Day', 'ar' => 'دورة الإسعافات الأولية EFR بشرم الشيخ | 143€ | يوم واحد'],
-        'meta_desc' => ['en' => 'Internationally recognized 1-day Emergency First Response (EFR) Primary & Secondary Care, CPR, AED & Care for Children course in Sharm El Sheikh (€143). Open to everyone.', 'ar' => 'دورة الاستجابة الأولية للطوارئ EFR المعتمدة دوليًا في يوم واحد بشرم الشيخ (143€): الإنعاش القلبي الرئوي، الإسعافات الأولية، جهاز AED ورعاية الأطفال. متاحة للجميع.'],
+        'meta_desc' => ['en' => '1-day Emergency First Response (EFR) Primary & Secondary Care, CPR, AED & Care for Children course in Sharm El Sheikh (€143). Open to divers & non-divers.', 'ar' => 'دورة الاستجابة الأولية للطوارئ EFR المعتمدة دوليًا في يوم واحد بشرم الشيخ (143€): الإنعاش القلبي الرئوي، الإسعافات الأولية، جهاز AED ورعاية الأطفال. متاحة للجميع.'],
         'aeo_answer' => [
             'en' => 'The Emergency First Response (EFR Primary & Secondary Care) course at Sea College Dive Club in Sharm El Sheikh costs €143 per person, takes 1 day in our air-conditioned classroom at Cyrene Sharm, and has no minimum age or diving prerequisite — anyone can attend. It teaches adult/child CPR, AED defibrillator use, choking response, bleeding/shock management and injury assessment, fulfilling the mandatory 24-month first-aid prerequisite for PADI Rescue Diver and Adaptive Support Diver.',
             'ar' => 'تبلغ تكلفة دورة الاستجابة الأولية للطوارئ (EFR) في سي كوليدج دايف كلوب بشرم الشيخ 143€ للفرد، وتُعقد خلال يوم واحد في قاعة التدريب المكيفة بسيرين شرم دون اشتراط عمر محدد أو خبرة في الغوص. تغطي الدورة الإنعاش القلبي الرئوي (CPR) واستخدام جهاز الصدمات (AED) والإسعافات الأولية للبالغين والأطفال، وتحقق الشرط الإلزامي لالتحاق غواصي الإنقاذ (Rescue Diver).',
@@ -491,7 +491,7 @@ return [
     'rescue' => [
         'h1' => ['en' => 'PADI Rescue Diver Course in Sharm El Sheikh', 'ar' => 'دورة غواص الإنقاذ PADI Rescue Diver في شرم الشيخ'],
         'meta_title' => ['en' => 'PADI Rescue Diver Course Sharm El Sheikh | €394 | 3–4 Days', 'ar' => 'دورة غواص الإنقاذ PADI Rescue Diver بشرم الشيخ | 394€'],
-        'meta_desc' => ['en' => 'Become the diver everyone wants as a buddy! PADI Rescue Diver in Sharm El Sheikh (€394, 3–4 days, age 12+): self-rescue, stress recognition & open-water emergency scenarios.', 'ar' => 'كن الغواص الأكثر ثقة وأمانًا تحت الماء! دورة PADI Rescue Diver في شرم الشيخ (394€، 3–4 أيام، سن 12+): الإنقاذ الذاتي وإدارة الطوارئ البحرية.'],
+        'meta_desc' => ['en' => 'Become a confident buddy! PADI Rescue Diver in Sharm El Sheikh (€394, 3–4 days, age 12+): self-rescue, stress detection & Red Sea emergency scenarios + gear.', 'ar' => 'كن الغواص الأكثر ثقة وأمانًا تحت الماء! دورة PADI Rescue Diver في شرم الشيخ (394€، 3–4 أيام، سن 12+): الإنقاذ الذاتي وإدارة الطوارئ البحرية.'],
         'aeo_answer' => [
             'en' => 'The PADI Rescue Diver course at Sea College Dive Club in Sharm El Sheikh costs €394 per person, runs over 3 to 4 days (minimum age 12), and includes scuba equipment. Widely described by divers as the most rewarding course in scuba, it trains you in self-rescue, recognizing diver stress before accidents happen, emergency oxygen administration, rescuing panicked or unresponsive divers underwater and at the surface, and leading full open-water rescue scenarios (requires Adventure/Advanced Diver + CPR/First Aid within 24 months; +€85 PADI fee).',
             'ar' => 'تبلغ تكلفة دورة غواص الإنقاذ PADI Rescue Diver في سي كوليدج دايف كلوب بشرم الشيخ 394€ للفرد، وتستغرق 3 إلى 4 أيام (من سن 12 سنة) شاملة معدات الغوص الأساسية. يُجمع الغواصون على أنها الدورة الأكثر إثراءً ومتعة؛ إذ تدربك على الإنقاذ الذاتي واكتشاف إجهاد الغواصين مبكرًا واستخدام الأكسجين الطبي وإنقاذ الغواص المذعور أو فاقد الوعي تحت الماء وعلى السطح (تتطلب Advanced + شهادة إسعافات خلال 24 شهرًا؛ +85€ رسوم PADI).',
@@ -543,8 +543,8 @@ return [
 
     'nitrox' => [
         'h1' => ['en' => 'PADI Enriched Air (Nitrox) Diver Specialty Course in Sharm El Sheikh', 'ar' => 'دورة تخصص الهواء المخصب PADI Enriched Air Nitrox في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Enriched Air Nitrox Course Sharm El Sheikh | €145 | 1 Day', 'ar' => 'دورة النيتروكس PADI Nitrox في شرم الشيخ | 145€ | يوم واحد'],
-        'meta_desc' => ['en' => 'PADI\'s #1 specialty course in Sharm El Sheikh (€145, 1 day, age 12+). Extend your no-stop dive times on Red Sea wrecks & walls, analyze O₂ cylinders & set Nitrox computers.', 'ar' => 'أشهر تخصص في PADI بشرم الشيخ (145€، يوم واحد، سن 12+). ضاعف أوقات الغوص بدون توقف على حطام وجدران البحر الأحمر وتعلم تحليل أسطوانات النيتروكس.'],
+        'meta_title' => ['en' => 'PADI Enriched Air Nitrox Course Sharm El Sheikh | €145/1d', 'ar' => 'دورة النيتروكس PADI Nitrox في شرم الشيخ | 145€ | يوم واحد'],
+        'meta_desc' => ['en' => 'PADI\'s #1 specialty in Sharm El Sheikh (€145, 1 day, age 12+): extend no-stop bottom times on Red Sea wrecks & walls, analyze O₂ tanks & set Nitrox computers.', 'ar' => 'أشهر تخصص في PADI بشرم الشيخ (145€، يوم واحد، سن 12+). ضاعف أوقات الغوص بدون توقف على حطام وجدران البحر الأحمر وتعلم تحليل أسطوانات النيتروكس.'],
         'aeo_answer' => [
             'en' => 'The PADI Enriched Air (Nitrox) Diver course at Sea College Dive Club in Sharm El Sheikh costs €145 per person, finishes in 1 day (minimum age 12, Open Water Diver prerequisite), and includes scuba equipment. As PADI\'s most popular specialty worldwide, it certifies you to dive with enriched oxygen blends up to 40% O₂ (EANx22–EANx40) for significantly longer no-decompression bottom times on repetitive Red Sea dives (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص الهواء المخصب PADI Enriched Air Nitrox في سي كوليدج دايف كلوب بشرم الشيخ 145€ للفرد، وتُنجز في يوم واحد (من سن 12 سنة لحاملي Open Water) شاملة المعدات. تُعد التخصص الأكثر طلبًا عالميًا في PADI لأنها تؤهلك لاستخدام خليط الأكسجين المخصب (حتى 40% أكسجين) لإطالة وقت الغوص المسموح وتقليل فترات الاستراحة السطحية في الغطسات المتكررة (+85€ رسوم كتاب وشهادة PADI).',
@@ -596,8 +596,8 @@ return [
 
     'spec-2' => [
         'h1' => ['en' => '2-Dive PADI Specialty Course in Sharm El Sheikh (Buoyancy, Drift, Boat, Naturalist or Photo)', 'ar' => 'دورة تخصص PADI من غطستين في شرم الشيخ (الطفو، التيارات، القوارب أو التصوير)'],
-        'meta_title' => ['en' => '2-Dive PADI Specialty Sharm El Sheikh | €145 | Buoyancy, Drift, Photo', 'ar' => 'تخصص PADI من غطستين بشرم الشيخ | 145€ | الطفو والتيارات والتصوير'],
-        'meta_desc' => ['en' => 'Complete a 2-dive PADI Specialty in 1 day in Sharm El Sheikh (€145, gear included): choose Peak Performance Buoyancy, Drift Diver, Boat Diver, Naturalist or Underwater Photographer.', 'ar' => 'أنجز تخصص PADI من غطستين في يوم واحد بشرم الشيخ (145€ شامل المعدات): اختر الطفو المثالي أو التيارات أو غوص القوارب أو التصوير تحت الماء.'],
+        'meta_title' => ['en' => '2-Dive PADI Specialty Sharm El Sheikh | €145 (PPB & Drift)', 'ar' => 'تخصص PADI من غطستين بشرم الشيخ | 145€ | الطفو والتيارات والتصوير'],
+        'meta_desc' => ['en' => 'Complete a 2-dive PADI Specialty in 1 day in Sharm El Sheikh (€145, gear included): Peak Performance Buoyancy, Drift, Boat, Naturalist or UW Photographer.', 'ar' => 'أنجز تخصص PADI من غطستين في يوم واحد بشرم الشيخ (145€ شامل المعدات): اختر الطفو المثالي أو التيارات أو غوص القوارب أو التصوير تحت الماء.'],
         'aeo_answer' => [
             'en' => 'Sea College Dive Club\'s 2-Dive PADI Specialty package in Sharm El Sheikh costs €145 per person (1 day, 2 open water dives, scuba equipment included) and lets certified Open Water divers earn a full PADI Specialty card in their choice of Peak Performance Buoyancy (PPB), Drift Diver, Boat Diver, Underwater Naturalist or Digital Underwater Photographer (+€85 PADI manual/cert fee; underwater camera not included for Photo).',
             'ar' => 'تبلغ تكلفة دورة تخصص PADI من غطستين في سي كوليدج دايف كلوب بشرم الشيخ 145€ للفرد (يوم واحد، غطستان بحريتان شاملة معدات الغوص)، وتتيح لحاملي شهادة Open Water نيل شهادة تخصص كاملة في أحد المجالات التالية: الطفو المثالي (PPB)، الغوص مع التيار (Drift)، غوص القوارب (Boat)، عالم الطبيعة البحرية، أو التصوير الرقمي تحت الماء (+85€ رسوم كتاب وشهادة PADI؛ الكاميرا غير مشمولة).',
@@ -649,8 +649,8 @@ return [
 
     'spec-3' => [
         'h1' => ['en' => 'PADI Underwater Navigator / 3-Dive Specialty Course in Sharm El Sheikh', 'ar' => 'دورة تخصص الملاحة تحت الماء PADI Underwater Navigator (3 غطسات)'],
-        'meta_title' => ['en' => 'PADI Underwater Navigator Course Sharm El Sheikh | €250 | 3 Dives', 'ar' => 'تخصص الملاحة تحت الماء PADI بشرم الشيخ | 250€ | 3 غطسات'],
-        'meta_desc' => ['en' => 'Never lose your bearings underwater again! PADI Underwater Navigator 3-dive specialty in Sharm El Sheikh (€250, 1.5–2 days, gear included): compass patterns & natural navigation.', 'ar' => 'أتقن تحديد الاتجاهات تحت الماء! تخصص PADI للملاحة تحت الماء من 3 غطسات في شرم الشيخ (250€ شامل المعدات): أنماط البوصلة والملاحة الطبيعية.'],
+        'meta_title' => ['en' => 'PADI Underwater Navigator Sharm El Sheikh | €250 (3 Dives)', 'ar' => 'تخصص الملاحة تحت الماء PADI بشرم الشيخ | 250€ | 3 غطسات'],
+        'meta_desc' => ['en' => 'Master reef navigation! PADI Underwater Navigator 3-dive specialty in Sharm El Sheikh (€250, 1.5–2 days, gear included): compass patterns & reef mapping.', 'ar' => 'أتقن تحديد الاتجاهات تحت الماء! تخصص PADI للملاحة تحت الماء من 3 غطسات في شرم الشيخ (250€ شامل المعدات): أنماط البوصلة والملاحة الطبيعية.'],
         'aeo_answer' => [
             'en' => 'The 3-Dive PADI Specialty / Underwater Navigator course at Sea College Dive Club in Sharm El Sheikh costs €250 per person (1.5 to 2 days, minimum age 10, Open Water prerequisite) and includes full scuba equipment across 3 open water Red Sea dives. You master kick-cycle distance measurement, natural reef contour reading, multi-turn compass squares/triangles and Underwater Map making (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص الملاحة تحت الماء (3 غطسات) في سي كوليدج دايف كلوب بشرم الشيخ 250€ للفرد (1.5 إلى يومين، من سن 10 سنوات لحاملي Open Water) شاملة معدات الغوص الكاملة خلال 3 غطسات في البحر الأحمر. تتقن فيها تقدير المسافات والملاحة بالمعالم الطبيعية وأنماط البوصلة المربعة والمثلثة ورسم خرائط المواقع (+85€ رسوم كتاب وشهادة PADI).',
@@ -702,7 +702,7 @@ return [
     'deep' => [
         'h1' => ['en' => 'PADI Deep Diver Specialty Course in Sharm El Sheikh (40 m Certification)', 'ar' => 'دورة تخصص الغوص العميق PADI Deep Diver في شرم الشيخ (حتى 40 مترًا)'],
         'meta_title' => ['en' => 'PADI Deep Diver Course Sharm El Sheikh | €325 | 40 m Limit', 'ar' => 'تخصص الغوص العميق PADI Deep Diver بشرم الشيخ | 325€ | 40م'],
-        'meta_desc' => ['en' => 'Qualify to the 40 m recreational scuba limit in Sharm El Sheikh! PADI Deep Diver (€325, 2 days, 4 deep dives, age 15+, gear included) on dramatic Red Sea walls.', 'ar' => 'تأهل لأقصى عمق ترفيهي (40 مترًا) في شرم الشيخ! دورة PADI Deep Diver (325€، يومان، 4 غطسات عميقة، سن 15+، شاملة المعدات) على جدران البحر الأحمر.'],
+        'meta_desc' => ['en' => 'Qualify to the 40 m recreational scuba limit in Sharm El Sheikh! PADI Deep Diver (€325, 2 days, 4 deep dives, age 15+, gear included) on iconic Red Sea walls.', 'ar' => 'تأهل لأقصى عمق ترفيهي (40 مترًا) في شرم الشيخ! دورة PADI Deep Diver (325€، يومان، 4 غطسات عميقة، سن 15+، شاملة المعدات) على جدران البحر الأحمر.'],
         'aeo_answer' => [
             'en' => 'The PADI Deep Diver Specialty course at Sea College Dive Club in Sharm El Sheikh costs €325 per person (2 days, 4 deep open water dives, minimum age 15, PADI Adventure Diver or higher prerequisite) and includes full scuba equipment. Training on Sharm El Sheikh\'s famous vertical coral walls, it qualifies you to the maximum recreational scuba depth of 40 metres (130 ft), covering gas supply management, narcosis awareness, emergency decompression procedures and deep buoyancy (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص الغوص العميق PADI Deep Diver في سي كوليدج دايف كلوب بشرم الشيخ 325€ للفرد (يومان، 4 غطسات عميقة، من سن 15 سنة لحاملي Adventure Diver أو أعلى) شاملة معدات الغوص الكاملة. تؤهلك الدورة للغوص حتى الحد الأقصى للغوص الترفيهي عالميًا وهو 40 مترًا، مع إتقان حساب استهلاك الغاز والتعامل مع خدر الأعماق وإجراءات الطوارئ (+85€ رسوم كتاب وشهادة PADI).',
@@ -755,8 +755,8 @@ return [
 
     'wreck' => [
         'h1' => ['en' => 'PADI Wreck Diver Specialty Course in Sharm El Sheikh (4 Wreck Dives)', 'ar' => 'دورة تخصص غوص الحطام PADI Wreck Diver في شرم الشيخ (4 غطسات)'],
-        'meta_title' => ['en' => 'PADI Wreck Diver Course Sharm El Sheikh | €325 | Red Sea Wrecks', 'ar' => 'تخصص غوص الحطام PADI Wreck Diver بشرم الشيخ | 325€'],
-        'meta_desc' => ['en' => 'Train on legendary Red Sea shipwrecks! PADI Wreck Diver Specialty in Sharm El Sheikh (€325, 2 days, 4 dives, age 15+, gear included): mapping, reels & safe penetration.', 'ar' => 'تدرب على أشهر حطام سفن البحر الأحمر! دورة PADI Wreck Diver في شرم الشيخ (325€، يومان، 4 غطسات، سن 15+، شاملة المعدات): رسم الخرائط والبكرات والدخول الآمن.'],
+        'meta_title' => ['en' => 'PADI Wreck Diver Course Sharm El Sheikh | €325 (4 Dives)', 'ar' => 'تخصص غوص الحطام PADI Wreck Diver بشرم الشيخ | 325€'],
+        'meta_desc' => ['en' => 'Train on iconic Red Sea shipwrecks! PADI Wreck Diver Specialty in Sharm El Sheikh (€325, 2 days, 4 dives, age 15+, gear included): mapping, reels & safety.', 'ar' => 'تدرب على أشهر حطام سفن البحر الأحمر! دورة PADI Wreck Diver في شرم الشيخ (325€، يومان، 4 غطسات، سن 15+، شاملة المعدات): رسم الخرائط والبكرات والدخول الآمن.'],
         'aeo_answer' => [
             'en' => 'The PADI Wreck Diver Specialty course at Sea College Dive Club in Sharm El Sheikh costs €325 per person (2 days, 4 wreck dives, minimum age 15, PADI Adventure Diver or higher prerequisite) and includes standard scuba equipment. Situated beside world-famous wrecks including the SS Thistlegorm, SS Dunraven and Million Hope, you learn wreck surveying, hazard mapping, frog-kick silt avoidance and penetration line-and-reel deployment (+€85 PADI fee; applicable wreck trip supplements extra).',
             'ar' => 'تبلغ تكلفة دورة تخصص غوص الحطام PADI Wreck Diver في سي كوليدج دايف كلوب بشرم الشيخ 325€ للفرد (يومان، 4 غطسات حطام، من سن 15 سنة لحاملي Adventure Diver فأعلى) شاملة معدات الغوص الأساسية. وبفضل وجود أشهر حطام العالم في شرم الشيخ مثل ثيستلجورم ودنرافين ومليون هوب، تتعلم مسح الحطام ورسم الخرائط والسباحة دون إثارة الرواسب ومدّ خيوط وبكرات الدخول الآمن (+85€ رسوم PADI؛ وتُضاف رسوم رحلة الحطام المختارة).',
@@ -808,8 +808,8 @@ return [
 
     'night' => [
         'h1' => ['en' => 'PADI Night Diver Specialty Course in Sharm El Sheikh (3 Night Dives)', 'ar' => 'دورة تخصص الغوص الليلي PADI Night Diver في شرم الشيخ (3 غطسات ليلية)'],
-        'meta_title' => ['en' => 'PADI Night Diver Course Sharm El Sheikh | €265 | 3 Night Dives', 'ar' => 'تخصص الغوص الليلي PADI Night Diver بشرم الشيخ | 265€ | 3 غطسات'],
-        'meta_desc' => ['en' => 'Discover the Red Sea after sunset! PADI Night Diver Specialty in Sharm El Sheikh (€265, 3 night dives, age 12+, scuba gear included): torch signals, dark navigation & nocturnal reef life.', 'ar' => 'اكتشف سحر البحر الأحمر بعد الغروب! تخصص PADI Night Diver في شرم الشيخ (265€، 3 غطسات ليلية، سن 12+، شامل المعدات): إشارات الكشاف والملاحة الليلية.'],
+        'meta_title' => ['en' => 'PADI Night Diver Course Sharm El Sheikh | €265 (3 Dives)', 'ar' => 'تخصص الغوص الليلي PADI Night Diver بشرم الشيخ | 265€ | 3 غطسات'],
+        'meta_desc' => ['en' => 'Explore the Red Sea after dark! PADI Night Diver Specialty in Sharm El Sheikh (€265, 3 night dives, age 12+, gear included): torch signals & nocturnal life.', 'ar' => 'اكتشف سحر البحر الأحمر بعد الغروب! تخصص PADI Night Diver في شرم الشيخ (265€، 3 غطسات ليلية، سن 12+، شامل المعدات): إشارات الكشاف والملاحة الليلية.'],
         'aeo_answer' => [
             'en' => 'The PADI Night Diver Specialty course at Sea College Dive Club in Sharm El Sheikh costs €265 per person (3 guided night dives, minimum age 12, Open Water Diver prerequisite) and includes standard scuba equipment. Starting from our calm, familiar house reef at Al Montazah, you master primary/backup dive light handling, nocturnal hand/beam signals, night compass navigation and spotting octopuses, Spanish dancers, lionfish and bioluminescence (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص الغوص الليلي PADI Night Diver في سي كوليدج دايف كلوب بشرم الشيخ 265€ للفرد (3 غطسات ليلية موجهة، من سن 12 سنة لحاملي Open Water) شاملة معدات الغوص الأساسية. تنطلق الغطسات من الشعاب المنزلية الهادئة بالمنتزه لتتعلم استخدام الكشاف الرئيسي والاحتياطي وإشارات الضوء والملاحة بالبوصلة ليلًا ومشاهدة الأخطبوط والراقصة الإسبانية والعوالق المضيئة (+85€ رسوم كتاب وشهادة PADI).',
@@ -861,8 +861,8 @@ return [
 
     'sidemount' => [
         'h1' => ['en' => 'PADI Sidemount Diver Specialty Course in Sharm El Sheikh', 'ar' => 'دورة تخصص الغوص الجانبي PADI Sidemount Diver في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Sidemount Diver Course Sharm El Sheikh | €350 | 2–3 Days', 'ar' => 'تخصص الغوص الجانبي PADI Sidemount بشرم الشيخ | 350€'],
-        'meta_desc' => ['en' => 'Master streamlined horizontal trim & twin-tank gas redundancy! PADI Sidemount Diver Specialty in Sharm El Sheikh (€350, 2–3 days, 1 pool + 3 sea dives, gear included).', 'ar' => 'أتقن التوازن الأفقي الانسيابي وإدارة الأسطوانات الجانبية! دورة PADI Sidemount في شرم الشيخ (350€، 2–3 أيام، جلسة مسبح + 3 غطسات بحرية، شاملة المعدات).'],
+        'meta_title' => ['en' => 'PADI Sidemount Diver Sharm El Sheikh | €350 (2–3 Days)', 'ar' => 'تخصص الغوص الجانبي PADI Sidemount بشرم الشيخ | 350€'],
+        'meta_desc' => ['en' => 'Master horizontal trim & twin-tank gas redundancy! PADI Sidemount Diver Specialty in Sharm El Sheikh (€350, 2–3 days, 1 pool + 3 sea dives, rig included).', 'ar' => 'أتقن التوازن الأفقي الانسيابي وإدارة الأسطوانات الجانبية! دورة PADI Sidemount في شرم الشيخ (350€، 2–3 أيام، جلسة مسبح + 3 غطسات بحرية، شاملة المعدات).'],
         'aeo_answer' => [
             'en' => 'The PADI Sidemount Diver Specialty course at Sea College Dive Club in Sharm El Sheikh costs €350 per person (2 to 3 days, minimum age 15, Open Water Diver prerequisite) and includes full sidemount harness/wing, regulators and cylinders across 1 confined-water pool setup workshop and 3 open water Red Sea dives. Sidemount relieves lower-back strain on boat ladders, delivers effortless horizontal trim and doubles independent gas redundancy (+€85 PADI manual/cert fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص الغوص الجانبي PADI Sidemount Diver في سي كوليدج دايف كلوب بشرم الشيخ 350€ للفرد (2–3 أيام، من سن 15 سنة لحاملي Open Water) شاملة طقم معدات الـ Sidemount الكامل والمنظمات والأسطوانات خلال جلسة إعداد في المسبح و3 غطسات في البحر المفتوح. يزيل هذا النظام الحمل عن الظهر عند صعود سلم القارب ويمنح انسيابية أفقية مذهلة وأمانًا مضاعفًا للغاز (+85€ رسوم كتاب وشهادة PADI).',
@@ -914,8 +914,8 @@ return [
 
     'adaptive' => [
         'h1' => ['en' => 'PADI Adaptive Support Diver Specialty Course in Sharm El Sheikh', 'ar' => 'دورة تخصص دعم الغوص التكيفي PADI Adaptive Support Diver في شرم الشيخ'],
-        'meta_title' => ['en' => 'PADI Adaptive Support Diver Sharm El Sheikh | €120 | Half Day', 'ar' => 'تخصص دعم الغوص التكيفي PADI بشرم الشيخ | 120€ | نصف يوم'],
-        'meta_desc' => ['en' => 'Learn empathy-first adaptive buddy techniques in Sharm El Sheikh! PADI Adaptive Support Diver (€120, half day, 1 pool + 1 sea workshop, age 15+, gear included).', 'ar' => 'تعلم تقنيات دعم زملاء الغوص من ذوي التحديات الجسدية أو الذهنية! دورة PADI Adaptive Support في شرم الشيخ (120€، نصف يوم، مسبح + بحر، شاملة المعدات).'],
+        'meta_title' => ['en' => 'PADI Adaptive Support Diver Sharm El Sheikh | €120 (1/2d)', 'ar' => 'تخصص دعم الغوص التكيفي PADI بشرم الشيخ | 120€ | نصف يوم'],
+        'meta_desc' => ['en' => 'Learn adaptive scuba buddy techniques in Sharm El Sheikh! PADI Adaptive Support Diver (€120, half day, 1 pool + 1 sea workshop, age 15+, scuba gear included).', 'ar' => 'تعلم تقنيات دعم زملاء الغوص من ذوي التحديات الجسدية أو الذهنية! دورة PADI Adaptive Support في شرم الشيخ (120€، نصف يوم، مسبح + بحر، شاملة المعدات).'],
         'aeo_answer' => [
             'en' => 'The PADI Adaptive Support Diver Specialty at Sea College Dive Club in Sharm El Sheikh costs €120 per person, runs over half a day (1 confined-water pool workshop + 1 open water workshop), and includes basic scuba equipment. Open to PADI Open Water Divers or Freedivers aged 15+ who hold current EFR/CPR (<24 months), it trains you to be an observant, capable dive buddy for divers with physical, visual, mobility or cognitive challenges (+€85 PADI fee).',
             'ar' => 'تبلغ تكلفة دورة تخصص دعم الغوص التكيفي PADI Adaptive Support Diver في سي كوليدج دايف كلوب بشرم الشيخ 120€ للفرد، وتُقام خلال نصف يوم (ورشة عمل في المسبح + ورشة في البحر المفتوح) شاملة المعدات الأساسية. متاحة لحاملي Open Water من سن 15 سنة مع شهادة إسعافات أولية سارية، وتدربك عمليًا على مساندة زملاء الغوص من ذوي التحديات الجسدية أو البصرية أو الحركية (+85€ رسوم PADI).',
@@ -967,8 +967,8 @@ return [
 
     'divemaster' => [
         'h1' => ['en' => 'PADI Divemaster Internship Program in Sharm El Sheikh (4–6 Weeks Go Pro)', 'ar' => 'برنامج مرشد الغوص الاحترافي PADI Divemaster في شرم الشيخ (4–6 أسابيع)'],
-        'meta_title' => ['en' => 'PADI Divemaster Internship Sharm El Sheikh | €850 | 4–6 Weeks', 'ar' => 'برنامج احتراف الغوص PADI Divemaster بشرم الشيخ | 850€ | 4–6 أسابيع'],
-        'meta_desc' => ['en' => 'Go Pro at a PADI 5 Star Dive Resort in Sharm El Sheikh! 4–6 week PADI Divemaster Program (€850) incl. airport & daily transfers, breakfast & lunch, gear, insurance, free Nitrox & mentoring.', 'ar' => 'ابدأ مسيرتك المهنية في منتجع PADI خمس نجوم بشرم الشيخ! برنامج Divemaster لمدة 4–6 أسابيع (850€) شامل استقبال المطار والانتقالات والإفطار والغداء والمعدات والتأمين والنيتروكس!'],
+        'meta_title' => ['en' => 'PADI Divemaster Internship Sharm El Sheikh | €850 Go Pro', 'ar' => 'برنامج احتراف الغوص PADI Divemaster بشرم الشيخ | 850€ | 4–6 أسابيع'],
+        'meta_desc' => ['en' => 'Go Pro at a PADI 5★ Resort in Sharm El Sheikh! 4–6 week PADI Divemaster Internship (€850) incl. transfers, breakfast/lunch, gear, insurance & free Nitrox.', 'ar' => 'ابدأ مسيرتك المهنية في منتجع PADI خمس نجوم بشرم الشيخ! برنامج Divemaster لمدة 4–6 أسابيع (850€) شامل استقبال المطار والانتقالات والإفطار والغداء والمعدات والتأمين والنيتروكس!'],
         'aeo_answer' => [
             'en' => 'Sea College Dive Club\'s 4-to-6-week PADI Divemaster Program in Sharm El Sheikh costs €850 per candidate (minimum age 18; requires AOWD, Rescue Diver, EFR within 24 months, 40 logged dives to start / 60 to certify, and medical clearance within 12 months). Uniquely comprehensive, the €850 tuition includes Sharm airport transfers, daily local transport, daily breakfast & lunch, hands-on assisting with real students, 4 specialized boat-operations days, Course Director mentoring, IDC theory prep, CV/job-placement strategy, DSD Leader training, free Nitrox fills (if Nitrox certified), full scuba equipment and dive insurance.',
             'ar' => 'تبلغ تكلفة برنامج PADI Divemaster الاحترافي (لمدة 4 إلى 6 أسابيع) في سي كوليدج دايف كلوب بشرم الشيخ 850€ للمرشح (من سن 18 سنة؛ يتطلب Advanced وRescue وEFR خلال 24 شهرًا و40 غطسة للبدء و60 للتخرج وفحصًا طبيًا). يتميز البرنامج بشمولية استثنائية؛ إذ يشمل سعر الـ 850€ استقبال المطار، الانتقالات اليومية، وجبتي الإفطار والغداء يوميًا، التدريب العملي مع طلاب حقيقيين، 4 أيام تدريب عمليات قوارب، جلسات إرشاد مع Course Director، تحضير نظريات IDC، إعداد السيرة الذاتية، نيتروكس مجاني (للمعتمدين)، المعدات الكاملة وتأمين الغوص!',
@@ -1033,8 +1033,8 @@ return [
     /* ==================== 4 COURSE BUNDLES ==================== */
     'bundle-stars' => [
         'h1' => ['en' => 'Stars PADI Course Bundle — Open Water Diver + Enriched Air Nitrox (Save €50)', 'ar' => 'باقة دورات Stars — دورة Open Water + النيتروكس (وفّر 50€)'],
-        'meta_title' => ['en' => 'Stars Bundle: PADI Open Water + Nitrox Sharm | €500 (Save €50)', 'ar' => 'باقة Stars: Open Water + النيتروكس بشرم الشيخ | 500€ (وفّر 50€)'],
-        'meta_desc' => ['en' => 'Start diving with PADI\'s top specialty included! Stars Bundle in Sharm El Sheikh (€500, save €50): PADI Open Water Diver + Enriched Air Nitrox, full gear, dive insurance & tax.', 'ar' => 'ابدأ الغوص مع أشهر تخصصات PADI في باقة واحدة! باقة Stars في شرم الشيخ (500€، وفّر 50€): دورة Open Water + النيتروكس شاملة المعدات وتأمين الغوص والضريبة.'],
+        'meta_title' => ['en' => 'Stars Bundle Sharm: PADI Open Water + Nitrox | €500 (-€50)', 'ar' => 'باقة Stars: Open Water + النيتروكس بشرم الشيخ | 500€ (وفّر 50€)'],
+        'meta_desc' => ['en' => 'Start diving with Nitrox included! Stars Bundle in Sharm El Sheikh (€500, save €50): PADI Open Water + Enriched Air Nitrox, full gear, dive insurance & tax.', 'ar' => 'ابدأ الغوص مع أشهر تخصصات PADI في باقة واحدة! باقة Stars في شرم الشيخ (500€، وفّر 50€): دورة Open Water + النيتروكس شاملة المعدات وتأمين الغوص والضريبة.'],
         'aeo_answer' => [
             'en' => 'The Stars PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €500 per person — saving €50 compared to booking individually — and takes approximately 4 days (minimum age 12). It combines full PADI Open Water Diver certification (up to 18 m) with PADI Enriched Air (Nitrox) Diver certification, including sales tax, both courses, full scuba equipment rental and diving insurance (+€85 PADI manual/cert fee per course).',
             'ar' => 'تبلغ تكلفة باقة Stars في سي كوليدج دايف كلوب بشرم الشيخ 500€ للفرد — بتوفير 50€ عن الحجز المنفرد — وتستغرق نحو 4 أيام (من سن 12 سنة). تجمع الباقة بين شهادة PADI Open Water الكاملة (حتى 18م) وشهادة تخصص الهواء المخصب PADI Nitrox، شاملة الضريبة وتأجير المعدات الكامل وتأمين الغوص (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
@@ -1086,7 +1086,7 @@ return [
     'bundle-super' => [
         'h1' => ['en' => 'Super PADI Course Bundle — Advanced Open Water + Nitrox (Save €75)', 'ar' => 'باقة دورات Super — دورة Advanced Open Water + النيتروكس (وفّر 75€)'],
         'meta_title' => ['en' => 'Super Bundle: PADI Advanced + Nitrox Sharm | €400 (Save €75)', 'ar' => 'باقة Super: الغوص المتقدم + النيتروكس بشرم الشيخ | 400€ (وفّر 75€)'],
-        'meta_desc' => ['en' => 'Already Open Water certified? Upgrade to 30 m + Nitrox in 3 days in Sharm El Sheikh! Super Bundle (€400, save €75) includes AOWD, Nitrox, full gear, dive insurance & tax.', 'ar' => 'تحمل شهادة Open Water؟ ارتقِ لعمق 30م + النيتروكس خلال 3 أيام في شرم الشيخ! باقة Super (400€، وفّر 75€) شاملة الدورتين والمعدات وتأمين الغوص والضريبة.'],
+        'meta_desc' => ['en' => 'Already Open Water certified? Upgrade to 30 m + Nitrox in 3 days in Sharm El Sheikh! Super Bundle (€400, save €75): AOWD, Nitrox, full gear, insurance & tax.', 'ar' => 'تحمل شهادة Open Water؟ ارتقِ لعمق 30م + النيتروكس خلال 3 أيام في شرم الشيخ! باقة Super (400€، وفّر 75€) شاملة الدورتين والمعدات وتأمين الغوص والضريبة.'],
         'aeo_answer' => [
             'en' => 'The Super PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €400 per person — saving €75+ — and finishes in 3 days for certified Open Water divers aged 12+. It includes PADI Advanced Open Water Diver (5 Red Sea Adventure Dives up to 30 m) plus PADI Enriched Air (Nitrox) Diver, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
             'ar' => 'تبلغ تكلفة باقة Super في سي كوليدج دايف كلوب بشرم الشيخ 400€ للفرد — بتوفير يتجاوز 75€ — وتُنجز خلال 3 أيام لحاملي شهادة Open Water من سن 12 سنة. تشمل دورة الغوص المتقدم PADI Advanced (5 غطسات حتى 30م) ودورة النيتروكس، مع تأجير المعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
@@ -1138,7 +1138,7 @@ return [
     'bundle-mega' => [
         'h1' => ['en' => 'Mega PADI Course Bundle — Open Water + Advanced Open Water (Save €90)', 'ar' => 'باقة دورات Mega — من الصفر إلى Advanced Open Water (وفّر 90€)'],
         'meta_title' => ['en' => 'Mega Bundle: Open Water + Advanced Sharm | €600 (Save €90)', 'ar' => 'باقة Mega: Open Water + Advanced بشرم الشيخ | 600€ (وفّر 90€)'],
-        'meta_desc' => ['en' => 'Go from complete beginner to 30 m Advanced diver in one Sharm El Sheikh holiday! Mega Bundle (€600, save €90, ~6 days): 5 pool + 9 Red Sea dives, gear, insurance & tax.', 'ar' => 'انتقل من مبتدئ تمامًا إلى غواص متقدم لعمق 30م في إجازة واحدة بشرم الشيخ! باقة Mega (600€، وفّر 90€، ~6 أيام): 9 غطسات بحرية شاملة المعدات والتأمين.'],
+        'meta_desc' => ['en' => 'Go from beginner to 30 m Advanced diver in one Sharm El Sheikh trip! Mega Bundle (€600, save €90, ~6 days): 5 pool + 9 Red Sea dives, gear, insurance & tax.', 'ar' => 'انتقل من مبتدئ تمامًا إلى غواص متقدم لعمق 30م في إجازة واحدة بشرم الشيخ! باقة Mega (600€، وفّر 90€، ~6 أيام): 9 غطسات بحرية شاملة المعدات والتأمين.'],
         'aeo_answer' => [
             'en' => 'Sea College Dive Club\'s most booked multi-course offer, the Mega Bundle, costs €600 per person — saving €90+ — and takes approximately 6 days in Sharm El Sheikh (minimum age 12). Starting with zero prior experience, you complete both PADI Open Water Diver (5 pool + 4 sea dives to 18 m) and PADI Advanced Open Water Diver (5 Adventure Dives to 30 m) for 9 open water Red Sea dives total, including full equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
             'ar' => 'تُعد باقة Mega العرض المدمج الأكثر حجزًا في سي كوليدج دايف كلوب بشرم الشيخ، وتبلغ تكلفتها 600€ للفرد خلال نحو 6 أيام (من سن 12 سنة). تبدأ معك من الصفر تمامًا لتنجز شهادة PADI Open Water ثم PADI Advanced بمجموع 5 جلسات مسبح و9 غطسات بحرية حتى عمق 30 مترًا، شاملة تأجير المعدات الكامل وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',
@@ -1189,8 +1189,8 @@ return [
 
     'bundle-heros' => [
         'h1' => ['en' => 'Heros PADI Course Bundle — Open Water + Advanced + Nitrox (Save €120)', 'ar' => 'باقة دورات Heros الثلاثية — Open Water + Advanced + Nitrox (وفّر 120€)'],
-        'meta_title' => ['en' => 'Heros Bundle: OWD + Advanced + Nitrox Sharm | €750 (Save €120)', 'ar' => 'باقة Heros الثلاثية بشرم الشيخ | 750€ (وفّر 120€) | سي كوليدج'],
-        'meta_desc' => ['en' => 'The ultimate 3-certification Red Sea package! Heros Bundle in Sharm El Sheikh (€750, save €120, 6–7 days): PADI Open Water + Advanced (30 m) + Nitrox, gear, insurance & tax.', 'ar' => 'الباقة الثلاثية الأقوى في البحر الأحمر! باقة Heros في شرم الشيخ (750€، وفّر 120€، 6–7 أيام): Open Water + Advanced (30م) + النيتروكس شاملة المعدات والتأمين.'],
+        'meta_title' => ['en' => 'Heros Bundle Sharm: OWD + AOWD + Nitrox | €750 (Save €120)', 'ar' => 'باقة Heros الثلاثية بشرم الشيخ | 750€ (وفّر 120€) | سي كوليدج'],
+        'meta_desc' => ['en' => 'Ultimate 3-card PADI package in Sharm El Sheikh! Heros Bundle (€750, save €120, 6–7 days): Open Water + Advanced (30 m) + Nitrox, full gear, insurance & tax.', 'ar' => 'الباقة الثلاثية الأقوى في البحر الأحمر! باقة Heros في شرم الشيخ (750€، وفّر 120€، 6–7 أيام): Open Water + Advanced (30م) + النيتروكس شاملة المعدات والتأمين.'],
         'aeo_answer' => [
             'en' => 'The Heros PADI Course Bundle at Sea College Dive Club in Sharm El Sheikh costs €750 per person — our biggest saving at €120+ off — and runs over 6 to 7 days (minimum age 12). Taking you from absolute beginner to holding THREE international PADI licenses (Open Water Diver, Advanced Open Water Diver to 30 m, and Enriched Air Nitrox Diver), it includes 5 pool sessions, 9+ open water Red Sea dives, full scuba equipment rental, diving insurance and sales tax (+€85 PADI manual/cert fee per course).',
             'ar' => 'تبلغ تكلفة باقة Heros الثلاثية في سي كوليدج دايف كلوب بشرم الشيخ 750€ للفرد — بأكبر توفير لدينا يتجاوز 120€ — وتُنجز خلال 6 إلى 7 أيام (من سن 12 سنة). تنقلك من مبتدئ تمامًا إلى حامل لثلاث شهادات دولية من PADI (Open Water وAdvanced لعمق 30م وتخصص النيتروكس)، شاملة 5 جلسات مسبح و9 غطسات بحرية والمعدات الكاملة وتأمين الغوص والضريبة (+85€ رسوم كتاب وشهادة PADI لكل دورة).',

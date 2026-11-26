@@ -785,4 +785,544 @@ return [
             ],
         ],
     ],
+
+    /* ======================================================================
+     * 7. SHARM EL SHEIKH SCUBA DIVING PRICES & MARINA FEES GUIDE (2026)
+     * ====================================================================== */
+    'sharm-el-sheikh-scuba-diving-prices-guide' => [
+        'slug' => 'sharm-el-sheikh-scuba-diving-prices-guide',
+        'img' => 'images/fleet/sea-college-oceano-yacht-01-exterior-nov2026.jpg',
+        'read_min' => 7,
+        'updated' => '2026-11-26',
+        'related_ids' => ['dive-6', 'dsd-2-boat', 'owd', 'bundle-stars'],
+        'en' => [
+            'badge' => '2026 Pricing & Fees',
+            'title' => 'Sharm El Sheikh Scuba Diving Prices 2026: Official EUR Cost & Marina Fee Breakdown',
+            'meta_title' => 'Sharm El Sheikh Scuba Diving Prices 2026 | EUR Cost Guide',
+            'meta_desc' => 'Official 2026 Sharm El Sheikh scuba diving prices in EUR: €35/dive packs, €30–€100 intro dives, €400 PADI Open Water, €10 boat & €5 park fees. €0 deposit.',
+            'excerpt' => 'Understand real 2026 scuba diving costs in Sharm El Sheikh — €35/dive packages, €10 boat lunch supplement, €5 marine park fee, €85 PADI PIC and how to avoid street-agent markups.',
+            'aeo_answer' => 'In 2026, direct PADI 5 Star scuba diving prices in Sharm El Sheikh at Sea College Dive Club start at €30 for a House Reef beginner intro dive, €70–€100 for all-inclusive yacht intro dives, €400 for the PADI Open Water course (+€85 PADI manual & certification PIC), and €35 per dive on certified 3-to-10-dive packages (€105 to €350, dropping to €30 after the 10th dive). Certified boat days itemize a €10/day Boat Supplement (including buffet lunch & drinks) and €5/day Marine Park Fee, with €0 upfront online deposit.',
+            'key_facts' => [
+                ['Beginner Intro Dives', '€30 House Reef · €70 (1 boat dive) · €100 (2 boat dives all-in)'],
+                ['Certified Dive Packages', '€45 (1 shore) · €85 (2 dives) · €35/dive (3–10 dives) · €30 (11th+)'],
+                ['Daily Boat & Park Fees', '€10/day Boat Supplement (incl. lunch/drinks) + €5/day Park Fee'],
+                ['House Reef Shore Fees', '€0 Boat Fee & €0 Marine Park Fee at Al Montazah base'],
+                ['PADI Courses & PIC Fee', 'Open Water €400 · Advanced €350 · Bundles €400–€750 (+€85 PADI PIC)'],
+                ['Gear, Nitrox & Deposit', 'Full gear €25/day (free in courses) · 12L Nitrox €8 · €0 online deposit'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'Certified Diver Packages vs. Daily Boat & Marine Park Supplements',
+                    'p' => 'Across the Red Sea, accredited PADI 5 Star centers separate personal dive-package rates from daily marina/park supplements so shore divers and own-gear divers never subsidize costs they do not use. At Sea College Dive Club, every certified package includes 12L air tanks, weights, a PADI guide (max 4 divers/guide) and free Sharm hotel transfers.',
+                    'bullets' => [
+                        '3 to 10 dives cost a flat €35 per dive (€105 for 3 dives, €210 for 6 dives, €350 for 10 dives), with every additional dive after the 10th dropping to €30.',
+                        'Boat days add €10/day Boat Trip Supplement (covering freshly cooked hot buffet lunch, coffee, tea, water and soft drinks) plus €5/day Egyptian Marine Park Fee.',
+                        'Shore dives on our beachfront Al Montazah House Reef carry €0 boat supplement and €0 marine park fee.',
+                        'Travelling without gear? Full serviced scuba equipment rents for €25/day, 12L Nitrox 32% fills are €8/day, and 15L Nitrox is €10/day.',
+                    ],
+                ],
+                [
+                    'h2' => 'Beginner Intro Dives, PADI Courses & Saver Bundle Math',
+                    'p' => 'Unlike certified packages, all beginner Discover Scuba Experiences and PADI courses at Sea College already include full scuba equipment rental in the headline EUR price — eliminating the #1 surprise surcharge beginners face elsewhere in Sharm El Sheikh.',
+                    'bullets' => [
+                        'All-inclusive Boat Intro Dives (€70 for 1 dive, €100 for 2 dives) already bundle scuba gear, PADI Instructor, hotel transfers, €5 park fee, lunch and soft drinks.',
+                        'PADI Discover Scuba Diving (€85, pool + House Reef) is the ONLY course that also includes the official PADI booklet and recognition certificate at €0 extra.',
+                        'Full certification courses — Scuba Diver (€250), Open Water (€400) and Advanced (€350) — add the official €85 PADI eLearning/manual & PIC card fee per certification.',
+                        'Multi-course Bundles — Super (€400), Stars (€500), Mega (€600) and Heros (€750) — save €50 to €120 and include full gear, diving insurance and tax.',
+                    ],
+                ],
+                [
+                    'h2' => 'Street Kiosks vs. Hotel Lobby Desks vs. Direct PADI 5★ Booking',
+                    'p' => 'Sharm El Sheikh visitors often see €20 "teaser" boards on the street alongside inflated €160+ hotel tour-rep binders. Knowing how middlemen structure commissions protects both your budget and your underwater safety.',
+                    'bullets' => [
+                        'Street teaser traps advertise ultra-low boat tickets, then collect €15–€30 cash at the jetty for "mandatory wetsuit/mask rental", lunch, transfers and park taxes on crowded 45-passenger boats.',
+                        'Third-party hotel tour reps often add 30–50% commission on top of standard PADI center rates before forwarding you to whichever subcontractor has spare seats.',
+                        'Booking direct at seacollegediveclub.com locks in official EUR price-list rates with €0 upfront card deposit — pay in EUR, USD, GBP, EGP, SAR or AED at official exchange rates.',
+                        'Use our interactive Dive Budget Calculator on the Prices page to itemize every tank, boat day, park fee and wreck add-on (Million Hope +€30, Thistlegorm +€150) before you arrive.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'Are there any hidden marina or lunch fees when booking with Sea College?',
+                    'a' => 'Zero hidden fees. Beginner boat intros (€70/€100) and White Island snorkeling yachts (€55 adult / €30 child) are 100% all-inclusive of transfers, park fees, gear and buffet lunch. Certified dive packages clearly state the €10/day boat supplement (with lunch & drinks) and €5/day marine park fee upfront.',
+                ],
+                [
+                    'q' => 'Do I have to pay a deposit online to reserve my Sharm dive package or PADI course?',
+                    'a' => 'No. Online and WhatsApp reservations require €0 upfront card deposit. We confirm your boat or instructor slot and free hotel pickup window first, and you settle at our Al Montazah dive center by card, cash or bank transfer.',
+                ],
+                [
+                    'q' => 'Is scuba equipment included in €35-per-dive certified packages?',
+                    'a' => 'Certified packages (€35/dive) include 12L air tanks, lead weights, weight belt, PADI guide and hotel transfers so divers bringing personal gear pay nothing extra. If you need rental gear, a complete serviced set (BCD, regulator, wetsuit, mask & fins) is €25/day, while all PADI courses and intro dives include full gear free.',
+                ],
+            ],
+        ],
+        'ar' => [
+            'badge' => 'دليل الأسعار والرسوم 2026',
+            'title' => 'أسعار الغوص والغطس في شرم الشيخ 2026: التفصيل الرسمي باليورو ورسوم المارينا',
+            'meta_title' => 'أسعار الغوص والغطس في شرم الشيخ 2026 | دليل التكلفة باليورو',
+            'meta_desc' => 'دليل أسعار الغوص والغطس في شرم الشيخ 2026 باليورو: 35€ للغطسة للمعتمدين، 30€–100€ للمبتدئين، 400€ دورة بادي Open Water، رسوم القارب والمحمية و0€ عربون.',
+            'excerpt' => 'تعرّف على التكلفة الحقيقية للغوص والغطس (دايفنج) في شرم الشيخ لعام 2026: باقات 35€/غطسة، رسوم القارب شاملة الغداء (10€)، تذكرة المحمية (5€)، وكيف تتجنب فخ الوسطاء.',
+            'aeo_answer' => 'في عام 2026، تبدأ الأسعار الرسمية المباشرة للغوص والغطس في منتجع سي كوليدج (مركز بادي PADI خمس نجوم بشرم الشيخ) من 30€ للغطسة التجريبية على الشعاب المنزلية، و70€–100€ لرحلات الغوص التجريبي باليخت الشاملة للغداء والانتقالات، و400€ لدورة بادي PADI Open Water (+85€ رسوم الشهادة والكتاب)، و35€ للغطسة في باقات المعتمدين من 3 إلى 10 غطسات (تنخفض إلى 30€ بعد العاشرة). تُحتسب في أيام القارب للمعتمدين 10€ رسوم قارب يومية (شاملة غداء البوفيه والمشروبات) و5€ رسوم محمية بحرية، مع حجز مباشر بـ 0€ عربون.',
+            'key_facts' => [
+                ['الغطسات التجريبية للمبتدئين', '30€ بالشاطئ · 70€ (غطسة قارب شاملة) · 100€ (غطستان بالقارب شاملة الكل)'],
+                ['باقات الغواصين المعتمدين', '45€ (شاطئية) · 85€ (غطستان) · 35€/غطسة (3–10 غطسات) · 30€ (11+)'],
+                ['رسوم القارب والمحمية اليومية', '10€/يوم رسوم القارب (شاملة الغداء والمشروبات) + 5€/يوم رسوم المحمية'],
+                ['رسوم الشعاب المنزلية بالمنتزه', '0€ رسوم قارب و0€ رسوم محمية عند الغوص الشاطئي أمام المركز'],
+                ['دورات بادي PADI والشهادات', 'Open Water بـ 400€ · Advanced بـ 350€ · باقات التوفير 400€–750€ (+85€ شهادة)'],
+                ['المعدات والعملات والعربون', 'طقم معدات 25€/يوم (مجاني بالدورات) · دفع يورو/ريال/درهم/جنيه · 0€ عربون'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'تفصيل باقات الغواصين المعتمدين ورسوم القارب والمحمية اليومية',
+                    'p' => 'تعتمد مراكز بادي PADI خمس نجوم المعتمدة في البحر الأحمر نظام الفصل الشفاف بين سعر الغطسات والرسوم اليومية، حتى لا يتحمل الغواص من الشاطئ أو صاحب المعدات الخاصة أي تكاليف إضافية غير مستخدمة. تشمل جميع باقاتنا أسطوانات 12 لتر والأوزان ومرشد PADI (حد أقصى 4 غواصين للمرشد) والتوصيل المجاني من الفندق.',
+                    'bullets' => [
+                        'تبلغ تكلفة الباقات من 3 إلى 10 غطسات 35€ فقط للغطسة (105€ لـ3 غطسات، 210€ لـ6 غطسات، 350€ لـ10 غطسات)، وتنخفض كل غطسة بعد العاشرة إلى 30€.',
+                        'تُضاف في أيام اليخت 10€ يوميًا رسوم قارب (تشمل غداء بوفيه ساخن طازج وشاي وقهوة ومياه ومشروبات غازية) + 5€ يوميًا رسوم المحميات الطبيعية.',
+                        'الغوص على الشعاب المنزلية الهادئة أمام مركزنا بالمنتزه معفى تمامًا من رسوم القارب والمحمية (0€).',
+                        'تأجير طقم المعدات الكامل بـ 25€ لليوم لمن لا يحضر معداته، وتعبئة أسطوانة النيتروكس 12 لتر بـ 8€ لليوم.',
+                    ],
+                ],
+                [
+                    'h2' => 'أسعار غوص المبتدئين ودورات بادي PADI وباقات التوفير المدمجة',
+                    'p' => 'على عكس باقات المعتمدين، تشمل جميع برامج المبتدئين ودورات بادي PADI في سي كوليدج إيجار طقم معدات الغوص الكامل مجانًا ضمن السعر المعلن، دون أي مفاجآت عند الوصول للمركز.',
+                    'bullets' => [
+                        'رحلات الغوص التجريبي باليخت (70€ لغطسة أو 100€ لغطستين) شاملة مسبقًا للمعدات والمدرب الخاص والانتقالات ورسوم المحمية (5€) والغداء والمشروبات.',
+                        'دورة PADI Discover Scuba التمهيدية (85€، مسبح + بحر) هي الوحيدة التي تشمل أيضًا الكتيب وشهادة بادي الرسمية مجانًا بدون رسوم 85€.',
+                        'دورات الشهادات الدولية مثل Open Water (400€) وAdvanced (350€) تُضاف إليها رسوم كتاب وإصدار بطاقة PADI الإلكترونية الرسمية (85€ لكل دورة).',
+                        'باقات العروض المدمجة — Super (400€) وStars (500€) وMega (600€) وHeros (750€) — توفر من 50€ إلى 120€ وتشمل المعدات وتأمين الغوص والضريبة.',
+                    ],
+                ],
+                [
+                    'h2' => 'مقارنة الحجز المباشر مع مكاتب الشوارع ومندوبي الفنادق',
+                    'p' => 'يصادف زوار شرم الشيخ إعلانات شوارع مضللة بـ 20€ إلى جانب قوائم أسعار مبالغ فيها لدى وسطاء الفنادق. معرفة الفارق تضمن لك السعر الرسمي العادل وأعلى معايير سلامة PADI وCDWS.',
+                    'bullets' => [
+                        'عروض الشوارع الرخيصة تفاجئ الضيف على رصيف المارينا بطلب 20€–35€ نقدًا مقابل «إيجار البدلة والقناع» وتذكرة المحمية والغداء على قوارب مزدحمة.',
+                        'وسطاء الرحلات يضيفون عمولات تصل إلى 30%–50% فوق السعر الرسمي للمركز قبل تحويل الحجز لمقاول فرعي.',
+                        'الحجز المباشر عبر موقعنا يثبت لك السعر الرسمي باليورو بـ 0€ عربون أونلاين، مع قبول الدفع باليورو أو الريال السعودي أو الدرهم الإماراتي أو الجنيه المصري بسعر الصرف الرسمي.',
+                        'استخدم «حاسبة تكلفة الغوص التفاعلية» في صفحة الأسعار لحساب إجمالي رحلتك شاملًا إضافات الحطام مثل منطقة الغرقانة (+30€) أو ثيستلجورم (+150€) بدقة تامة.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'هل توجد أي رسوم مارينا أو غداء مخفية عند الحجز مع سي كوليدج؟',
+                    'a' => 'لا توجد أي رسوم مخفية إطلاقًا. تذاكر الغوص التجريبي بالقارب (70€/100€) ورحلات سنوركل الجزيرة البيضاء ورأس محمد (55€ بالغ / 30€ طفل) شاملة بالكامل للانتقالات والمحمية والغداء والمعدات، وفي باقات المعتمدين نوضح رسوم القارب (10€ شاملة الغداء) والمحمية (5€) بشفافية قبل الحجز.',
+                ],
+                [
+                    'q' => 'هل يلزم دفع عربون بالبطاقة أونلاين لتأكيد الحجز؟',
+                    'a' => 'لا، الحجز عبر الموقع أو واتساب يتم بـ 0€ عربون مسبق. نؤكد لك الموعد وموعد التوصيل المجاني من الفندق أولًا، وتدفع عند الوصول للمركز بالبطاقة أو نقدًا باليورو أو العملات المعتمدة.',
+                ],
+                [
+                    'q' => 'هل السعر 35€ للغطسة يشمل استئجار معدات الغوص للمعتمدين؟',
+                    'a' => 'سعر الـ 35€ للغطسة يشمل أسطوانة الهواء 12 لتر والأوزان والمرشد وانتقالات الفندق، أما الطقم الشخصي الكامل فيؤجر بـ 25€ لليوم عند الحاجة. وفي جميع دورات PADI والغطسات التجريبية للمبتدئين تكون المعدات الكاملة مشمولة مجانًا.',
+                ],
+            ],
+        ],
+    ],
+
+    /* ======================================================================
+     * 8. HOW TO CHOOSE THE BEST DIVE CENTER IN SHARM EL SHEIKH
+     * ====================================================================== */
+    'best-dive-center-sharm-el-sheikh-how-to-choose' => [
+        'slug' => 'best-dive-center-sharm-el-sheikh-how-to-choose',
+        'img' => 'images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg',
+        'read_min' => 6,
+        'updated' => '2026-11-26',
+        'related_ids' => ['dive-10', 'owd', 'dsd-quick-reef', 'aowd'],
+        'en' => [
+            'badge' => 'Quality & Safety Checklist',
+            'title' => 'How to Choose the Best Dive Center in Sharm El Sheikh: 6 Non-Negotiable Standards',
+            'meta_title' => 'Best Dive Center in Sharm El Sheikh | 2026 PADI 5★ Checklist',
+            'meta_desc' => 'How to choose the best dive center in Sharm El Sheikh: beachfront House Reef & <2m pool (15 min to Tiran), CDWS & PADI 5★ safety, max 4/guide & EUR prices.',
+            'excerpt' => 'Compare beachfront House Reef dive resorts vs marina-only offices: verify CDWS & PADI 5★ licences, <2 m training pools, max 4 divers/guide and transit times to Tiran.',
+            'aeo_answer' => 'To choose the best dive center in Sharm El Sheikh, verify six objective benchmarks: dual PADI 5 Star Dive Resort and Egyptian CDWS accreditation, an on-site <2 m training pool plus sheltered beachfront House Reef (avoiding crowded public marina queues), proximity to the Straits of Tiran (15 minutes from Al Montazah vs 90 minutes from southern ports), small group ratios (maximum 4 certified divers per guide, 1-on-1 for beginners), multilingual instructors, and transparent EUR pricing with 3,000+ verified reviews like Sea College Dive Club (4.9★, 3,082+ Google reviews).',
+            'key_facts' => [
+                ['Official Accreditations', 'PADI 5 Star Dive Resort + Egyptian CDWS Ministry License'],
+                ['On-Site Training Base', '<2 m Training Pool + Sheltered Al Montazah Beachfront House Reef'],
+                ['Transit to Straits of Tiran', '15–25 min from Al Montazah vs 75–90 min from southern marinas'],
+                ['In-Water Safety Ratios', 'Max 4 certified divers / PADI guide · 1-on-1 for intro beginners'],
+                ['Verified Guest Reputation', '4.9★ across 3,082+ Google reviews & 129+ Tripadvisor reviews'],
+                ['Gas & Technical Capability', 'Pure air audits, EANx Nitrox, Trimix, Sidemount & CCR support'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'Beachfront House Reef & Pool vs. Southern Marina-Only Operators',
+                    'p' => 'Many Sharm El Sheikh dive shops are office storefronts with no water access — busing every student and refresher diver to busy southern public jetties every morning. Choosing a true beachfront dive resort inside Cyrene Sharm in Al Montazah transforms both comfort and safety.',
+                    'bullets' => [
+                        'On-site <2 m training pool: kids aged 8+ (Bubblemaker €70) and Open Water students (€400) master mask and regulator skills in calm, crystal-clear water before entering the sea.',
+                        'Steps-away House Reef: complete your mandatory 6-month Check Dive (€25) or €30 Quick Intro Dive on a sandy 3–5 m coral plateau with €0 park or boat fees.',
+                        '15 minutes to Tiran Island: launching opposite Jackson, Woodhouse, Thomas and Gordon Reefs saves up to two hours of daily boat transit compared with southern ports.',
+                        'Air-conditioned classrooms, fresh-water rinse showers, equipment workshops and shaded beachfront seating keep surface intervals relaxed.',
+                    ],
+                ],
+                [
+                    'h2' => 'PADI 5 Star & CDWS Audits: Compressor Purity, Oxygen & Group Ratios',
+                    'p' => 'In Egypt, every legitimate scuba operator must hold active Chamber of Diving and Watersports (CDWS) accreditation alongside international agency status. Never hand your passport or credit card to an unlicensed beach tout who cannot show a CDWS certificate.',
+                    'bullets' => [
+                        'CDWS inspectors audit breathing-air compressor filtration, medical oxygen kits on every vessel, hyperbaric chamber protocols and valid instructor cards.',
+                        'Small groups transform every dive: Sea College caps certified teams at max 4 divers per PADI guide (matched by air consumption and experience) instead of 8–10 diver herds.',
+                        'First-time beginners dive 1-on-1 or 2-to-1 with a PADI Instructor in 8 supported languages (English, Arabic, Russian, Italian, German, French, Polish and Chinese).',
+                        'Full Nitrox 32%, 15L tanks, Sidemount rigs, Trimix and rebreather (CCR) support prove genuine technical maintenance standards in our gear room.',
+                    ],
+                ],
+                [
+                    'h2' => 'How to Spot Authentic Reviews & Transparent Pricing Before Flying',
+                    'p' => 'With over 3,200 combined reviews across Google Business Profile (4.9★ · 3,082+ reviews) and Tripadvisor (#26104236 · 4.9 ●●●●●), consistent diver feedback reveals whether a center delivers on its promises during peak weeks.',
+                    'bullets' => [
+                        'Look for reviews naming specific instructors (such as Mo, Sam, Alex, Jimmy, Moussab, Wesam and Saleh) and describing real 3-to-6-day courses and multi-family boat charters.',
+                        'Verify that the website publishes every single item price in EUR — including €10 boat and €5 park supplements and the €85 PADI certification fee — before asking for your contact details.',
+                        'Check the <6-month Check Dive rule: divers with a logged dive within the last 6 months go straight onto guided reef and boat packages without unnecessary refresher upsells.',
+                        'Book with €0 upfront online deposit so you inspect our Al Montazah dive center, rental gear and team in person when you arrive.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'What does CDWS accreditation mean when choosing a Sharm dive center?',
+                    'a' => 'CDWS (Chamber of Diving and Watersports) is the official Egyptian Ministry of Tourism regulatory body that inspects compressor air quality, cylinder hydro-testing, boat emergency oxygen/radio equipment and instructor licenses. Sea College Dive Club is both CDWS accredited and a PADI 5 Star Dive Resort.',
+                ],
+                [
+                    'q' => 'How many divers are in each guided group at Sea College Dive Club?',
+                    'a' => 'We cap certified guided groups at a maximum of 4 divers per PADI Dive Guide, grouped by certification level and air consumption. Beginner Discover Scuba intro dives receive direct 1-on-1 (or pair) PADI Instructor supervision.',
+                ],
+                [
+                    'q' => 'Why does Al Montazah location matter if free hotel transfers are included?',
+                    'a' => 'Even with free hotel pickup across all Sharm bays, starting at Al Montazah puts you right on a sheltered House Reef and directly opposite the Straits of Tiran — turning Tiran speedboat and Zodiac crossings into a 15-minute ride instead of a 90-minute haul from southern ports.',
+                ],
+            ],
+        ],
+        'ar' => [
+            'badge' => 'معايير الجودة والأمان',
+            'title' => 'كيف تختار أفضل مركز غوص في شرم الشيخ؟ 6 معايير أساسية قبل الحجز',
+            'meta_title' => 'أفضل مركز غوص في شرم الشيخ | كيف تختار مركز PADI 5 نجوم',
+            'meta_desc' => 'كيف تختار أفضل مركز غوص في شرم الشيخ؟ قارن الشعاب المنزلية ومسبح التدريب بالمنتزه (15 د لتيران)، اعتماد بادي PADI وCDWS، حد 4 غواصين للمرشد والأسعار.',
+            'excerpt' => 'قارن بين منتجعات الغوص الشاطئية والمكاتب التجارية: تحقق من ترخيص بادي PADI خمس نجوم وغرفة الغوص CDWS، مسبح التدريب (<2م)، حد 4 غواصين للمرشد والقرب من تيران.',
+            'aeo_answer' => 'لاختيار أفضل مركز غوص في شرم الشيخ، تحقق من 6 معايير حاسمة: الاعتماد المزدوج كمنتجع بادي PADI خمس نجوم وترخيص غرفة سياحة الغوص المصرية (CDWS)، توفر حمام سباحة تدريبي (<2م) وشعاب منزلية شاطئية مباشرة، القرب الجغرافي من مضيق تيران (15 دقيقة من المنتزه مقابل 90 دقيقة من الموانئ الجنوبية)، المجموعات الصغيرة (بحد أقصى 4 غواصين معتمدين للمرشد ومدرب خاص للمبتدئين)، تعدد اللغات، والأسعار الواضحة باليورو المدعومة بأكثر من 3,082 تقييم موثق (4.9★) مثل مركز سي كوليدج دايف كلوب.',
+            'key_facts' => [
+                ['الاعتمادات الرسمية', 'منتجع غوص بادي PADI خمس نجوم + ترخيص غرفة الغوص CDWS'],
+                ['مرافق التدريب الشاطئية', 'حمام سباحة تدريبي (<2م) + شعاب منزلية محمية مباشرة بالمنتزه'],
+                ['زمن الوصول لجزيرة تيران', '15–25 دقيقة من شاطئ المنتزه مقابل 75–90 دقيقة من الجنوب'],
+                ['نسب الأمان تحت الماء', 'بحد أقصى 4 غواصين معتمدين للمرشد · إشراف فردي 1-لـ-1 للمبتدئين'],
+                ['تقييمات الضيوف الموثقة', '4.9★ عبر أكثر من 3,082 مراجعة Google و129+ تقييم Tripadvisor'],
+                ['التجهيزات والغازات التقنية', 'فحص نقاء الهواء، نيتروكس، ترايمكس، Sidemount وأجهزة CCR'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'مركز شاطئي بمسبح وشعاب منزلية مقابل المكاتب البعيدة عن البحر',
+                    'p' => 'تعمل الكثير من المكاتب كوسيط بلا شاطئ أو مسبح خاص، ما يضطر المتدربين للانتقال يوميًا إلى أرصفة عامة مزدحمة. أما وجود مقر سي كوليدج مباشرة على شاطئ سيرين شرم بالمنتزه فيمنحك تجربة تدريب وغوص هادئة ومتكاملة.',
+                    'bullets' => [
+                        'مسبح تدريب ضحل (<2م) داخل المركز: مثالي للأطفال من سن 8 سنوات (Bubblemaker بـ70€) وطلاب دورة غوص بادي PADI Open Water (400€) قبل النزول للبحر.',
+                        'شعاب منزلية على بُعد خطوات: مثالية للغطسة الاختبارية Check Dive (25€) أو الغطسة التجريبية السريعة (30€) بدون رسوم قارب أو محمية.',
+                        'أقرب نقطة لجزيرة تيران: الانطلاق من المنتزه يضعك فوق شعاب جاكسون وجوردون وتوماس خلال 15–25 دقيقة بدلًا من إهدار ساعتين ذهابًا وإيابًا.',
+                        'قاعات دراسة مكيفة، دش مياه عذبة، غرفة صيانة وتعقيم معدات واستراحة شاطئية مريحة بين الغطسات.',
+                    ],
+                ],
+                [
+                    'h2' => 'اعتماد PADI خمس نجوم ورقابة CDWS: نقاء الهواء والمجموعات الصغيرة',
+                    'p' => 'يشترط القانون المصري حصول أي مركز غوص رسمي على شهادة غرفة سياحة الغوص والأنشطة البحرية (CDWS) التابعة لوزارة السياحة إلى جانب اعتماد PADI العالمي. تجنب تمامًا التعامل مع البائعين غير المرخصين على الشواطئ.',
+                    'bullets' => [
+                        'تفتيش دوري صارم من CDWS على فلاتر ضواغط هواء التنفس، أسطوانات الأكسجين الطبي على اليخوت، وتأمين غرفة الضغط.',
+                        'حد أقصى 4 غواصين معتمدين لكل مرشد PADI (مقسمين حسب الخبرة واستهلاك الهواء) بدلًا من تكديس 8–10 غواصين خلف مرشد واحد.',
+                        'مرافقة فردية آمنة للمبتدئين بـ 8 لغات تشمل العربية والإنجليزية والروسية والألمانية والإيطالية والفرنسية والبولندية والصينية.',
+                        'توفر محطة خلط النيتروكس والترايمكس ومعدات Sidemount وCCR يعكس أعلى مستويات الكفاءة الفنية في صيانة المعدات.',
+                    ],
+                ],
+                [
+                    'h2' => 'كيف تتحقق من التقييمات الحقيقية وشفافية الأسعار قبل السفر؟',
+                    'p' => 'مع أكثر من 3,200 تقييم حقيقي موثق عبر Google (4.9★) وTripadvisor (#26104236)، يمكنك التأكد بسهولة من جودة التدريب وشفافية الفواتير قبل حجز إجازتك.',
+                    'bullets' => [
+                        'اقرأ التقييمات التي تذكر أسماء مدربينا (مثل مو، سام، أليكس، جيمي، مصعب، وسام وصالح) وتفاصيل رحلات العائلات والدورات الكاملة.',
+                        'تأكد أن قائمة الأسعار منشورة بالكامل باليورو شاملة توضيح رسوم القارب (10€) والمحمية (5€) ورسوم شهادة PADI (85€) مسبقًا.',
+                        'قاعدة إعفاء الـ Check Dive: الغواص المعتمد الذي يمتلك غطسة موثقة خلال آخر 6 أشهر ينطلق مباشرة لرحلات القارب دون فرض رسوم تنشيط غير ضرورية.',
+                        'احجز بـ 0€ عربون أونلاين لتعاين المركز والمعدات وفريق المدربين بنفسك عند وصولك إلى شرم الشيخ.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'ما أهمية شهادة غرفة الغوص CDWS عند اختيار مركز الغوص؟',
+                    'a' => 'غرفة سياحة الغوص (CDWS) هي الجهة الرقابية الرسمية لوزارة السياحة المصرية التي تفحص جودة ونقاء هواء الأسطوانات، جاهزية الأكسجين الطبي والاتصالات على القوارب، وتراخيص المدربين. مركز سي كوليدج معتمد رسميًا من CDWS ومنظمة PADI بدرجة 5 نجوم.',
+                ],
+                [
+                    'q' => 'كم يبلغ عدد الغواصين مع كل مرشد في رحلات سي كوليدج؟',
+                    'a' => 'نلتزم بحد أقصى 4 غواصين معتمدين فقط لكل مرشد غوص PADI لضمان المتعة والأمان وعدم الاستعجال، بينما يحظى المبتدئون في الغطسات التجريبية بإشراف مباشر من مدرب PADI.',
+                ],
+                [
+                    'q' => 'لماذا يهمني موقع المركز في المنتزه طالما أن التوصيل من الفندق مجاني؟',
+                    'a' => 'حتى مع شمول التوصيل المجاني من جميع فنادق شرم الشيخ، فإن انطلاقك من شاطئ المنتزه يوفر لك شعابًا منزلية ومسبحًا في نفس المكان، ويختصر إبحار القارب السريع والزودياك إلى جزيرة تيران إلى نحو 15 دقيقة فقط!',
+                ],
+            ],
+        ],
+    ],
+
+    /* ======================================================================
+     * 9. DIVING BY SHARM HOTEL BAY: NABQ, SHARKS BAY, NAAMA & HADABA
+     * ====================================================================== */
+    'diving-from-nabq-sharks-bay-naama-hadaba-hotels' => [
+        'slug' => 'diving-from-nabq-sharks-bay-naama-hadaba-hotels',
+        'img' => 'images/sea-college-dive-club-sharm-el-sheikh-group-boat-dive-red-sea-divers.jpg',
+        'read_min' => 6,
+        'updated' => '2026-11-26',
+        'related_ids' => ['dsd-2-boat', 'dive-6', 'sup-millionhope', 'speed-2h'],
+        'en' => [
+            'badge' => 'Hotel Zones & Transfers',
+            'title' => 'Scuba Diving by Sharm El Sheikh Hotel Zone: Nabq, Sharks Bay, Naama & Hadaba Guide',
+            'meta_title' => 'Sharm Hotel Bay Diving Guide: Nabq, Sharks Bay, Naama & More',
+            'meta_desc' => 'Staying in Nabq Bay, Sharks Bay, Naama Bay or Hadaba? Compare Sharm hotel pickup times (0–25 min free transfer), local reefs, El Gharqana & Tiran access.',
+            'excerpt' => 'Find exact free hotel transfer times (0 to 25 minutes), beachfront reef conditions and closest Red Sea dive sites for every resort bay in Sharm El Sheikh.',
+            'aeo_answer' => 'Sea College Dive Club provides complimentary air-conditioned return hotel transfers on dive packages, boat intro dives and snorkeling trips across every Sharm El Sheikh resort zone to our beachfront PADI 5 Star base in Al Montazah: 0–3 minutes from Al Montazah / Ras Nasrani hotels, 5–8 minutes from Sharks Bay & SOHO Square, 10–15 minutes from Nabq Bay (near the Million Hope wreck at El Gharqana), 15 minutes from Naama Bay, and 15–25 minutes from Coral Bay, Hadaba (Ras Um El Sid) and Old Market.',
+            'key_facts' => [
+                ['Al Montazah & Ras Nasrani', '0–3 min walk/transfer · On-site at Cyrene Sharm · Facing Tiran'],
+                ['Sharks Bay & SOHO Square', '5–8 min free A/C pickup (Savoy, Four Seasons, Sierra, Sunrise)'],
+                ['Nabq Bay & El Gharqana', '10–15 min free A/C pickup · Closest to Million Hope wreck (+€30)'],
+                ['Naama Bay & Gardens Bay', '15 min free A/C pickup · Sheltered sandy bay & central resorts'],
+                ['Coral Bay, Hadaba & Old Market', '15–25 min free A/C pickup · Convenient for southern marina yachts'],
+                ['Hotel Transfer Cost', '€0 (Free return pickup included on dive packages & boat trips)'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'Northern Bays: Al Montazah (0–3 min), Sharks Bay (5–8 min) & Nabq / El Gharqana (10–15 min)',
+                    'p' => 'Northern Sharm El Sheikh faces the deep sapphire channel of the Straits of Tiran. Staying in Al Montazah, Sharks Bay or Nabq puts you minutes from Sea College’s beachfront training pool, House Reef and Tiran speedboat jetty — without enduring 45-minute cross-town bus rides to southern ports.',
+                    'bullets' => [
+                        'Al Montazah & Ras Nasrani (0–3 min): guests at Cyrene Sharm, Ivy Cyrene Island, Baron Resort, Coral Sea Sensatori and Jaz Belvedere are right beside our beachfront dive center.',
+                        'Sharks Bay & SOHO Square (5–8 min): door-to-door morning pickup around 08:00–08:15 from Savoy, Sierra, Four Seasons, Grand Rotana and Sunrise Arabian Beach.',
+                        'Nabq Bay & El Gharqana (10–15 min): many Nabq resorts have shallow windy reef flats with long jetties that close under yellow/red flags — our 10-minute transfer brings Rixos, Steigenberger Alcazar and Jaz Mirabel guests to sheltered Al Montazah water every day.',
+                        'Bonus for Nabq divers: Nabq’s northern El Gharqana reef hosts the 174-metre MV Million Hope shipwreck (+€30 supplement, 0–22 m depth, suitable for Open Water divers!).',
+                    ],
+                ],
+                [
+                    'h2' => 'Central & Southern Bays: Naama Bay (15 min), Coral Bay & Hadaba / Ras Um El Sid (15–25 min)',
+                    'p' => 'Staying in Sharm’s lively central promenade at Naama Bay or on the dramatic southern cliffs of Hadaba and Ras Um El Sid gives you fast highway links both to our Al Montazah base (for courses, pool sessions and Tiran trips) and to southern marinas (for Ras Mohammed & White Island yachts).',
+                    'bullets' => [
+                        'Naama Bay (15 min): fast highway pickup (~07:45–08:00) from Mövenpick, Maritim Jolie Ville, Jaz Fayrouz, Marina Sharm and Tropitel Naama Bay.',
+                        'Coral Bay & Gardens Bay (12–15 min): smooth pickup from Domina Coral Bay, Reef Oasis Blue Bay and Park Regency directly to our pool, House Reef or marina.',
+                        'Hadaba, Ras Um El Sid & Old Market (20–25 min): direct transfers from Reef Oasis Beach, Iberotel Palace, Sunrise Diamond, Jaz Fanara and Monte Carlo Sharm.',
+                        'On full-day Ras Mohammed & White Island boat days (€55 snorkeling / €100 2-dive intro / certified packages), southern-zone guests enjoy ultra-short marina drop-offs!',
+                    ],
+                ],
+                [
+                    'h2' => 'How Hotel Pickups Work on Courses, Intro Dives & Private Speedboats',
+                    'p' => 'Whether you book online via our Hotel Pickup Zone Checker or message us your hotel name and room number on WhatsApp the afternoon before, our dispatch team sends your exact gate/reception pickup time with zero middleman confusion.',
+                    'bullets' => [
+                        'Free return A/C transfers apply to all certified dive packages (1 to 10+ dives), Boat Intro Dives (€70/€100), snorkeling trips and private Tiran speedboats (€75–€225).',
+                        'Travelling light on Day 1? Submit your wetsuit, BCD and fin sizes via our online Pre-Arrival Diver Check-In so your gear crate is waiting when your van arrives.',
+                        'Family splitting activities? Non-divers can ride the same transfer to join our White Island yacht (€55 adult / €30 child) or watch kids’ Bubblemaker (€70) by our pool.',
+                        'Staying in a private Sharm villa or compound (Sharm Hills, Sunny Lakes, Delta Sharm, Hay El Nour)? Free transfer covers private residences too — just drop your WhatsApp pin.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'My Nabq Bay hotel jetty often has a red wind flag — can I still scuba dive with Sea College?',
+                    'a' => 'Yes! Exposed Nabq hotel piers face northeast swells over shallow reef flats, whereas our Al Montazah House Reef (10–15 minutes south by free A/C transfer) and leeward Tiran/Ras Mohammed boat moorings remain calm and diveable year-round.',
+                ],
+                [
+                    'q' => 'Is hotel pickup really free from Hadaba, Old Market and Nabq Bay?',
+                    'a' => 'Yes. Return air-conditioned hotel transfers across all six Sharm El Sheikh zones (Nabq, Al Montazah, Sharks Bay, Naama Bay, Hadaba/Ras Um El Sid and Old Market) are included free on dive packages, boat intro dives, snorkeling trips and private speedboats.',
+                ],
+                [
+                    'q' => 'What is El Gharqana in Nabq Bay and can beginners or snorkelers visit it?',
+                    'a' => 'El Gharqana ("The Sunken Ship Area") in northern Nabq Protected Area is where the giant 174-metre MV Million Hope ran aground in 1996. Certified Open Water and Advanced divers can dive the wreck (+€30 supplement, 0–22 m), while beginners can start with a €30 Al Montazah House Reef or €100 2-dive boat intro.',
+                ],
+            ],
+        ],
+        'ar' => [
+            'badge' => 'دليل مناطق الفنادق والتوصيل',
+            'title' => 'دليل الغوص حسب مناطق فنادق شرم الشيخ: نبق (الغرقانة)، خليج القرش، نعمة والهضبة',
+            'meta_title' => 'دليل الغوص حسب مناطق فنادق شرم الشيخ: نبق، خليج القرش ونعمة',
+            'meta_desc' => 'مقيم في نبق (منطقة الغرقانة)، خليج القرش، خليج نعمة أو الهضبة؟ تعرف على مواعيد التوصيل المجاني (0–25 دقيقة) لمركزنا بالمنتزه وأقرب مواقع الغوص وتيران.',
+            'excerpt' => 'اعرف مدة التوصيل المجاني المكيف من فندقك (من 0 إلى 25 دقيقة)، طبيعة الشواطئ المرجانية وأقرب مواقع الغوص لكل منطقة فندقية في شرم الشيخ.',
+            'aeo_answer' => 'يوفر مركز سي كوليدج دايف كلوب انتقالات مجانية ذهابًا وإيابًا بسيارات مكيفة مع باقات الغوص والغطسات التجريبية بالقارب ورحلات السنوركل من جميع مناطق فنادق شرم الشيخ إلى مقرنا الشاطئي (PADI 5★) بالمنتزه: 0–3 دقائق من فنادق المنتزه ورأس نصراني، 5–8 دقائق من خليج القرش وسوهو سكوير، 10–15 دقيقة من خليج نبق ومنطقة الغرقانة (حطام مليون هوب)، 15 دقيقة من خليج نعمة، و15–25 دقيقة من كورال باي والهضبة (رأس أم سيد) والسوق القديم.',
+            'key_facts' => [
+                ['المنتزه ورأس نصراني', '0–3 دقائق · مقرنا داخل فندق سيرين شرم بمواجهة جزيرة تيران'],
+                ['خليج القرش وسوهو سكوير', '5–8 دقائق توصيل مجاني (سافوي، فورسيزونز، سييرا، صن رايز أرابيان)'],
+                ['خليج نبق ومنطقة الغرقانة', '10–15 دقيقة توصيل مجاني · الأقرب لحطام سفينة مليون هوب (+30€)'],
+                ['خليج نعمة وجاردنز باي', '15 دقيقة توصيل مجاني عبر طريق السلام السريع'],
+                ['الهضبة ورأس أم سيد والسوق القديم', '15–25 دقيقة توصيل مجاني · قريبة أيضًا من مارينا يخوت رأس محمد'],
+                ['تكلفة التوصيل من الفندق', '0€ (انتقالات مكيفة مجانية ذهابًا وإيابًا مع الباقات والرحلات)'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'فنادق الشمال: المنتزه (0–3 د)، خليج القرش (5–8 د) وخليج نبق والغرقانة (10–15 د)',
+                    'p' => 'تطل فنادق شمال شرم الشيخ مباشرة على مضيق تيران، ما يمنح المقيمين في المنتزه وخليج القرش وخليج نبق ميزة الوصول خلال دقائق معدودة إلى حمام السباحة التدريبي والشعاب المنزلية ومرسى القوارب السريعة في سي كوليدج دون عناء المشاوير الطويلة جنوبًا.',
+                    'bullets' => [
+                        'المنتزه ورأس نصراني (0–3 دقائق): نزلاء سيرين شرم، آيفي سيرين آيلاند، بارون ريزورت، كورال سي سينساتوري وجاز بيلفيدير على بُعد خطوات من شاطئنا.',
+                        'خليج القرش وسوهو سكوير (5–8 دقائق): استقبال صباحي مريح (~08:00) من سافوي، فورسيزونز، جراند روتانا وصن رايز أرابيان بيتش.',
+                        'خليج نبق ومنطقة الغرقانة (10–15 دقيقة): تعاني بعض سقالات فنادق نبق الطويلة من الراية الحمراء بسبب الأمواج، لذا ينقلك باصنا المجاني خلال 10 دقائق من ريكسوس وشتايجنبرجر ألكازار وجاز ميرابيل إلى مياه المنتزه الهادئة يوميًا.',
+                        'ميزة إضافية لنزلاء نبق: تضم منطقة الغرقانة شرم الشيخ شمال نبق أضخم سفينة غارقة «مليون هوب» بطول 174 مترًا (+30€ إضافة لعمق 0–22م ومناسبة لـ Open Water!).',
+                    ],
+                ],
+                [
+                    'h2' => 'فنادق الوسط والجنوب: خليج نعمة (15 د)، كورال باي والهضبة / رأس أم سيد (15–25 د)',
+                    'p' => 'يربط طريق السلام السريع فنادق خليج نعمة وكورال باي وهضبة أم سيد والسوق القديم بمركزنا في المنتزه (للتدريب والمسبح ورحلات تيران) وبالمارينا الجنوبية (ليخوت محمية رأس محمد والجزيرة البيضاء) بكل سلاسة.',
+                    'bullets' => [
+                        'خليج نعمة (15 دقيقة): توصيل مكيف (~07:45–08:00) من موفنبيك، ماريوت/ماريتيم جولي فيل، جاز فيروز، مارينا شرم وتروبيتيل نعمة.',
+                        'كورال باي وجاردنز باي (12–15 دقيقة): انتقال مباشر من دومينا كورال باي وريف أواسيز بلو باي وبارك ريجنسي.',
+                        'الهضبة ورأس أم سيد والسوق القديم (20–25 دقيقة): توصيل مجاني من ريف أواسيز بيتش، إيبروتيل بالاس، صن رايز دايموند، جاز فنارة ومونت كارلو.',
+                        'في أيام يخت رأس محمد والجزيرة البيضاء (55€ سنوركل / 100€ غطستين تجريبيتين)، يستمتع نزلاء الهضبة ونعمة بقرب المارينا الشديد في الذهاب والعودة!',
+                    ],
+                ],
+                [
+                    'h2' => 'كيف يعمل نظام التوصيل للدورات والقوارب الخاصة والفلل السكنية؟',
+                    'p' => 'سواء استخدمت أداة «فحص منطقة الفندق وموعد التوصيل» في موقعنا أو أرسلت اسم فندقك ورقم الغرفة عبر واتساب، يؤكد فريق العمليات موعد التحرك الدقيق أمام بوابة الفندق أو الاستقبال.',
+                    'bullets' => [
+                        'التوصيل المجاني المكيف يشمل باقات المعتمدين (1–10+ غطسات)، غوص القارب التجريبي (70€/100€)، رحلات السنوركل والقوارب السريعة الخاصة لتيران (75€–225€).',
+                        'سجّل مقاسات البدلة والزعانف مسبقًا عبر صفحة «تسجيل الغواصين المسبق» لتجد صندوق معداتك جاهزًا فور وصول سيارة التوصيل.',
+                        'ترافقك عائلتك غير الغواصة؟ يمكنهم ركوب نفس وسيلة النقل للانضمام لرحلة الجزيرة البيضاء (55€ بالغ / 30€ طفل) أو متابعة أطفالهم بجوار مسبح المركز.',
+                        'مقيم في فيلا أو كمبوند خاص (دلتا شرم، شرم هيلز، صني ليكس، حي النور)؟ يشمل التوصيل المجاني المجمعات السكنية أيضًا بمجرد إرسال موقعك عبر واتساب.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'سقالة فندقي في خليج نبق ترفع الراية الحمراء كثيرًا بسبب الرياح — هل يمكنني الغوص معكم؟',
+                    'a' => 'نعم بالتأكيد! تتأثر سقالات نبق المفتوحة بالأمواج السطحية، بينما تتمتع الشعاب المنزلية بمركزنا في المنتزه (10–15 دقيقة بالتوصيل المجاني) ومراسي القوارب المحمية في تيران ورأس محمد بهدوء يسمح بالغوص طوال العام.',
+                ],
+                [
+                    'q' => 'هل التوصيل مجاني فعلًا من الهضبة والسوق القديم وخليج نبق؟',
+                    'a' => 'نعم، الانتقالات ذهابًا وإيابًا بسيارة مكيفة مشمولة مجانًا من جميع مناطق شرم الشيخ الست (نبق، المنتزه، خليج القرش، خليج نعمة، الهضبة/رأس أم سيد، والسوق القديم) مع باقات الغوص ورحلات القارب والسنوركل.',
+                ],
+                [
+                    'q' => 'أين تقع منطقة الغرقانة في شرم الشيخ وهل يمكن الغوص فيها؟',
+                    'a' => 'تقع منطقة الغرقانة شمال محمية خليج نبق على بُعد 10–15 دقيقة من المنتزه، وسُميت بذلك لجنوح السفينة العملاقة مليون هوب (174م) عليها عام 1996. يمكن لحاملي Open Water وAdvanced الغوص عليها (+30€ إضافة لعمق 0–22م).',
+                ],
+            ],
+        ],
+    ],
+
+    /* ======================================================================
+     * 10. WHITE ISLAND & RAS MOHAMMED TICKETS, SINAI VISA & BOAT GUIDE
+     * ====================================================================== */
+    'white-island-ras-mohammed-tickets-visa-snorkeling-guide' => [
+        'slug' => 'white-island-ras-mohammed-tickets-visa-snorkeling-guide',
+        'img' => 'images/fleet/sea-college-nizar-yacht-02-ras-mohammed-nov2026.jpg',
+        'read_min' => 6,
+        'updated' => '2026-11-26',
+        'related_ids' => ['snork-ras-adult', 'speed-2h', 'dsd-2-boat', 'private-1-5'],
+        'en' => [
+            'badge' => 'Marine Parks & Visa Rules',
+            'title' => 'White Island & Ras Mohammed 2026 Guide: Park Tickets, Sinai Only Visa & Boat Options',
+            'meta_title' => 'White Island & Ras Mohammed Guide: €55 Boat, Park Fee & Visa',
+            'meta_desc' => 'Ras Mohammed & White Island boat guide (€55 incl. €5 park ticket & lunch) vs €150 Tiran private speedboat + Sinai Only free stamp vs $25 Egypt visa rules.',
+            'excerpt' => 'Everything you need before booking Ras Mohammed & White Island or Tiran Island: €5 park fee rules, free Sinai Only airport stamp vs $25 Egypt visa, and yacht vs private speedboat.',
+            'aeo_answer' => 'You do NOT need the $25 full Egypt tourist visa to visit Ras Mohammed National Park, White Island or the Straits of Tiran from Sharm El Sheikh — the free 15-day "Sinai Only" airport stamp covers both boat and land trips (the $25 full Egypt visa is only required offshore for the SS Thistlegorm wreck in the Gulf of Suez or trips outside South Sinai). Sea College’s full-day White Island & Ras Mohammed yacht trip costs €55 per adult (€30 child 5–12) with the €5 park ticket, lunch, drinks, gear and hotel transfers included, while a private 2-hour Tiran speedboat is €150 per boat.',
+            'key_facts' => [
+                ['White Island & Ras Mohammed Yacht', '€55 Adult / €30 Child (5–12) — €5 park ticket & lunch INCLUDED'],
+                ['Tiran Private RIB / Speedboat', '€150 per boat (2 hours, 2 guests · 15 min from Al Montazah)'],
+                ['Full-Day Private Yacht Charter', '€550 (1–5 pax) · €650 (6–10) · €900 (11–15) · €1,100 (16–20)'],
+                ['Sinai Only Free Stamp (15 Days)', 'VALID for Ras Mohammed (boat & bus), White Island, Tiran & Dahab'],
+                ['$25 Full Egypt Visa Required?', 'ONLY needed for SS Thistlegorm wreck (Sha’ab Ali) or Cairo/Luxor'],
+                ['Marina Manifest Requirement', 'Clear smartphone photo of passport ID page + entry stamp'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'Free "Sinai Only" Airport Stamp vs. $25 Full Egypt Visa: Exact Marine Rules',
+                    'p' => 'One of the most searched questions at Sharm El Sheikh International Airport (SSH) is whether travellers must buy the $25 USD sticker visa at the bank desk before immigration just to join a Ras Mohammed boat trip. Here is the exact Egyptian Coast Guard and National Park rule.',
+                    'bullets' => [
+                        'Free 15-day "Sinai Only" stamp: 100% valid for Ras Mohammed National Park by yacht (€55) AND by overland bus (€60), White Island sandbar, Straits of Tiran, Al Montazah, Nabq (El Gharqana) and Dahab!',
+                        'When you DO need the $25 full Egypt visa: mandatory if you plan to dive the WWII SS Thistlegorm wreck (+€150 at Sha’ab Ali in the Gulf of Suez), fly/travel to Cairo or Luxor, or stay longer than 15 days.',
+                        'Pro tip for Advanced divers: if there is ANY chance you want to dive the SS Thistlegorm during your holiday, buy the $25 visa sticker at SSH airport on arrival — you cannot upgrade a Sinai stamp at the marina!',
+                        'For daily Coast Guard boat manifests, a clear photo of your passport photo page and arrival stamp on your phone is sufficient (bring physical passport on bus trips to Ras Mohammed or Dahab).',
+                    ],
+                ],
+                [
+                    'h2' => 'Ras Mohammed & White Island Yacht (€55) vs. Bus (€60) vs. Boat Intro (€100)',
+                    'p' => 'Ras Mohammed’s dramatic peninsula splits terrestrial desert landmarks from offshore coral walls and the tidal White Island sandbar — often called the "Maldives of Egypt" for its waist-deep neon-turquoise lagoon.',
+                    'bullets' => [
+                        'Full-Day White Island & Ras Mohammed Yacht (€55 adult / €30 child ages 5–12, ~8h): includes the €5 Marine Park ticket, return A/C hotel transfers, buffet lunch, soft drinks, mask, life vest and PADI snorkeling guide.',
+                        'Want to add scuba on the exact same yacht? Book Quick Boat Intro (€70, 1 dive) or 2-Dive Boat Intro (€100) so beginners and snorkeling family members share one boat.',
+                        'Ras Mohammed Half-Day Bus Tour (€60, 08:00–13:30, min. 6 guests): visits Gate of Allah, Mangrove channel, Earthquake crack, Magic Lake and shore reefs with zero boat motion.',
+                        'Non-swimmers & kids welcome: child-sized buoyancy vests, lifebuoy rings and in-water PADI guides accompany every snorkeling stop.',
+                    ],
+                ],
+                [
+                    'h2' => 'Shared Yacht vs. Private Tiran Speedboat (€150) vs. Private Yacht (€550)',
+                    'p' => 'Not every family or couple wants an 8-hour shared excursion schedule. Comparing transit time and per-person charter math helps you pick between Ras Mohammed’s southern sandbar and Tiran’s northern lagoons.',
+                    'bullets' => [
+                        '2-Hour Private Tiran Speedboat (€150 per boat for 2 guests; +€75 per extra guest up to 5): launches from Al Montazah directly opposite Tiran — 15 minutes to Gordon, Laguna and Jackson Reefs!',
+                        '1-Hour Local Reef Private Speedboat (€75 per boat for up to 3 guests — just €25/person!) or 3-Hour Tiran Speedboat (€225 for 2 guests) for maximum half-day privacy.',
+                        'Full-Day Private Boat Charter: €550 (1–5 guests), €650 (6–10 guests — just €65/person for 10!), €900 (11–15) or €1,100 (16–20 — matching the €55 public boat fare at 20 guests!).',
+                        'Note on park fees: €5/person Marine Park ticket IS included in the €55/€30 shared Ras Mohammed yacht and €70/€100 boat intros, while private charters itemize €5/person park fees per passenger.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'Can I visit Ras Mohammed and White Island with the free Sinai Only stamp?',
+                    'a' => 'Yes! Both the full-day White Island & Ras Mohammed yacht trip (€55) and the Ras Mohammed land bus tour (€60) lie inside the South Sinai free-stamp zone, so the free 15-day "Sinai Only" airport stamp is completely valid. You only need the $25 Egypt visa if diving the SS Thistlegorm wreck.',
+                ],
+                [
+                    'q' => 'Is the €5 Ras Mohammed National Park ticket included in the €55 boat price?',
+                    'a' => 'Yes — Sea College’s €55 adult and €30 child (ages 5–12) White Island & Ras Mohammed yacht tickets are all-inclusive of the €5 Marine Park entry ticket, hotel pickup/drop-off, freshly cooked buffet lunch, soft drinks, mask and life jacket.',
+                ],
+                [
+                    'q' => 'Should we book the €55 Ras Mohammed Yacht or €150 Tiran Private Speedboat?',
+                    'a' => 'Choose the €55 Ras Mohammed Yacht if you want a relaxed 8-hour day with White Island sandbar and hot buffet lunch included. Choose the €150 Private Tiran Speedboat (from Al Montazah) if you want your own private boat, zero crowds and a fast 15-minute crossing to Tiran’s coral lagoons in a 2-hour window.',
+                ],
+            ],
+        ],
+        'ar' => [
+            'badge' => 'تذاكر المحميات وقواعد الفيزا',
+            'title' => 'دليل الجزيرة البيضاء ومحمية رأس محمد 2026: التذاكر، ختم سيناء المجاني واللانش الخاص',
+            'meta_title' => 'دليل الجزيرة البيضاء ورأس محمد: تذكرة المحمية والفيزا واليخت',
+            'meta_desc' => 'دليل رحلة رأس محمد والجزيرة البيضاء باليخت (55€ شاملة تذكرة المحمية 5€ والغداء) مقابل لانش تيران الخاص (150€) وقواعد ختم سيناء المجاني وتأشيرة 25 دولار.',
+            'excerpt' => 'كل ما تحتاج معرفته قبل حجز رحلة الجزيرة البيضاء ورأس محمد أو جزيرة تيران: شمول تذكرة المحمية (5€)، الفرق بين ختم سيناء المجاني وفيزا 25$، واليخت مقابل اللانش السريع.',
+            'aeo_answer' => 'لا تحتاج إلى تأشيرة مصر الكاملة (25 دولارًا) لزيارة محمية رأس محمد أو الجزيرة البيضاء أو جزيرة تيران من شرم الشيخ — فختم «سيناء فقط Sinai Only» المجاني بالمطار (لمدة 15 يومًا) كافٍ تمامًا لرحلات اليخت والباص (بينما تُشترط تأشيرة الـ 25$ بحريًا فقط عند السفر لحطام سفينة ثيستلجورم بخليج السويس أو خارج جنوب سيناء). تبلغ تكلفة رحلة يخت الجزيرة البيضاء ورأس محمد ليوم كامل 55€ للبالغ (30€ للطفل 5–12 سنة) شاملة تذكرة المحمية (5€) والغداء والمشروبات والانتقالات، بينما يبلغ القارب السريع الخاص لتيران 150€ لساعتين.',
+            'key_facts' => [
+                ['يخت الجزيرة البيضاء ورأس محمد', '55€ بالغ / 30€ طفل (5–12) — شاملة تذكرة المحمية 5€ والغداء'],
+                ['لانش سريع خاص لجزيرة تيران', '150€ للقارب (ساعتان لضيفين · 15 دقيقة فقط من شاطئ المنتزه)'],
+                ['تأجير يخت خاص ليوم كامل', '550€ (1–5 ضيوف) · 650€ (6–10) · 900€ (11–15) · 1,100€ (16–20)'],
+                ['ختم سيناء المجاني (Sinai Only)', 'صالح 100% لرأس محمد (يخت وباص) والجزيرة البيضاء وتيران ودهب'],
+                ['متى تلزم تأشيرة مصر الكاملة (25$)؟', 'مطلوبة فقط لغطسة حطام ثيستلجورم (شعب علي) أو السفر للقاهرة/الأقصر'],
+                ['المطلوب لتصريح المارينا', 'صورة واضحة لجواز السفر (أو الهوية للمصريين) على الهاتف'],
+            ],
+            'sections' => [
+                [
+                    'h2' => 'ختم سيناء المجاني (Sinai Only) مقابل تأشيرة 25 دولار: القاعدة الرسمية الدقيقة',
+                    'p' => 'يتساءل الكثير من المسافرين في مطار شرم الشيخ الدولي عمّا إذا كان يجب شراء ملصق التأشيرة بقيمة 25 دولارًا لمجرد الذهاب في رحلة بحرية إلى محمية رأس محمد أو تيران. إليك القاعدة الرسمية المعتمدة من إدارة المحميات وخفر السواحل.',
+                    'bullets' => [
+                        'ختم «سيناء فقط Sinai Only» المجاني (15 يومًا): صالح تمامًا لرحلة يخت رأس محمد والجزيرة البيضاء (55€)، ورحلة رأس محمد البرية بالباص (60€)، ومضيق تيران، ونبق (الغرقانة)، ودهب!',
+                        'متى تحتاج تأشيرة مصر الكاملة (25$)؟ تصبح إلزامية فقط إذا كنت غواصًا متقدمًا ترغب في رحلة حطام سفينة ثيستلجورم (+150€ في منطقة شعب علي بخليج السويس) أو السفر للقاهرة أو الإقامة أكثر من 15 يومًا.',
+                        'نصيحة مهمة للغواصين المتقدمين: إذا كنت تفكر في غوص ثيستلجورم، اشترِ ملصق الـ 25$ في المطار فور الوصول لأنه لا يمكن تعديل ختم سيناء على رصيف المارينا!',
+                        'في الرحلات البحرية اليومية تكفي صورة واضحة لصفحة بيانات جواز السفر وختم الدخول على هاتفك لتسجيل كشف المارينا (وأحضر الجواز الأصلي في رحلات الباص البرية).',
+                    ],
+                ],
+                [
+                    'h2' => 'يخت رأس محمد والجزيرة البيضاء (55€) أم الباص البري (60€) أم الغوص التجريبي (100€)؟',
+                    'p' => 'تجمع محمية رأس محمد بين اللسان الرملي الفيروزي الساحر للجزيرة البيضاء ("مالديف مصر") والجدران المرجانية البحرية من جهة، وبين المعالم الصحراوية والجيولوجية البرية من جهة أخرى.',
+                    'bullets' => [
+                        'رحلة يخت الجزيرة البيضاء ورأس محمد الكاملة (55€ للبالغ / 30€ للطفل 5–12 سنة، ~8 ساعات): شاملة تذكرة دخول المحمية (5€)، الانتقالات المكيفة، غداء البوفيه، المشروبات، القناع وسترة النجاة.',
+                        'ترغب في تجربة الغوص بالمعدات مع عائلتك على نفس اليخت؟ احجز غطسة قارب تجريبية (70€) أو غطستين بالقارب (100€ شاملة الكل) لتركبوا جميعًا يختًا واحدًا.',
+                        'رحلة رأس محمد بالباص (60€، نصف يوم 08:00–13:30، حد أدنى 6 ضيوف): تزور بوابة الله، قناة المانجروف، شق الزلزال، والبحيرة السحرية مع سنوركل شاطئي بدون ركوب قارب.',
+                        'مناسبة لغير السباحين والأطفال: نوفر سترات نجاة بجميع المقاسات وأطواق طفو ومرافقة مرشدين محترفين داخل الماء في كل وقفة.',
+                    ],
+                ],
+                [
+                    'h2' => 'اليخت المشترك مقابل اللانش السريع الخاص لتيران (150€) واليخت الخاص (550€)',
+                    'p' => 'إذا كنت تبحث عن الخصوصية التامة لعائلتك أو في شهر العسل دون الالتزام بـ 8 ساعات مع مجموعة كبيرة، فإن موقعنا في المنتزه يمنحك أسرع وصول خاص في شرم الشيخ.',
+                    'bullets' => [
+                        'قارب سريع خاص لجزيرة تيران لمدة ساعتين (150€ للقارب لضيفين؛ +75€ لكل ضيف إضافي حتى 5): ينطلق من شاطئ المنتزه ليصل إلى بحيرات وشعاب تيران في 15 دقيقة فقط!',
+                        'يتوفر أيضًا قارب سريع خاص لمدة ساعة للشعاب القريبة بـ 75€ للقارب (حتى 3 ضيوف — أي 25€ للفرد!) أو 3 ساعات لتيران بـ 225€.',
+                        'تأجير يخت خاص ليوم كامل: 550€ (1–5 ضيوف)، أو 650€ (6–10 ضيوف — أي 65€ للفرد عند 10 أشخاص!)، أو 900€ (11–15)، أو 1,100€ (16–20 ضيفًا — بنفس سعر التذكرة المشتركة 55€ للفرد!).',
+                        'ملاحظة التذاكر: رسوم المحمية (5€ للفرد) مشمولة مسبقًا في تذكرة اليخت المشترك (55€/30€) وغوص القارب التجريبي (70€/100€)، بينما تُحسب منفصلة لكل راكب في القوارب الخاصة.',
+                    ],
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'هل يكفي ختم سيناء المجاني لزيارة محمية رأس محمد والجزيرة البيضاء؟',
+                    'a' => 'نعم بالتأكيد! تقع محمية رأس محمد والجزيرة البيضاء ومضيق تيران بالكامل ضمن نطاق جنوب سيناء المسموح به بختم المطار المجاني (15 يومًا)، ولا تلزم تأشيرة الـ 25$ إلا لرحلة حطام ثيستلجورم أو السفر للقاهرة.',
+                ],
+                [
+                    'q' => 'هل تذكرة دخول محمية رأس محمد (5€) مشمولة في سعر رحلة اليخت 55€؟',
+                    'a' => 'نعم، سعر التذكرة 55€ للبالغ و30€ للطفل (5–12 سنة) شامل بالكامل لتذكرة دخول المحمية (5€)، والتوصيل المكيف من وإلى الفندق، وغداء البوفيه والمشروبات والقناع وسترة النجاة.',
+                ],
+                [
+                    'q' => 'أيهما أنسب لنا: يخت رأس محمد والجزيرة البيضاء (55€) أم لانش تيران الخاص (150€)؟',
+                    'a' => 'اختر يخت رأس محمد (55€ للفرد) ليوم بحري كامل (8 ساعات) يشمل الجزيرة البيضاء والغداء. واختر اللانش السريع الخاص لتيران (150€ للقارب من المنتزه) إذا أردت خصوصية VIP تامة ووصولًا سريعًا خلال 15 دقيقة إلى شعاب تيران في ساعتين.',
+                ],
+            ],
+        ],
+    ],
 ];

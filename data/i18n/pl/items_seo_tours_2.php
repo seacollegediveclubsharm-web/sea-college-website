@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'sup-thistlegorm' => [
         'h1' => 'Nurkowanie na Wraku SS Thistlegorm z Sharm El Sheikh — Legenda II Wojny Światowej',
-        'meta_title' => 'Wrak SS Thistlegorm Sharm El Sheikh | Wyprawa +150 € | Sea College PADI',
+        'meta_title' => 'Wrak SS Thistlegorm Sharm El Sheikh | Wyprawa +150 €',
         'meta_desc' => 'Zanurkuj na najsłynniejszym wraku świata SS Thistlegorm z Sharm El Sheikh (+150 € do pakietu, 2 nurkowania). Motocykle BSA, ciężarówki Bedford i lokomotywy na 16–30 m!',
         'aeo_answer' => 'Wyprawa nurkowa na legendarny wrak z II wojny światowej SS Thistlegorm z Sea College Dive Club z Sharm El Sheikh kosztuje 150 € dopłaty do pakietu nurkowego (całodniowa ekspedycja z wczesnym wypłynięciem trwająca 7–8+ godzin, obejmująca 2 nurkowania na wraku). Ponieważ 128-metrowy brytyjski frachtowiec spoczywa na głębokości 16–30 m w otwartych wodach Zatoki Sueskiej z możliwymi silnymi prądami, wymagany jest certyfikat minimum PADI Advanced Open Water (lub równoważny 30 m), co najmniej 20 zalogowanych nurkowań oraz rezerwacja minimum 72 godziny wcześniej.',
         'overview' => [
@@ -48,7 +48,7 @@ return [
 
     'sup-dunraven' => [
         'h1' => 'Nurkowanie na Wraku SS Dunraven (1876) w Sharm El Sheikh',
-        'meta_title' => 'Wrak SS Dunraven Sharm El Sheikh | Dopłata +30 € | Sea College PADI',
+        'meta_title' => 'Wrak SS Dunraven Sharm El Sheikh | Dopłata +30 €',
         'meta_desc' => 'Odkryj wiktoriański parowiec SS Dunraven z 1876 r. przy Beacon Rock z Sharm El Sheikh (+30 € do pakietu): katedra z ławic przeźroczek i kolorowa rafa Sha\'ab Mahmud!',
         'aeo_answer' => 'Dopłata do wyprawy na wrak SS Dunraven w Sea College Dive Club wynosi 30 € za certyfikowanego nurka ponad pakiet nurkowy (wymagana rezerwacja minimum 72 godziny wcześniej). Spoczywający do góry stępką w dwóch częściach na głębokości 15–29 m przy Beacon Rock (Sha\'ab Mahmud), ten brytyjski parowiec żaglowy z kwietnia 1876 roku łączy klimatyczne przepłynięcie pod kadłubem pełnym tysięcy srebrzystych przeźroczek ze wynurzeniem po bajecznej ścianie koralowej.',
         'overview' => [
@@ -89,7 +89,7 @@ return [
 
     'sup-millionhope' => [
         'h1' => 'Nurkowanie na Wraku MV Million Hope w Sharm El Sheikh (Nabq)',
-        'meta_title' => 'Wrak Million Hope Sharm El Sheikh | Dopłata +30 € | Sea College PADI',
+        'meta_title' => 'Wrak Million Hope Sharm El Sheikh | Dopłata +30 €',
         'meta_desc' => 'Największy wrak w Sharm El Sheikh! Zanurkuj na 175-metrowym masowcu MV Million Hope w Nabq (+30 € do pakietu, 0–22 m) — dostępny już od stopnia Open Water Diver!',
         'aeo_answer' => 'Dopłata do nurkowania na wraku MV Million Hope w Sea College Dive Club wynosi 30 € za certyfikowanego nurka ponad pakiet nurkowy (minimum 4 nurków, rezerwacja co najmniej 48 godzin wcześniej). Osiadły na mieliźnie w 1996 roku w rezerwacie Nabq tuż na północ od naszej bazy w Al Montazah, ten gigantyczny 175-metrowy masowiec spoczywa na głębokości 0–22 m w jasnej wodzie — dzięki czemu jest dostępny już dla posiadaczy stopnia Open Water Diver!',
         'overview' => [
@@ -130,7 +130,7 @@ return [
 
     'sup-dahab' => [
         'h1' => 'Wycieczka Nurkowa do Dahab z Sharm El Sheikh — Blue Hole, The Bells i Canyon',
-        'meta_title' => 'Nurkowanie Dahab (Blue Hole i Canyon) z Sharm | +115 € | Sea College',
+        'meta_title' => 'Nurkowanie Dahab (Blue Hole i Canyon) z Sharm | +115 €',
         'meta_desc' => 'Całodniowa wyprawa nurkowa z Sharm El Sheikh do kultowego Dahab (+115 € do 2 nurkowań z pakietu): słynny Blue Hole / The Bells oraz wulkaniczny Canyon z obiadem beduińskim!',
         'aeo_answer' => 'Dopłata do całodniowej wycieczki nurkowej do Dahab w Sea College Dive Club wynosi 115 € za certyfikowanego nurka ponad 2 nurkowania z pakietu (minimum 4 nurków, rezerwacja minimum 48 godzin wcześniej). Ta synajska wyprawa obejmuje klimatyzowany transport z Sharm (~1 godzina malowniczą trasą przez góry Synaju), przewóz butli i sprzętu, bazę wypoczynkową u Beduinów nad samym morzem oraz 2 nurkowania z przewodnikiem PADI w słynnym Canyonie oraz Blue Hole / The Bells w bezpiecznych limitach rekreacyjnych.',
         'overview' => [
@@ -172,7 +172,7 @@ return [
 
     'snork-ras-adult' => [
         'h1' => 'Rejs na Białą Wyspę i do Parku Ras Mohammed z Sharm El Sheikh — Snorkeling (55 €)',
-        'meta_title' => 'Biała Wyspa i Ras Mohammed Rejs Jachtem Sharm | 55 € All-In | Sea College',
+        'meta_title' => 'Snurkowanie Biała Wyspa i Ras Mohammed Sharm | 55 € All-In',
         'meta_desc' => 'Całodniowy rejs jachtem na rajską Białą Wyspę („Egipskie Malediwy”) i rafy Parku Narodowego Ras Mohammed z Sharm El Sheikh: 55 € dorosły / 30 € dziecko (obiad, maska, transfer i park w cenie!).',
         'aeo_answer' => 'Całodniowy rejs jachtem na Białą Wyspę i do Parku Narodowego Ras Mohammed z Sea College Dive Club kosztuje 55 € za osobę dorosłą (30 € za dziecko w wieku 5–12 lat) i trwa około 8 godzin z Sharm El Sheikh (Szarm el-Szejk). Cena jest w pełni all-inclusive: obejmuje klimatyzowany transfer z i do hotelu, bilet wstępu do Parku Morskiego Ras Mohammed, maskę i kamizelkę asekuracyjną, 2–3 przystanki z przewodnikiem na rafach koralowych i piaszczystej mieliźnie Białej Wyspy oraz świeżo gotowany obiad w formie bufetu i napoje bezalkoholowe na pokładzie.',
         'overview' => [
@@ -201,7 +201,7 @@ return [
         ],
         'excluded' => [
             'Ręczniki plażowe i krem z filtrem UV',
-            'Opcjonalne 10-minutowe Intro Nurkowanie z akwalungiem (chcesz też zanurkować z butlą na tym samym jachcie? Wybierz Intro z łodzi za 70 €!)',
+            'Opcjonalne 10-minutowe Intro Nurkowe z akwalungiem (chcesz też zanurkować z butlą na tym samym jachcie? Wybierz Intro z łodzi za 70 €!)',
         ],
         'ideal_for' => [
             'Rodziny z dziećmi, pary i seniorzy pragnący zobaczyć najpiękniejsze miejsce w Szarm el-Szejk bez użycia butli',
@@ -216,7 +216,7 @@ return [
 
     'speed-2h' => [
         'h1' => 'Prywatna Motorówka na Wyspę Tiran (2 Godziny) z Sharm El Sheikh (150 €)',
-        'meta_title' => 'Prywatna Motorówka Wyspa Tiran Sharm | 2 Godz. · 150 € / Łódź | Sea College',
+        'meta_title' => 'Prywatna Motorówka Wyspa Tiran 2 godz. | 150 € / Łódź',
         'meta_desc' => 'Wypłyń prywatną motorówką Speedboat prosto z Al Montazah na turkusowe laguny wyspy Tiran w 15 minut! 150 € za łódź na 2 godz. (dla 2 os., maks. 5 os.) — maski, kamizelki i transfer w cenie.',
         'aeo_answer' => 'Dwugodzinny rejs prywatną motorówką (Speedboat) na wyspę Tiran w Sea College Dive Club kosztuje 150 € za całą łódź dla 2 gości (maksymalnie 5 osób na pokładzie; 3., 4. i 5. osoba +75 €/os.). Ponieważ nasza baza na plaży w Al Montazah leży dokładnie naprzeciwko Cieśniny Tiran — w najbliższym możliwym punkcie startowym w całym Sharm El Sheikh — docierasz na rafy Gordon, Laguna i Jackson w 15 minut zamiast płynąć półtorej godziny wolnym statkiem wycieczkowym! Maski, kamizelki i transfery w Sharm są w cenie.',
         'overview' => [
@@ -258,7 +258,7 @@ return [
 
     'private-6-10' => [
         'h1' => 'Prywatny Jacht w Sharm El Sheikh (Cały Dzień dla 6–10 Gości — 650 €)',
-        'meta_title' => 'Wynajem Prywatnego Jachtu Sharm El Sheikh (6–10 Os.) | 650 € | Sea College',
+        'meta_title' => 'Prywatny Jacht Sharm El Sheikh (6–10 os.) | 650 € / Dzień',
         'meta_desc' => 'Wyczarteruj własny całodniowy jacht motorowy na Morzu Czerwonym w Sharm El Sheikh dla 6–10 osób za 650 € (już od 65 €/os.!). Ras Mohammed i Biała Wyspa lub Tiran we własnym tempie!',
         'aeo_answer' => 'Całodniowy czarter prywatnej łodzi / jachtu dla 6 do 10 gości w Sea College Dive Club w Sharm El Sheikh kosztuje 650 € za całą jednostkę — co przy 10 osobach daje zaledwie 65 € na osobę (tylko 10 € więcej niż bilet na grupowy statek wycieczkowy!). Otrzymujesz cały jacht motorowy na Morzu Czerwonym wraz z kapitanem i załogą wyłącznie dla siebie na 7–8 godzin, wybierając trasę do Parku Ras Mohammed i na Białą Wyspę lub do Cieśniny Tiran z możliwością snorkelingu oraz prywatnych nurkowań.',
         'overview' => [

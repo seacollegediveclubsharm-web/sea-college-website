@@ -29,13 +29,20 @@ $page['breadcrumbs']    = [
 $videosSchema = [];
 foreach ($galData['media'] as $m) {
     if ($m['type'] === 'video') {
+        $vDur = 'PT30S';
+        if (!empty($m['dur']) && preg_match('/^(?:(\d+):)?(\d+)$/', trim((string) $m['dur']), $vDm)) {
+            $vMin = (int) ($vDm[1] ?? 0);
+            $vSec = (int) $vDm[2];
+            $vDur = 'PT' . ($vMin > 0 ? $vMin . 'M' : '') . $vSec . 'S';
+        }
         $videosSchema[] = [
             '@type'        => 'VideoObject',
             'name'         => loc($m['title']),
             'description'  => loc($m['caption']),
-            'thumbnailUrl' => url('assets/' . $m['poster']),
+            'thumbnailUrl' => [url('assets/' . $m['poster'])],
             'contentUrl'   => url('assets/' . $m['src']),
-            'uploadDate'   => '2026-01-15',
+            'uploadDate'   => '2026-01-15T08:00:00+02:00',
+            'duration'     => $vDur,
             'publisher'    => ['@id' => SITE_URL . '/#organization'],
         ];
     }
@@ -204,7 +211,7 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container cta-band__inner">
     <div><h2><?= te('cta_band_title') ?></h2><p><?= te('cta_band_sub') ?></p></div>
     <div class="cta-band__btns">
-      <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link('Dive / Snorkel Booking', 'gallery_cta')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="gallery_cta"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
+      <a class="btn btn--wa btn--lg" href="<?= e(whatsapp_link(t('nav_services'), 'gallery_cta')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="gallery_cta"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
       <a class="btn btn--ghost btn--lg" href="<?= e(page_link('/prices')) ?>" data-track="cta_click" data-placement="gallery_prices"><?= te('cta_view_prices') ?></a>
     </div>
   </div>

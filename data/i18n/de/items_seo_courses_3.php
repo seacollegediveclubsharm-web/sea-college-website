@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'efr' => [
         'h1' => 'Emergency First Response (EFR Erste-Hilfe-Kurs) in Sharm El Sheikh',
-        'meta_title' => 'Emergency First Response (EFR) Sharm El Sheikh | 143 € | Sea College',
+        'meta_title' => 'Emergency First Response (EFR) Sharm El Sheikh | 143 €',
         'meta_desc' => 'International anerkannter 1-Tages Erste-Hilfe- & HLW-Kurs (Emergency First Response, 143 €) in Sharm El Sheikh — für Taucher (Voraussetzung Rescue Diver) & Nichttaucher.',
         'aeo_answer' => 'Der Emergency First Response Kurs (EFR Erst- und Zweitversorgung) im Sea College Dive Club in Sharm El Sheikh kostet 143 € pro Person, dauert 1 Tag in unserem klimatisierten Schulungsraum im Cyrene Sharm und hat kein Mindestalter und keine Tauchvoraussetzung. Sie trainieren praxisnah Herz-Lungen-Wiederbelebung (HLW/CPR), AED-Defibrillator-Einsatz, Blutstillung, Schocklagerung und Kindernotfälle — und erfüllen damit die Pflichtvoraussetzung für den PADI Rescue Diver (+85 € EFR-Zertifizierungsgebühr).',
         'overview' => [
@@ -46,7 +46,7 @@ return [
 
     'rescue' => [
         'h1' => 'PADI Rescue Diver Kurs (Rettungstaucher) in Sharm El Sheikh',
-        'meta_title' => 'PADI Rescue Diver Sharm El Sheikh | 394 € inkl. Ausrüstung | Sea College',
+        'meta_title' => 'PADI Rescue Diver Sharm El Sheikh | 394 € inkl. Ausrüstung',
         'meta_desc' => 'Werden Sie ein souveräner Tauchpartner: PADI Rescue Diver in Sharm El Sheikh (394 €, 3–4 Tage) inkl. kompletter Leihausrüstung im warmen Roten Meer.',
         'aeo_answer' => 'Der PADI Rescue Diver Kurs im Sea College Dive Club in Sharm El Sheikh kostet 394 € pro Person, dauert 3 bis 4 Tage (Mindestalter 12 Jahre) und beinhaltet die komplette Leihausrüstung. Von erfahrenen Tauchern weltweit als der lehrreichste Kurs überhaupt geschätzt, trainieren Sie Selbstrettung, frühzeitiges Erkennen von Stress bei Tauchpartnern, Notfallsauerstoff-Gabe, Bergung panischer oder bewusstloser Taucher unter und über Wasser sowie zwei realistische Freiwasser-Rettungsszenarien (+85 € PADI Gebühr).',
         'overview' => [
@@ -89,7 +89,7 @@ return [
 
     'bundle-stars' => [
         'h1' => 'PADI Sparpaket „Stars“ — Open Water Diver + Nitrox in Sharm El Sheikh',
-        'meta_title' => 'PADI Paket Stars (Open Water + Nitrox) Sharm | 500 € (-50 €) | Sea College',
+        'meta_title' => 'PADI Paket Stars (Open Water + Nitrox) Sharm | 500 € (-50 €)',
         'meta_desc' => 'Sparen Sie 50 € mit dem PADI Sparpaket Stars in Sharm El Sheikh (500 €, 4 Tage): PADI Open Water Diver + Enriched Air Nitrox inkl. Leihausrüstung & Tauchversicherung!',
         'aeo_answer' => 'Das PADI Kurs-Sparpaket „Stars“ im Sea College Dive Club in Sharm El Sheikh kostet 500 € pro Person — Sie sparen 50 € gegenüber der Einzelbuchung — und dauert ca. 4 Tage (Mindestalter 12 Jahre). Es kombiniert den kompletten PADI Open Water Diver (bis 18 m) mit dem PADI Enriched Air (Nitrox) Spezialkurs inklusive kompletter Leihausrüstung, Tauchversicherung und Steuern (+85 € PADI Lehrbuch-/Brevetgebühr je Kurs).',
         'overview' => [
@@ -131,7 +131,7 @@ return [
 
     'bundle-super' => [
         'h1' => 'PADI Sparpaket „Super“ — Advanced Open Water + Nitrox in Sharm El Sheikh',
-        'meta_title' => 'PADI Paket Super (Advanced + Nitrox) Sharm | 400 € (-75 €) | Sea College',
+        'meta_title' => 'PADI Paket Super (Advanced + Nitrox) Sharm | 400 € (-75 €)',
         'meta_desc' => 'Bereits Open Water Taucher? Sparen Sie 75 € mit dem PADI Paket Super in Sharm El Sheikh (400 €, 3 Tage): Advanced Open Water (30 m) + Nitrox inkl. Ausrüstung & Versicherung!',
         'aeo_answer' => 'Das PADI Kurs-Sparpaket „Super“ im Sea College Dive Club in Sharm El Sheikh kostet 400 € pro Person — Sie sparen 75 € — und dauert nur 3 Tage für bereits zertifizierte Open-Water-Taucher ab 12 Jahren. Es vereint den PADI Advanced Open Water Diver (5 Abenteuertauchgänge bis 30 m) mit dem PADI Enriched Air (Nitrox) Spezialkurs und enthält bereits die komplette Leihausrüstung, die Tauchversicherung sowie alle Steuern (+85 € PADI Gebühr je Kurs).',
         'overview' => [
@@ -173,7 +173,7 @@ return [
 
     'bundle-mega' => [
         'h1' => 'PADI Sparpaket „Mega“ — Open Water + Advanced Open Water in Sharm El Sheikh',
-        'meta_title' => 'PADI Paket Mega (OWD + Advanced) Sharm | 600 € (-90 €) | Sea College',
+        'meta_title' => 'PADI Paket Mega (OWD + Advanced) Sharm | 600 € (-90 €)',
         'meta_desc' => 'Vom Anfänger direkt zum 30-m-Taucher in einem Urlaub! PADI Paket Mega in Sharm El Sheikh (600 €, 90 € sparen, 6 Tage) inkl. 9 Meerestauchgängen, Ausrüstung & Versicherung.',
         'aeo_answer' => 'Unser meistgebuchtes Kurs-Kombiangebot „Mega“ im Sea College Dive Club in Sharm El Sheikh kostet 600 € pro Person — 90 € Ersparnis — und dauert rund 6 Tage (Mindestalter 12 Jahre). Komplett ohne Vorkenntnisse absolvieren Sie sowohl den PADI Open Water Diver (5 Pool + 4 Meerestauchgänge bis 18 m) als auch den PADI Advanced Open Water Diver (5 Abenteuertauchgänge bis 30 m) — insgesamt 9 Freiwassertauchgänge im Roten Meer inklusive kompletter Leihausrüstung, Tauchversicherung und Steuern (+85 € PADI Gebühr je Kurs).',
         'overview' => [
@@ -215,7 +215,7 @@ return [
 
     'bundle-heros' => [
         'h1' => 'PADI Sparpaket „Heros“ — Open Water + Advanced + Nitrox in Sharm El Sheikh',
-        'meta_title' => 'PADI Paket Heros (OWD + AOWD + Nitrox) | 750 € (-120 €) | Sea College',
+        'meta_title' => 'PADI Paket Heros (OWD + AOWD + Nitrox) Sharm | 750 €',
         'meta_desc' => 'Unsere größte Ersparnis (-120 €): PADI Dreifach-Paket Heros in Sharm El Sheikh (750 €, 6–7 Tage) — vom Einsteiger zu Open Water, 30 m Advanced & Nitrox inkl. Ausrüstung & Versicherung!',
         'aeo_answer' => 'Das PADI Dreifach-Sparpaket „Heros“ im Sea College Dive Club in Sharm El Sheikh kostet 750 € pro Person — unsere höchste Ersparnis von 120 € — und läuft über 6 bis 7 Tage (Mindestalter 12 Jahre). Es führt Sie komplett ohne Vorkenntnisse zu DREI internationalen PADI Brevets (Open Water Diver, Advanced Open Water Diver bis 30 m und Enriched Air Nitrox Diver) inklusive 5 Pool-Modulen, 9+ Freiwassertauchgängen im Roten Meer, kompletter Leihausrüstung, Tauchversicherung und Steuern (+85 € PADI Gebühr je Kurs).',
         'overview' => [

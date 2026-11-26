@@ -12,6 +12,7 @@ $page['canonical_path'] = '/services';
 $page['title'] = t('meta_services_title');
 $page['description'] = t('meta_services_desc');
 $page['image'] = url('assets/' . seo_img('group-boat-dive-red-sea-divers'));
+$page['speakable'] = ['.page-hero h1', '.page-hero p'];
 $page['breadcrumbs'] = [[t('breadcrumb_home'), '/'], [t('nav_services'), '/services']];
 
 $intro = ['dive-packages' => 'svc_dive_d', 'padi-courses' => 'svc_courses_d', 'offers' => 'svc_offers_d', 'snorkeling' => 'svc_snorkel_d'];

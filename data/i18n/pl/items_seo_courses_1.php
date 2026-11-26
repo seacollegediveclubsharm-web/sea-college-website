@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'bubblemaker' => [
         'h1' => 'PADI Bubblemaker w Sharm El Sheikh — Pierwsze Nurkowanie dla Dzieci (8+ lat)',
-        'meta_title' => 'PADI Bubblemaker Sharm El Sheikh | Dzieci od 8 lat · 70 € | Sea College',
+        'meta_title' => 'PADI Bubblemaker Sharm El Sheikh | Dzieci 8+ · 70 €',
         'meta_desc' => 'Pierwsze nurkowanie dla dzieci od 8 lat w Sharm El Sheikh (Szarm el-Szejk)! PADI Bubblemaker (70 €, 2–3 godz.) w płytkim basenie (<2 m) z dziecięcym sprzętem i instruktorem PADI.',
         'aeo_answer' => 'Program PADI Bubblemaker w bazie Sea College Dive Club w Sharm El Sheikh kosztuje 70 € za dziecko (minimalny wiek: 8 lat) i trwa od 2 do 3 godzin. Zajęcia odbywają się wyłącznie w naszym spokojnym basenie szkoleniowym w Cyrene Sharm (maksymalna głębokość poniżej 2 metrów), gdzie dzieci stawiają pierwsze oddechy pod wodą w lekkim sprzęcie dziecięcym pod bezpośrednią opieką instruktora PADI — cały sprzęt jest wliczony w cenę.',
         'overview' => [
@@ -46,7 +46,7 @@ return [
 
     'seal-team' => [
         'h1' => 'PADI Seal Team w Sharm El Sheikh — Kurs Basenowy dla Dzieci (AquaMissions 1–5)',
-        'meta_title' => 'PADI Seal Team Sharm El Sheikh | Komando Foki 8+ · 170 € | Sea College',
+        'meta_title' => 'PADI Seal Team Sharm El Sheikh | Dzieci 8+ · 170 €',
         'meta_desc' => 'Pełen przygód 1-dniowy program PADI Seal Team w Sharm El Sheikh (170 €, od 8 lat). Dzieci realizują misje AquaMissions 1–5 w basenie z pełnym sprzętem dziecięcym w cenie.',
         'aeo_answer' => 'Kurs PADI Seal Team („Komando Foki”) w Sea College Dive Club w Sharm El Sheikh kosztuje 170 € za dziecko (od 8. roku życia) i trwa 1 pełny dzień w naszym basenie szkoleniowym. Młodzi adepci wykonują podwodne misje PADI AquaMissions 1–5 — ucząc się oddychania, oczyszczania maski, odzyskiwania automatu, pływalności i komunikacji — z kompletnym dziecięcym sprzętem nurkowym w cenie.',
         'overview' => [
@@ -87,7 +87,7 @@ return [
 
     'dsd' => [
         'h1' => 'PADI Discover Scuba Diving w Sharm El Sheikh — Oficjalny Program (Basen + Rafa)',
-        'meta_title' => 'PADI Discover Scuba Diving Sharm El Sheikh | 85 € z Certyfikatem | Sea College',
+        'meta_title' => 'PADI Discover Scuba Diving Sharm El Sheikh | 85 € Kompletnie',
         'meta_desc' => 'Oficjalny 1-dniowy program PADI Discover Scuba Diving w Sharm El Sheikh (85 €, od 10 lat). Teoria, ćwiczenia w basenie + nurkowanie w Morzu Czerwonym — sprzęt i dyplom PADI w cenie!',
         'aeo_answer' => 'Oficjalny program PADI Discover Scuba Diving w Sea College Dive Club w Sharm El Sheikh kosztuje 85 € za osobę (od 10 lat, czas trwania: 1 dzień) i jest JEDYNYM szkoleniem, w którym oficjalna broszura PADI, rejestracja w systemie oraz pamiątkowy certyfikat PADI DSD są już wliczone w cenę 85 € razem z pełnym sprzętem, zajęciami w basenie i nurkowaniem na rafie Morza Czerwonego.',
         'overview' => [
@@ -129,7 +129,7 @@ return [
 
     'scuba-diver' => [
         'h1' => 'Kurs PADI Scuba Diver w Sharm El Sheikh — Certyfikat w 2 Dni',
-        'meta_title' => 'Kurs PADI Scuba Diver Sharm El Sheikh | 2 Dni · 250 € | Sea College',
+        'meta_title' => 'Kurs PADI Scuba Diver Sharm El Sheikh | 2 Dni · 250 €',
         'meta_desc' => 'Masz mało czasu na urlopie? Zdobądź dożywotni certyfikat PADI Scuba Diver w 2 dni w Sharm El Sheikh (250 €, od 10 lat). 3 baseny + 2 nurkowania w morzu, sprzęt i ubezpieczenie w cenie.',
         'aeo_answer' => 'Kurs PADI Scuba Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 250 € za osobę (minimalny wiek: 10 lat) i trwa zaledwie 2 dni. Obejmuje około 60% programu Open Water (3 moduły teorii, 3 sesje w basenie i 2 nurkowania w Morzu Czerwonym), dając dożywotni certyfikat PADI uprawniający do nurkowania do 12 metrów na całym świecie pod opieką profesjonalisty PADI — sprzęt i ubezpieczenie nurkowe w cenie (+85 € opłata PADI).',
         'overview' => [
@@ -171,7 +171,7 @@ return [
 
     'upgrade-owd' => [
         'h1' => 'Upgrade PADI Scuba Diver do Open Water Diver w Sharm El Sheikh',
-        'meta_title' => 'Upgrade Scuba Diver do Open Water Sharm | 100 € | Sea College PADI',
+        'meta_title' => 'Upgrade Scuba Diver → Open Water Sharm El Sheikh | 100 €',
         'meta_desc' => 'Posiadasz certyfikat PADI Scuba Diver? Podnieś uprawnienia do pełnego PADI Open Water Diver (18 m) w 1–2 dni w Sharm El Sheikh za 100 € (sprzęt i ubezpieczenie w cenie).',
         'aeo_answer' => 'Podniesienie uprawnień (Upgrade) z PADI Scuba Diver do pełnego stopnia PADI Open Water Diver w Sea College Dive Club w Sharm El Sheikh kosztuje 100 € za osobę (1–2 dni, od 10 lat). Uzupełniasz pozostałe 2 moduły teorii, 2 sesje basenowe, test pływacki oraz 2 nurkowania w Morzu Czerwonym (nr 3 i 4 do 18 m) — ze sprzętem i ubezpieczeniem w cenie (+85 € opłata PADI).',
         'overview' => [
@@ -212,7 +212,7 @@ return [
 
     'owd' => [
         'h1' => 'Kurs PADI Open Water Diver (OWD) w Sharm El Sheikh — Pełna Licencja do 18 m',
-        'meta_title' => 'Kurs PADI Open Water Sharm El Sheikh | 400 € | Baza PADI 5 Gwiazdek',
+        'meta_title' => 'Kurs OWD po Polsku Sharm El Sheikh | PADI Open Water 400 €',
         'meta_desc' => 'Zdobądź dożywotnią licencję PADI Open Water Diver w Sharm El Sheikh (400 €, 3–3,5 dnia, od 10 lat). 5 sesji w basenie + 4 nurkowania w Morzu Czerwonym, sprzęt i ubezpieczenie w cenie.',
         'aeo_answer' => 'Kurs PADI Open Water Diver (OWD) w Sea College Dive Club (autoryzowanym ośrodku PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh / Szarm el-Szejk) kosztuje 400 € za osobę, trwa od 3 do 3,5 dnia i jest dostępny od 10. roku życia bez żadnego wcześniejszego doświadczenia. W cenę wliczone jest 5 modułów teorii, 5 sesji w basenie szkoleniowym, 4 nurkowania w Morzu Czerwonym (dające dożywotnie uprawnienia do 18 m na całym świecie), kompletny sprzęt nurkowy oraz ubezpieczenie nurkowe; oficjalny podręcznik eLearning i certyfikat PADI to koszt 85 €.',
         'overview' => [
@@ -256,7 +256,7 @@ return [
 
     'aowd' => [
         'h1' => 'Kurs PADI Advanced Open Water Diver (AOWD) w Sharm El Sheikh — Do 30 m',
-        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m | Sea College',
+        'meta_title' => 'PADI Advanced Open Water Sharm El Sheikh | 350 € · 30 m',
         'meta_desc' => 'Rozszerz uprawnienia do 30 m na kursie PADI Advanced Open Water w Sharm El Sheikh (350 €, 2,5–3 dni, 5 nurkowań w morzu, sprzęt w cenie, zero egzaminu pisemnego!).',
         'aeo_answer' => 'Kurs PADI Advanced Open Water Diver (AOWD) w Sea College Dive Club w Sharm El Sheikh kosztuje 350 € za osobę (minimalny wiek: 12 lat, czas trwania: 2,5–3 dni) i obejmuje pełne wypożyczenie sprzętu nurkowego na 5 nurkowań przygodowych w Morzu Czerwonym — bez pisemnego egzaminu końcowego! Wykonujesz obowiązkowe nurkowanie głębokie (dające uprawnienia do 30 m; 21 m dla 12–14 lat) i nawigację podwodną oraz 3 wybrane nurkowania, np. wrakowe, w prądzie (drift), doskonałą pływalność lub nocne (+85 € opłata PADI).',
         'overview' => [

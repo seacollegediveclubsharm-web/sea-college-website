@@ -128,7 +128,7 @@ return [
         'excluded' => [
             'Manuale digitale PADI e tassa di certificazione (€85)',
             'Corso EFR (€143 + €85) se non possiedi già un attestato RCP/Primo Soccorso valido negli ultimi 24 mesi',
-            'Assicurazione subacquea (€7/giorno o €20 per 3 giorni) ed eventuali supplementi barca/parco',
+            'Assicurazione subacquea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni) ed eventuali supplementi barca/parco',
         ],
         'ideal_for' => [
             'Subacquei Advanced Open Water che vogliono diventare compagni d’immersione sicuri e completi',
@@ -216,8 +216,8 @@ return [
         ],
         'excluded' => [
             'Manuale digitale PADI e tassa di certificazione (€85)',
-            'Supplemento barca (€10/giorno incluso pranzo), tassa parco (€5/giorno) e assicurazione sub (€7/giorno)',
-            'Ricariche opzionali Nitrox o bombola da 15L (€5/giorno)',
+            'Supplemento barca (€10/giorno incluso pranzo), tassa parco (€5/giorno) e assicurazione sub (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
+            'Ricariche opzionali Nitrox (€8 per 12L / €10 per 15L) o bombola aria da 15L (€6/giorno)',
         ],
         'ideal_for' => [
             'Subacquei Advanced Open Water (15+ anni) che vogliono abilitarsi fino a 40 metri',
@@ -307,7 +307,7 @@ return [
         'excluded' => [
             'Manuale digitale PADI e tassa di certificazione (€85)',
             'Noleggio torcia subacquea LED (€6/sera se non possiedi la tua)',
-            'Assicurazione subacquea giornaliera (€7/giorno)',
+            'Assicurazione subacquea temporanea (€15 per 3 giorni, €25 per 7 giorni, €35 per 10 giorni, €45 per 14 giorni)',
         ],
         'ideal_for' => [
             'Subacquei Open Water e Advanced curiosi di vivere la magia del Mar Rosso dopo il tramonto',

@@ -12,6 +12,8 @@ $page['id'] = 'home';
 $page['canonical_path'] = '/';
 $page['title'] = t('meta_home_title');
 $page['description'] = t('meta_home_desc');
+$page['image'] = url('assets/images/hero.jpg');
+$page['speakable'] = ['.hero h1', '.hero__sub'];
 $page['schema'] = [schema_faq([1, 2, 3, 4, 5, 6])];
 
 $explore = [
@@ -113,17 +115,61 @@ require ROOT_DIR . '/includes/header.php';
         <span class="eyebrow">🗺️ <?= te('sites_eyebrow') ?></span>
         <h2><?= te('home_sites_title') ?></h2>
         <p><?= te('home_sites_sub') ?></p>
-        <p><a class="btn btn--primary" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>" data-track="cta_click" data-placement="home_sites"><?= te('home_sites_btn') ?> →</a></p>
+        <p><a class="btn btn--primary" href="<?= e(page_link('/dive-sites-sharm-el-sheikh')) ?>" data-track="cta_click" data-placement="home_sites"><?= te('home_sites_btn') ?> <?= e(sc_arrow_next()) ?></a></p>
       </article>
       <article class="feature-banner card">
         <span class="eyebrow">🎬 <?= te('gallery_eyebrow') ?></span>
         <h2><?= te('home_gallery_title') ?></h2>
         <p><?= te('home_gallery_sub') ?></p>
-        <p><a class="btn btn--primary" href="<?= e(page_link('/gallery')) ?>" data-track="cta_click" data-placement="home_gallery"><?= te('home_gallery_btn') ?> →</a></p>
+        <p><a class="btn btn--primary" href="<?= e(page_link('/gallery')) ?>" data-track="cta_click" data-placement="home_gallery"><?= te('home_gallery_btn') ?> <?= e(sc_arrow_next()) ?></a></p>
       </article>
     </div>
   </div>
 </section>
+
+<?php
+require_once ROOT_DIR . '/includes/guides_helpers.php';
+$scHomeGuidesAll = sc_load_guides();
+$scHomeGuidePicks = [];
+foreach (['sharm-el-sheikh-scuba-diving-prices-guide', 'white-island-ras-mohammed-tickets-visa-snorkeling-guide', 'first-time-scuba-diving-sharm-el-sheikh', 'ras-mohammed-vs-tiran-island-diving', 'best-time-to-dive-sharm-el-sheikh'] as $hgSlug) {
+    if (isset($scHomeGuidesAll[$hgSlug])) {
+        $scHomeGuidePicks[] = $scHomeGuidesAll[$hgSlug];
+    }
+    if (count($scHomeGuidePicks) >= 3) {
+        break;
+    }
+}
+if ($scHomeGuidePicks): ?>
+<section class="section" id="planning-guides">
+  <div class="container">
+    <header class="section__head section__head--row">
+      <div>
+        <p class="eyebrow">📘 <?= e(t('home_guides_eyebrow') !== 'home_guides_eyebrow' ? t('home_guides_eyebrow') : t('nav_guides')) ?></p>
+        <h2><?= e(t('home_guides_title') !== 'home_guides_title' ? t('home_guides_title') : t('nav_guides')) ?></h2>
+        <?php if (t('home_guides_sub') !== 'home_guides_sub'): ?><p><?= te('home_guides_sub') ?></p><?php endif; ?>
+      </div>
+      <a class="btn btn--detail btn--sm" href="<?= e(page_link('/guides')) ?>"><?= te('nav_guides') ?> <?= e(sc_arrow_next()) ?></a>
+    </header>
+    <div class="cards cards--3">
+      <?php foreach ($scHomeGuidePicks as $hg): ?>
+        <article class="pcard">
+          <a class="pcard__media" href="<?= e(guide_url($hg)) ?>" tabindex="-1" aria-hidden="true">
+            <?= sc_picture($hg['img'], $hg['title'], 480, 320, ['loading' => 'lazy', 'sizes' => '(max-width: 699px) 90vw, 350px']) ?>
+            <span class="pcard__badge"><?= e($hg['badge']) ?></span>
+          </a>
+          <div class="pcard__body">
+            <h3 class="pcard__title" dir="auto"><a class="pcard__link" href="<?= e(guide_url($hg)) ?>"><?= e($hg['title']) ?></a></h3>
+            <p class="pcard__desc" dir="auto"><?= e($hg['excerpt']) ?></p>
+            <div class="pcard__foot">
+              <a class="btn btn--detail btn--sm" href="<?= e(guide_url($hg)) ?>"><?= te('cta_details') ?> <?= e(sc_arrow_next()) ?></a>
+            </div>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
 
 <section class="section">
   <div class="container">
@@ -132,7 +178,7 @@ require ROOT_DIR . '/includes/header.php';
         <h2><?= te('team_showcase_title') ?></h2>
         <p><?= te('team_showcase_sub') ?></p>
       </div>
-      <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery', 'instructors')) ?>"><?= te('team_see_all_btn') ?> →</a>
+      <a class="btn btn--detail btn--sm" href="<?= e(page_link('/gallery', 'instructors')) ?>"><?= te('team_see_all_btn') ?> <?= e(sc_arrow_next()) ?></a>
     </header>
     <?= render_team_showcase($galData['team'], 3) ?>
   </div>
@@ -206,7 +252,7 @@ require ROOT_DIR . '/includes/header.php';
     <?= section_head('faq_title') ?>
     <?= faq_list([1, 2, 3, 4, 5, 6]) ?>
     <p class="center hero__ctas hero__ctas--center">
-      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="home_faq_all">❓ <?= te('item_faq_view_all') ?> →</a>
+      <a class="btn btn--ghost" href="<?= e(page_link('/faq')) ?>" data-track="cta_click" data-placement="home_faq_all">❓ <?= te('item_faq_view_all') ?> <?= e(sc_arrow_next()) ?></a>
     </p>
   </div>
 </section>
@@ -214,15 +260,15 @@ require ROOT_DIR . '/includes/header.php';
 <section class="section section--tint" id="location-map">
   <div class="container split">
     <div>
-      <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?> — <?= e(BUSINESS['street']) ?>">
+      <a class="center-preview-img" href="<?= e(page_link('/about', 'dive-center')) ?>" aria-label="<?= e(SITE_NAME) ?>">
         <?= sc_picture('images/center/sea-college-dive-club-center-01-entrance-al-montazah-nov2026.jpg', SITE_NAME . ' — ' . BUSINESS['street'] . ', ' . BUSINESS['city'], 960, 720, ['sizes' => '(max-width: 899px) 92vw, 45vw']) ?>
       </a>
-      <h2><?= te('map_title') ?> — <?= e(BUSINESS['city']) ?></h2>
-      <p><?= e(BUSINESS['street'] . ', ' . BUSINESS['city']) ?></p>
-      <p><strong><?= te('hours') ?>:</strong> <bdi dir="ltr"><?= e(BUSINESS['hours_display']) ?></bdi></p>
+      <h2><?= te('map_title') ?> — <?= te('location_sharm') ?></h2>
+      <p><?= e(t('business_address_val') !== 'business_address_val' ? t('business_address_val') : (BUSINESS['street'] . ', ' . BUSINESS['city'])) ?></p>
+      <p><strong><?= te('hours') ?>:</strong> <bdi dir="auto"><?= e(t('business_hours_val') !== 'business_hours_val' ? t('business_hours_val') : BUSINESS['hours_display']) ?></bdi></p>
       <p class="hero__ctas">
         <a class="btn btn--primary" href="<?= e(MAPS_URL) ?>" target="_blank" rel="noopener" data-track="outbound_link">📍 <?= te('open_maps') ?> ↗</a>
-        <a class="btn btn--detail" href="<?= e(page_link('/about', 'dive-center')) ?>">🏛️ <?= e(loc($galData['ui']['jump_center'])) ?> →</a>
+        <a class="btn btn--detail" href="<?= e(page_link('/about', 'dive-center')) ?>">🏛️ <?= e(loc($galData['ui']['jump_center'])) ?> <?= e(sc_arrow_next()) ?></a>
         <a class="btn btn--wa" href="<?= e(whatsapp_link('', 'home_map')) ?>" target="_blank" rel="noopener" data-track="whatsapp_click" data-placement="home_map"><?php include ROOT_DIR . '/assets/images/icon-whatsapp.svg'; ?><span><?= te('cta_whatsapp') ?></span></a>
       </p>
     </div>
