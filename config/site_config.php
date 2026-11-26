@@ -93,6 +93,12 @@ define('BUSINESS', [
 define('MAPS_URL', 'https://maps.app.goo.gl/JweBzniP2hS1VpgK7');
 define('MAPS_EMBED_QUERY', 'Sea College Dive Club, Sharm El Sheikh');
 define('GOOGLE_PLACE_ID', sc_env('GOOGLE_PLACE_ID', 'ChIJ75cBQp5LUxQRMjrNYQx93g0')); // GBP Place ID (0x14534b9e420197ef:0x0dde7d0c61cd3a32)
+define('GBP_LOCATION_ID', sc_env('GBP_LOCATION_ID', '15687555981863554557'));       // Verified Google Business Profile Location ID
+define('GBP_FID', sc_env('GBP_FID', '999373659456748082'));
+define('GBP_ACCOUNT_ID', sc_secret('GBP_ACCOUNT_ID', ''));                          // Auto-discovered via GBP v4 accounts.list if empty
+define('GBP_CLIENT_ID', sc_secret('GBP_CLIENT_ID', ''));                            // OAuth 2.0 Client ID (scope: business.manage)
+define('GBP_CLIENT_SECRET', sc_secret('GBP_CLIENT_SECRET', ''));
+define('GBP_REFRESH_TOKEN', sc_secret('GBP_REFRESH_TOKEN', ''));
 define('GOOGLE_PLACES_API_KEY', sc_env('GOOGLE_PLACES_API_KEY', '')); // secret: set in config/secrets.php for live auto-sync
 define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache
 define('GOOGLE_REVIEWS_URL', 'https://www.google.com/maps/place/sea+college+dive+club/@27.9805263,34.4239091,17z/data=!4m8!3m7!1s0x14534b9e420197ef:0xdde7d0c61cd3a32!8m2!3d27.9805263!4d34.4239091!9m1!1b1!16s%2Fg%2F11kjd4n05q');
@@ -108,6 +114,7 @@ define('TRIPADVISOR_UNIQ_ID', sc_env('TRIPADVISOR_UNIQ_ID', '409'));
 define('TRIPADVISOR_UNIQ_ID_AR', sc_env('TRIPADVISOR_UNIQ_ID_AR', '969'));
 define('TRIPADVISOR_URL', 'https://www.tripadvisor.com/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
 define('TRIPADVISOR_WRITE_REVIEW_URL', 'https://www.tripadvisor.com/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
+define('TRIPADVISOR_OWNER_URL', 'https://www.tripadvisor.com/ManageListing-g297555-d26104236');
 define('TRIPADVISOR_URL_AR', 'https://www.tripadvisor.com.eg/Attraction_Review-g297555-d26104236-Reviews-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
 define('TRIPADVISOR_WRITE_REVIEW_URL_AR', 'https://www.tripadvisor.com.eg/UserReview-g297555-d26104236-Sea_college_dive_club-Sharm_El_Sheikh_South_Sinai_Red_Sea_and_Sinai.html');
 define('TRIPADVISOR_API_KEY', sc_env('TRIPADVISOR_API_KEY', '')); // optional Content/Terra API key in config/secrets.php
