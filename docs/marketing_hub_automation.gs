@@ -170,7 +170,7 @@ function askGeminiCMO() {
   }
   var hub = SpreadsheetApp.openById(CONFIG.MKT_HUB_ID);
   var kpiValues = hub.getSheetByName('01_Executive_KPI_Hub').getDataRange().getDisplayValues();
-  var prompt = 'You are the CMO of Sea College Dive Club (PADI 5* Resort, Sharm El Sheikh, 8-language website, 4.9 stars across 3,082 Google reviews). Based on this live KPI scorecard, give 5 concrete actions for the next 7 days to grow direct EUR bookings:\n' + JSON.stringify(kpiValues);
+  var prompt = 'You are the CMO of Sea College Dive Club (PADI 5* Resort, Sharm El Sheikh, 8-language website, 4.9 stars across 3,270 Google reviews). Based on this live KPI scorecard, give 5 concrete actions for the next 7 days to grow direct EUR bookings:\n' + JSON.stringify(kpiValues);
 
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=' + apiKey;
   var resp = UrlFetchApp.fetch(url, {

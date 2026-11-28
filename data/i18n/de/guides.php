@@ -445,13 +445,13 @@ return [
         'meta_title' => 'Beste Tauchbasis Sharm El Sheikh | Deutsche Tauchschule',
         'meta_desc' => 'So erkennen Sie eine seriöse PADI 5★ & CDWS Tauchbasis in Sharm El Sheikh: deutschsprachige Lehrer, Pool & Hausriff, DIN-Flaschen & transparente EUR-Preise.',
         'excerpt' => 'Zwischen über hundert Anbietern am Roten Meer den richtigen Partner wählen: Worauf deutschsprachige Taucher und Familien bei Sicherheit, Lizenzen und Ausstattung achten sollten.',
-        'aeo_answer' => 'Eine erstklassige Tauchbasis in Sharm El Sheikh erkennen Sie an fünf objektiven Prüfpunkten: offizieller Status als PADI 5 Star Dive Resort, staatliche CDWS-Akkreditierung (geprüfte Atemluft, Notfallsauerstoff & Versicherungen), eigene Strandlage mit Ausbildungspool und geschütztem Hausriff, mehrsprachige PADI Instructors inklusive Deutsch sowie eine transparente EUR-Preisliste ohne Vorkasse. Der Sea College Dive Club in Al Montazah erfüllt alle Kriterien und ist mit 4,9★ aus über 3.200 Bewertungen auf Google & Tripadvisor ausgezeichnet.',
+        'aeo_answer' => 'Eine erstklassige Tauchbasis in Sharm El Sheikh erkennen Sie an fünf objektiven Prüfpunkten: offizieller Status als PADI 5 Star Dive Resort, staatliche CDWS-Akkreditierung (geprüfte Atemluft, Notfallsauerstoff & Versicherungen), eigene Strandlage mit Ausbildungspool und geschütztem Hausriff, mehrsprachige PADI Instructors inklusive Deutsch sowie eine transparente EUR-Preisliste ohne Vorkasse. Der Sea College Dive Club in Al Montazah erfüllt alle Kriterien und ist mit 4,9★ aus über 3.300 Bewertungen auf Google & Tripadvisor ausgezeichnet.',
         'key_facts' => [
             ['Offizielle Lizenzen', 'PADI 5 Star Dive Resort + staatlich geprüfte CDWS-Mitgliedsbasis'],
             ['Infrastruktur direkt am Meer', 'Eigener Ausbildungspool + windgeschütztes Hausriff + Tagesboote'],
             ['Sprachen im Team', 'Deutschsprachige PADI Tauchlehrer + insgesamt 8 Sprachen vor Ort'],
             ['Technik & Flaschenventile', '200-bar-Aluflaschen (12L/15L) mit DIN- & INT-Anschluss + Nitrox/CCR'],
-            ['Verifizierte Gästemeinungen', '4,9★ Google (3.082+ Rezensionen) & 4,9 ●●●●● Tripadvisor (#26104236)'],
+            ['Verifizierte Gästemeinungen', '4,9★ Google (3.270+ Rezensionen) & 4,9 ●●●●● Tripadvisor (#26104236)'],
             ['Standortvorteil Al Montazah', 'Direkt gegenüber der Insel Tiran (nur 15–25 Min. Bootsfahrt)'],
         ],
         'sections' => [
@@ -461,7 +461,7 @@ return [
                 'bullets' => [
                     'CDWS-Akkreditierung (Chamber of Diving and Watersports): garantiert regelmäßige Laboranalysen der Kompressor-Atemluft, kalibrierte O2-Notfallkoffer auf jedem Boot und geprüfte Lehrerlizenzen.',
                     'Offizielles PADI 5 Star Dive Resort: direkte Online-Zertifizierung, moderne deutsche PADI eLearning-Unterlagen und aktive „Adopt the Blue“-Meeresschutzstandards.',
-                    'Echte Bewertungen prüfen: Über 3.082 Google-Rezensionen und 129+ Tripadvisor-Berichte nennen unsere Tauchlehrer (wie Mo, Sam, Alex, Jimmy & Mosab) regelmäßig namentlich für Ruhe und Sicherheit.',
+                    'Echte Bewertungen prüfen: Über 3.270 Google-Rezensionen und 129+ Tripadvisor-Berichte nennen unsere Tauchlehrer (wie Mo, Sam, Alex, Jimmy & Mosab) regelmäßig namentlich für Ruhe und Sicherheit.',
                     'Direktbuchung mit 0 € Anzahlung schützt Sie vor Stornogebühren und intransparenten Vermittleraufschlägen.',
                 ],
             ],

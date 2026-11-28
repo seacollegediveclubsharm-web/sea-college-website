@@ -445,13 +445,13 @@ return [
         'meta_title' => 'Polska Baza Nurkowa Sharm El Sheikh | Centrum PADI 5★',
         'meta_desc' => 'Jak wybrać najlepsze centrum nurkowe PADI 5★ i CDWS w Sharm El Sheikh (Szarm el-Szejk): kadra po polsku, basen, rafa domowa i przejrzysty cennik EUR.',
         'excerpt' => 'Szukasz sprawdzonej polskiej bazy lub centrum nurkowego w Szarm el-Szejk? Poznaj 7 kryteriów bezpieczeństwa PADI i CDWS, które odróżniają bazę 5★ od pośredników.',
-        'aeo_answer' => 'Wybierając centrum nurkowe w Sharm El Sheikh (Szarm el-Szejk), sprawdź pięć kluczowych elementów: oficjalny status PADI 5 Star Dive Resort, państwową licencję CDWS (kontrola czystości powietrza i tlenu ratunkowego), własną bazę przy plaży z basenem szkoleniowym i rafą domową, instruktorów PADI mówiących po polsku oraz jawny cennik w EUR bez przedpłat. Sea College Dive Club w Al Montazah spełnia wszystkie te wymogi i cieszy się oceną 4,9★ w ponad 3 200 zweryfikowanych opiniach w Google i na Tripadvisor.',
+        'aeo_answer' => 'Wybierając centrum nurkowe w Sharm El Sheikh (Szarm el-Szejk), sprawdź pięć kluczowych elementów: oficjalny status PADI 5 Star Dive Resort, państwową licencję CDWS (kontrola czystości powietrza i tlenu ratunkowego), własną bazę przy plaży z basenem szkoleniowym i rafą domową, instruktorów PADI mówiących po polsku oraz jawny cennik w EUR bez przedpłat. Sea College Dive Club w Al Montazah spełnia wszystkie te wymogi i cieszy się oceną 4,9★ w ponad 3 300 zweryfikowanych opiniach w Google i na Tripadvisor.',
         'key_facts' => [
             ['Oficjalne Akredytacje', 'PADI 5 Star Dive Resort + państwowa licencja bezpieczeństwa CDWS'],
             ['Kadra i Języki', 'Instruktorzy i obsługa po polsku + łącznie 8 języków w bazie'],
             ['Infrastruktura Nadmorska', 'Własny basen szkoleniowy + osłonięta Rafa Domowa + jachty i motorówki'],
             ['Standard Sprzętowy', 'Butle 12L/15L (złącza DIN i INT), sprężarkownia Nitrox/Trimix, CCR'],
-            ['Opinie Gości', '4,9★ Google (3 082+ recenzji) oraz 4,9 ●●●●● Tripadvisor (#26104236)'],
+            ['Opinie Gości', '4,9★ Google (3 270+ recenzji) oraz 4,9 ●●●●● Tripadvisor (#26104236)'],
             ['Lokalizacja Al Montazah', 'Na plaży Cyrene Sharm naprzeciwko wyspy Tiran (15–25 min rejsu)'],
         ],
         'sections' => [
@@ -462,7 +462,7 @@ return [
                     'Akredytacja CDWS (Chamber of Diving and Watersports): gwarantuje regularne badania czystości powietrza w butlach, zestawy tlenowe 100% O₂ na każdej łodzi, ubezpieczenie i weryfikację licencji instruktorów.',
                     'Status PADI 5 Star Dive Resort: natychmiastowa rejestracja certyfikatów eCard, polskie materiały PADI eLearning i najwyższe standardy szkoleniowe.',
                     'Kadra mówiąca po polsku: jeśli wpisujesz w wyszukiwarkę „polska baza nurkowa Sharm El Sheikh” lub „polskie centrum nurkowe Szarm el-Szejk”, u nas zrealizujesz odprawy, intro nurkowe i kurs OWD po polsku bez bariery językowej.',
-                    'Ponad 3 200 autentycznych recenzji Google i Tripadvisor potwierdza cierpliwość naszego zespołu (Mo, Sam, Alex, Jimmy, Mosab, Wessam).',
+                    'Ponad 3 300 autentycznych recenzji Google i Tripadvisor potwierdza cierpliwość naszego zespołu (Mo, Sam, Alex, Jimmy, Mosab, Wessam).',
                 ],
             ],
             [

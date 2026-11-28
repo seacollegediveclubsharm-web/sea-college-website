@@ -85,7 +85,7 @@ define('BUSINESS', [
     'hours'        => 'Mo-Su 08:00-18:00',
     'hours_display'=> 'Mon–Sun · 08:00–18:00',
     'rating'       => 4.9,
-    'review_count' => 3082,
+    'review_count' => 3270,
     'padi_level'   => 'PADI 5 Star Dive Resort',
     'founded'      => '2019',
     'price_range'  => '€€',
@@ -100,8 +100,8 @@ define('GBP_ACCOUNT_ID', sc_secret('GBP_ACCOUNT_ID', ''));                      
 define('GBP_CLIENT_ID', sc_secret('GBP_CLIENT_ID', ''));                            // OAuth 2.0 Client ID (scope: business.manage)
 define('GBP_CLIENT_SECRET', sc_secret('GBP_CLIENT_SECRET', ''));
 define('GBP_REFRESH_TOKEN', sc_secret('GBP_REFRESH_TOKEN', ''));
-define('GOOGLE_PLACES_API_KEY', sc_env('GOOGLE_PLACES_API_KEY', '')); // secret: set in config/secrets.php for live auto-sync
-define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache
+define('GOOGLE_PLACES_API_KEY', sc_env('GOOGLE_PLACES_API_KEY', '')); // optional Places API key; zero-key GBP live sync runs automatically
+define('GOOGLE_REVIEWS_CACHE_TTL', 21600); // 6 hours server-side cache (storage/google_reviews_cache.json)
 define('GOOGLE_REVIEWS_URL', 'https://www.google.com/maps/place/sea+college+dive+club/@27.9805263,34.4239091,17z/data=!4m8!3m7!1s0x14534b9e420197ef:0xdde7d0c61cd3a32!8m2!3d27.9805263!4d34.4239091!9m1!1b1!16s%2Fg%2F11kjd4n05q');
 define('GOOGLE_WRITE_REVIEW_URL', 'https://search.google.com/local/writereview?placeid=' . GOOGLE_PLACE_ID);
 define('PADI_PROFILE_URL', 'https://www.padi.com/dive-center/egypt/sea-college-dive-club/');
@@ -205,6 +205,7 @@ define('LARA_EMAIL_AUTOREPLY', sc_env('LARA_EMAIL_AUTOREPLY', '1') === '1');
 define('OWNER_COPY_EMAIL', sc_env('OWNER_COPY_EMAIL', 'seacollegediveclubsharm@gmail.com'));
 define('CRM_WEBHOOK_URL', sc_env('CRM_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbwu3oBfPJ8394AYuoBTB5FjPO5lTmlJMz-jVxK8BaWJ1-YOX3sSrvFd-YBDQDgUFx3C/exec')); // Leads & OCT CRM Sheet webhook
 define('LEADS_STORAGE_DIR', sc_env('LEADS_STORAGE_DIR', dirname(__DIR__) . '/storage'));
+define('GOOGLE_REVIEWS_CACHE_FILE', sc_env('GOOGLE_REVIEWS_CACHE_FILE', LEADS_STORAGE_DIR . '/google_reviews_cache.json'));
 define('RATE_LIMIT_SECONDS', 20);                             // min seconds between submissions per session
 
 /* ---------------------------------------------------------------

@@ -4,7 +4,7 @@
  *
  * Capabilities:
  *   1. Direct Google Business Profile v4 API Auto-Responder (`mybusiness.googleapis.com/v4`):
- *      Paginates across all 3,082+ Google reviews on Location `15687555981863554557` and posts
+ *      Paginates across all 3,270+ Google reviews on Location `15687555981863554557` and posts
  *      native-language, Local-SEO-optimized owner replies (`PUT .../reviews/{id}/reply`) once
  *      Google approves GBP API quota (`GBP_CLIENT_ID`, `GBP_CLIENT_SECRET`, `GBP_REFRESH_TOKEN`).
  *   2. Instant Email & Tripadvisor `#26104236` Review Queue Parser:

@@ -5,7 +5,7 @@ declare(strict_types=1);
 return array_replace([
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | PADI 5 Star Dive Center & Scuba Diving in Sharm El Sheikh',
-    'meta_home_desc' => 'PADI 5 Star dive center in Sharm El Sheikh: scuba diving packages, clear 2026 prices from €30, PADI courses & daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm. 4.9★ (3,082 Google reviews).',
+    'meta_home_desc' => 'PADI 5 Star dive center in Sharm El Sheikh: scuba diving packages, clear 2026 prices from €30, PADI courses & daily boat trips to Ras Mohammed, Tiran & SS Thistlegorm. 4.9★ (3,270 Google reviews).',
     'meta_services_title' => 'Diving, PADI Courses & Boat Trips in Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Dive packages, PADI courses from Bubblemaker to Divemaster, course bundles, snorkeling trips and private boats in Sharm El Sheikh.',
     'meta_prices_title' => 'Diving Prices Sharm El Sheikh 2026 | Packages, Courses & Offers',
@@ -111,7 +111,7 @@ return array_replace([
     'exp_kids_d' => 'Bubblemaker & Seal Team from 8',
     'popular_title' => 'Most Booked Sharm El Sheikh Dive Packages, Intro Dives & Trips',
     'popular_sub' => 'What our guests book again and again.',
-    'why_title' => 'Why 3,082+ Divers Rate Sea College the Best Dive Center in Sharm El Sheikh',
+    'why_title' => 'Why 3,270+ Divers Rate Sea College the Best Dive Center in Sharm El Sheikh',
     'why_1_t' => 'PADI 5 Star Dive Resort',
     'why_1_d' => 'Recognised by PADI for training quality, safety and service — plus an Adopt the Blue conservation centre.',
     'why_2_t' => 'Pool, house reef & own boat',
@@ -422,7 +422,7 @@ return array_replace([
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
     'meta_gallery_title' => 'Underwater Photo & Video Gallery + PADI Instructor Team | Sea College Sharm',
-    'meta_gallery_desc' => 'Watch real Red Sea underwater videos, yacht & speedboat photos and meet the Sea College Dive Club instructors praised across 3,082 Google reviews (4.9★).',
+    'meta_gallery_desc' => 'Watch real Red Sea underwater videos, yacht & speedboat photos and meet the Sea College Dive Club instructors praised across 3,270 Google reviews (4.9★).',
     'gallery_eyebrow' => 'Real Footage · Real Instructors',
     'gallery_title' => 'Underwater Photo & Video Gallery',
     'gallery_sub' => 'Real footage from our daily boats, Al Montazah House Reef, training pool and PADI courses — plus the multilingual instructors guests mention by name.',
@@ -433,7 +433,7 @@ return array_replace([
     'gallery_next' => 'Next media',
     'gallery_see_videos_btn' => 'Watch Underwater Videos & Gallery',
     'team_showcase_title' => 'Meet the Instructors Guests Praise by Name',
-    'team_showcase_sub' => 'Teaching in English, Russian, Italian, Polish, German, French, Arabic & Chinese — backed by 3,082+ verified Google reviews (4.9★) and 129+ Tripadvisor reviews (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Teaching in English, Russian, Italian, Polish, German, French, Arabic & Chinese — backed by 3,270+ verified Google reviews (4.9★) and 129+ Tripadvisor reviews (4.9 ●●●●●).',
     'team_see_all_btn' => 'Full Team & Video Gallery',
     'home_gallery_title' => 'Watch Real Red Sea Footage & Boat Life',
     'home_gallery_sub' => 'See our dive boats, Al Montazah lagoon speedboats, pool training and Red Sea coral walls in action before you book.',
@@ -453,7 +453,7 @@ return array_replace([
     'ta_rev_4_text' => 'Took a PADI course involving shore and boat dives. Everything about the training and safety was first class.',
     'ta_read_reviews' => 'Read Tripadvisor reviews',
     'ta_write_review' => 'Write a Tripadvisor review',
-    'reviews_combined_eyebrow' => '3,200+ Verified Reviews Across Google & Tripadvisor',
+    'reviews_combined_eyebrow' => '3,300+ Verified Reviews Across Google & Tripadvisor',
     'plat_hub_title' => 'Verified & Recommended Across Official Dive & Travel Platforms',
     'plat_hub_sub' => 'Check our independent accreditations, safety licences, YouTube channel and guest ratings across every major platform before you book.',
     'plat_reviews_word' => 'reviews',
@@ -518,7 +518,7 @@ return array_replace([
     'banner_boats_desc' => 'Your own captain, custom snorkeling & diving schedule, or join our White Island & Ras Mohammed yacht day (€55 adult / €30 child).',
     'banner_boats_cta' => 'View Boats & Snorkeling',
     'banner_brand_badge' => 'Official Sea College Dive Club · Book Direct',
-    'banner_brand_title' => 'PADI 5 Star Dive Resort · 4.9★ on Google (3,082+) & Tripadvisor (129+)',
+    'banner_brand_title' => 'PADI 5 Star Dive Resort · 4.9★ on Google (3,270+) & Tripadvisor (129+)',
     'banner_brand_desc' => 'No middleman markups and €0 upfront online card deposit. Message our 8-language Sharm team on WhatsApp for instant hotel pickup confirmation.',
     'banner_brand_cta' => 'Chat With Our Dive Team',
     'side_promo_label' => 'Sea College Direct Perks',

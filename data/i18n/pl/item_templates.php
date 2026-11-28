@@ -299,7 +299,7 @@ return static function (array $it, array $seo): array {
         'aeo_answer' => "{$name} w Sea College Dive Club w Sharm El Sheikh kosztuje {$priceLabel}" . ($dur !== '' ? " ({$dur})" : '') . ". {$desc}",
         'overview'   => [
             "{$name} realizujemy z naszej nadmorskiej bazy PADI 5 Gwiazdek w resorcie Cyrene Sharm (Al Montazah) w Sharm El Sheikh.",
-            'Nasz wielojęzyczny zespół dba o najwyższe standardy bezpieczeństwa CDWS i PADI, potwierdzone oceną 4.9★ w ponad 3 082 opiniach Google.',
+            'Nasz wielojęzyczny zespół dba o najwyższe standardy bezpieczeństwa CDWS i PADI, potwierdzone oceną 4.9★ w ponad 3 270 opiniach Google.',
         ],
         'specs'    => [['Cena', $priceLabel], ['Czas trwania', $dur ?: 'Elastyczny'], ['Lokalizacja', 'Cyrene Sharm, Al Montazah, Sharm El Sheikh']],
         'steps'    => [['Rezerwacja online lub WhatsApp', 'Wybierz termin i potwierdź dostępność z naszym zespołem bez przedpłat.'], ['Realizacja na miejscu', 'Spotkaj się z naszą kadrą PADI w bazie lub skorzystaj z transferu hotelowego.']],

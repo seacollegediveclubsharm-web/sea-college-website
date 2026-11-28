@@ -157,7 +157,7 @@ return [
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
     'meta_gallery_title' => 'Unterwasser-Foto- & Videogalerie + PADI Tauchlehrer-Team | Sea College Sharm',
-    'meta_gallery_desc' => 'Echte Unterwasservideos aus dem Roten Meer, Boots- & Gästefotos sowie unser deutsch- und mehrsprachiges PADI Team aus über 3.082 Google-Bewertungen (4.9★).',
+    'meta_gallery_desc' => 'Echte Unterwasservideos aus dem Roten Meer, Boots- & Gästefotos sowie unser deutsch- und mehrsprachiges PADI Team aus über 3.270 Google-Bewertungen (4.9★).',
     'gallery_eyebrow' => 'Echte Aufnahmen · Echte Tauchlehrer',
     'gallery_title' => 'Unterwasser-Foto- & Videogalerie',
     'gallery_sub' => 'Authentische Eindrücke von unseren Tagesbooten, dem Hausriff in Al Montazah, unserem Ausbildungspool und PADI Kursen — sowie die Tauchlehrer, die unsere Gäste namentlich weiterempfehlen.',
@@ -168,7 +168,7 @@ return [
     'gallery_next' => 'Nächste Aufnahme',
     'gallery_see_videos_btn' => 'Unterwasservideos & Galerie ansehen',
     'team_showcase_title' => 'Lernen Sie die Tauchlehrer kennen, die Gäste namentlich loben',
-    'team_showcase_sub' => 'Unterricht in 8 Sprachen (Deutsch, Englisch, Arabisch, Russisch, Italienisch, Polnisch, Französisch & Chinesisch) — bestätigt durch über 3.082 Google-Bewertungen (4.9★) und 129+ Tripadvisor-Bewertungen (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Unterricht in 8 Sprachen (Deutsch, Englisch, Arabisch, Russisch, Italienisch, Polnisch, Französisch & Chinesisch) — bestätigt durch über 3.270 Google-Bewertungen (4.9★) und 129+ Tripadvisor-Bewertungen (4.9 ●●●●●).',
     'team_see_all_btn' => 'Komplettes Team & Videogalerie',
     'home_gallery_title' => 'Echte Unterwasservideos & Eindrücke vom Tauchboot',
     'home_gallery_sub' => 'Erleben Sie unsere Tauchboote, Schnellboote in der Lagune von Al Montazah, Pool-Übungen und Steilwände im Roten Meer schon vor Ihrer Buchung.',
@@ -188,7 +188,7 @@ return [
     'ta_rev_4_text' => 'PADI Tauchkurs mit Hausriff- und Bootstauchgängen absolviert. Ausbildung, Ausrüstung und Sicherheit waren erstklassig.',
     'ta_read_reviews' => 'Tripadvisor-Bewertungen lesen',
     'ta_write_review' => 'Auf Tripadvisor bewerten',
-    'reviews_combined_eyebrow' => 'Über 3.200 verifizierte Bewertungen auf Google & Tripadvisor',
+    'reviews_combined_eyebrow' => 'Über 3.300 verifizierte Bewertungen auf Google & Tripadvisor',
     'plat_hub_title' => 'Offiziell geprüft & empfohlen auf führenden Tauch- und Reiseportalen',
     'plat_hub_sub' => 'Prüfen Sie vor Ihrer Buchung unsere unabhängigen Zertifizierungen, staatlichen Sicherheitslizenzen und Gästebewertungen.',
     'plat_reviews_word' => 'Bewertungen',

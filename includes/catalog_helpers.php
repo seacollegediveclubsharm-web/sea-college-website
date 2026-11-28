@@ -284,10 +284,10 @@ function schema_item_detail(array $it, array $seo, string $catLabel, array $gbp,
             'offers'      => $offer,
             'aggregateRating' => [
                 '@type'       => 'AggregateRating',
-                'ratingValue' => (string) ($gbp['rating'] ?? '4.9'),
+                'ratingValue' => (string) ($gbp['rating'] ?? BUSINESS['rating']),
                 'bestRating'  => '5',
                 'worstRating' => '1',
-                'reviewCount' => (string) ($gbp['review_count'] ?? '3082'),
+                'reviewCount' => (string) ($gbp['review_count'] ?? BUSINESS['review_count']),
             ],
         ];
     }

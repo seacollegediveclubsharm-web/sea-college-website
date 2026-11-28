@@ -2,7 +2,7 @@
 /**
  * Underwater Photo/Video Gallery, Grouped Fleet Albums (Oceano, Nizar, Omar 4, Speedboats),
  * Physical Sea College Dive Club Center Premises Showcase & Named Instructor Team Showcase.
- * Built exclusively from verified Sea College media (November 2026) and real guest reviews (3,082+ GBP reviews, 4.9★).
+ * Built exclusively from verified Sea College media (November 2026) and real guest reviews (3,270+ GBP reviews, 4.9★).
  */
 declare(strict_types=1);
 
@@ -577,7 +577,7 @@ return sc_overlay_gallery_team([
             'cat'     => 'guests',
             'src'     => 'images/clients/sea-college-real-guest-dive-platform-ok-red-sea.jpg',
             'title'   => ['en' => 'First Boat Dive Confidence on the Aft Platform', 'ar' => 'ثقة وسعادة على منصة الغوص فوق المياه الفيروزية'],
-            'caption' => ['en' => 'Why 3,082 Google & 129 Tripadvisor reviewers praise Sea College’s patient 1-on-1 supervision.', 'ar' => 'تجسيد حقيقي لسبب إشادة أكثر من 3,200 مراجعة على جوجل وتريب أدفايزر بصبر واهتمام مدربينا.'],
+            'caption' => ['en' => 'Why 3,270 Google & 129 Tripadvisor reviewers praise Sea College’s patient 1-on-1 supervision.', 'ar' => 'تجسيد حقيقي لسبب إشادة أكثر من 3,300 مراجعة على جوجل وتريب أدفايزر بصبر واهتمام مدربينا.'],
             'item_id' => 'dsd-2-boat',
         ],
         8 => [
@@ -665,7 +665,7 @@ return sc_overlay_gallery_team([
             'cat'     => 'underwater',
             'src'     => 'images/sea-college-dive-club-sharm-el-sheikh-discover-scuba-diving-happy-divers.jpg',
             'title'   => ['en' => 'Post-Dive Smiles on the Red Sea', 'ar' => 'ابتسامات ما بعد الغوص في شرم الشيخ'],
-            'caption' => ['en' => 'Why 3,082+ guests rate Sea College Dive Club 4.9★ on Google.', 'ar' => 'سر تقييم 4.9★ من أكثر من 3,082 ضيفًا على مراجعات جوجل.'],
+            'caption' => ['en' => 'Why 3,270+ guests rate Sea College Dive Club 4.9★ on Google.', 'ar' => 'سر تقييم 4.9★ من أكثر من 3,270 ضيفًا على مراجعات جوجل.'],
             'item_id' => 'dsd-quick-reef',
         ],
         21 => [

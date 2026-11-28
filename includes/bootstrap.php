@@ -127,6 +127,8 @@ if (LANG !== 'en' && is_file(ROOT_DIR . '/lang/' . LANG . '.php')) {
     $GLOBALS['SC_STRINGS'] = array_replace($GLOBALS['SC_STRINGS'], require ROOT_DIR . '/lang/' . LANG . '.php');
 }
 
+require_once ROOT_DIR . '/includes/google_reviews.php';
+
 /** Translate (raw). Use te() when printing into HTML. */
 function t(string $key, array $vars = []): string
 {
@@ -134,7 +136,7 @@ function t(string $key, array $vars = []): string
     foreach ($vars as $k => $v) {
         $s = str_replace('{' . $k . '}', (string) $v, $s);
     }
-    return $s;
+    return sc_sync_live_review_text($s);
 }
 
 function te(string $key, array $vars = []): string
@@ -146,9 +148,9 @@ function te(string $key, array $vars = []): string
 function loc(array|string|null $v): string
 {
     if (is_array($v)) {
-        return (string) ($v[LANG] ?? $v['en'] ?? reset($v));
+        return sc_sync_live_review_text((string) ($v[LANG] ?? $v['en'] ?? reset($v)));
     }
-    return (string) $v;
+    return sc_sync_live_review_text((string) $v);
 }
 
 /** Strip any leading /{lang} prefix from a path and normalize /index.php & core .php routes to clean extensionless paths. */

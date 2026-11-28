@@ -445,14 +445,14 @@ return [
         'meta_title' => 'Meilleur Club de Plongée Francophone Charm el-Cheikh',
         'meta_desc' => 'Comment choisir son club de plongée francophone à Charm el-Cheikh (Sharm El Sheikh) ? PADI 5★, licence CDWS, piscine, House Reef, DIN et 0 € d’acompte.',
         'excerpt' => 'Parmi plus de cent structures en mer Rouge, voici les 7 critères objectifs de sécurité, d’encadrement francophone et d’infrastructures pour réussir vos plongées.',
-        'aeo_answer' => 'Pour choisir le meilleur club de plongée à Charm el-Cheikh (Sharm El Sheikh), vérifiez 5 garanties essentielles : la certification officielle PADI 5 Star Dive Resort, l’accréditation gouvernementale égyptienne CDWS (qualité d’air contrôlée, oxygène médical et assurances), une vraie base en bord de mer avec piscine d’entraînement et House Reef protégé, des moniteurs francophones connaissant les équivalences FFESSM/CMAS (Niveau 1, 2, 3) et des tarifs transparents en euros sans acompte. Le Sea College Dive Club à Al Montazah réunit ces critères avec une note de 4,9★ sur plus de 3 200 avis Google et Tripadvisor.',
+        'aeo_answer' => 'Pour choisir le meilleur club de plongée à Charm el-Cheikh (Sharm El Sheikh), vérifiez 5 garanties essentielles : la certification officielle PADI 5 Star Dive Resort, l’accréditation gouvernementale égyptienne CDWS (qualité d’air contrôlée, oxygène médical et assurances), une vraie base en bord de mer avec piscine d’entraînement et House Reef protégé, des moniteurs francophones connaissant les équivalences FFESSM/CMAS (Niveau 1, 2, 3) et des tarifs transparents en euros sans acompte. Le Sea College Dive Club à Al Montazah réunit ces critères avec une note de 4,9★ sur plus de 3 300 avis Google et Tripadvisor.',
         'key_facts' => [
             ['Licences Officielles', 'PADI 5 Star Dive Resort + Membre agréé CDWS (Ministère du Tourisme)'],
             ['Base Pieds dans l’Eau', 'Piscine dédiée + House Reef abrité à Al Montazah + Yachts & hors-bords'],
             ['Équipe Francophone', 'Moniteurs PADI parlant français + support client en 8 langues'],
             ['Passerelles FFESSM / CMAS', 'Reconnaissance directe Niveau 1, 2, 3, ANMP, FSGT, LIFRAS, CDEPS & SSI'],
             ['Robinetterie & Gaz', 'Blocs alu 12L/15L compatibles DIN & Étrier (INT) + Nitrox, Trimix & CCR'],
-            ['Réputation Vérifiée', '4,9★ Google (3 082+ avis) & 4,9 ●●●●● Tripadvisor (#26104236)'],
+            ['Réputation Vérifiée', '4,9★ Google (3 270+ avis) & 4,9 ●●●●● Tripadvisor (#26104236)'],
         ],
         'sections' => [
             [
@@ -461,7 +461,7 @@ return [
                 'bullets' => [
                     'Licence CDWS (Chamber of Diving and Watersports) : inspections régulières de la pureté de l’air respirable des compresseurs, oxygénothérapie normobarre à bord de chaque bateau et guides déclarés.',
                     'Statut PADI 5 Star Dive Resort & centre Adopt the Blue : supports pédagogiques PADI eLearning officiels en français et certification internationale instantanée.',
-                    'Avis authentiques : plus de 3 082 avis Google et 129+ avis Tripadvisor saluent nominativement la patience de nos instructeurs (Mo, Sam, Alex, Jimmy, Mosab…).',
+                    'Avis authentiques : plus de 3 270 avis Google et 129+ avis Tripadvisor saluent nominativement la patience de nos instructeurs (Mo, Sam, Alex, Jimmy, Mosab…).',
                     'Réservation directe à 0 € d’acompte sans intermédiaire ni frais d’annulation abusifs.',
                 ],
             ],

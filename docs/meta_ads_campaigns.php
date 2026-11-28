@@ -135,7 +135,7 @@ function sc_meta_funnel_blueprint(): array
             'url_tags'         => 'utm_source=meta&utm_medium=paid_social&utm_campaign=sc_meta_m1_retargeting&utm_content={{ad.name}}',
             'primary_text'     => "Still planning your Red Sea dives in Sharm El Sheikh? Build your exact package in 30 seconds with our transparent EUR Dive Calculator — Max 4 divers per PADI guide, free hotel pickup & 100% zero hidden marina fees! (€0 upfront deposit)",
             'headline'         => 'PADI 5★ Sharm Dive Calculator — Zero Hidden Fees',
-            'description'      => '4.9★ (3,082+ Reviews) · Max 4 Divers/Guide · Free Pickup',
+            'description'      => '4.9★ (3,270+ Reviews) · Max 4 Divers/Guide · Free Pickup',
             'cta'              => 'LEARN_MORE',
         ],
         'M2' => [

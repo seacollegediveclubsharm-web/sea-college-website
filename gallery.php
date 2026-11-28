@@ -197,7 +197,8 @@ require ROOT_DIR . '/includes/header.php';
   <div class="container">
     <header class="section__head section__head--row">
       <div>
-        <span class="eyebrow">⭐ <?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></span>
+        <?php $galGbp = gbp_reviews_data(); ?>
+        <span class="eyebrow">⭐ <?= te('rating_badge', ['rating' => $galGbp['rating'], 'count' => number_format((int) $galGbp['review_count'])]) ?></span>
         <h2><?= te('team_showcase_title') ?></h2>
         <p><?= te('team_showcase_sub') ?></p>
       </div>

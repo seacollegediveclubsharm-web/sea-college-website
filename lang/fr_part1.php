@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | Plongée PADI 5 Étoiles à Charm el-Cheikh (Sharm El Sheikh)',
-    'meta_home_desc' => 'Centre de plongée PADI 5 Étoiles à Charm el-Cheikh (Sharm El Sheikh). Baptêmes de plongée, cours PADI, sorties bateau Ras Mohammed & Tiran, snorkeling et bateaux privés. 4.9★ · 3 082 avis Google.',
+    'meta_home_desc' => 'Centre de plongée PADI 5 Étoiles à Charm el-Cheikh (Sharm El Sheikh). Baptêmes de plongée, cours PADI, sorties bateau Ras Mohammed & Tiran, snorkeling et bateaux privés. 4.9★ · 3 270 avis Google.',
     'meta_services_title' => 'Plongée, Cours PADI & Excursions Bateau à Charm el-Cheikh | Sea College',
     'meta_services_desc' => 'Forfaits plongée certifiés, cours PADI de Bubblemaker à Divemaster, packs combinés, sorties snorkeling Île Blanche et bateaux privés à Charm el-Cheikh (Sharm El Sheikh).',
     'meta_prices_title' => 'Tarifs Plongée Charm el-Cheikh 2026 | Forfaits, Cours PADI & Offres',

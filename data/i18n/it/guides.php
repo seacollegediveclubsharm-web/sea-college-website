@@ -452,7 +452,7 @@ return [
             ['Didattica in Italiano', 'Istruttori e guide parlanti italiano + manuali/eLearning in italiano'],
             ['Brevetti Italiani Accettati', 'FIPSAS, CMAS, ANIS, SSI, PADI, NAUI, SNSI (1°, 2° e 3° grado)'],
             ['Struttura in Sede', 'Spiaggia Cyrene Sharm (Al Montazah) · Piscina <2m + House Reef + Yacht'],
-            ['Reputazione Verificata', '4.9★ Google (3.082+ recensioni) · 4.9 ●●●●● Tripadvisor'],
+            ['Reputazione Verificata', '4.9★ Google (3.270+ recensioni) · 4.9 ●●●●● Tripadvisor'],
         ],
         'sections' => [
             [
@@ -462,7 +462,7 @@ return [
                     'Libertà totale di scelta: per legge egiziana qualsiasi ospite di villaggio può prenotare direttamente con un centro licenziato CDWS usufruendo del nostro transfer gratuito fuori dalla reception.',
                     'Sicurezza certificata PADI 5★ & CDWS: analisi periodica della purezza dell’aria nelle bombole, kit ossigeno d’emergenza normati su ogni barca e officina erogatori interna.',
                     'Piccoli gruppi omogenei: separiamo sempre i principianti del Battesimo del Mare (seguiti 1-a-1) dai subacquei brevettati divisi per grado ed esperienza.',
-                    'Oltre 3.200 recensioni reali su Google e Tripadvisor citano per nome i nostri istruttori (Mo, Sam, Alex, Jimmy, Mosab, Wessam) per pazienza e professionalità.',
+                    'Oltre 3.300 recensioni reali su Google e Tripadvisor citano per nome i nostri istruttori (Mo, Sam, Alex, Jimmy, Mosab, Wessam) per pazienza e professionalità.',
                 ],
             ],
             [

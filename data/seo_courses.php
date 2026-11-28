@@ -283,11 +283,11 @@ return [
         'overview' => [
             'en' => [
                 'There are few places on Earth better to earn your PADI Open Water Diver license than Sharm El Sheikh: warm year-round water, 20–30 m underwater visibility, and an on-site training pool steps from a vibrant Red Sea house reef.',
-                'At Sea College Dive Club you progress calmly from waist-deep pool water to sheltered reef dives and boat excursions — coached in English, Arabic, Russian, German, Italian or French by the same instructors praised across 3,082+ Google reviews.',
+                'At Sea College Dive Club you progress calmly from waist-deep pool water to sheltered reef dives and boat excursions — coached in English, Arabic, Russian, German, Italian or French by the same instructors praised across 3,270+ Google reviews.',
             ],
             'ar' => [
                 'تُعد شرم الشيخ واحدة من أفضل وجهات العالم للالتحاق بـ دورة غوص بادي PADI وشهادة غوص دولية معتمدة (Open Water) بفضل المياه الدافئة طوال العام، ومدى الرؤية الفائق (20–30 مترًا)، ووجود حمام سباحة تدريبي وشعاب منزلية مباشرة في مقرنا.',
-                'تتدرج معنا بهدوء من المياه الضحلة بالمسبح إلى الشعاب المنزلية ثم البحر المفتوح مع مدربين صبورين يتحدثون 8 لغات وحاصلين على إشادة أكثر من 3,082 ضيفًا على جوجل.',
+                'تتدرج معنا بهدوء من المياه الضحلة بالمسبح إلى الشعاب المنزلية ثم البحر المفتوح مع مدربين صبورين يتحدثون 8 لغات وحاصلين على إشادة أكثر من 3,270 ضيفًا على جوجل.',
             ],
         ],
         'specs' => [

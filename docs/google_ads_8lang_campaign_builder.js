@@ -55,7 +55,7 @@ var BLUEPRINT = [
     "descriptions": [
       "Official PADI 5 Star Dive Resort at Al Montazah. Private pool & calm House Reef.",
       "Book PADI Open Water (EUR 400) or OWD+AOWD Mega Bundle (EUR 600). Pay on arrival!",
-      "Max 4 divers per PADI guide, free hotel pickup & 4.9 stars (3,082+ reviews).",
+      "Max 4 divers per PADI guide, free hotel pickup & 4.9 stars (3,270+ reviews).",
       "Use our live Dive Calculator for 100% transparent EUR pricing with zero hidden fees."
     ]
   },
@@ -83,7 +83,7 @@ var BLUEPRINT = [
       "6 Dives EUR 210 | 10 EUR 350",
       "Max 4 Divers Per PADI Guide",
       "Couples Same Yacht +EUR 45",
-      "4.9 Stars (3,082+ Reviews)",
+      "4.9 Stars (3,270+ Reviews)",
       "PADI 5 Star Beachfront Base",
       "Live EUR Dive Fee Calculator",
       "100% Zero Hidden Boat Fees"
@@ -118,7 +118,7 @@ var BLUEPRINT = [
       "White Island & Ras Mohammed",
       "VIP Boats For 1 To 20 Guests",
       "PADI 5 Star Safety & Crew",
-      "4.9 Stars - 3,082+ Reviews"
+      "4.9 Stars - 3,270+ Reviews"
     ],
     "descriptions": [
       "Charter your own private yacht (from EUR 550) or Tiran speedboat (from EUR 150).",
@@ -147,7 +147,7 @@ var BLUEPRINT = [
     "headlines": [
       "Дайвинг в Шарм-эль-Шейхе 5*",
       "Русские Инструкторы PADI",
-      "Рейтинг 4.9 (3082+ Отзыва)",
+      "Рейтинг 4.9 (3270+ Отзыва)",
       "Пробное Погружение от 30 EUR",
       "Курс PADI Open Water 400 EUR",
       "Рас-Мохаммед, Тиран и Рэки",
@@ -179,7 +179,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "Centro Diving PADI 5* Sharm",
-      "4.9 Stelle (3.082+ Recensioni)",
+      "4.9 Stelle (3.270+ Recensioni)",
       "Pacchetti Diving & Corsi PADI",
       "Ras Mohammed, Tiran & Relitti",
       "Battesimo del Mare da 30 EUR",
@@ -209,7 +209,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "PADI 5* Tauchbasis Sharm",
-      "4,9 Sterne (3.082+ Bewert.)",
+      "4,9 Sterne (3.270+ Bewert.)",
       "Hausriff, Pool & Tiran Boote",
       "10 Tauchgänge Paket 350 EUR",
       "PADI Open Water Kurs 400 EUR",
@@ -238,7 +238,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "Nurkowanie Sharm PADI 5*",
-      "Ocena 4.9 (3082+ Opinii)",
+      "Ocena 4.9 (3270+ Opinii)",
       "Intronurkowie od 30 EUR",
       "Ras Mohammed, Tiran i Wraki",
       "Kurs PADI Open Water 400 EUR",
@@ -267,7 +267,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "Centre Plongée PADI 5* Sharm",
-      "Note 4.9/5 (3 082+ Avis)",
+      "Note 4.9/5 (3 270+ Avis)",
       "Baptême Plongée dès 30 EUR",
       "Ras Mohammed, Tiran & Épaves",
       "Forfait 10 Plongées 350 EUR",
@@ -299,7 +299,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "مركز غوص PADI 5 نجوم شرم",
-      "تقييم 4.9 من +3082 غواص",
+      "تقييم 4.9 من +3270 غواص",
       "غطسة تجريبية للمبتدئين 30€",
       "يخت خاص رأس محمد وتيران",
       "مدربون عرب محترفون ومعتمدون",
@@ -329,7 +329,7 @@ var BLUEPRINT = [
     ],
     "headlines": [
       "沙姆沙伊赫PADI五星潜店",
-      "谷歌4.9分·3082+真实好评",
+      "谷歌4.9分·3270+真实好评",
       "红海体验潜水30欧元起",
       "PADI OW考证仅400欧元",
       "穆罕默德角与蒂朗岛船潜",

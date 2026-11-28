@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | Baza Nurkowa PADI 5★ Sharm El Sheikh',
-    'meta_home_desc' => 'Centrum i baza nurkowa PADI 5★ w Sharm El Sheikh (Szarm el-Szejk). Intro nurkowe od 30 €, kursy PADI po polsku, snurkowanie Ras Mohammed i Tiran, wrak SS Thistlegorm. 4.9★ · 3 082 opinie Google.',
+    'meta_home_desc' => 'Centrum i baza nurkowa PADI 5★ w Sharm El Sheikh (Szarm el-Szejk). Intro nurkowe od 30 €, kursy PADI po polsku, snurkowanie Ras Mohammed i Tiran, wrak SS Thistlegorm. 4.9★ · 3 270 opinie Google.',
     'meta_services_title' => 'Nurkowanie, Kursy PADI i Rejsy w Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Pakiety nurkowe dla certyfikowanych, kursy PADI po polsku od Bubblemaker po Divemaster, pakiety kursów, snurkowanie na Białą Wyspę oraz prywatne motorówki i jachty w Sharm El Sheikh.',
     'meta_prices_title' => 'Cennik Nurkowania Sharm El Sheikh 2026 | Pakiety i Kursy PADI',

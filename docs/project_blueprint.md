@@ -14,7 +14,7 @@
 | Recognition | PADI 5 Star Dive Resort + Adopt the Blue conservation center | padi.com profile ✅ |
 | Main base | Cyrene Sharm Hotel / Ivy Cyrene Island Aqua Park Resort, Al Montazah, Sharm El Sheikh, South Sinai, Egypt | PADI + GBP + ivy-resorts.com ✅ |
 | Other branches | Jaz Dreams & Jaz Fayrouz (Naama Bay) | ⚠️ Unverified — **not published** until owner confirms |
-| Rating | 4.9 / 5 from 3,082 Google reviews | GBP ✅ (update number periodically in `site_config.php`) |
+| Rating | 4.9 / 5 from 3,270 Google reviews | GBP ✅ (update number periodically in `site_config.php`) |
 | Phone / WhatsApp | +201114567886 (PADI + GBP) | ✅ used as primary WhatsApp. Single unified phone & WhatsApp across entire website |
 | Email | info@seacollegediveclub.com | Website + CDWS ✅ |
 | Hours | Mon–Sun 08:00–18:00 (PADI) vs “Open 24h” (GBP) | ⚠️ Website shows 08:00–18:00; owner to align GBP |
@@ -30,7 +30,7 @@
 ### 1.3 Value proposition
 **“Dive the Red Sea with a PADI 5 Star resort right on the beach in Sharm El Sheikh — clear prices, patient multilingual instructors, booked in one WhatsApp message.”**
 
-Proof points: PADI 5 Star · 4.9★ from 3,082 Google reviews · on-site pool + house reef (beginners train before the sea) · own boat to Ras Mohammed, Tiran & Thistlegorm · free hotel transfers in Sharm · 6 languages spoken.
+Proof points: PADI 5 Star · 4.9★ from 3,270 Google reviews · on-site pool + house reef (beginners train before the sea) · own boat to Ras Mohammed, Tiran & Thistlegorm · free hotel transfers in Sharm · 6 languages spoken.
 
 ### 1.4 Competitor differentiation matrix
 | Capability | Reef Oasis (#1) | Egypt Gate (#2/#3) | Menem Tours (#4) | **Sea College (new site)** |
@@ -40,7 +40,7 @@ Proof points: PADI 5 Star · 4.9★ from 3,082 Google reviews · on-site pool + 
 | Multi-language / currency | Partial | ✅ 10 lang / 4 cur | ✅ 10 lang | ✅ EN + AR (RTL) now; RU/IT/PL/DE roadmap; EUR primary + indicative USD/GBP/EGP |
 | Adult / child pricing on cards | ❌ | ❌ | ✅ | ✅ (snorkeling/boat trips) |
 | Printable price list | ❌ | ❌ | ✅ | ✅ `Print / Save as PDF` on `/prices.php` |
-| Social proof | Low | ✅ multilingual reviews | ✅ Google feed | ✅ 4.9★/3,082 + verified multilingual review cards |
+| Social proof | Low | ✅ multilingual reviews | ✅ Google feed | ✅ 4.9★/3,270 + verified multilingual review cards |
 | 1-message WhatsApp booking | ❌ | ✅ | ✅ | ✅ With UTM/campaign source pre-fill |
 | On-site pool, house reef, own boat | Partial | ❌ | ❌ | ✅ **Unique advantage** |
 | Structured data / AEO | Basic | FAQ | Basic | ✅ Organization + LocalBusiness/DiveShop + Service/Offer + FAQPage + Breadcrumb |

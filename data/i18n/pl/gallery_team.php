@@ -46,7 +46,7 @@ return [
         ],
         7 => [
             'title'   => 'Pewność siebie przed pierwszym nurkowaniem z łodzi',
-            'caption' => 'Najlepszy dowód na to, dlaczego 3 082 opinie w Google i 129 na Tripadvisor chwalą cierpliwą opiekę 1-na-1 naszych instruktorów.',
+            'caption' => 'Najlepszy dowód na to, dlaczego 3 270 opinie w Google i 129 na Tripadvisor chwalą cierpliwą opiekę 1-na-1 naszych instruktorów.',
         ],
         8 => [
             'title'   => 'Ostatnie sprawdzenie sprzętu na rufowej platformie jachtu',
@@ -98,7 +98,7 @@ return [
         ],
         20 => [
             'title'   => 'Uśmiechy po wynurzeniu w Sharm El Sheikh',
-            'caption' => 'Powód, dla którego ponad 3 082 gości oceniło Sea College Dive Club na 4.9★ w Google.',
+            'caption' => 'Powód, dla którego ponad 3 270 gości oceniło Sea College Dive Club na 4.9★ w Google.',
         ],
         21 => [
             'title'   => 'Szkolenie specjalizacyjne PADI Wreck Diver',

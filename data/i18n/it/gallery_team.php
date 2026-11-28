@@ -46,7 +46,7 @@ return [
         ],
         7 => [
             'title'   => 'Sicurezza e Sorrisi alla Prima Immersione dalla Barca',
-            'caption' => 'Ecco perché 3.082 recensioni Google e 129 recensioni Tripadvisor lodano la pazienza 1-a-1 dei nostri istruttori.',
+            'caption' => 'Ecco perché 3.270 recensioni Google e 129 recensioni Tripadvisor lodano la pazienza 1-a-1 dei nostri istruttori.',
         ],
         8 => [
             'title'   => 'Equipaggiati sulla Plancetta di Poppa verso Tiran',
@@ -98,7 +98,7 @@ return [
         ],
         20 => [
             'title'   => 'Sorrisi Post-Immersione a Sharm El Sheikh',
-            'caption' => 'L’entusiasmo autentico che ci vale 4.9★ su oltre 3.082 recensioni Google verificate.',
+            'caption' => 'L’entusiasmo autentico che ci vale 4.9★ su oltre 3.270 recensioni Google verificate.',
         ],
         21 => [
             'title'   => 'Addestramento Specialità PADI Wreck Diver (Relitti)',

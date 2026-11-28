@@ -14,7 +14,7 @@ return [
     'SITE_ENV' => 'production',
     'SITE_URL' => 'https://seacollegediveclub.com',
 
-    // 2. Google Business Profile (Places API New v1 — live 6h auto-sync of 4.9★ & 3,082+ reviews)
+    // 2. Google Business Profile (Places API New v1 — optional; zero-key GBP 6h auto-sync of 4.9★ & 3,270+ reviews runs automatically)
     'GOOGLE_PLACES_API_KEY' => '',
 
     // 3. Tripadvisor Content API (optional — falls back to verified #26104236 seed + official widget)

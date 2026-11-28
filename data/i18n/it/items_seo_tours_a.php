@@ -146,7 +146,7 @@ return [
         'aeo_answer' => 'Il pacchetto Battesimo del Mare & Prova Sub in Barca con 2 Immersioni presso Sea College Dive Club a Sharm El Sheikh costa €100 tutto incluso (~8 ore, età minima 10 anni): comprende istruttori parlanti italiano, trasferimenti hotel, tassa parco marino, pranzo a buffet, bevande, attrezzatura completa e 2 immersioni guidate 1-a-1 di 15 minuti ciascuna su due diversi siti corallini del Mar Rosso.',
         'overview' => [
             'Ecco l’esperienza per principianti più prenotata e amata di tutta Sharm El Sheikh! Con un’unica tariffa chiara di €100 tutto incluso salpi a bordo di un confortevole yacht verso le barriere coralline più spettacolari del Mar Rosso (Stretto di Tiran o Parco Nazionale di Ras Mohammed) per effettuare ben 2 vere immersioni introduttive su due reef differenti.',
-            'Accompagnato in acqua 1-a-1 dai nostri istruttori PADI (4,9★ su oltre 3.082 recensioni), nella prima immersione scopri la magia di respirare sott’acqua e nella seconda voli leggero tra torri di corallo, tartarughe, pesci napoleone e anthias arancioni — con pranzo caldo a bordo, bibite, tassa parco e trasferimenti inclusi senza tirare fuori un solo euro extra!',
+            'Accompagnato in acqua 1-a-1 dai nostri istruttori PADI (4,9★ su oltre 3.270 recensioni), nella prima immersione scopri la magia di respirare sott’acqua e nella seconda voli leggero tra torri di corallo, tartarughe, pesci napoleone e anthias arancioni — con pranzo caldo a bordo, bibite, tassa parco e trasferimenti inclusi senza tirare fuori un solo euro extra!',
         ],
         'specs' => [
             ['Prezzo Tutto Incluso', '€100 a persona (Best-Seller Principianti!)'],

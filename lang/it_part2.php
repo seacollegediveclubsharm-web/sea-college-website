@@ -157,7 +157,7 @@ return [
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
     'meta_gallery_title' => 'Galleria Foto & Video Subacquei + Team Istruttori PADI | Sea College Sharm',
-    'meta_gallery_desc' => 'Guarda i veri video subacquei nel Mar Rosso, le foto delle barche e conosci gli istruttori di Sea College Dive Club elogiati in 3.082 recensioni Google (4.9★).',
+    'meta_gallery_desc' => 'Guarda i veri video subacquei nel Mar Rosso, le foto delle barche e conosci gli istruttori di Sea College Dive Club elogiati in 3.270 recensioni Google (4.9★).',
     'gallery_eyebrow' => 'Riprese Reali · Istruttori Reali',
     'gallery_title' => 'Galleria Foto & Video Subacquei',
     'gallery_sub' => 'Immagini autentiche dalle nostre barche giornaliere, dall’House Reef di Al Montazah, dalla piscina didattica e dai corsi PADI — insieme agli istruttori multilingue che i nostri ospiti citano per nome.',
@@ -168,7 +168,7 @@ return [
     'gallery_next' => 'Elemento successivo',
     'gallery_see_videos_btn' => 'Guarda Video Sub & Galleria',
     'team_showcase_title' => 'Conosci gli Istruttori che gli Ospiti Ringraziano per Nome',
-    'team_showcase_sub' => 'Didattica in italiano, inglese, arabo, russo, tedesco, francese e polacco — garantita da 3.082+ recensioni Google verificate (4.9★) e 129+ recensioni Tripadvisor (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Didattica in italiano, inglese, arabo, russo, tedesco, francese e polacco — garantita da 3.270+ recensioni Google verificate (4.9★) e 129+ recensioni Tripadvisor (4.9 ●●●●●).',
     'team_see_all_btn' => 'Team Completo & Galleria Video',
     'home_gallery_title' => 'Guarda i Veri Video del Mar Rosso & la Vita a Bordo',
     'home_gallery_sub' => 'Scopri in anteprima i nostri yacht diving, i motoscafi nella laguna di Al Montazah, gli esercizi in piscina e le pareti di corallo.',
@@ -188,7 +188,7 @@ return [
     'ta_rev_4_text' => 'Ho seguito un corso PADI con immersioni da riva e dalla barca. Formazione, attrezzatura e sicurezza davvero di prima classe.',
     'ta_read_reviews' => 'Leggi le recensioni Tripadvisor',
     'ta_write_review' => 'Scrivi una recensione su Tripadvisor',
-    'reviews_combined_eyebrow' => 'Oltre 3.200 Recensioni Verificate tra Google e Tripadvisor',
+    'reviews_combined_eyebrow' => 'Oltre 3.300 Recensioni Verificate tra Google e Tripadvisor',
     'plat_hub_title' => 'Centro Verificato e Consigliato sulle Principali Piattaforme Sub & Viaggi',
     'plat_hub_sub' => 'Controlla i nostri accreditamenti ufficiali, le licenze di sicurezza e le valutazioni indipendenti dei viaggiatori prima di prenotare.',
     'plat_reviews_word' => 'recensioni',

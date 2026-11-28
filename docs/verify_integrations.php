@@ -68,31 +68,31 @@ if (defined('GTG_ENABLED') && GTG_ENABLED && is_file($gtgProxyFile)) {
     $line('WARN', 'Google Tag Gateway', 'Disabled or handlers/gtg_proxy.php missing');
 }
 
-/* 3. Google Business Profile Places API */
-$seedFile = dirname(__DIR__) . '/storage/google_reviews_seed.json';
-if (GOOGLE_PLACES_API_KEY !== '') {
-    $detail = 'API key configured for Place ID ' . GOOGLE_PLACE_ID;
-    if ($pingNetwork && function_exists('curl_init')) {
-        $ch = curl_init('https://places.googleapis.com/v1/places/' . rawurlencode(GOOGLE_PLACE_ID) . '?languageCode=en');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 5,
-            CURLOPT_HTTPHEADER => [
-                'Accept: application/json',
-                'X-Goog-Api-Key: ' . GOOGLE_PLACES_API_KEY,
-                'X-Goog-FieldMask: rating,userRatingCount',
-            ],
-        ]);
-        $res = curl_exec($ch);
-        $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        $detail .= " (HTTP {$code})";
-        $line($code === 200 ? 'OK' : 'WARN', 'GBP Places API (Live)', $detail);
-    } else {
-        $line('OK', 'GBP Places API', $detail);
-    }
+/* 3. Google Business Profile Live Auto-Sync (`ChIJ75cBQp5LUxQRMjrNYQx93g0` -> storage/google_reviews_cache.json) */
+require_once dirname(__DIR__) . '/includes/google_reviews.php';
+$gbpCacheFile = defined('GOOGLE_REVIEWS_CACHE_FILE') ? GOOGLE_REVIEWS_CACHE_FILE : (LEADS_STORAGE_DIR . '/google_reviews_cache.json');
+if ($pingNetwork) {
+    $gbpLive = gbp_reviews_data(true);
+    $okGbp = !empty($gbpLive['review_count']) && !in_array($gbpLive['source'] ?? '', ['seed', 'seed_backoff'], true);
+    $line(
+        $okGbp ? 'OK' : 'WARN',
+        'GBP Live Sync (6h Cache)',
+        sprintf(
+            '%s -> %s★ / %s reviews [source=%s, cache=%s]',
+            GOOGLE_PLACE_ID,
+            (string) ($gbpLive['rating'] ?? BUSINESS['rating']),
+            number_format((int) ($gbpLive['review_count'] ?? BUSINESS['review_count'])),
+            (string) ($gbpLive['source'] ?? 'unknown'),
+            is_file($gbpCacheFile) ? basename($gbpCacheFile) : 'missing'
+        )
+    );
 } else {
-    $line('WARN', 'GBP Places API', 'GOOGLE_PLACES_API_KEY empty — serving verified seed (' . BUSINESS['rating'] . '★ / ' . BUSINESS['review_count'] . ' reviews' . (is_file($seedFile) ? ', seed JSON present' : '') . ')');
+    $cachedInfo = is_file($gbpCacheFile) ? json_decode((string) @file_get_contents($gbpCacheFile), true) : null;
+    if (is_array($cachedInfo) && !empty($cachedInfo['review_count'])) {
+        $line('OK', 'GBP Live Sync (6h Cache)', sprintf('%s -> %s★ / %s reviews cached (%s)', GOOGLE_PLACE_ID, (string) $cachedInfo['rating'], number_format((int) $cachedInfo['review_count']), (string) ($cachedInfo['source'] ?? 'cache')));
+    } else {
+        $line('OK', 'GBP Live Sync (6h Cache)', sprintf('%s ready (baseline %s★ / %s reviews; auto-syncs to storage/google_reviews_cache.json)', GOOGLE_PLACE_ID, (string) BUSINESS['rating'], number_format((int) BUSINESS['review_count'])));
+    }
 }
 
 /* 4. Meta Pixel, Domain Verification & Server-Side Conversions API (CAPI) */

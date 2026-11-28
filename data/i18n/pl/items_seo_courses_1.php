@@ -217,7 +217,7 @@ return [
         'aeo_answer' => 'Kurs PADI Open Water Diver (OWD) w Sea College Dive Club (autoryzowanym ośrodku PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh / Szarm el-Szejk) kosztuje 400 € za osobę, trwa od 3 do 3,5 dnia i jest dostępny od 10. roku życia bez żadnego wcześniejszego doświadczenia. W cenę wliczone jest 5 modułów teorii, 5 sesji w basenie szkoleniowym, 4 nurkowania w Morzu Czerwonym (dające dożywotnie uprawnienia do 18 m na całym świecie), kompletny sprzęt nurkowy oraz ubezpieczenie nurkowe; oficjalny podręcznik eLearning i certyfikat PADI to koszt 85 €.',
         'overview' => [
             'Trudno o lepsze miejsce na świecie na pierwszy kurs nurkowy niż Sharm El Sheikh: ciepła woda przez 12 miesięcy w roku, widoczność rzędu 25–35 metrów oraz własny basen szkoleniowy oddalony o kilka kroków od tętniącej życiem rafy domowej.',
-            'W Sea College Dive Club przechodzisz bez pośpiechu od wody po pas w basenie, przez spokojną zatokę, aż po rejsy łodzią — pod okiem cierpliwych instruktorów (w tym polskojęzycznych), których goście ocenili na 4.9★ w ponad 3 082 opiniach Google.',
+            'W Sea College Dive Club przechodzisz bez pośpiechu od wody po pas w basenie, przez spokojną zatokę, aż po rejsy łodzią — pod okiem cierpliwych instruktorów (w tym polskojęzycznych), których goście ocenili na 4.9★ w ponad 3 270 opiniach Google.',
         ],
         'specs' => [
             ['Cena kursu', '400 € za osobę (pełny sprzęt i ubezpieczenie nurkowe w cenie)'],

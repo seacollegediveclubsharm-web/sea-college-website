@@ -157,7 +157,7 @@ return [
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
     'meta_gallery_title' => 'Podwodna Galeria Zdjęć i Wideo + Kadra PADI | Sea College Sharm',
-    'meta_gallery_desc' => 'Zobacz autentyczne podwodne filmy z Morza Czerwonego, zdjęcia jachtów i motorówek oraz poznaj instruktorów Sea College Dive Club chwalonych w 3 082 opiniach Google (4.9★).',
+    'meta_gallery_desc' => 'Zobacz autentyczne podwodne filmy z Morza Czerwonego, zdjęcia jachtów i motorówek oraz poznaj instruktorów Sea College Dive Club chwalonych w 3 270 opiniach Google (4.9★).',
     'gallery_eyebrow' => 'Prawdziwe ujęcia · Prawdziwi instruktorzy',
     'gallery_title' => 'Podwodna galeria zdjęć i wideo',
     'gallery_sub' => 'Autentyczne nagrania z naszych codziennych łodzi, rafy domowej Al Montazah, basenu szkoleniowego i kursów PADI — oraz wielojęzyczni instruktorzy wspominani z imienia przez gości.',
@@ -168,7 +168,7 @@ return [
     'gallery_next' => 'Następny materiał',
     'gallery_see_videos_btn' => 'Obejrzyj podwodne filmy i galerię',
     'team_showcase_title' => 'Poznaj instruktorów, których goście chwalą z imienia',
-    'team_showcase_sub' => 'Szkolimy w 8 językach (po polsku, angielsku, arabsku, rosyjsku, niemiecku, włosku, francusku i chińsku) — potwierdza to ponad 3 082 zweryfikowanych opinii w Google (4.9★) i 129+ opinii na Tripadvisor (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Szkolimy w 8 językach (po polsku, angielsku, arabsku, rosyjsku, niemiecku, włosku, francusku i chińsku) — potwierdza to ponad 3 270 zweryfikowanych opinii w Google (4.9★) i 129+ opinii na Tripadvisor (4.9 ●●●●●).',
     'team_see_all_btn' => 'Pełny zespół i galeria wideo',
     'home_gallery_title' => 'Zobacz prawdziwe ujęcia spod wody i z pokładu naszych łodzi',
     'home_gallery_sub' => 'Sprawdź przed rezerwacją, jak wyglądają nasze łodzie nurkowe, motorówki w lagunie Al Montazah, ćwiczenia w basenie i ściany koralowe Morza Czerwonego.',
@@ -188,7 +188,7 @@ return [
     'ta_rev_4_text' => 'Zrobiłem tutaj kurs PADI obejmujący nurkowania z brzegu i z łodzi. Szkolenie, sprzęt i bezpieczeństwo na najwyższym światowym poziomie.',
     'ta_read_reviews' => 'Przeczytaj opinie na Tripadvisor',
     'ta_write_review' => 'Napisz opinię na Tripadvisor',
-    'reviews_combined_eyebrow' => 'Ponad 3 200 zweryfikowanych opinii w Google i na Tripadvisor',
+    'reviews_combined_eyebrow' => 'Ponad 3 300 zweryfikowanych opinii w Google i na Tripadvisor',
     'plat_hub_title' => 'Zweryfikowana i polecana baza na oficjalnych platformach nurkowych i turystycznych',
     'plat_hub_sub' => 'Sprawdź nasze niezależne akredytacje, licencje bezpieczeństwa oraz oceny gości na wiodących portalach jeszcze przed rezerwacją.',
     'plat_reviews_word' => 'opinii',

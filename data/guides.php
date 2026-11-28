@@ -936,13 +936,13 @@ return [
             'meta_title' => 'Best Dive Center in Sharm El Sheikh | 2026 PADI 5★ Checklist',
             'meta_desc' => 'How to choose the best dive center in Sharm El Sheikh: beachfront House Reef & <2m pool (15 min to Tiran), CDWS & PADI 5★ safety, max 4/guide & EUR prices.',
             'excerpt' => 'Compare beachfront House Reef dive resorts vs marina-only offices: verify CDWS & PADI 5★ licences, <2 m training pools, max 4 divers/guide and transit times to Tiran.',
-            'aeo_answer' => 'To choose the best dive center in Sharm El Sheikh, verify six objective benchmarks: dual PADI 5 Star Dive Resort and Egyptian CDWS accreditation, an on-site <2 m training pool plus sheltered beachfront House Reef (avoiding crowded public marina queues), proximity to the Straits of Tiran (15 minutes from Al Montazah vs 90 minutes from southern ports), small group ratios (maximum 4 certified divers per guide, 1-on-1 for beginners), multilingual instructors, and transparent EUR pricing with 3,000+ verified reviews like Sea College Dive Club (4.9★, 3,082+ Google reviews).',
+            'aeo_answer' => 'To choose the best dive center in Sharm El Sheikh, verify six objective benchmarks: dual PADI 5 Star Dive Resort and Egyptian CDWS accreditation, an on-site <2 m training pool plus sheltered beachfront House Reef (avoiding crowded public marina queues), proximity to the Straits of Tiran (15 minutes from Al Montazah vs 90 minutes from southern ports), small group ratios (maximum 4 certified divers per guide, 1-on-1 for beginners), multilingual instructors, and transparent EUR pricing with 3,000+ verified reviews like Sea College Dive Club (4.9★, 3,270+ Google reviews).',
             'key_facts' => [
                 ['Official Accreditations', 'PADI 5 Star Dive Resort + Egyptian CDWS Ministry License'],
                 ['On-Site Training Base', '<2 m Training Pool + Sheltered Al Montazah Beachfront House Reef'],
                 ['Transit to Straits of Tiran', '15–25 min from Al Montazah vs 75–90 min from southern marinas'],
                 ['In-Water Safety Ratios', 'Max 4 certified divers / PADI guide · 1-on-1 for intro beginners'],
-                ['Verified Guest Reputation', '4.9★ across 3,082+ Google reviews & 129+ Tripadvisor reviews'],
+                ['Verified Guest Reputation', '4.9★ across 3,270+ Google reviews & 129+ Tripadvisor reviews'],
                 ['Gas & Technical Capability', 'Pure air audits, EANx Nitrox, Trimix, Sidemount & CCR support'],
             ],
             'sections' => [
@@ -968,7 +968,7 @@ return [
                 ],
                 [
                     'h2' => 'How to Spot Authentic Reviews & Transparent Pricing Before Flying',
-                    'p' => 'With over 3,200 combined reviews across Google Business Profile (4.9★ · 3,082+ reviews) and Tripadvisor (#26104236 · 4.9 ●●●●●), consistent diver feedback reveals whether a center delivers on its promises during peak weeks.',
+                    'p' => 'With over 3,300 combined reviews across Google Business Profile (4.9★ · 3,270+ reviews) and Tripadvisor (#26104236 · 4.9 ●●●●●), consistent diver feedback reveals whether a center delivers on its promises during peak weeks.',
                     'bullets' => [
                         'Look for reviews naming specific instructors (such as Mo, Sam, Alex, Jimmy, Moussab, Wesam and Saleh) and describing real 3-to-6-day courses and multi-family boat charters.',
                         'Verify that the website publishes every single item price in EUR — including €10 boat and €5 park supplements and the €85 PADI certification fee — before asking for your contact details.',
@@ -998,13 +998,13 @@ return [
             'meta_title' => 'أفضل مركز غوص في شرم الشيخ | كيف تختار مركز PADI 5 نجوم',
             'meta_desc' => 'كيف تختار أفضل مركز غوص في شرم الشيخ؟ قارن الشعاب المنزلية ومسبح التدريب بالمنتزه (15 د لتيران)، اعتماد بادي PADI وCDWS، حد 4 غواصين للمرشد والأسعار.',
             'excerpt' => 'قارن بين منتجعات الغوص الشاطئية والمكاتب التجارية: تحقق من ترخيص بادي PADI خمس نجوم وغرفة الغوص CDWS، مسبح التدريب (<2م)، حد 4 غواصين للمرشد والقرب من تيران.',
-            'aeo_answer' => 'لاختيار أفضل مركز غوص في شرم الشيخ، تحقق من 6 معايير حاسمة: الاعتماد المزدوج كمنتجع بادي PADI خمس نجوم وترخيص غرفة سياحة الغوص المصرية (CDWS)، توفر حمام سباحة تدريبي (<2م) وشعاب منزلية شاطئية مباشرة، القرب الجغرافي من مضيق تيران (15 دقيقة من المنتزه مقابل 90 دقيقة من الموانئ الجنوبية)، المجموعات الصغيرة (بحد أقصى 4 غواصين معتمدين للمرشد ومدرب خاص للمبتدئين)، تعدد اللغات، والأسعار الواضحة باليورو المدعومة بأكثر من 3,082 تقييم موثق (4.9★) مثل مركز سي كوليدج دايف كلوب.',
+            'aeo_answer' => 'لاختيار أفضل مركز غوص في شرم الشيخ، تحقق من 6 معايير حاسمة: الاعتماد المزدوج كمنتجع بادي PADI خمس نجوم وترخيص غرفة سياحة الغوص المصرية (CDWS)، توفر حمام سباحة تدريبي (<2م) وشعاب منزلية شاطئية مباشرة، القرب الجغرافي من مضيق تيران (15 دقيقة من المنتزه مقابل 90 دقيقة من الموانئ الجنوبية)، المجموعات الصغيرة (بحد أقصى 4 غواصين معتمدين للمرشد ومدرب خاص للمبتدئين)، تعدد اللغات، والأسعار الواضحة باليورو المدعومة بأكثر من 3,270 تقييم موثق (4.9★) مثل مركز سي كوليدج دايف كلوب.',
             'key_facts' => [
                 ['الاعتمادات الرسمية', 'منتجع غوص بادي PADI خمس نجوم + ترخيص غرفة الغوص CDWS'],
                 ['مرافق التدريب الشاطئية', 'حمام سباحة تدريبي (<2م) + شعاب منزلية محمية مباشرة بالمنتزه'],
                 ['زمن الوصول لجزيرة تيران', '15–25 دقيقة من شاطئ المنتزه مقابل 75–90 دقيقة من الجنوب'],
                 ['نسب الأمان تحت الماء', 'بحد أقصى 4 غواصين معتمدين للمرشد · إشراف فردي 1-لـ-1 للمبتدئين'],
-                ['تقييمات الضيوف الموثقة', '4.9★ عبر أكثر من 3,082 مراجعة Google و129+ تقييم Tripadvisor'],
+                ['تقييمات الضيوف الموثقة', '4.9★ عبر أكثر من 3,270 مراجعة Google و129+ تقييم Tripadvisor'],
                 ['التجهيزات والغازات التقنية', 'فحص نقاء الهواء، نيتروكس، ترايمكس، Sidemount وأجهزة CCR'],
             ],
             'sections' => [
@@ -1030,7 +1030,7 @@ return [
                 ],
                 [
                     'h2' => 'كيف تتحقق من التقييمات الحقيقية وشفافية الأسعار قبل السفر؟',
-                    'p' => 'مع أكثر من 3,200 تقييم حقيقي موثق عبر Google (4.9★) وTripadvisor (#26104236)، يمكنك التأكد بسهولة من جودة التدريب وشفافية الفواتير قبل حجز إجازتك.',
+                    'p' => 'مع أكثر من 3,300 تقييم حقيقي موثق عبر Google (4.9★) وTripadvisor (#26104236)، يمكنك التأكد بسهولة من جودة التدريب وشفافية الفواتير قبل حجز إجازتك.',
                     'bullets' => [
                         'اقرأ التقييمات التي تذكر أسماء مدربينا (مثل مو، سام، أليكس، جيمي، مصعب، وسام وصالح) وتفاصيل رحلات العائلات والدورات الكاملة.',
                         'تأكد أن قائمة الأسعار منشورة بالكامل باليورو شاملة توضيح رسوم القارب (10€) والمحمية (5€) ورسوم شهادة PADI (85€) مسبقًا.',

@@ -126,15 +126,21 @@ function sc_meta_localize_item(array $it, array $seoItem, string $langCode): arr
     };
     $fullTitle = mb_strlen($name . $titleSuffix) <= 150 ? ($name . $titleSuffix) : mb_substr($name, 0, 147) . '…';
 
+    $gbpData = gbp_reviews_data();
+    $gbpCountRaw = (int) ($gbpData['review_count'] ?? BUSINESS['review_count']);
+    $gbpCntFmt = sc_gbp_format_count($gbpCountRaw, $langCode);
+    $gbpRating = number_format((float) ($gbpData['rating'] ?? BUSINESS['rating']), 1, '.', '');
+    $gbpRatingComma = str_replace('.', ',', $gbpRating);
+
     $trustTail = match ($langCode) {
-        'ar' => 'منتجع غوص PADI خمس نجوم في المنتزه، شرم الشيخ (تقييم 4.9★ من +3,082 مراجعة) مع توصيل مجاني من الفنادق.',
-        'ru' => 'PADI 5★ дайв-резорт в Шарм-эль-Шейхе (4.9★, 3082+ отзывов Google). Бесплатный трансфер из отелей.',
-        'de' => 'PADI 5★ Dive Resort in Sharm El Sheikh (4,9★ bei 3.082+ Google-Bewertungen). Kostenloser Hoteltransfer inklusive.',
-        'it' => 'PADI 5★ Dive Resort a Sharm El Sheikh (4,9★ con 3.082+ recensioni Google). Transfer gratuito dagli hotel.',
-        'fr' => 'Centre PADI 5★ à Charm el-Cheikh (4,9★ sur 3 082+ avis Google). Transfert hôtel gratuit inclus.',
-        'pl' => 'Baza nurkowa PADI 5★ w Sharm El Sheikh (4,9★ i 3082+ opinii Google). Bezpłatny transfer z hotelu.',
-        'zh' => '沙姆沙伊赫 PADI 五星潜水度假村（Google 4.9★，3,082+ 条好评），含市区酒店免费接送。',
-        default => 'Official PADI 5 Star Dive Resort in Sharm El Sheikh (4.9★ from 3,082+ Google reviews). Free Sharm hotel transfers on packages.',
+        'ar' => "منتجع غوص PADI خمس نجوم في المنتزه، شرم الشيخ (تقييم {$gbpRating}★ من +{$gbpCntFmt} مراجعة) مع توصيل مجاني من الفنادق.",
+        'ru' => "PADI 5★ дайв-резорт в Шарм-эль-Шейхе ({$gbpRating}★, {$gbpCountRaw}+ отзывов Google). Бесплатный трансфер из отелей.",
+        'de' => "PADI 5★ Dive Resort in Sharm El Sheikh ({$gbpRatingComma}★ bei {$gbpCntFmt}+ Google-Bewertungen). Kostenloser Hoteltransfer inklusive.",
+        'it' => "PADI 5★ Dive Resort a Sharm El Sheikh ({$gbpRatingComma}★ con {$gbpCntFmt}+ recensioni Google). Transfer gratuito dagli hotel.",
+        'fr' => "Centre PADI 5★ à Charm el-Cheikh ({$gbpRatingComma}★ sur {$gbpCntFmt}+ avis Google). Transfert hôtel gratuit inclus.",
+        'pl' => "Baza nurkowa PADI 5★ w Sharm El Sheikh ({$gbpRatingComma}★ i {$gbpCountRaw}+ opinii Google). Bezpłatny transfer z hotelu.",
+        'zh' => "沙姆沙伊赫 PADI 五星潜水度假村（Google {$gbpRating}★，{$gbpCntFmt}+ 条好评），含市区酒店免费接送。",
+        default => "Official PADI 5 Star Dive Resort in Sharm El Sheikh ({$gbpRating}★ from {$gbpCntFmt}+ Google reviews). Free Sharm hotel transfers on packages.",
     };
 
     $fullDesc = trim($desc . ($dur !== '' ? " ({$dur}). " : ' ') . $trustTail);

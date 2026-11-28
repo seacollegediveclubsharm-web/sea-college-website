@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | Centro Diving PADI 5 Stelle Sharm El Sheikh',
-    'meta_home_desc' => 'Centro Diving PADI 5 Stelle a Sharm El Sheikh. Battesimo del Mare da €30, corsi PADI, immersioni in barca a Ras Mohammed, Tiran e relitto Thistlegorm, snorkeling e barche private. 4.9★ · 3.082 recensioni Google.',
+    'meta_home_desc' => 'Centro Diving PADI 5 Stelle a Sharm El Sheikh. Battesimo del Mare da €30, corsi PADI, immersioni in barca a Ras Mohammed, Tiran e relitto Thistlegorm, snorkeling e barche private. 4.9★ · 3.270 recensioni Google.',
     'meta_services_title' => 'Immersioni Sharm El Sheikh, Corsi PADI & Escursioni in Barca | Sea College',
     'meta_services_desc' => 'Pacchetti immersioni Mar Rosso, corsi PADI da Bubblemaker a Divemaster, offerte corsi combinati, escursioni snorkeling Isola Bianca e barche private a Sharm El Sheikh.',
     'meta_prices_title' => 'Prezzi Immersioni Sharm El Sheikh 2026 | Pacchetti, Corsi PADI & Offerte',
@@ -221,7 +221,7 @@ return [
     'fac_7' => 'Noleggio attrezzatura & officina erogatori',
     'fac_8' => 'Aria condizionata & Wi-Fi gratuito',
     'about_team_title' => 'Un team che gli ospiti ricordano per nome',
-    'about_team_text' => 'Istruttori e guide come Mo, Sam, Alex, Jimmy, Mosab, Wessam, Saleh, Mazen, Emad e Mostafa vengono citati ogni settimana con entusiasmo nelle nostre 3.082+ recensioni Google.',
+    'about_team_text' => 'Istruttori e guide come Mo, Sam, Alex, Jimmy, Mosab, Wessam, Saleh, Mazen, Emad e Mostafa vengono citati ogni settimana con entusiasmo nelle nostre 3.270+ recensioni Google.',
     'about_values_title' => 'I nostri valori in acqua',
 
     // ---------- Contact ----------

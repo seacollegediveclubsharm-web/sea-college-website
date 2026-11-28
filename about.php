@@ -43,10 +43,10 @@ require ROOT_DIR . '/includes/header.php';
       <div class="split__text">
         <p><?= te('about_p1') ?></p>
         <p><?= te('about_p2') ?></p>
-        <?php $aboutTa = ta_reviews_data(); ?>
+        <?php $aboutGbp = gbp_reviews_data(); $aboutTa = ta_reviews_data(); ?>
         <ul class="chips">
           <li class="chip"><?= brand_icon('padi', 16) ?> <span><?= te('padi_badge') ?></span></li>
-          <li class="chip"><?= brand_icon('google', 15) ?> <span><?= te('rating_badge', ['rating' => BUSINESS['rating'], 'count' => number_format((int) BUSINESS['review_count'])]) ?></span></li>
+          <li class="chip"><?= brand_icon('google', 15) ?> <span><?= te('rating_badge', ['rating' => $aboutGbp['rating'], 'count' => number_format((int) $aboutGbp['review_count'])]) ?></span></li>
           <li class="chip"><?= brand_icon('tripadvisor', 16) ?> <span><?= te('ta_badge', ['rating' => number_format((float) $aboutTa['rating'], 1), 'count' => number_format((int) $aboutTa['review_count'])]) ?></span></li>
           <li class="chip"><?= brand_icon('cdws', 16) ?> <span><?= te('cdws_badge') ?></span></li>
         </ul>

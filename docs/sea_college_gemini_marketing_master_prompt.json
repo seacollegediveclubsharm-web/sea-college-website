@@ -38,7 +38,7 @@
     "reputation_and_social_proof": {
       "google_business_profile": {
         "rating": 4.9,
-        "verified_reviews_count": 3082,
+        "verified_reviews_count": 3270,
         "place_id": "ChIJ75cBQp5LUxQRMjrNYQx93g0",
         "maps_url": "https://maps.app.goo.gl/JweBzniP2hS1VpgK7",
         "direct_write_review_url": "https://search.google.com/local/writereview?placeid=ChIJ75cBQp5LUxQRMjrNYQx93g0"
@@ -65,7 +65,7 @@
         "Mazen, Emad & Mustafa (safety, boat crew & underwater photography)"
       ],
       "core_unique_selling_propositions": [
-        "#1 verified social proof combination in Al Montazah/Sharks Bay: 4.9★ across 3,082+ Google reviews + 4.9● Tripadvisor.",
+        "#1 verified social proof combination in Al Montazah/Sharks Bay: 4.9★ across 3,270+ Google reviews + 4.9● Tripadvisor.",
         "€0 upfront credit card fee / zero-risk online reservation (reserve spots now, pay at the dive center in EUR, USD, GBP, EGP or card).",
         "On-site private training pool + calm sandy-entry House Reef (eliminates scary deep-water first breaths for beginners and kids aged 8+).",
         "100% transparent EUR pricing with an interactive Dive Budget Calculator (contrasts sharply with Sharm street/OTA bait pricing that hides boat, park, and gear surcharges).",
@@ -153,7 +153,7 @@
         "/about.php, /services.php, /contact.php"
       ],
       "structured_data_json_ld": [
-        "SportsActivityLocation + LocalBusiness + DiveCenter (NAP, GeoCoordinates, 4.9★ AggregateRating 3,082 reviews, sameAs social/PADI/Tripadvisor)",
+        "SportsActivityLocation + LocalBusiness + DiveCenter (NAP, GeoCoordinates, 4.9★ AggregateRating 3,270 reviews, sameAs social/PADI/Tripadvisor)",
         "Product + Offer (EUR price, InStock, priceValidUntil) on all 80 item pages",
         "Course (PADI courses) & TouristTrip (dive/snorkeling/boat tours)",
         "VideoObject (embedded HD underwater video galleries)",
@@ -494,7 +494,7 @@
       "budget_excursion_brokers_and_otas": [
         "Menem Tours, EgyptGate, Viator, GetYourGuide, Trip.com, Peek (advertise €35-€55 boat trips with 20-25% commission, often mixing guests onto crowded non-PADI boats and charging surprise onboard fees)"
       ],
-      "sea_college_winning_wedge": "PADI 5★ Resort safety + 3,082-review 4.9★ trust + beachfront pool/House Reef right opposite Tiran + 100% transparent mid-premium EUR pricing + 8 native languages."
+      "sea_college_winning_wedge": "PADI 5★ Resort safety + 3,270-review 4.9★ trust + beachfront pool/House Reef right opposite Tiran + 100% transparent mid-premium EUR pricing + 8 native languages."
     }
   },
   "required_deliverables_from_gemini": [

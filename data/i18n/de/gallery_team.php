@@ -44,7 +44,7 @@ return [
         ],
         7 => [
             'title'   => 'Sicherheit & Vertrauen beim ersten Bootstauchgang',
-            'caption' => 'Genau diese ruhige 1-zu-1-Betreuung loben unsere Gäste in über 3.082 Google- und 129 Tripadvisor-Bewertungen.',
+            'caption' => 'Genau diese ruhige 1-zu-1-Betreuung loben unsere Gäste in über 3.270 Google- und 129 Tripadvisor-Bewertungen.',
         ],
         8 => [
             'title'   => 'Fertig ausgerüstet auf der hinteren Tauchplattform',
@@ -96,7 +96,7 @@ return [
         ],
         20 => [
             'title'   => 'Strahlende Gesichter nach dem Tauchgang im Roten Meer',
-            'caption' => 'Warum über 3.082 Gäste den Sea College Dive Club auf Google mit durchschnittlich 4.9★ bewerten.',
+            'caption' => 'Warum über 3.270 Gäste den Sea College Dive Club auf Google mit durchschnittlich 4.9★ bewerten.',
         ],
         21 => [
             'title'   => 'PADI Wreck Diver Spezialkurs am Wrack',

@@ -74,7 +74,7 @@ function sc_load_guides(): array
         foreach (($locBlock['key_facts'] ?? $en['key_facts'] ?? []) as $f) {
             if (is_array($f)) {
                 $lbl = (string) ($f['label'] ?? $f[0] ?? '');
-                $val = (string) ($f['val'] ?? $f[1] ?? '');
+                $val = sc_sync_live_review_text((string) ($f['val'] ?? $f[1] ?? ''));
                 if ($lbl !== '' && $val !== '') {
                     $facts[] = [$lbl, $val];
                 }
@@ -88,8 +88,10 @@ function sc_load_guides(): array
             }
             $h2 = (string) ($sec['h2'] ?? '');
             $pRaw = $sec['p'] ?? '';
-            $paras = is_array($pRaw) ? array_values(array_filter(array_map('strval', $pRaw))) : ($pRaw !== '' ? [(string) $pRaw] : []);
-            $bullets = array_values(array_filter(array_map('strval', (array) ($sec['bullets'] ?? []))));
+            $paras = is_array($pRaw)
+                ? array_values(array_filter(array_map(static fn($x): string => sc_sync_live_review_text((string) $x), $pRaw)))
+                : ($pRaw !== '' ? [sc_sync_live_review_text((string) $pRaw)] : []);
+            $bullets = array_values(array_filter(array_map(static fn($x): string => sc_sync_live_review_text((string) $x), (array) ($sec['bullets'] ?? []))));
             if ($h2 !== '' || $paras || $bullets) {
                 $sections[] = ['h2' => $h2, 'paras' => $paras, 'bullets' => $bullets];
             }
@@ -107,9 +109,9 @@ function sc_load_guides(): array
             'badge'       => (string) ($locBlock['badge'] ?? $en['badge'] ?? t('nav_guides')),
             'title'       => $title,
             'meta_title'  => (string) ($locBlock['meta_title'] ?? $en['meta_title'] ?? ($title . ' | ' . SITE_NAME)),
-            'meta_desc'   => (string) ($locBlock['meta_desc'] ?? $en['meta_desc'] ?? ($locBlock['excerpt'] ?? $en['excerpt'] ?? '')),
-            'excerpt'     => (string) ($locBlock['excerpt'] ?? $en['excerpt'] ?? ''),
-            'aeo_answer'  => (string) ($locBlock['aeo_answer'] ?? $en['aeo_answer'] ?? ''),
+            'meta_desc'   => sc_sync_live_review_text((string) ($locBlock['meta_desc'] ?? $en['meta_desc'] ?? ($locBlock['excerpt'] ?? $en['excerpt'] ?? ''))),
+            'excerpt'     => sc_sync_live_review_text((string) ($locBlock['excerpt'] ?? $en['excerpt'] ?? '')),
+            'aeo_answer'  => sc_sync_live_review_text((string) ($locBlock['aeo_answer'] ?? $en['aeo_answer'] ?? '')),
             'key_facts'   => $facts,
             'sections'    => $sections,
             'faqs'        => $faqs,

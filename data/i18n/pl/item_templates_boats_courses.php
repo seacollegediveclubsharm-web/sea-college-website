@@ -26,7 +26,7 @@ return static function (array $it, string $gid, string $name, string $desc, stri
             'aeo_answer' => "Szkolenie {$name} w Sea College Dive Club (autoryzowanym centrum PADI 5 Gwiazdek w Cyrene Sharm, Al Montazah, Sharm El Sheikh) kosztuje {$priceLabel} za osobę i trwa {$dur}. {$desc} W cenę wliczone jest wypożyczenie pełnego sprzętu nurkowego oraz prowadzenie przez wielojęzycznego instruktora PADI (+85 € opłata za oficjalny podręcznik i certyfikat PADI).",
             'overview'   => [
                 "Realizacja kursu {$name} w ciepłych, przejrzystych wodach Morza Czerwonego w Sharm El Sheikh pozwala skupić się w 100% na technice, pływalności i przyjemności z nurkowania zamiast walki z zimnem i słabą widocznością.",
-                "Zajęcia prowadzone są w kameralnych grupach na bazie naszego basenu szkoleniowego, osłoniętej rafy domowej Al Montazah oraz codziennych rejsów łodziowych przez instruktorów ocenianych na 4.9★ w ponad 3 082 opiniach Google.",
+                "Zajęcia prowadzone są w kameralnych grupach na bazie naszego basenu szkoleniowego, osłoniętej rafy domowej Al Montazah oraz codziennych rejsów łodziowych przez instruktorów ocenianych na 4.9★ w ponad 3 270 opiniach Google.",
             ],
             'specs' => [
                 ['Cena szkolenia', "{$priceLabel} za osobę (pełny sprzęt nurkowy w cenie)"],

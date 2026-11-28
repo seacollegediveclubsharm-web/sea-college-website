@@ -44,7 +44,7 @@ return [
         ],
         7 => [
             'title'   => '人生第一次船潜后甲板上的满满安全感',
-            'caption' => '这正是 3,082 条 Google 与 129 条 Tripadvisor 好评反复称赞的耐心 1 对 1 教学体验。',
+            'caption' => '这正是 3,270 条 Google 与 129 条 Tripadvisor 好评反复称赞的耐心 1 对 1 教学体验。',
         ],
         8 => [
             'title'   => '船尾潜水平台小班编组准备入水',
@@ -96,7 +96,7 @@ return [
         ],
         20 => [
             'title'   => '出水后绽放的灿烂笑容',
-            'caption' => '见证超过 3,082+ 位全球潜客在 Google 为 Sea College 打出 4.9★ 高分的真实瞬间。',
+            'caption' => '见证超过 3,270+ 位全球潜客在 Google 为 Sea College 打出 4.9★ 高分的真实瞬间。',
         ],
         21 => [
             'title'   => 'PADI 沉船专长课程实景训练',

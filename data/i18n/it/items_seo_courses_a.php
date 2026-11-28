@@ -13,7 +13,7 @@ return [
         'aeo_answer' => 'Il programma PADI Bubblemaker presso Sea College Dive Club a Sharm El Sheikh costa €70 e introduce i bambini dagli 8 anni alla respirazione subacquea in una piscina calma e poco profonda (massimo 2 metri) per 2–3 ore, con attrezzatura subacquea su misura per bambini e supervisione diretta di un istruttore PADI.',
         'overview' => [
             'Regala ai tuoi figli un primo incontro magico e indimenticabile con il mondo subacqueo a Sharm El Sheikh! Il programma PADI Bubblemaker si svolge interamente in acqua bassa e protetta (sotto i 2 metri di profondità), dove i giovani esploratori dagli 8 anni imparano a respirare dall’erogatore, compensare le orecchie e giocare sott’acqua in totale sicurezza.',
-            'Presso il nostro Centro PADI 5 Stelle ad Al Montazah utilizziamo bombole leggere, GAV junior ed erogatori adatti ai più piccoli. I genitori possono assistere da bordo vasca e scattare foto ricordo mentre i nostri istruttori PADI (valutati 4,9★ su 3.082 recensioni Google) trasformano ogni minuto in puro divertimento.',
+            'Presso il nostro Centro PADI 5 Stelle ad Al Montazah utilizziamo bombole leggere, GAV junior ed erogatori adatti ai più piccoli. I genitori possono assistere da bordo vasca e scattare foto ricordo mentre i nostri istruttori PADI (valutati 4,9★ su 3.270 recensioni Google) trasformano ogni minuto in puro divertimento.',
         ],
         'specs' => [
             ['Prezzo Ufficiale', '€70 a bambino'],
@@ -242,7 +242,7 @@ return [
         'meta_desc' => 'Corso sub PADI Open Water a Sharm El Sheikh (€400): brevetto sub 18m in 3,5 giorni con istruttori parlanti italiano, 5 piscine + 4 tuffi e attrezzatura incl.!',
         'aeo_answer' => 'Il corso sub PADI Open Water Diver presso Sea College Dive Club a Sharm El Sheikh costa €400 (+€85 manuale e certificazione PADI), dura 3–3,5 giorni con istruttori parlanti italiano (età minima 10 anni) e rilascia il brevetto sub internazionale fino a 18 metri con 5 moduli teorici, 5 sessioni in piscina, 4 immersioni nel Mar Rosso, attrezzatura subacquea completa e assicurazione subacquea incluse.',
         'overview' => [
-            'Il PADI Open Water Diver è il brevetto subacqueo più famoso e riconosciuto al mondo — e non esiste aula migliore delle acque calde, calme e cristalline di Sharm El Sheikh per conseguirlo! In 3–3,5 giorni i nostri istruttori PADI (premiati con 4,9★ su oltre 3.082 recensioni Google) ti accompagnano passo dopo passo dal tuo primissimo respiro sott’acqua fino a pianificare ed effettuare immersioni autonome in coppia fino a 18 metri.',
+            'Il PADI Open Water Diver è il brevetto subacqueo più famoso e riconosciuto al mondo — e non esiste aula migliore delle acque calde, calme e cristalline di Sharm El Sheikh per conseguirlo! In 3–3,5 giorni i nostri istruttori PADI (premiati con 4,9★ su oltre 3.270 recensioni Google) ti accompagnano passo dopo passo dal tuo primissimo respiro sott’acqua fino a pianificare ed effettuare immersioni autonome in coppia fino a 18 metri.',
             'Nella tariffa trasparente di €400 presso il nostro Centro PADI 5 Stelle ad Al Montazah sono già inclusi il noleggio completo dell’attrezzatura subacquea per tutti i giorni del corso, l’assicurazione subacquea allievo e i trasferimenti gratuiti dal tuo resort a Sharm El Sheikh. Puoi anche completare la teoria tramite PADI eLearning dall’Italia prima di partire per dedicare la vacanza solo al mare!',
         ],
         'specs' => [

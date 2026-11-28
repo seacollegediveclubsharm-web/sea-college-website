@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | 沙姆沙伊赫红海 PADI 五星潜水度假村',
-    'meta_home_desc' => '埃及沙姆沙伊赫红海 PADI 五星潜水度假村。提供体验水肺潜水、PADI 考证课程（OW/AOW/高氧）、拉斯穆罕默德与蒂朗海峡出海船潜、浮潜及私人游艇包船。Google 3,082 条真实好评 4.9★。',
+    'meta_home_desc' => '埃及沙姆沙伊赫红海 PADI 五星潜水度假村。提供体验水肺潜水、PADI 考证课程（OW/AOW/高氧）、拉斯穆罕默德与蒂朗海峡出海船潜、浮潜及私人游艇包船。Google 3,270 条真实好评 4.9★。',
     'meta_services_title' => '沙姆沙伊赫潜水、PADI 考证课程与红海船潜 | Sea College Dive Club',
     'meta_services_desc' => '沙姆沙伊赫持证潜水套餐、从儿童泡泡小勇士到潜水长的全系列 PADI 课程、课程省钱联报套餐、浮潜一日游与私人快艇游艇包船。',
     'meta_prices_title' => '2026 沙姆沙伊赫潜水价格表 | 船潜套餐、PADI 考证与优惠套餐',

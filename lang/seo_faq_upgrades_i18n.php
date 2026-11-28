@@ -11,7 +11,7 @@ return [
     'en' => [
         // High-Intent Search_Terms SEO Meta Enhancements (boosts Google Ads QS & Organic CTR — zero SERP truncation)
         'meta_home_title' => 'Scuba Diving Sharm El Sheikh | PADI 5★ Dive Center (4.9★)',
-        'meta_home_desc' => 'PADI 5★ Dive Center in Sharm El Sheikh (4.9★, 3,082+ reviews): intro dives €30, packages €35/dive, PADI Open Water €400, Ras Mohammed & Tiran. €0 deposit!',
+        'meta_home_desc' => 'PADI 5★ Dive Center in Sharm El Sheikh (4.9★, 3,270+ reviews): intro dives €30, packages €35/dive, PADI Open Water €400, Ras Mohammed & Tiran. €0 deposit!',
         'meta_prices_title' => 'Scuba Diving Sharm El Sheikh Prices 2026 | From €30 (EUR)',
         'meta_prices_desc' => 'Official 2026 Sharm El Sheikh diving prices (EUR): intro dives €30, certified packages €35/dive, PADI Open Water €400, private boats & live fee calculator.',
         'meta_services_title' => 'Diving Packages, PADI Courses & Boat Trips Sharm El Sheikh',
@@ -28,7 +28,7 @@ return [
         'faq_hub_title' => 'Sharm El Sheikh Scuba Diving, PADI Courses & Boat Trips — Frequently Asked Questions',
         'faq_hub_sub' => 'Clear, direct answers to what divers, beginners, couples, and families ask most before booking — 100% transparent EUR pricing, 6 free resort pickup zones, max 4 divers per guide, and zero surprise marina fees.',
         'faq_hub_aeo_label' => 'Quick Summary — Key Sharm Diving Rules & Direct EUR Rates',
-        'faq_hub_aeo_text' => 'Sea College Dive Club (official PADI 5 Star Dive Resort & CDWS Dive Center at Cyrene Sharm, Al Montazah, Sharm El Sheikh, rated 4.9★ across 3,082+ Google reviews) offers €0-deposit online booking in EUR: Beginner House Reef Intro €30, All-In Boat Intro €70–€100 (park fee & lunch included, zero swimming required, 1-on-1 PADI instructor), Certified Dive Packages €85 (2 dives) to €350 (10 dives at €35/dive, max 4 divers per guide), PADI Open Water €400, and Saver Bundles €400–€750. Certified divers who logged a dive within the last 6 months skip the check dive; free return hotel pickup covers Nabq Bay, Sharks Bay, Naama Bay, Coral Bay, Hadaba, Old Market, and Al Montazah.',
+        'faq_hub_aeo_text' => 'Sea College Dive Club (official PADI 5 Star Dive Resort & CDWS Dive Center at Cyrene Sharm, Al Montazah, Sharm El Sheikh, rated 4.9★ across 3,270+ Google reviews) offers €0-deposit online booking in EUR: Beginner House Reef Intro €30, All-In Boat Intro €70–€100 (park fee & lunch included, zero swimming required, 1-on-1 PADI instructor), Certified Dive Packages €85 (2 dives) to €350 (10 dives at €35/dive, max 4 divers per guide), PADI Open Water €400, and Saver Bundles €400–€750. Certified divers who logged a dive within the last 6 months skip the check dive; free return hotel pickup covers Nabq Bay, Sharks Bay, Naama Bay, Coral Bay, Hadaba, Old Market, and Al Montazah.',
         'faq_hub_search_ph' => 'Search any question (e.g. price, Nabq pickup, non-swimmer, check dive, Nitrox, Thistlegorm)…',
         'faq_hub_all_filter' => 'All Topics',
         'faq_hub_empty' => 'No matching questions found. Message our team on WhatsApp for an instant answer in under 5 minutes!',
@@ -65,7 +65,7 @@ return [
 
     'ru' => [
         'meta_home_title' => 'Дайвинг в Шарм-эль-Шейхе — Цены от €30 | Русский центр PADI 5★',
-        'meta_home_desc' => 'Русскоязычный дайвинг-центр PADI 5★ в Шарм-эль-Шейхе (4.9★ · 3082 отзыва): пробное погружение с яхты и берега от €30, курсы PADI, Рас-Мохаммед. Оплата $ / €, €0 предоплаты!',
+        'meta_home_desc' => 'Русскоязычный дайвинг-центр PADI 5★ в Шарм-эль-Шейхе (4.9★ · 3270 отзыва): пробное погружение с яхты и берега от €30, курсы PADI, Рас-Мохаммед. Оплата $ / €, €0 предоплаты!',
         'meta_prices_title' => 'Дайвинг в Шарм-эль-Шейхе: цены 2026 в € и $ без скрытых доплат',
         'meta_prices_desc' => 'Сколько стоит дайвинг в Шарм-эль-Шейхе: интро с берега €30, с яхты €70–€100, пакеты €35/дайв, PADI Open Water €400. Карта не нужна — оплата на месте в € / $!',
         'meta_services_title' => 'Дайвинг, обучение PADI на русском и прогулки в Шарм-эль-Шейхе',
@@ -80,7 +80,7 @@ return [
         'faq_hub_title' => 'Дайвинг, курсы PADI на русском и морские прогулки в Шарм-эль-Шейхе — FAQ',
         'faq_hub_sub' => 'Честные ответы на вопросы дайверов, новичков, пар и семей: прямые цены без скрытых сборов, оплата на месте наличными в $ USD или € EUR без зарубежных карт, бесплатный трансфер из 6 зон и максимум 4 дайвера на гида.',
         'faq_hub_aeo_label' => 'Краткая сводка — Главные правила и цены на дайвинг в Шарме',
-        'faq_hub_aeo_text' => 'Sea College Dive Club (официальный лицензированный дайв-резорт PADI 5★ и CDWS в Аль-Монтаза, Шарм-эль-Шейх, рейтинг 4.9★ на основе 3 082+ отзывов Google) с постоянной командой русскоязычных инструкторов PADI предлагает бронирование без предоплаты (€0 — зарубежная банковская карта не нужна, оплата на месте наличными в долларах $ USD, евро € EUR или фунтах): пробный дайв с рифа €30, с яхты всё включено €70–€100 (включая парковый сбор €5 и обед, уметь плавать не нужно), пакеты от €85 (2 дайва) до €350 (10 дайвов по €35/дайв, макс. 4 человека на гида), курс PADI Open Water на русском €400 и комбо-пакеты €400–€750. При дайве <6 мес. назад чек-дайв не нужен; трансфер из всех отелей Шарма бесплатный.',
+        'faq_hub_aeo_text' => 'Sea College Dive Club (официальный лицензированный дайв-резорт PADI 5★ и CDWS в Аль-Монтаза, Шарм-эль-Шейх, рейтинг 4.9★ на основе 3 270+ отзывов Google) с постоянной командой русскоязычных инструкторов PADI предлагает бронирование без предоплаты (€0 — зарубежная банковская карта не нужна, оплата на месте наличными в долларах $ USD, евро € EUR или фунтах): пробный дайв с рифа €30, с яхты всё включено €70–€100 (включая парковый сбор €5 и обед, уметь плавать не нужно), пакеты от €85 (2 дайва) до €350 (10 дайвов по €35/дайв, макс. 4 человека на гида), курс PADI Open Water на русском €400 и комбо-пакеты €400–€750. При дайве <6 мес. назад чек-дайв не нужен; трансфер из всех отелей Шарма бесплатный.',
         'faq_hub_search_ph' => 'Поиск вопроса (например: цена, оплата долларами, страховка, виза, без плавания, Тистлегорм)…',
         'faq_hub_all_filter' => 'Все темы',
         'faq_hub_empty' => 'Вопросы по запросу не найдены. Напишите нам в WhatsApp — ответим на русском за 5 минут!',
@@ -115,7 +115,7 @@ return [
 
     'it' => [
         'meta_home_title' => 'Diving Sharm El Sheikh | Centro PADI 5★ & Istruttori Italiani',
-        'meta_home_desc' => 'Centro Diving PADI 5★ a Sharm El Sheikh con istruttori parlanti italiano (4.9★ · 3.082+ recensioni): corso sub PADI €400, Battesimo/prova sub €30, escursioni Ras Mohammed. €0 acconto!',
+        'meta_home_desc' => 'Centro Diving PADI 5★ a Sharm El Sheikh con istruttori parlanti italiano (4.9★ · 3.270+ recensioni): corso sub PADI €400, Battesimo/prova sub €30, escursioni Ras Mohammed. €0 acconto!',
         'meta_prices_title' => 'Prezzi Immersioni & Corsi Sub Sharm El Sheikh 2026 | Listino EUR',
         'meta_prices_desc' => 'Listino ufficiale in EUR zero costi nascosti: prova sub / Battesimo €30, pacchetti immersioni €35/imm., Corso Sub PADI Open Water €400, escursioni Ras Mohammed €55. €0 acconto!',
         'meta_services_title' => 'Pacchetti Immersioni, Corsi Sub PADI & Escursioni Barca Sharm',
@@ -130,7 +130,7 @@ return [
         'faq_hub_title' => 'Immersioni, Corsi Sub PADI ed Escursioni in Barca a Sharm El Sheikh — FAQ',
         'faq_hub_sub' => 'Risposte chiare per subacquei, principianti, coppie e famiglie italiane: prezzi trasparenti in EUR, istruttori parlanti italiano, riconoscimento brevetti FIPSAS/CMAS/SSI, transfer gratuito dai villaggi e zero tasse nascoste.',
         'faq_hub_aeo_label' => 'Riepilogo Rapido — Regole Chiave e Tariffe Dirette in EUR a Sharm',
-        'faq_hub_aeo_text' => 'Sea College Dive Club (Centro Diving PADI 5 Stelle e CDWS ufficiale ad Al Montazah, Sharm El Sheikh, 4.9★ su 3.082+ recensioni Google) dispone di istruttori parlanti italiano e prenotazione online con €0 di acconto: prova sub / Battesimo da riva €30, Battesimo in barca tutto incluso €70–€100 (biglietto Parco Marino €5 e pranzo inclusi, anche senza saper nuotare), pacchetti immersioni da €85 (2 imm.) a €350 (10 imm. a €35/imm., max 4 sub/guida, validi brevetti PADI/FIPSAS/CMAS/ANIS/SSI), Corso Sub PADI Open Water €400 e Pacchetti Brevetti €400–€750. Immersione <6 mesi = salta check dive; transfer gratuito da Domina Coral Bay, Reef Oasis, Veraclub, Bravo, Rixos, Naama e Nabq.',
+        'faq_hub_aeo_text' => 'Sea College Dive Club (Centro Diving PADI 5 Stelle e CDWS ufficiale ad Al Montazah, Sharm El Sheikh, 4.9★ su 3.270+ recensioni Google) dispone di istruttori parlanti italiano e prenotazione online con €0 di acconto: prova sub / Battesimo da riva €30, Battesimo in barca tutto incluso €70–€100 (biglietto Parco Marino €5 e pranzo inclusi, anche senza saper nuotare), pacchetti immersioni da €85 (2 imm.) a €350 (10 imm. a €35/imm., max 4 sub/guida, validi brevetti PADI/FIPSAS/CMAS/ANIS/SSI), Corso Sub PADI Open Water €400 e Pacchetti Brevetti €400–€750. Immersione <6 mesi = salta check dive; transfer gratuito da Domina Coral Bay, Reef Oasis, Veraclub, Bravo, Rixos, Naama e Nabq.',
         'faq_hub_search_ph' => 'Cerca una domanda (es. corso sub, brevetto FIPSAS, biglietti Ras Mohammed, Domina, visto Sinai)…',
         'faq_hub_all_filter' => 'Tutti i temi',
         'faq_hub_empty' => 'Nessuna domanda trovata. Scrivici su WhatsApp per ricevere risposta in italiano in meno di 5 minuti!',
@@ -180,7 +180,7 @@ return [
         'faq_hub_title' => 'Nurkowanie, Kursy PADI po Polsku i Snurkowanie w Sharm El Sheikh (Szarm el-Szejk) — FAQ',
         'faq_hub_sub' => 'Konkretne odpowiedzi na pytania polskich nurków, początkujących, par i rodzin: przejrzyste ceny w EUR (z przelicznikiem PLN zł), obsługa i kursy PADI po polsku, darmowy transfer z 6 stref i 0 € ukrytych opłat.',
         'faq_hub_aeo_label' => 'Szybkie Podsumowanie — Zasady i Ceny Bezpośrednie w Sharm (Szarm el-Szejk)',
-        'faq_hub_aeo_text' => 'Sea College Dive Club (oficjalna baza i centrum nurkowe PADI 5★ w Al Montazah, Sharm El Sheikh / Szarm el-Szejk, ocena 4.9★ z 3 082+ opinii Google) z polskojęzyczną obsługą oferuje rezerwację z 0 € zaliczki: intro nurkowe z rafy 30 €, intro nurkowe z łodzi all-inclusive 70–100 € (bilet parkowy 5 € i obiad w cenie, bez umiejętności pływania), pakiety od 85 € (2 nurk.) do 350 € (10 nurk. po 35 €/nurk., maks. 4 os./przewodnika), kurs PADI Open Water (kurs OWD po polsku) 400 € oraz snurkowanie na Ras Mohammed i Białej Wyspie 55 €.',
+        'faq_hub_aeo_text' => 'Sea College Dive Club (oficjalna baza i centrum nurkowe PADI 5★ w Al Montazah, Sharm El Sheikh / Szarm el-Szejk, ocena 4.9★ z 3 270+ opinii Google) z polskojęzyczną obsługą oferuje rezerwację z 0 € zaliczki: intro nurkowe z rafy 30 €, intro nurkowe z łodzi all-inclusive 70–100 € (bilet parkowy 5 € i obiad w cenie, bez umiejętności pływania), pakiety od 85 € (2 nurk.) do 350 € (10 nurk. po 35 €/nurk., maks. 4 os./przewodnika), kurs PADI Open Water (kurs OWD po polsku) 400 € oraz snurkowanie na Ras Mohammed i Białej Wyspie 55 €.',
         'faq_hub_search_ph' => 'Wpisz pytanie (np. cena, polski instruktor, snurkowanie, intro nurkowe, Nabq, Thistlegorm)…',
         'faq_hub_all_filter' => 'Wszystkie tematy',
         'faq_hub_empty' => 'Brak pasujących pytań. Napisz do nas po polsku na WhatsApp — odpowiemy w 5 minut!',
@@ -215,7 +215,7 @@ return [
 
     'de' => [
         'meta_home_title' => 'Tauchen Sharm El Sheikh | PADI 5★ Tauchbasis & Tauchschule',
-        'meta_home_desc' => 'PADI 5★ Tauchbasis & deutschsprachige Tauchschule in Sharm El Sheikh (4,9★ · 3.082+ Bewertungen): Schnuppertauchen 30 €, Tauchschein 400 €, Pakete ab 35 €/TG.',
+        'meta_home_desc' => 'PADI 5★ Tauchbasis & deutschsprachige Tauchschule in Sharm El Sheikh (4,9★ · 3.270+ Bewertungen): Schnuppertauchen 30 €, Tauchschein 400 €, Pakete ab 35 €/TG.',
         'meta_prices_title' => 'Tauchen & Tauchschein Sharm El Sheikh Kosten 2026 | Preise',
         'meta_prices_desc' => 'Komplettpreise ohne versteckte Gebühren in EUR: Schnuppertauchen 30 €, Tauchpakete Rotes Meer 35 €/TG, PADI Tauchschein 400 € & Kostenrechner. 0 € Anzahlung!',
         'meta_services_title' => 'Tauchpakete Rotes Meer, Tauchkurse & Ausflüge Sharm | PADI',
@@ -230,7 +230,7 @@ return [
         'faq_hub_title' => 'Tauchen, Tauchschein machen & Bootstouren in Sharm El Sheikh — Häufige Fragen (FAQ)',
         'faq_hub_sub' => 'Klare Antworten unserer deutschsprachigen PADI Tauchschule: Komplettpreise ohne versteckte Hafengebühren, kostenloser Hoteltransfer aus 6 Zonen, max. 4 Taucher pro Guide und 0 € Online-Anzahlung.',
         'faq_hub_aeo_label' => 'Kurzüberblick — Wichtigste Tauchregeln & Komplettpreise in Sharm',
-        'faq_hub_aeo_text' => 'Der Sea College Dive Club (offizielle PADI 5 Sterne Tauchbasis & deutschsprachige Tauchschule in Al Montazah, Sharm El Sheikh, 4,9★ bei 3.082+ Google-Bewertungen) bietet Online-Buchung mit 0 € Anzahlung: Hausriff-Schnuppertauchen 30 €, All-In-Boot-Schnuppertauchen 70–100 € (inkl. 5 € Parkgebühr & Buffet, auch für Nichtschwimmer), Tauchpakete Rotes Meer 85 € (2 TG) bis 350 € (10 TG à 35 €/TG, max. 4 Taucher/Guide), PADI Open Water Tauchschein 400 € und Kombi-Sparpakete 400–750 €. Tauchgang <6 Monate = kein Check-Dive; Gratis-Transfer aus allen 6 Zonen.',
+        'faq_hub_aeo_text' => 'Der Sea College Dive Club (offizielle PADI 5 Sterne Tauchbasis & deutschsprachige Tauchschule in Al Montazah, Sharm El Sheikh, 4,9★ bei 3.270+ Google-Bewertungen) bietet Online-Buchung mit 0 € Anzahlung: Hausriff-Schnuppertauchen 30 €, All-In-Boot-Schnuppertauchen 70–100 € (inkl. 5 € Parkgebühr & Buffet, auch für Nichtschwimmer), Tauchpakete Rotes Meer 85 € (2 TG) bis 350 € (10 TG à 35 €/TG, max. 4 Taucher/Guide), PADI Open Water Tauchschein 400 € und Kombi-Sparpakete 400–750 €. Tauchgang <6 Monate = kein Check-Dive; Gratis-Transfer aus allen 6 Zonen.',
         'faq_hub_search_ph' => 'Frage suchen (z. B. Tauchschein Kosten, deutsche Tauchlehrer, Transfer, Nichtschwimmer, Nitrox)…',
         'faq_hub_all_filter' => 'Alle Themen',
         'faq_hub_empty' => 'Keine passende Frage gefunden. Schreiben Sie uns per WhatsApp – Antwort auf Deutsch in unter 5 Minuten!',
@@ -265,7 +265,7 @@ return [
 
     'fr' => [
         'meta_home_title' => 'Club Plongée Francophone Sharm El Sheikh (Charm el-Cheikh)',
-        'meta_home_desc' => 'Centre de plongée PADI 5★ francophone à Charm el-Cheikh (Sharm El Sheikh) · 4.9★ (3 082+ avis) : baptême 30 €, forfaits 35 €/pl., cours Open Water N1 400 €. 0 € d’acompte !',
+        'meta_home_desc' => 'Centre de plongée PADI 5★ francophone à Charm el-Cheikh (Sharm El Sheikh) · 4.9★ (3 270+ avis) : baptême 30 €, forfaits 35 €/pl., cours Open Water N1 400 €. 0 € d’acompte !',
         'meta_prices_title' => 'Tarifs Plongée Sharm El Sheikh (Charm el-Cheikh) 2026 | EUR',
         'meta_prices_desc' => 'Prix plongée Charm el-Cheikh (Sharm El Sheikh) garantis sans frais cachés : baptême 30 €, forfait exploration 35 €/pl., PADI Open Water 400 €. 0 € d’acompte !',
         'meta_services_title' => 'Forfaits Plongée, Cours PADI & Bateau Sharm (Charm el-Cheikh)',
@@ -280,7 +280,7 @@ return [
         'faq_hub_title' => 'Plongée, Cours PADI & Excursions Bateau à Charm el-Cheikh (Sharm El Sheikh) — FAQ',
         'faq_hub_sub' => 'Réponses claires aux questions des plongeurs francophones, débutants, couples et familles : tarifs directs en EUR, moniteurs francophones, équivalence FFESSM/CMAS, navette gratuite 6 zones et zéro frais cachés.',
         'faq_hub_aeo_label' => 'En Bref — Règles Essentielles & Tarifs Directs en EUR à Charm el-Cheikh',
-        'faq_hub_aeo_text' => 'Sea College Dive Club (club de plongée francophone PADI 5★ à Al Montazah, Charm el-Cheikh / Sharm El Sheikh, noté 4.9★ sur 3 082+ avis Google) propose la réservation directe à 0 € d’acompte : baptême récif maison 30 €, baptême bateau tout compris 70 €–100 € (taxe parc marin 5 € & déjeuner inclus, sans savoir nager, 1-contre-1 avec moniteur francophone), forfaits exploration de 85 € (2 pl.) à 350 € (10 pl. soit 35 €/plongée, max 4 plongeurs/guide), brevet PADI Open Water (équivalent Niveau 1) 400 € et packs cours 400 €–750 €. Exemption de check dive si plongée < 6 mois ; transfert gratuit depuis les 6 zones de Sharm.',
+        'faq_hub_aeo_text' => 'Sea College Dive Club (club de plongée francophone PADI 5★ à Al Montazah, Charm el-Cheikh / Sharm El Sheikh, noté 4.9★ sur 3 270+ avis Google) propose la réservation directe à 0 € d’acompte : baptême récif maison 30 €, baptême bateau tout compris 70 €–100 € (taxe parc marin 5 € & déjeuner inclus, sans savoir nager, 1-contre-1 avec moniteur francophone), forfaits exploration de 85 € (2 pl.) à 350 € (10 pl. soit 35 €/plongée, max 4 plongeurs/guide), brevet PADI Open Water (équivalent Niveau 1) 400 € et packs cours 400 €–750 €. Exemption de check dive si plongée < 6 mois ; transfert gratuit depuis les 6 zones de Sharm.',
         'faq_hub_search_ph' => 'Rechercher une question (ex. tarif, moniteur francophone, Niveau 1, Île Blanche, Thistlegorm)…',
         'faq_hub_all_filter' => 'Tous les sujets',
         'faq_hub_empty' => 'Aucune question trouvée. Écrivez-nous sur WhatsApp pour une réponse en français en moins de 5 minutes !',
@@ -315,7 +315,7 @@ return [
 
     'ar' => [
         'meta_home_title' => 'سي كوليدج دايف كلوب | أفضل مركز غوص وغطس بادي PADI 5★ شرم الشيخ',
-        'meta_home_desc' => 'أفضل مركز غوص ودايفنج PADI خمس نجوم في شرم الشيخ (4.9★ من +3,082 تقييم): غطسة المبتدئين 30€، باقات 35€/غطسة، دورة بادي Open Water بـ400€، رأس محمد وتيران والغرقانة بـ0€ عربون!',
+        'meta_home_desc' => 'أفضل مركز غوص ودايفنج PADI خمس نجوم في شرم الشيخ (4.9★ من +3,270 تقييم): غطسة المبتدئين 30€، باقات 35€/غطسة، دورة بادي Open Water بـ400€، رأس محمد وتيران والغرقانة بـ0€ عربون!',
         'meta_prices_title' => 'أسعار الغوص والغطس في شرم الشيخ 2026 | دايفنج ودورات بادي PADI',
         'meta_prices_desc' => 'قائمة أسعار الغوص والغطس (الدايفنج) الرسمية بشرم الشيخ 2026: غطسة المبتدئين 30€، باقات 35€/غطسة، دورة بادي 400€ ويخت خاص بـ0€ دفعة مقدمة (يورو / جنيه / بطاقات خليجية).',
         'meta_services_title' => 'رحلات الغوص والغطس، دورات بادي PADI ورحلات بحرية شرم الشيخ',
@@ -330,7 +330,7 @@ return [
         'faq_hub_title' => 'الغوص والغطس ودورات بادي PADI والرحلات البحرية في شرم الشيخ — الأسئلة الشائعة',
         'faq_hub_sub' => 'إجابات واضحة ومباشرة عن كل ما يبحث عنه المسافرون من مصر والإمارات والسعودية والخليج: أسعار شفافة بدون رسوم خفية، توصيل مجاني من جميع فنادق شرم الشيخ، وحد أقصى 4 غواصين لكل مرشد.',
         'faq_hub_aeo_label' => 'ملخص سريع — أهم قواعد وأسعار الغوص والغطس المباشرة في شرم الشيخ',
-        'faq_hub_aeo_text' => 'يقدم مركز سي كوليدج دايف كلوب (أفضل مراكز الغوص والغطس المعتمدة من بادي PADI خمس نجوم وغرفة سياحة الغوص CDWS في المنتزه بشرم الشيخ بتقييم 4.9★ من +3,082 تقييم) حجزًا مباشرًا بـ0€ دفعة مقدمة: تجربة غطس/دايفنج للمبتدئين بدون سباحة من الشاطئ بـ30€ أو باليخت شاملة الغداء وتذكرة المحمية بـ70€–100€، باقات للمعتمدين بـ35€ للغطسة (بحد أقصى 4 غواصين للمرشد)، دورة غوص بادي PADI Open Water بـ400€، ورحلات بحرية لجزيرة تيران ورأس محمد ومنطقة الغرقانة بنبق ويخوت خاصة، مع الدفع عند الوصول باليورو أو الدولار أو الجنيه المصري أو البطاقات البنكية الخليجية (درهم إماراتي / ريال سعودي بسعر البنك).',
+        'faq_hub_aeo_text' => 'يقدم مركز سي كوليدج دايف كلوب (أفضل مراكز الغوص والغطس المعتمدة من بادي PADI خمس نجوم وغرفة سياحة الغوص CDWS في المنتزه بشرم الشيخ بتقييم 4.9★ من +3,270 تقييم) حجزًا مباشرًا بـ0€ دفعة مقدمة: تجربة غطس/دايفنج للمبتدئين بدون سباحة من الشاطئ بـ30€ أو باليخت شاملة الغداء وتذكرة المحمية بـ70€–100€، باقات للمعتمدين بـ35€ للغطسة (بحد أقصى 4 غواصين للمرشد)، دورة غوص بادي PADI Open Water بـ400€، ورحلات بحرية لجزيرة تيران ورأس محمد ومنطقة الغرقانة بنبق ويخوت خاصة، مع الدفع عند الوصول باليورو أو الدولار أو الجنيه المصري أو البطاقات البنكية الخليجية (درهم إماراتي / ريال سعودي بسعر البنك).',
         'faq_hub_search_ph' => 'ابحث عن سؤالك (مثال: اسعار الغطس، الغرقانة، راس محمد، بادي، درهم/ريال، توصيل)…',
         'faq_hub_all_filter' => 'جميع المواضيع',
         'faq_hub_empty' => 'لم يتم العثور على سؤال مطابق. تواصل معنا عبر واتساب للرد الفوري خلال أقل من 5 دقائق!',
@@ -365,7 +365,7 @@ return [
 
     'zh' => [
         'meta_home_title' => '埃及红海潜水 · 沙姆沙伊赫潜水中心 | Sea College PADI 五星潜店',
-        'meta_home_desc' => '埃及沙姆沙伊赫官方 PADI 五星潜水中心（Google 4.9★ · 3,082+好评）：体验潜水 DSD €30起，红海 PADI OW考证 €400 / AOW €350（支持中文eLearning教材），船潜 €35/潜，€0定金支持美金/欧元到付！',
+        'meta_home_desc' => '埃及沙姆沙伊赫官方 PADI 五星潜水中心（Google 4.9★ · 3,270+好评）：体验潜水 DSD €30起，红海 PADI OW考证 €400 / AOW €350（支持中文eLearning教材），船潜 €35/潜，€0定金支持美金/欧元到付！',
         'meta_prices_title' => '2026埃及红海 PADI OW/AOW考证价格与沙姆沙伊赫潜水价目表 | €0定金',
         'meta_prices_desc' => '2026沙姆沙伊赫潜水中心透明欧元价目表（支持人民币¥参考换算与美金现钞到付）：体验潜水 DSD €30起，持证套餐 €35/潜，红海 PADI OW考证 €400、AOW €350、拉斯穆罕默德浮潜与快艇。',
         'meta_services_title' => '埃及红海潜水套餐、PADI OW/AOW考证、沉船船潜与包船 | Sea College',
@@ -380,7 +380,7 @@ return [
         'faq_hub_title' => '埃及红海沙姆沙伊赫潜水、PADI考证与出海包船 — 常见问题解答 (FAQ)',
         'faq_hub_sub' => '出发前最关心的问题一次说清：€0免刷卡定金（支持电子邮箱国内直收确认单与美金现钞到付）、简体中文 PADI 官方 eLearning 电子教材、$25埃及落地签全境通行规则及6大酒店区免费接送。',
         'faq_hub_aeo_label' => '速览摘要 — 沙姆沙伊赫潜水核心规则与官网直订欧元价',
-        'faq_hub_aeo_text' => 'Sea College Dive Club（位于埃及沙姆沙伊赫 Al Montazah 海滩的官方 PADI 五星潜水度假村与 CDWS 认证潜店，Google 4.9★ / 3,082+ 好评）提供 €0 免刷卡定金在线预订（支持电子邮箱国内直收确认单 + WhatsApp 确认，到店可付美元现钞 USD / 欧元 EUR）：门前礁体验潜 €30，一价全包游艇体验潜 €70–€100（已含 €5 海洋公园门票与自助午餐，不会游泳1对1牵手带潜），持证船潜 €85（2潜）至 €350（10潜，€35/潜，每导潜最多4人），支持简体中文 PADI eLearning 教材的 OW 考证 €400、连报套餐 €400–€750。中国大陆护照持 $25 埃及落地签贴纸可 100% 畅行拉斯穆罕默德国家公园（穆罕默德角）、蒂朗岛、达哈布蓝洞与 Thistlegorm 二战沉船！',
+        'faq_hub_aeo_text' => 'Sea College Dive Club（位于埃及沙姆沙伊赫 Al Montazah 海滩的官方 PADI 五星潜水度假村与 CDWS 认证潜店，Google 4.9★ / 3,270+ 好评）提供 €0 免刷卡定金在线预订（支持电子邮箱国内直收确认单 + WhatsApp 确认，到店可付美元现钞 USD / 欧元 EUR）：门前礁体验潜 €30，一价全包游艇体验潜 €70–€100（已含 €5 海洋公园门票与自助午餐，不会游泳1对1牵手带潜），持证船潜 €85（2潜）至 €350（10潜，€35/潜，每导潜最多4人），支持简体中文 PADI eLearning 教材的 OW 考证 €400、连报套餐 €400–€750。中国大陆护照持 $25 埃及落地签贴纸可 100% 畅行拉斯穆罕默德国家公园（穆罕默德角）、蒂朗岛、达哈布蓝洞与 Thistlegorm 二战沉船！',
         'faq_hub_search_ph' => '搜索问题（例如：考证价格、美金支付、落地签、中文教材、不会游泳、沉船）…',
         'faq_hub_all_filter' => '全部主题',
         'faq_hub_empty' => '未找到匹配问题。欢迎点击 WhatsApp 或在线留言（支持电子邮箱回复），快速为您解答！',

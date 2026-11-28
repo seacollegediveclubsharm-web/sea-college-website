@@ -22,7 +22,7 @@ $cmd = strtolower(trim((string) ($argv[1] ?? 'status')));
 
 if ($cmd === 'status') {
     echo "=== Lara & Hossam — Reviews Reputation Manager ===\n";
-    echo "Google Business Profile : Place ID " . GOOGLE_PLACE_ID . " | Location ID " . GBP_LOCATION_ID . " (4.9★ · 3,082+ reviews)\n";
+    echo "Google Business Profile : Place ID " . GOOGLE_PLACE_ID . " | Location ID " . GBP_LOCATION_ID . " (4.9★ · 3,270+ reviews)\n";
     echo "GBP Direct API OAuth    : " . ((GBP_CLIENT_ID !== '' && GBP_REFRESH_TOKEN !== '') ? 'CONNECTED (24/7 Auto-Reply Ready)' : 'Awaiting GBP API OAuth token (1-Click Sheet Queue Active)') . "\n";
     echo "Tripadvisor Listing     : #" . TRIPADVISOR_LOCATION_ID . " (4.9● · 129+ reviews) -> " . TRIPADVISOR_OWNER_URL . "\n";
     echo "Gemini AI SEO Brain     : " . ((defined('GEMINI_API_KEY') && GEMINI_API_KEY !== '') ? 'ACTIVE' : 'FALLBACK') . "\n";

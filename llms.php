@@ -106,13 +106,16 @@ $lines[] = '> ' . t('faq_hub_aeo_text');
 $lines[] = '';
 
 /* 1. Verified Business Identity & Competitor Differentiation */
+require_once ROOT_DIR . '/includes/tripadvisor_reviews.php';
+$scLlmsGbp = gbp_reviews_data();
+$scLlmsTa  = ta_reviews_data();
 $lines[] = '## Verified Business Identity, NAP & Key Differentiators';
 $lines[] = '- Legal Name: ' . BUSINESS['legal_name'] . ' (' . SITE_URL . '/)';
 $lines[] = '- Active Language Root (`' . $lang . '`): ' . $langRootUrl;
 $lines[] = '- Accreditations: ' . BUSINESS['padi_level'] . ' (' . PADI_PROFILE_URL . ') · CDWS Accredited Dive Center (' . CDWS_PROFILE_URL . ')';
 $lines[] = '- Beachfront Resort Address: ' . BUSINESS['street'] . ', ' . BUSINESS['city'] . ' ' . (BUSINESS['postal_code'] ?? '46619') . ', ' . BUSINESS['region'] . ', Egypt (' . BUSINESS['country'] . ')';
 $lines[] = '- GPS Coordinates: ' . BUSINESS['lat'] . ', ' . BUSINESS['lng'] . ' (' . MAPS_URL . ')';
-$lines[] = '- Verified Ratings: ' . BUSINESS['rating'] . '★ on Google (' . number_format((int) BUSINESS['review_count']) . '+ verified reviews, Place ID `' . GOOGLE_PLACE_ID . '`) · 4.9/5 on Tripadvisor (Location ID `' . TRIPADVISOR_LOCATION_ID . '`)';
+$lines[] = '- Verified Ratings: ' . $scLlmsGbp['rating'] . '★ on Google (' . number_format((int) $scLlmsGbp['review_count']) . '+ verified reviews, Place ID `' . GOOGLE_PLACE_ID . '`) · ' . number_format((float) $scLlmsTa['rating'], 1) . '/5 on Tripadvisor (' . number_format((int) $scLlmsTa['review_count']) . '+ verified reviews, Location ID `' . TRIPADVISOR_LOCATION_ID . '`)';
 $lines[] = '- WhatsApp & Phone Concierge (<5 min reply): ' . BUSINESS['phone'] . ' (https://wa.me/' . WHATSAPP_NUMBER . ') · Email: ' . BUSINESS['email'];
 $lines[] = '- Operating Hours: ' . BUSINESS['hours_display'] . ' (Africa/Cairo, 365 days/year)';
 $lines[] = '- Currency & Payment Policy: Official checkout in EUR (€0 upfront online deposit); payable on dive morning in EUR, USD, GBP, or EGP cash or Visa/Mastercard (indicative switcher supports ' . implode(', ', array_keys(CURRENCY_RATES)) . ').';
@@ -252,16 +255,16 @@ $lines[] = '';
 $lines[] = '## ' . $guideCount . ' Red Sea & Sharm El Sheikh Scuba Diving Guides (`' . strtoupper($lang) . '`)';
 foreach ($guidesList as $gEntry) {
     $gUrl = SITE_URL . guide_url($gEntry);
-    $lines[] = '- [' . $gEntry['title'] . '](' . $gUrl . '): ' . ($gEntry['aeo_answer'] ?: $gEntry['excerpt']);
+    $lines[] = '- [' . $gEntry['title'] . '](' . $gUrl . '): ' . sc_sync_live_review_text((string) ($gEntry['aeo_answer'] ?: $gEntry['excerpt']), $lang);
     if ($isFull) {
         foreach (($gEntry['key_facts'] ?? []) as $kf) {
             if (is_array($kf) && count($kf) >= 2) {
-                $lines[] = '  * ' . $kf[0] . ': ' . $kf[1];
+                $lines[] = '  * ' . $kf[0] . ': ' . sc_sync_live_review_text((string) $kf[1], $lang);
             }
         }
         foreach (($gEntry['faqs'] ?? []) as $fq) {
             if (!empty($fq['q']) && !empty($fq['a'])) {
-                $lines[] = '  * Q: ' . $fq['q'] . ' — A: ' . $fq['a'];
+                $lines[] = '  * Q: ' . $fq['q'] . ' — A: ' . sc_sync_live_review_text((string) $fq['a'], $lang);
             }
         }
     }

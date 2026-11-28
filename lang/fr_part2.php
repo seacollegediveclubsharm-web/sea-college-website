@@ -166,7 +166,7 @@ return [
 
     // ---------- Feature 4: Underwater Photo/Video Gallery & Team Showcase ----------
     'meta_gallery_title' => 'Galerie Photos & Vidéos Sous-Marines + Équipe PADI | Sea College Charm el-Cheikh',
-    'meta_gallery_desc' => 'Découvrez nos vraies vidéos sous-marines en Mer Rouge, nos bateaux et les instructeurs PADI de Sea College Dive Club salués dans 3 082 avis Google (4.9★) à Sharm El Sheikh.',
+    'meta_gallery_desc' => 'Découvrez nos vraies vidéos sous-marines en Mer Rouge, nos bateaux et les instructeurs PADI de Sea College Dive Club salués dans 3 270 avis Google (4.9★) à Sharm El Sheikh.',
     'gallery_eyebrow' => 'Images réelles · Instructeurs passionnés',
     'gallery_title' => 'Galerie photos & vidéos sous-marines',
     'gallery_sub' => 'Images authentiques filmées depuis nos bateaux quotidiens, notre récif maison d’Al Montazah, notre piscine d’entraînement et nos cours PADI — ainsi que l’équipe multilingue plébiscitée par nos plongeurs.',
@@ -177,7 +177,7 @@ return [
     'gallery_next' => 'Média suivant',
     'gallery_see_videos_btn' => 'Voir les vidéos sous-marines & la galerie',
     'team_showcase_title' => 'Rencontrez les instructeurs que nos clients recommandent par leur prénom',
-    'team_showcase_sub' => 'Enseignement en 8 langues (français, anglais, arabe, russe, allemand, italien, polonais et chinois) — salué par plus de 3 082 avis Google vérifiés (4.9★) et 129+ avis Tripadvisor (4.9 ●●●●●).',
+    'team_showcase_sub' => 'Enseignement en 8 langues (français, anglais, arabe, russe, allemand, italien, polonais et chinois) — salué par plus de 3 270 avis Google vérifiés (4.9★) et 129+ avis Tripadvisor (4.9 ●●●●●).',
     'team_see_all_btn' => 'Voir toute l’équipe & les vidéos',
     'home_gallery_title' => 'Découvrez la vie à bord & nos images réelles en Mer Rouge',
     'home_gallery_sub' => 'Observez nos yachts de plongée, nos speedboats face à Tiran, nos entraînements en piscine et les tombants coralliens avant de réserver.',
@@ -197,7 +197,7 @@ return [
     'ta_rev_4_text' => 'J’ai passé un cours PADI combinant plongées du bord et en bateau. La pédagogie comme la sécurité étaient de premier ordre.',
     'ta_read_reviews' => 'Lire les avis Tripadvisor',
     'ta_write_review' => 'Écrire un avis Tripadvisor',
-    'reviews_combined_eyebrow' => 'Plus de 3 200 avis vérifiés sur Google & Tripadvisor',
+    'reviews_combined_eyebrow' => 'Plus de 3 300 avis vérifiés sur Google & Tripadvisor',
     'plat_hub_title' => 'Vérifié & recommandé sur les plateformes officielles de plongée et de voyage',
     'plat_hub_sub' => 'Consultez nos accréditations officielles, licences de sécurité et notes indépendantes avant de réserver vos plongées.',
     'plat_reviews_word' => 'avis',

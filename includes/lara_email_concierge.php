@@ -453,7 +453,7 @@ function lara_render_branded_email_html(string $markdownText, string $lang = 'en
 <div dir="{$dir}" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:15px;line-height:1.65;color:#0f172a;max-width:680px;margin:0 auto;text-align:{$align};">
   <div style="background:#082f49;color:#ffffff;padding:16px 22px;border-radius:10px 10px 0 0;">
     <div style="font-size:18px;font-weight:700;letter-spacing:0.2px;">Sea College Dive Club · Sharm El Sheikh</div>
-    <div style="font-size:12px;color:#bae6fd;margin-top:2px;">Official PADI 5-Star Dive Resort &amp; CDWS Accredited Marine Center · 4.9★ (3,082+ Reviews)</div>
+    <div style="font-size:12px;color:#bae6fd;margin-top:2px;">Official PADI 5-Star Dive Resort &amp; CDWS Accredited Marine Center · 4.9★ (3,270+ Reviews)</div>
   </div>
   <div style="border:1px solid #e2e8f0;border-top:none;padding:22px;border-radius:0 0 10px 10px;background:#ffffff;">
     {$contentHtml}
@@ -484,7 +484,7 @@ function lara_email_compose_ai_reply(array $msg): ?array
     }
 
     $sysPrompt = <<<'SYS'
-You are Lara, Head of Customer Care & Private Charter / Diving Concierge at Sea College Dive Club (Official PADI 5-Star Dive Resort & CDWS Accredited Dive Center in Al Montazah, Sharm El Sheikh, Egypt; rated 4.9★ across 3,082+ Google reviews).
+You are Lara, Head of Customer Care & Private Charter / Diving Concierge at Sea College Dive Club (Official PADI 5-Star Dive Resort & CDWS Accredited Dive Center in Al Montazah, Sharm El Sheikh, Egypt; rated 4.9★ across 3,270+ Google reviews).
 Official Website: https://seacollegediveclub.com
 Official Email: info@seacollegediveclub.com
 Direct WhatsApp / Phone: +201114567886 (https://wa.me/201114567886)

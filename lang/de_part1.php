@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     // ---------- Meta ----------
     'meta_home_title' => 'Sea College Dive Club | PADI 5 Sterne Tauchbasis Sharm El Sheikh',
-    'meta_home_desc' => 'PADI 5 Sterne Dive Resort in Sharm El Sheikh. Schnuppertauchen, PADI Tauchkurse, Tagesboote nach Ras Mohammed & Tiran, Schnorchelausflüge & Privatboote. 4.9★ aus 3.082 Google-Bewertungen.',
+    'meta_home_desc' => 'PADI 5 Sterne Dive Resort in Sharm El Sheikh. Schnuppertauchen, PADI Tauchkurse, Tagesboote nach Ras Mohammed & Tiran, Schnorchelausflüge & Privatboote. 4.9★ aus 3.270 Google-Bewertungen.',
     'meta_services_title' => 'Tauchen, PADI Tauchkurse & Bootsausflüge in Sharm El Sheikh | Sea College',
     'meta_services_desc' => 'Tauchpakete Rotes Meer, PADI Kurse vom Bubblemaker bis Divemaster, Spar-Kombiangebote, Schnorcheltouren und Privatboote in Sharm El Sheikh.',
     'meta_prices_title' => 'Tauchpreise Sharm El Sheikh 2026 | Tauchpakete, PADI Kurse & Angebote',
