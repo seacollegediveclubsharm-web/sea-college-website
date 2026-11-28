@@ -620,18 +620,23 @@ function sc_erp_ingest_website_lead(array $lead): void
             ? ('WEB-' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $eventId), -8)))
             : '';
 
-        $rawSeller = (string) ($lead['seller_username'] ?? $lead['seller'] ?? $lead['rep'] ?? '');
-        $seller    = sc_erp_resolve_seller($pdo, $rawSeller);
+        $rawSeller  = (string) ($lead['seller_username'] ?? $lead['seller'] ?? $lead['rep'] ?? '');
+        $seller     = sc_erp_resolve_seller($pdo, $rawSeller);
         $sellerUser = $seller ? (string) $seller['username'] : '';
-        $sellerRep  = $seller ? (string) $seller['rep_scope'] : '';
+        $sellerRep  = $seller ? (string) $seller['rep_scope'] : 'WEBSITE';
+        $onlineHub  = function_exists('sc_erp_detect_online_hub') ? sc_erp_detect_online_hub($lead) : 'WEBSITE_DIRECT';
+        $onlineAcc  = $seller ? '' : 'website.online';
+        $leadStatus = ($voNo !== '' && !$seller) ? 'CONFIRMED_WEBSITE_BOOKING' : 'NEW';
+        $confAt     = ($voNo !== '' && !$seller) ? $now : '';
+        $confBy     = ($voNo !== '' && !$seller) ? 'WEBSITE_AUTO' : '';
 
         $stmt = $pdo->prepare(
             'INSERT OR REPLACE INTO website_leads_crm
              (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
-              people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
+              people, adults, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
               status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
-              seller_username, sales_rep_code)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?)'
+              seller_username, sales_rep_code, online_hub_source, online_seller_account, confirmed_at, confirmed_by)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?,?,?)'
         );
         $stmt->execute([
             $eventId,
@@ -643,13 +648,14 @@ function sc_erp_ingest_website_lead(array $lead): void
             (string) ($lead['email'] ?? ''),
             (string) ($lead['interest'] ?? ''),
             $people,
+            $people,
             $tripDt,
             (string) ($lead['hotel'] ?? ''),
             '',
             (string) ($lead['level'] ?? ''),
             json_encode($lead['cart'] ?? [], JSON_UNESCAPED_UNICODE) ?: '[]',
             $eur,
-            'NEW',
+            $leadStatus,
             (string) ($lead['gclid'] ?? ''),
             (string) ($lead['fbclid'] ?? ''),
             (string) ($lead['utm_source'] ?? ''),
@@ -658,21 +664,48 @@ function sc_erp_ingest_website_lead(array $lead): void
             $voNo,
             $sellerUser,
             $sellerRep,
+            $onlineHub,
+            $onlineAcc,
+            $confAt,
+            $confBy,
         ]);
 
         if ($voNo !== '') {
             $fx      = sc_erp_fx_rates($pdo);
             $eurRate = $fx['EUR'] ?? 57.0;
             [$wk, $mo, $qr, $yr] = sc_erp_period_parts($tripDt);
-            $effectiveEur = $eur > 0 ? $eur : (55.0 * $people);
-            $revEgp  = round($effectiveEur * $eurRate, 2);
-            $cogsEgp = round($revEgp * 0.36, 2);
-            $profEgp = round($revEgp - $cogsEgp, 2);
-            $qrTok   = 'QR-' . strtoupper(substr(hash('sha256', $voNo . ':' . $eventId), 0, 12));
+
+            $cartArr   = is_array($lead['cart'] ?? null) ? $lead['cart'] : [];
+            $firstSku  = isset($cartArr[0]['id']) ? (string) $cartArr[0]['id'] : '';
+            $lookupKey = $firstSku !== '' ? $firstSku : (string) ($lead['interest'] ?? '');
+            $mTrip     = function_exists('sc_erp_lookup_unified_trip') ? sc_erp_lookup_unified_trip($pdo, $lookupKey) : null;
+
+            $effectiveEur = $eur > 0 ? $eur : ($mTrip ? max(25.0, (float) $mTrip['adult_sell_eur'] * $people) : (55.0 * $people));
+            $revEgp       = round($effectiveEur * $eurRate, 2);
+            $autoCost     = $mTrip ? round((float) $mTrip['adult_cost_egp'] * $people, 2) : 0.0;
+            $cogsEgp      = $autoCost > 0.0 ? $autoCost : round($revEgp * 0.36, 2);
+            $profEgp      = round($revEgp - $cogsEgp, 2);
+            $qrTok        = 'QR-' . strtoupper(substr(hash('sha256', $voNo . ':' . $eventId), 0, 12));
+
+            $hotelRaw   = trim((string) ($lead['hotel'] ?? ''));
+            $hotelName  = $hotelRaw !== '' ? $hotelRaw : 'Online Direct';
+            $pickupZone = '';
+            $pickupTime = '07:45';
+            if ($hotelRaw !== '') {
+                $hSt = $pdo->prepare('SELECT zone_label_en, pickup_window FROM hotels_directory WHERE LOWER(name_en) LIKE LOWER(?) LIMIT 1');
+                $hSt->execute(['%' . $hotelRaw . '%']);
+                $hRow = $hSt->fetch();
+                if ($hRow) {
+                    $pickupZone = (string) ($hRow['zone_label_en'] ?? '');
+                    if (!empty($hRow['pickup_window'])) {
+                        $pickupTime = (string) $hRow['pickup_window'];
+                    }
+                }
+            }
 
             $commInfo = [
                 'seller_username'   => '',
-                'rep_scope'         => 'ONLINE_WEBSITE',
+                'rep_scope'         => 'WEBSITE',
                 'branch_code'       => 'WEBSITE',
                 'commission_type'   => 'NONE',
                 'commission_egp'    => 0.0,
@@ -699,60 +732,112 @@ function sc_erp_ingest_website_lead(array $lead): void
                 ]);
             }
 
+            $tripTitle = substr((string) (($lead['interest'] ?? '') !== '' ? $lead['interest'] : ($mTrip['unified_name_en'] ?? 'Website Booking')), 0, 120);
+            $uniCode   = $mTrip ? (string) $mTrip['trip_code'] : $firstSku;
+            $prodCat   = $mTrip ? (string) $mTrip['category_code'] : 'WEBSITE_DIRECT_BOOKING';
+            $wfStage   = $seller ? 'AWAITING_SELLER_CONFIRM' : 'CONFIRMED_OPS';
+            $boardStat = $seller ? 'BOOKED' : 'CONFIRMED';
+
             $vStmt = $pdo->prepare(
                 'INSERT OR REPLACE INTO reservations_fact
                  (voucher_no, qr_token, trip_date, period_week, period_month, period_quarter, period_year,
                   branch_code, channel, hotel_name, pickup_zone, room_no, nationality, pickup_time,
-                  trip_name, product_category, adults, children, infants, total_pax,
-                  snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names,
+                  trip_name, unified_trip_code, product_category, adults, children, infants, total_pax,
+                  snork_pax, intro1_pax, intro2_pax, dives_pax, divers_names, guest_phone, guest_email,
                   sales_rep, executor, client_agency, rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
-                  estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
+                  estimated_revenue_egp, supplier_cost_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
                   boarding_status, payment_status, source_file,
                   seller_type, seller_username, seller_commission_egp, commission_type, commission_status,
-                  booked_adults, booked_children, booked_infants, booked_total_egp, workflow_stage)
-                 VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?, 0,0,0,?,?, ?,?,?, 0,0,?,0,?, ?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?,?)'
+                  online_hub_source, online_seller_account,
+                  booked_adults, booked_children, booked_infants, booked_total_egp, list_total_egp, workflow_stage)
+                 VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, 0,0,0,?,?,?,?, ?,?,?, 0,0,?,0,?, ?,?,?,?,?, ?,?,?, ?,?,?,?,?, ?,?, ?,?,?,?,?,?)'
             );
-            $wfStage = $seller ? 'AWAITING_SELLER_CONFIRM' : 'CONFIRMED_OPS';
             $vStmt->execute([
                 $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
                 $seller ? (string) ($seller['branch_scope'] ?: 'WEBSITE') : 'WEBSITE',
                 'WEBSITE_ONLINE',
-                (string) ($lead['hotel'] ?? 'Online Direct'),
-                '',
+                $hotelName,
+                $pickupZone,
                 '',
                 strtoupper((string) ($lead['lang'] ?? 'EN')),
-                '07:45',
-                substr((string) ($lead['interest'] ?? 'Website Booking'), 0, 120),
-                'WEBSITE_DIRECT_BOOKING',
+                $pickupTime,
+                $tripTitle,
+                $uniCode,
+                $prodCat,
                 $people, 0, 0, $people,
-                $people, (string) ($lead['name'] ?? ''),
-                $seller ? (string) $seller['rep_scope'] : 'ONLINE_WEBSITE',
+                $people,
+                (string) ($lead['name'] ?? ''),
+                (string) ($lead['phone'] ?? ''),
+                (string) ($lead['email'] ?? ''),
+                $seller ? (string) $seller['rep_scope'] : 'WEBSITE',
                 'SEA COLLEGE',
-                'WEBSITE_DIRECT',
+                $seller ? 'WEBSITE_QR_REFERRAL' : $onlineHub,
                 $effectiveEur, $revEgp,
-                $revEgp, $cogsEgp, $profEgp,
-                '', 'BOOKED', 'OPEN_REST', 'LIVE_WEBSITE_FORM',
+                $revEgp, $cogsEgp, $cogsEgp, $profEgp, '',
+                $boardStat, 'OPEN_REST', 'LIVE_WEBSITE_FORM',
                 $sellerType,
                 $commInfo['seller_username'],
                 $commInfo['commission_egp'],
                 $commInfo['commission_type'],
                 $commInfo['commission_status'],
-                $people, 0, 0, $revEgp, $wfStage,
+                $onlineHub,
+                $onlineAcc,
+                $people, 0, 0, $revEgp, $revEgp, $wfStage,
             ]);
 
-            if ($seller && function_exists('sc_erp_push_notification')) {
+            $pdo->prepare('UPDATE website_leads_crm SET rest_due_egp = ? WHERE event_id = ?')->execute([$revEgp, $eventId]);
+
+            // Auto-provision Verified Real-Customer Account for confirmed website bookings!
+            if (!$seller && function_exists('sc_erp_provision_verified_guest_account')) {
+                try {
+                    sc_erp_provision_verified_guest_account($pdo, [
+                        'voucher_no'      => $voNo,
+                        'guest_name'      => (string) ($lead['name'] ?? ''),
+                        'guest_phone'     => (string) ($lead['phone'] ?? ''),
+                        'guest_email'     => (string) ($lead['email'] ?? ''),
+                        'nationality'     => strtoupper((string) ($lead['lang'] ?? 'EN')),
+                        'lang'            => (string) ($lead['lang'] ?? 'en'),
+                        'hotel_name'      => $hotelName,
+                        'room_no'         => '',
+                        'seller_username' => 'website.online',
+                        'trip_name'       => $tripTitle,
+                        'trip_date'       => $tripDt,
+                        'booked_egp'      => $revEgp,
+                        'paid_egp'        => 0.0,
+                    ]);
+                } catch (Throwable $ge) {
+                    error_log('SC_ERP website guest account warning: ' . $ge->getMessage());
+                }
+            }
+
+            if (function_exists('sc_erp_push_notification')) {
                 $gName = (string) ($lead['name'] ?? 'Guest');
-                $tItem = substr((string) ($lead['interest'] ?? 'Trip'), 0, 80);
-                sc_erp_push_notification(
-                    $pdo,
-                    $sellerUser,
-                    'NEW_LINK_BOOKING',
-                    $voNo,
-                    "🎉 New Booking via Your QR/Link ({$voNo})",
-                    "🎉 حجز جديد عبر رابطك / الكود الخاص بك ({$voNo})",
-                    "{$gName} ({$people} PAX) booked {$tItem} for {$tripDt}. Tap to confirm & send to Reservations!",
-                    "العميل {$gName} ({$people} أفراد) حجز {$tItem} بتاريخ {$tripDt}. اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
-                );
+                $tItem = substr($tripTitle, 0, 80);
+                if ($seller) {
+                    sc_erp_push_notification(
+                        $pdo,
+                        $sellerUser,
+                        'NEW_LINK_BOOKING',
+                        $voNo,
+                        "🎉 New Booking via Your QR/Link ({$voNo})",
+                        "🎉 حجز جديد عبر رابطك / الكود الخاص بك ({$voNo})",
+                        "{$gName} ({$people} PAX) booked {$tItem} for {$tripDt}. Tap to confirm & send to Reservations!",
+                        "العميل {$gName} ({$people} أفراد) حجز {$tItem} بتاريخ {$tripDt}. اضغط للتأكيد وإرسال الحجز لقسم الحجوزات!"
+                    );
+                } else {
+                    foreach (['islam.samir', 'eng.sayed', 'lara.care', 'ahmed.nasr', 'nadia.acc', 'website.online'] as $onlRcp) {
+                        sc_erp_push_notification(
+                            $pdo,
+                            $onlRcp,
+                            'WEBSITE_BOOKING_REGISTERED',
+                            $voNo,
+                            "🌐 Confirmed Website Booking ({$voNo} — €" . number_format($effectiveEur, 0) . ")",
+                            "🌐 حجز جديد مؤكد من الموقع ({$voNo} — " . number_format($revEgp) . " ج.م)",
+                            "{$gName} ({$people} PAX) booked {$tItem} on {$tripDt} ({$onlineHub}) — registered under Seller WEBSITE.",
+                            "العميل {$gName} ({$people} أفراد) حجز {$tItem} بتاريخ {$tripDt} — تم تسجيله تلقائياً تحت حساب بائع الموقع والأونلاين الموحد."
+                        );
+                    }
+                }
             }
         }
     } catch (Throwable $e) {
@@ -770,11 +855,13 @@ function sc_erp_ingest_diver_checkin(array $row, array $attr = []): void
         if (!$pdo) {
             return;
         }
-        $cid       = (string) ($row['checkin_id'] ?? ('ci_' . bin2hex(random_bytes(6))));
-        $rawSeller = (string) ($row['seller_username'] ?? $row['seller'] ?? $attr['seller'] ?? $attr['rep'] ?? '');
-        $seller    = sc_erp_resolve_seller($pdo, $rawSeller);
+        $cid        = (string) ($row['checkin_id'] ?? ('ci_' . bin2hex(random_bytes(6))));
+        $rawSeller  = (string) ($row['seller_username'] ?? $row['seller'] ?? $attr['seller'] ?? $attr['rep'] ?? '');
+        $seller     = sc_erp_resolve_seller($pdo, $rawSeller);
         $sellerUser = $seller ? (string) $seller['username'] : '';
-        $sellerRep  = $seller ? (string) $seller['rep_scope'] : '';
+        $sellerRep  = $seller ? (string) $seller['rep_scope'] : 'WEBSITE';
+        $onlineHub  = function_exists('sc_erp_detect_online_hub') ? sc_erp_detect_online_hub($attr) : 'WEBSITE_DIRECT';
+        $onlineAcc  = $seller ? '' : 'website.online';
 
         $gear = [
             'wetsuit' => $row['wetsuit_size'] ?? '',
@@ -792,8 +879,8 @@ function sc_erp_ingest_diver_checkin(array $row, array $attr = []): void
              (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
               people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
               status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
-              seller_username, sales_rep_code)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,?,?,?,?,?,?,?,?,?)'
+              seller_username, sales_rep_code, online_hub_source, online_seller_account)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,?,?,?,?,?,?,?,?,?,?,?)'
         );
         $stmt->execute([
             $cid,
@@ -819,6 +906,8 @@ function sc_erp_ingest_diver_checkin(array $row, array $attr = []): void
             (string) ($row['lead_event_id'] ?? ''),
             $sellerUser,
             $sellerRep,
+            $onlineHub,
+            $onlineAcc,
         ]);
     } catch (Throwable $e) {
         error_log('SC_ERP checkin sync warning: ' . $e->getMessage());
@@ -838,15 +927,17 @@ function sc_erp_ingest_wa_beacon(array $row): void
         $rawSeller  = (string) ($row['seller_username'] ?? $row['seller'] ?? $row['rep'] ?? '');
         $seller     = sc_erp_resolve_seller($pdo, $rawSeller);
         $sellerUser = $seller ? (string) $seller['username'] : '';
-        $sellerRep  = $seller ? (string) $seller['rep_scope'] : '';
+        $sellerRep  = $seller ? (string) $seller['rep_scope'] : 'WEBSITE';
+        $onlineHub  = 'WHATSAPP_ONLINE';
+        $onlineAcc  = $seller ? '' : 'website.online';
 
         $stmt = $pdo->prepare(
             'INSERT OR IGNORE INTO website_leads_crm
              (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
               people, trip_date, hotel, room_no, cert_level, gear_sizes_json, estimated_eur, final_paid_eur,
               status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
-              seller_username, sales_rep_code)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?)'
+              seller_username, sales_rep_code, online_hub_source, online_seller_account)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?,?,?,?,?)'
         );
         $stmt->execute([
             (string) ($row['event_id'] ?? ('wa_' . bin2hex(random_bytes(6)))),
@@ -873,6 +964,8 @@ function sc_erp_ingest_wa_beacon(array $row): void
             '',
             $sellerUser,
             $sellerRep,
+            $onlineHub,
+            $onlineAcc,
         ]);
     } catch (Throwable $e) {
         error_log('SC_ERP WA beacon sync warning: ' . $e->getMessage());

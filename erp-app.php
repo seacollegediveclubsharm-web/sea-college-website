@@ -1358,6 +1358,134 @@ $csrf = csrf_token();
   </div>
 </div>
 
+<!-- v3.7 Unified Website & All Online Hubs Confirmed Sale Modal -->
+<div id="onlineSaleModal" class="modal-backdrop">
+  <div class="card" style="width:100%;max-width:640px;max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <h3 style="font-size:16px;" id="osmTitle">🌐 Register Confirmed Online Sale (Seller: WEBSITE)</h3>
+      <button type="button" class="btn" onclick="document.getElementById('onlineSaleModal').style.display='none'">✕</button>
+    </div>
+    <p style="font-size:11.5px;color:#93c5fd;margin-bottom:11px;padding:7px 10px;border-radius:9px;background:rgba(0,210,255,0.09);border:1px solid rgba(0,210,255,0.3);">
+      🌐 <b>Unified Online Seller (`@website.online` / `WEBSITE`):</b> All confirmed bookings from Website, WhatsApp, Instagram/Facebook, Google Ads, Tripadvisor, Viator &amp; GetYourGuide are registered under one Online Seller (0% rep commission — 100% Company Direct + auto VIP Guest Account).
+    </p>
+    <form onsubmit="submitOnlineSaleForm(event)" class="grid grid-2" style="gap:9px;">
+      <input type="hidden" id="osmEventId" value="">
+      <input type="hidden" id="osmVoucherNo" value="">
+
+      <div>
+        <label>🌐 Originating Online Hub / المنصة الأونلاين *</label>
+        <select id="osmHub">
+          <option value="WEBSITE_DIRECT">🌐 Official Website Direct (seacollegediveclub.com)</option>
+          <option value="WHATSAPP_ONLINE">💬 WhatsApp Online Concierge (+201114567886)</option>
+          <option value="META_INSTAGRAM_FB">📱 Instagram &amp; Facebook Inbox / Meta Ads</option>
+          <option value="GOOGLE_ADS">🔍 Google Search, Ads &amp; Google Maps</option>
+          <option value="TRIPADVISOR">🦉 Tripadvisor</option>
+          <option value="VIATOR">🧭 Viator</option>
+          <option value="GETYOURGUIDE">🎟️ GetYourGuide</option>
+          <option value="TIKTOK_YOUTUBE">🎬 TikTok &amp; YouTube</option>
+          <option value="KLOOK_OTA">🌍 Klook / Booking.com / Other OTA Hub</option>
+          <option value="EMAIL_CONCIERGE">✉️ Direct Email Concierge</option>
+        </select>
+      </div>
+      <div>
+        <label>📅 Trip Date / تاريخ الرحلة *</label>
+        <input type="date" id="osmDate" required value="<?= gmdate('Y-m-d') ?>">
+      </div>
+
+      <div>
+        <label>👤 Guest Full Name / اسم العميل *</label>
+        <input type="text" id="osmGuestName" required placeholder="e.g. Elena Conti">
+      </div>
+      <div>
+        <label>📞 Phone / WhatsApp</label>
+        <input type="text" id="osmPhone" placeholder="+39 347 123 4567">
+      </div>
+
+      <div>
+        <label>✉️ Guest Email (Optional — Auto-Sends VIP Login!)</label>
+        <input type="email" id="osmEmail" placeholder="guest@example.com">
+      </div>
+      <div>
+        <label>🌍 Language / اللغة</label>
+        <select id="osmLang">
+          <option value="en">🇬🇧 English (en)</option>
+          <option value="ru">🇷🇺 Русский (ru)</option>
+          <option value="it">🇮🇹 Italiano (it)</option>
+          <option value="de">🇩🇪 Deutsch (de)</option>
+          <option value="pl">🇵🇱 Polski (pl)</option>
+          <option value="fr">🇫🇷 Français (fr)</option>
+          <option value="ar">🇪🇬 العربية (ar)</option>
+          <option value="zh">🇨🇳 中文 (zh)</option>
+        </select>
+      </div>
+
+      <div>
+        <label>🤿 Select Catalog Trip / اختر الرحلة من الكتالوج</label>
+        <select id="osmProdSelect" onchange="onOnlineSaleCatalogChange()"></select>
+      </div>
+      <div>
+        <label>✏️ Trip Title (or Custom Online Package)</label>
+        <input type="text" id="osmTripName" required placeholder="Ras Mohammed & White Island Boat Trip">
+      </div>
+
+      <div>
+        <label>👥 PAX (Adults / Children / Infants)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          <input type="number" id="osmAdults" min="1" value="2" oninput="recalcOnlineSalePreview()" title="Adults">
+          <input type="number" id="osmChildren" min="0" value="0" oninput="recalcOnlineSalePreview()" title="Children">
+          <input type="number" id="osmInfants" min="0" value="0" oninput="recalcOnlineSalePreview()" title="Infants">
+        </div>
+      </div>
+      <div>
+        <label>🏨 Sharm Hotel &amp; Room #</label>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;">
+          <input type="text" id="osmHotel" list="osmHotelsDatalist" placeholder="Cyrene Sharm / Savoy / Online Direct">
+          <input type="text" id="osmRoom" placeholder="Rm 205">
+        </div>
+        <datalist id="osmHotelsDatalist"></datalist>
+      </div>
+
+      <div>
+        <label>💶 Total Confirmed Sale Price *</label>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;">
+          <input type="number" step="0.01" min="0" id="osmTotalAmt" required value="90" oninput="if(document.getElementById('osmFullPaidChk').checked){document.getElementById('osmPaidAmt').value=this.value;}recalcOnlineSalePreview();">
+          <select id="osmCurr" onchange="document.getElementById('osmPaidCurr').value=this.value;recalcOnlineSalePreview();">
+            <option value="EUR">EUR (€)</option>
+            <option value="USD">USD ($)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="EGP">EGP</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>💳 Paid Online / Deposit Received</label>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;">
+          <input type="number" step="0.01" min="0" id="osmPaidAmt" value="90" oninput="recalcOnlineSalePreview()">
+          <select id="osmPaidCurr" onchange="recalcOnlineSalePreview()">
+            <option value="EUR">EUR (€)</option>
+            <option value="USD">USD ($)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="EGP">EGP</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 11px;border-radius:10px;background:rgba(16,185,129,0.11);border:1px solid rgba(16,185,129,0.38);">
+        <label style="margin:0;display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:#6ee7b7;font-weight:800;">
+          <input type="checkbox" id="osmFullPaidChk" checked style="width:auto;" onchange="if(this.checked){document.getElementById('osmPaidCurr').value=document.getElementById('osmCurr').value;document.getElementById('osmPaidAmt').value=document.getElementById('osmTotalAmt').value;}recalcOnlineSalePreview();">
+          💯 Paid 100% Online (0 REST Remaining) / مدفوع بالكامل أونلاين
+        </label>
+        <span id="osmRestPreview" style="font-size:12px;font-weight:800;color:#fde68a;"></span>
+      </div>
+
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" class="btn" onclick="document.getElementById('onlineSaleModal').style.display='none'">Cancel</button>
+        <button type="submit" class="btn btn-emerald" style="padding:10px 20px;font-weight:900;">✅ Confirm &amp; Register Under Seller WEBSITE</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <nav id="mobileBottomNav" class="bottom-dock"></nav>
 
 <div id="toast" class="toast"></div>
@@ -1392,6 +1520,10 @@ let STATE = {
   dossierTargetCode: '',
   dossierLineFilter: 'ALL',
   prevTabBeforeDossier: '',
+  onlineSalesHub: null,
+  onlineHubMonth: 'ALL',
+  onlineHubFilter: 'ALL',
+  onlineSubView: 'all',
   fbkSafariSpec: {},
   pnlViewMode: 'consolidated',
   bankViewMode: 'all3',
@@ -1801,6 +1933,9 @@ async function loadUserData() {
   if (hasPerm('crm.manage_leads_ads', 'bi.view_executive')) {
     jobs.push(apiGet({ action: 'marketing_guest_accounts', filter: STATE.guestCrmFilter || 'all' }).then((r) => { if (r && r.ok) STATE.guestCrm = r; }));
   }
+  if (hasPerm('crm.manage_leads_ads', 'bi.view_executive', 'gl.view_all_ledgers') && !isSalesRepUser()) {
+    jobs.push(apiGet({ action: 'online_sales_hub', month: STATE.onlineHubMonth || 'ALL', hub: STATE.onlineHubFilter || 'ALL' }).then((r) => { if (r && r.ok) STATE.onlineSalesHub = r; }));
+  }
   await Promise.all(jobs);
   syncNotifBadge();
   await renderApp();
@@ -1911,7 +2046,19 @@ function buildTabsForUser() {
     ];
   }
   const isSalesRepPrimary = isSalesRepUser();
+  const isOnlineSellerPrimary = Boolean(STATE.user && String(STATE.user.role_code || '').toUpperCase() === 'ONLINE_SELLER');
   const inbBadgeTxt = STATE.unreadInbox > 0 ? ` (${STATE.unreadInbox})` : '';
+
+  if (isOnlineSellerPrimary) {
+    return [
+      { id: 'website_crm', ico: '🌐', short: ar ? 'مبيعات الأونلاين' : 'Online Hub', label: ar ? '🌐 مبيعات الموقع ومنصات الأونلاين الموحدة' : '🌐 Website & All Online Hubs Seller' },
+      { id: 'vouchers_ops', ico: '🎫', short: ar ? 'حجوزات الأونلاين' : 'Bookings', label: ar ? '🎫 حجوزات الموقع والأونلاين والتشغيل' : '🎫 Online Bookings & Dispatch' },
+      { id: 'seller_pitch', ico: '⚡', short: ar ? 'كتالوج الرحلات' : 'Catalog', label: ar ? '⚡ كتالوج الرحلات والحجز السريع' : '⚡ Trips Catalog & Fast Book' },
+      { id: 'seller_wallet', ico: '💰', short: ar ? 'روابط وإحصائيات' : 'Links & KPIs', label: ar ? '💰 روابط الـ 8 لغات وإجمالي الأونلاين' : '💰 8-Lang Links & Online KPIs' },
+      { id: 'company_inbox', ico: '📨', short: ar ? 'الرسائل' : 'Inbox', badge: STATE.unreadInbox, label: (ar ? '📨 رسائل الإدارة' : '📨 Company Inbox') + inbBadgeTxt },
+      { id: 'my_profile', ico: '👤', short: ar ? 'الحساب' : 'Profile', label: ar ? '👤 حساب الأونلاين الموحد' : '👤 Unified Online Profile' }
+    ];
+  }
 
   if (isSalesRepPrimary) {
     return [
@@ -1928,6 +2075,9 @@ function buildTabsForUser() {
     tabs.push({ id: 'exec_bi', ico: '📊', short: 'Owner BI', label: ar ? '📊 لوحة الملاك وأداء المناديب' : '📊 Owner BI & Seller Awards' });
   }
   tabs.push({ id: 'company_inbox', ico: '📨', short: ar ? 'الرسائل' : 'Inbox', badge: STATE.unreadInbox, label: (ar ? '📨 صندوق الرسائل وإعلانات الإدارة' : '📨 Company Inbox & Broadcasts') + inbBadgeTxt });
+  if (hasPerm('crm.manage_leads_ads', 'bi.view_executive', 'gl.view_all_ledgers', 'ops.assign_boat_driver')) {
+    tabs.push({ id: 'website_crm', ico: '🌐', short: ar ? 'أونلاين والموقع' : 'Online Hub', label: ar ? '🌐 مبيعات الموقع والأونلاين الموحدة (WEBSITE)' : '🌐 Website & All Online Hubs Seller' });
+  }
   if (hasPerm('bi.view_executive', 'gl.view_all_ledgers')) {
     tabs.push({ id: 'monthly_reports', ico: '📑', short: 'Monthly', label: ar ? '📑 التقارير الشهرية الختامية (Monthly)' : '📑 Monthly Reports Pack' });
   }
@@ -1968,9 +2118,6 @@ function buildTabsForUser() {
   }
   if (hasPerm('crm.manage_leads_ads', 'bi.view_executive')) {
     tabs.push({ id: 'guest_crm_vault', ico: '🎯', short: ar ? 'عملاء فعليون' : 'Real Guests', label: ar ? '🎯 حسابات وإيميلات العملاء الفعليين (Marketing)' : '🎯 Real Guests Accounts & Marketing CRM' });
-  }
-  if (hasPerm('crm.manage_leads_ads')) {
-    tabs.push({ id: 'website_crm', ico: '🌐', short: 'CRM', label: ar ? '🌐 حجوزات الموقع والواتساب والإعلانات' : '🌐 Website Leads, Check-In & Ads CRM' });
   }
   if (hasPerm('bi.view_executive')) {
     tabs.push({ id: 'team_profiles', ico: '👥', short: 'Team', label: ar ? '👥 ملفات فريق العمل (34)' : '👥 Team Profiles & Directory' });
@@ -2287,7 +2434,19 @@ function renderApp() {
   } else if (STATE.activeTab === 'gear_assets') {
     box.innerHTML = renderGearAssets(ar);
   } else if (STATE.activeTab === 'website_crm') {
+    if (STATE.onlineSalesHub) {
+      box.innerHTML = renderWebsiteCrm(ar);
+      return;
+    }
     box.innerHTML = renderWebsiteCrm(ar);
+    return apiGet({ action: 'online_sales_hub', month: STATE.onlineHubMonth || 'ALL', hub: STATE.onlineHubFilter || 'ALL' }).then((res) => {
+      if (res && res.ok) {
+        STATE.onlineSalesHub = res;
+        if (STATE.activeTab === 'website_crm') {
+          box.innerHTML = renderWebsiteCrm(STATE.lang === 'ar');
+        }
+      }
+    });
   }
 }
 
@@ -3986,33 +4145,435 @@ function renderGearAssets(ar) {
   `;
 }
 
+async function reloadOnlineSalesHub(month = null, hub = null) {
+  if (month !== null) STATE.onlineHubMonth = month;
+  if (hub !== null) STATE.onlineHubFilter = hub;
+  const res = await apiGet({
+    action: 'online_sales_hub',
+    month: STATE.onlineHubMonth || 'ALL',
+    hub: STATE.onlineHubFilter || 'ALL'
+  });
+  if (res && res.ok) {
+    STATE.onlineSalesHub = res;
+  }
+  renderApp();
+}
+
+function populateOnlineSaleModalLists() {
+  const ws = STATE.ws || {};
+  const catalog = ws.catalog || [];
+  const hotels = ws.hotels || [];
+  const prodSel = document.getElementById('osmProdSelect');
+  if (prodSel) {
+    prodSel.innerHTML = `<option value="">— Custom / Select Catalog Trip —</option>`
+      + catalog.map((c) => `<option value="${esc(c.code)}" data-eur="${Number(c.price_eur || 0)}" data-name="${esc(c.name_en)}">${esc(c.name_en)} (€${fmt(c.price_eur, 0)})</option>`).join('');
+  }
+  const hDl = document.getElementById('osmHotelsDatalist');
+  if (hDl) {
+    hDl.innerHTML = `<option value="Online Direct"></option>`
+      + hotels.map((h) => `<option value="${esc(h.name_en)}"></option>`).join('');
+  }
+}
+
+function onOnlineSaleCatalogChange() {
+  const sel = document.getElementById('osmProdSelect');
+  if (!sel) return;
+  const opt = sel.selectedOptions && sel.selectedOptions[0];
+  if (!opt || !opt.value) return;
+  const nm = opt.getAttribute('data-name') || '';
+  const unitEur = Number(opt.getAttribute('data-eur') || 0);
+  if (nm) document.getElementById('osmTripName').value = nm;
+  if (unitEur > 0) {
+    const adl = Math.max(1, Number(document.getElementById('osmAdults').value || 1));
+    const chd = Math.max(0, Number(document.getElementById('osmChildren').value || 0));
+    const totEur = Math.round((adl * unitEur + chd * unitEur * 0.5) * 100) / 100;
+    document.getElementById('osmCurr').value = 'EUR';
+    document.getElementById('osmTotalAmt').value = String(totEur);
+    if (document.getElementById('osmFullPaidChk').checked) {
+      document.getElementById('osmPaidCurr').value = 'EUR';
+      document.getElementById('osmPaidAmt').value = String(totEur);
+    }
+    recalcOnlineSalePreview();
+  }
+}
+
+function recalcOnlineSalePreview() {
+  const hub = STATE.onlineSalesHub || {};
+  const fx = hub.fx_rates || { EUR: 57, USD: 50, GBP: 65, EGP: 1 };
+  const totAmt = Math.max(0, Number(document.getElementById('osmTotalAmt').value || 0));
+  const totCurr = document.getElementById('osmCurr').value || 'EUR';
+  const paidAmt = Math.max(0, Number(document.getElementById('osmPaidAmt').value || 0));
+  const paidCurr = document.getElementById('osmPaidCurr').value || totCurr;
+  const totEgp = Math.round(totAmt * Number(fx[totCurr] || 57));
+  const paidEgp = Math.min(totEgp, Math.round(paidAmt * Number(fx[paidCurr] || 57)));
+  const restEgp = Math.max(0, totEgp - paidEgp);
+  const restEur = Math.round((restEgp / Number(fx.EUR || 57)) * 10) / 10;
+  const prv = document.getElementById('osmRestPreview');
+  if (prv) {
+    prv.innerHTML = restEgp <= 1
+      ? `✅ Total: ${fmt(totEgp)} EGP • Paid in Full (0 REST)`
+      : `⚡ Total: ${fmt(totEgp)} EGP • Paid: ${fmt(paidEgp)} EGP • Open REST: €${fmt(restEur, 1)} (${fmt(restEgp)} EGP)`;
+  }
+}
+
+function openOnlineSaleModal(presetHub = 'WEBSITE_DIRECT') {
+  populateOnlineSaleModalLists();
+  const ar = STATE.lang === 'ar';
+  document.getElementById('osmTitle').textContent = ar
+    ? '🌐 تسجيل بيعة أونلاين مؤكدة تحت البائع الموحد (WEBSITE)'
+    : '🌐 Register Confirmed Online Hub Sale (Seller: WEBSITE)';
+  document.getElementById('osmEventId').value = '';
+  document.getElementById('osmVoucherNo').value = '';
+  document.getElementById('osmHub').value = presetHub || 'WEBSITE_DIRECT';
+  document.getElementById('osmDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('osmGuestName').value = '';
+  document.getElementById('osmPhone').value = '';
+  document.getElementById('osmEmail').value = '';
+  document.getElementById('osmLang').value = 'en';
+  document.getElementById('osmProdSelect').value = '';
+  document.getElementById('osmTripName').value = 'Ras Mohammed & White Island Boat Trip';
+  document.getElementById('osmAdults').value = '2';
+  document.getElementById('osmChildren').value = '0';
+  document.getElementById('osmInfants').value = '0';
+  document.getElementById('osmHotel').value = 'Online Direct';
+  document.getElementById('osmRoom').value = '';
+  document.getElementById('osmCurr').value = 'EUR';
+  document.getElementById('osmTotalAmt').value = '90';
+  document.getElementById('osmPaidCurr').value = 'EUR';
+  document.getElementById('osmPaidAmt').value = '90';
+  document.getElementById('osmFullPaidChk').checked = true;
+  recalcOnlineSalePreview();
+  document.getElementById('onlineSaleModal').style.display = 'flex';
+}
+
+function openConfirmLeadByEventId(evId) {
+  const hubData = STATE.onlineSalesHub || {};
+  const leads = hubData.website_leads || (STATE.ws && STATE.ws.crm_leads) || [];
+  const lead = leads.find((x) => String(x.event_id || '') === String(evId || ''));
+  if (!lead) {
+    openOnlineSaleModal('WEBSITE_DIRECT');
+    return;
+  }
+  populateOnlineSaleModalLists();
+  const ar = STATE.lang === 'ar';
+  document.getElementById('osmTitle').textContent = ar
+    ? `✅ تأكيد حجز / طلب الموقع كبيعة ناجحة (${lead.linked_voucher_no || lead.event_id})`
+    : `✅ Confirm Website / Online Lead as Success Sale (${lead.linked_voucher_no || lead.event_id})`;
+  document.getElementById('osmEventId').value = String(lead.event_id || '');
+  document.getElementById('osmVoucherNo').value = String(lead.linked_voucher_no || '');
+  document.getElementById('osmHub').value = String(lead.online_hub_code || lead.online_hub_source || 'WEBSITE_DIRECT');
+  document.getElementById('osmDate').value = /^\d{4}-\d{2}-\d{2}$/.test(String(lead.trip_date || '')) ? lead.trip_date : new Date().toISOString().slice(0, 10);
+  const rawGuest = String(lead.guest_name || '');
+  document.getElementById('osmGuestName').value = rawGuest.startsWith('WhatsApp Visitor') ? '' : rawGuest;
+  document.getElementById('osmPhone').value = String(lead.phone || '');
+  document.getElementById('osmEmail').value = String(lead.email || '');
+  document.getElementById('osmLang').value = String(lead.lang || 'en').toLowerCase();
+  document.getElementById('osmProdSelect').value = '';
+  document.getElementById('osmTripName').value = String(lead.interest_items || 'Website Booking');
+  const pCnt = Math.max(1, Number(lead.adults || lead.people || 1));
+  document.getElementById('osmAdults').value = String(pCnt);
+  document.getElementById('osmChildren').value = String(lead.children || 0);
+  document.getElementById('osmInfants').value = String(lead.infants || 0);
+  document.getElementById('osmHotel').value = String(lead.hotel || 'Online Direct');
+  document.getElementById('osmRoom').value = String(lead.room_no || '');
+  const estEur = Number(lead.estimated_eur || 0) > 0 ? Number(lead.estimated_eur) : (45 * pCnt);
+  document.getElementById('osmCurr').value = 'EUR';
+  document.getElementById('osmTotalAmt').value = String(estEur);
+  document.getElementById('osmPaidCurr').value = 'EUR';
+  document.getElementById('osmPaidAmt').value = String(estEur);
+  document.getElementById('osmFullPaidChk').checked = true;
+  recalcOnlineSalePreview();
+  document.getElementById('onlineSaleModal').style.display = 'flex';
+}
+
+function openUpdateOnlineVoucherModal(voNo) {
+  const hubData = STATE.onlineSalesHub || {};
+  const row = (hubData.confirmed_sales || []).find((x) => String(x.voucher_no || '') === String(voNo || ''));
+  if (!row) return;
+  populateOnlineSaleModalLists();
+  const ar = STATE.lang === 'ar';
+  document.getElementById('osmTitle').textContent = ar
+    ? `✏️ تحديث وتحصل بيعة الأونلاين (${row.voucher_no})`
+    : `✏️ Update Online Sale & Payment (${row.voucher_no})`;
+  document.getElementById('osmEventId').value = '';
+  document.getElementById('osmVoucherNo').value = String(row.voucher_no || '');
+  document.getElementById('osmHub').value = String(row.online_hub_code || row.online_hub_source || 'WEBSITE_DIRECT');
+  document.getElementById('osmDate').value = String(row.trip_date || new Date().toISOString().slice(0, 10));
+  document.getElementById('osmGuestName').value = String(row.guest_name || row.divers_names || '');
+  document.getElementById('osmPhone').value = String(row.guest_phone || '');
+  document.getElementById('osmEmail').value = String(row.guest_email || '');
+  document.getElementById('osmLang').value = 'en';
+  document.getElementById('osmProdSelect').value = String(row.unified_trip_code || '');
+  document.getElementById('osmTripName').value = String(row.trip_name || '');
+  document.getElementById('osmAdults').value = String(Math.max(1, Number(row.adults || row.total_pax || 1)));
+  document.getElementById('osmChildren').value = String(Number(row.children || 0));
+  document.getElementById('osmInfants').value = String(Number(row.infants || 0));
+  document.getElementById('osmHotel').value = String(row.hotel_name || 'Online Direct');
+  document.getElementById('osmRoom').value = String(row.room_no || '');
+  document.getElementById('osmCurr').value = 'EGP';
+  document.getElementById('osmTotalAmt').value = String(Math.round(Number(row.gross_egp || 0)));
+  document.getElementById('osmPaidCurr').value = 'EGP';
+  document.getElementById('osmPaidAmt').value = String(Math.round(Number(row.gross_egp || 0)));
+  document.getElementById('osmFullPaidChk').checked = true;
+  recalcOnlineSalePreview();
+  document.getElementById('onlineSaleModal').style.display = 'flex';
+}
+
+async function submitOnlineSaleForm(e) {
+  e.preventDefault();
+  const evId = document.getElementById('osmEventId').value.trim();
+  const voNo = document.getElementById('osmVoucherNo').value.trim();
+  const payload = {
+    action: evId ? 'confirm_website_lead_sale' : 'register_online_hub_sale',
+    event_id: evId,
+    voucher_no: voNo,
+    online_hub_source: document.getElementById('osmHub').value,
+    trip_date: document.getElementById('osmDate').value,
+    guest_name: document.getElementById('osmGuestName').value.trim(),
+    guest_phone: document.getElementById('osmPhone').value.trim(),
+    guest_email: document.getElementById('osmEmail').value.trim(),
+    lang: document.getElementById('osmLang').value,
+    product_code: document.getElementById('osmProdSelect').value,
+    trip_name: document.getElementById('osmTripName').value.trim(),
+    adults: Number(document.getElementById('osmAdults').value || 1),
+    children: Number(document.getElementById('osmChildren').value || 0),
+    infants: Number(document.getElementById('osmInfants').value || 0),
+    hotel_name: document.getElementById('osmHotel').value.trim(),
+    room_no: document.getElementById('osmRoom').value.trim(),
+    currency: document.getElementById('osmCurr').value,
+    total_amount: Number(document.getElementById('osmTotalAmt').value || 0),
+    paid_currency: document.getElementById('osmPaidCurr').value,
+    paid_amount: Number(document.getElementById('osmPaidAmt').value || 0),
+    mark_fully_paid: document.getElementById('osmFullPaidChk').checked ? 1 : 0
+  };
+  const res = await apiPost(payload);
+  if (!res || !res.ok) {
+    alert((res && res.error) || 'Failed to register online sale');
+    return;
+  }
+  document.getElementById('onlineSaleModal').style.display = 'none';
+  STATE.accountsDir = null;
+  STATE.activeDossier = null;
+  showToast(`🌐 Confirmed Online Sale ${res.voucher_no} (${fmt(res.gross_egp)} EGP) registered under Seller WEBSITE!`);
+  await loadUserData();
+}
+
 function renderWebsiteCrm(ar) {
-  const leads = (STATE.ws && STATE.ws.crm_leads) || [];
+  const hubData = STATE.onlineSalesHub;
+  const fallbackLeads = (STATE.ws && STATE.ws.crm_leads) || [];
+  const k = (hubData && hubData.kpis) || {
+    confirmed_vouchers_count: 0,
+    historical_online_count: 0,
+    live_confirmed_count: 0,
+    total_pax: 0,
+    gross_revenue_egp: 0,
+    gross_revenue_eur_equiv: 0,
+    collected_paid_egp: 0,
+    open_rest_egp: 0,
+    net_company_margin_egp: 0,
+    pending_leads_count: fallbackLeads.length,
+    confirmed_leads_count: 0
+  };
+  const hubsBreakdown = (hubData && hubData.hubs_breakdown) || [];
+  const confirmedSales = (hubData && hubData.confirmed_sales) || [];
+  const leads = (hubData && hubData.website_leads) || fallbackLeads;
+  const canConfirm = !hubData || hubData.can_confirm_online_sales !== false;
+  const curMonth = STATE.onlineHubMonth || 'ALL';
+  const curHub = STATE.onlineHubFilter || 'ALL';
+  const subView = STATE.onlineSubView || 'all';
+
   return `
-    <div class="card">
-      <h3 style="font-size:14px;margin-bottom:6px;">🌐 Live Website Bookings, /check-in Forms & Attributed WhatsApp Clicks (${leads.length})</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Automatically populated in real time whenever a guest submits a booking, /check-in, or WhatsApp button on seacollegediveclub.com.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Time</th><th>Type</th><th>Lang</th><th>Guest</th><th>Phone / Email</th><th>Interest / Gear</th><th>EUR</th><th>Voucher</th><th>Ads Attribution</th></tr></thead>
-          <tbody>
-            ${leads.map((l) => `
-              <tr>
-                <td>${esc(String(l.received_at).slice(0, 16))}</td>
-                <td><span class="pill">${esc(l.lead_type)}</span></td>
-                <td>${esc(l.lang)}</td>
-                <td><b>${esc(l.guest_name)}</b></td>
-                <td>${esc(l.phone || l.email || '—')}</td>
-                <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;">${esc(l.interest_items)}</td>
-                <td class="num pos">€${fmt(l.estimated_eur, 2)}</td>
-                <td>${esc(l.linked_voucher_no || '—')}</td>
-                <td>${esc(l.gclid ? 'Google GCLID' : (l.fbclid ? 'Meta FBCLID' : (l.utm_source || 'Organic')))}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+    <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(0,210,255,0.16),rgba(16,185,129,0.13),rgba(11,34,57,0.96));border-color:rgba(0,210,255,0.48);">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="award-medal" style="font-size:11.5px;">🌐 ${ar ? 'بائع أونلاين موحد واحد' : 'ONE UNIFIED ONLINE SELLER'}</span>
+            <code style="color:var(--cyan);font-weight:900;">@website.online • SELLER: WEBSITE</code>
+          </div>
+          <h3 style="font-size:17px;margin-top:6px;">
+            ${ar ? '🌐 مركز مبيعات الموقع الرسمي وجميع منصات الأونلاين الموحد' : '🌐 Website &amp; All Online Hubs Unified Seller Command Center'}
+          </h3>
+          <p style="font-size:12px;color:#cbd5e1;margin-top:3px;">
+            ${ar
+              ? 'أي حجز مؤكد من الموقع (8 لغات) أو الواتساب أو انستجرام/فيسبوك أو جوجل أو تريب أدفايزور أو فياتور أو جيت يور جايد يُسجل تحت بائع واحد موحد (WEBSITE) بدون عمولة مندوب.'
+              : 'Every confirmed booking on seacollegediveclub.com (8 languages), WhatsApp, Instagram/Facebook, Google Ads, Tripadvisor, Viator &amp; GetYourGuide registers under ONE seller: WEBSITE (0% rep comm — 100% Company Direct).'}
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${canConfirm ? `<button type="button" class="btn btn-emerald" style="padding:10px 16px;font-weight:900;" onclick="openOnlineSaleModal('WEBSITE_DIRECT')">➕ ${ar ? 'تسجيل بيعة أونلاين مؤكدة' : 'Register Confirmed Online Sale'}</button>` : ''}
+          <button type="button" class="btn btn-primary" style="padding:10px 14px;font-weight:900;" onclick="openEntityDossier('SALES_REP', 'website.online')">📒 ${ar ? 'كشف حساب مبيعات الأونلاين والرصيد' : 'Online Seller Statement &amp; Balance'}</button>
+          <a class="btn btn-amber" style="padding:10px 13px;font-weight:800;" href="https://seacollegediveclub.com/s/website" target="_blank" rel="noopener">📲 ${ar ? 'كتالوج الأونلاين (/s/website)' : 'Online Brochure (/s/website)'}</a>
+        </div>
       </div>
     </div>
+
+    <div class="grid grid-kpi" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="kpi-label">🎫 ${ar ? 'إجمالي حجوزات الأونلاين المؤكدة' : 'Confirmed Online Bookings'}</div>
+        <div class="kpi-val">${fmt(k.confirmed_vouchers_count)}</div>
+        <div class="kpi-sub">${fmt(k.total_pax)} PAX • ${fmt(k.live_confirmed_count)} Live + ${fmt(k.historical_online_count)} Audited</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">💶 ${ar ? 'إجمالي إيرادات بائع الأونلاين (WEBSITE)' : 'Total Online Seller Revenue'}</div>
+        <div class="kpi-val pos">${fmt(k.gross_revenue_egp)} EGP</div>
+        <div class="kpi-sub">≈ €${fmt(k.gross_revenue_eur_equiv, 0)} EUR Unified</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">💳 ${ar ? 'المحصل والمورد للشركة' : 'Collected &amp; Settled'}</div>
+        <div class="kpi-val" style="color:#34d399;">${fmt(k.collected_paid_egp)} EGP</div>
+        <div class="kpi-sub">${ar ? 'أونلاين + فيزا + خزينة' : 'Online + POS + Safe'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">⏳ ${ar ? 'متبقي REST للتحصيل عند التنفيذ' : 'Open Uncollected REST'}</div>
+        <div class="kpi-val" style="color:${Number(k.open_rest_egp || 0) > 0 ? '#fde68a' : '#94a3b8'};">${fmt(k.open_rest_egp)} EGP</div>
+        <div class="kpi-sub">${ar ? 'يُحصل بالسقالة أو الفندق' : 'Collect at Jetty / Pickup'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">🏆 ${ar ? 'صافي ربح الشركة المباشر (0% عمولة)' : 'Net Direct Margin (0% Rep Comm)'}</div>
+        <div class="kpi-val" style="color:var(--cyan);">${fmt(k.net_company_margin_egp)} EGP</div>
+        <div class="kpi-sub">${ar ? 'بعد خصم تكلفة الموردين' : 'After Supplier COGS'}</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">🔔 ${ar ? 'طلبات الموقع والواتساب للتأكيد' : 'Website &amp; WA Leads'}</div>
+        <div class="kpi-val" style="color:#fbbf24;">${fmt(k.pending_leads_count)}</div>
+        <div class="kpi-sub">${fmt(k.confirmed_leads_count)} ${ar ? 'تم تأكيدها كبيعة' : 'Confirmed Sales'}</div>
+      </div>
+    </div>
+
+    ${hubsBreakdown.length ? `
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <b style="font-size:13.5px;">🌍 ${ar ? 'تفصيل منصات الأونلاين (تصب كلها في بائع واحد: WEBSITE)' : 'Online Hubs Breakdown (All Rolled Into One Seller: WEBSITE)'}</b>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <select style="width:auto;padding:5px 10px;" onchange="reloadOnlineSalesHub(this.value, null)">
+              <option value="ALL" ${curMonth === 'ALL' ? 'selected' : ''}>📅 ${ar ? 'كل الشهور' : 'All Months'}</option>
+              <option value="2026-11" ${curMonth === '2026-11' ? 'selected' : ''}>2026-11</option>
+              <option value="2026-10" ${curMonth === '2026-10' ? 'selected' : ''}>2026-10</option>
+              <option value="2026-09" ${curMonth === '2026-09' ? 'selected' : ''}>2026-09</option>
+              <option value="2026-08" ${curMonth === '2026-08' ? 'selected' : ''}>2026-08</option>
+            </select>
+            <button type="button" class="btn ${subView === 'all' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.onlineSubView='all';renderApp();">${ar ? 'الكل' : 'All'}</button>
+            <button type="button" class="btn ${subView === 'sales' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.onlineSubView='sales';renderApp();">🎫 ${ar ? 'المبيعات المؤكدة' : 'Confirmed Sales'}</button>
+            <button type="button" class="btn ${subView === 'leads' ? 'btn-primary' : ''}" style="padding:5px 10px;font-size:11.5px;" onclick="STATE.onlineSubView='leads';renderApp();">💬 ${ar ? 'الطلبات والرسائل' : 'Website &amp; WA Leads'}</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          <button type="button" class="btn ${curHub === 'ALL' ? 'btn-primary' : ''}" style="padding:6px 11px;font-size:11.5px;" onclick="reloadOnlineSalesHub(null, 'ALL')">
+            🌐 ${ar ? 'كل منصات الأونلاين' : 'All Online Hubs'} (${fmt(k.confirmed_vouchers_count)})
+          </button>
+          ${hubsBreakdown.map((hb) => `
+            <button type="button" class="btn ${curHub === hb.code ? 'btn-primary' : ''}" style="padding:6px 11px;font-size:11.5px;" onclick="reloadOnlineSalesHub(null, '${esc(hb.code)}')">
+              ${esc(hb.icon)} ${esc(ar ? hb.short_ar : hb.short_en)}: <b>${fmt(hb.vouchers_count)}</b> (${fmt(hb.gross_revenue_egp)} EGP)
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    ${(subView === 'all' || subView === 'sales') ? `
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <div>
+            <h3 style="font-size:14.5px;">✅ ${ar ? `حجوزات ومبيعات الأونلاين المؤكدة المسجلة تحت البائع WEBSITE (${confirmedSales.length})` : `Confirmed Website &amp; Online Hub Sales Registered Under Seller WEBSITE (${confirmedSales.length})`}</h3>
+            <p style="font-size:11.5px;color:var(--muted);">${ar ? 'تشمل الحجوزات التلقائية من الموقع + المبيعات المؤكدة من الواتساب والسوشيال ومنصات السياحة الأونلاين' : 'Includes automatic seacollegediveclub.com bookings + confirmed WhatsApp, Social &amp; OTA sales.'}</p>
+          </div>
+          ${canConfirm ? `
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button type="button" class="btn btn-emerald" style="padding:6px 11px;font-size:11.5px;" onclick="openOnlineSaleModal('WHATSAPP_ONLINE')">💬 + ${ar ? 'بيعة واتساب' : 'WhatsApp Sale'}</button>
+              <button type="button" class="btn btn-emerald" style="padding:6px 11px;font-size:11.5px;" onclick="openOnlineSaleModal('META_INSTAGRAM_FB')">📱 + ${ar ? 'بيعة انستجرام/فيسبوك' : 'IG / FB Sale'}</button>
+              <button type="button" class="btn btn-emerald" style="padding:6px 11px;font-size:11.5px;" onclick="openOnlineSaleModal('TRIPADVISOR')">🦉 + ${ar ? 'بيعة تريب أدفايزور / OTA' : 'Tripadvisor / OTA'}</button>
+            </div>
+          ` : ''}
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>${ar ? 'رقم الفوتشر' : 'Voucher'}</th>
+                <th>${ar ? 'التاريخ' : 'Trip Date'}</th>
+                <th>${ar ? 'منصة الأونلاين' : 'Online Hub'}</th>
+                <th>${ar ? 'العميل وحسابه' : 'Guest &amp; VIP Acc'}</th>
+                <th>${ar ? 'الفندق والباص' : 'Hotel &amp; Pickup'}</th>
+                <th>${ar ? 'الرحلة والأفراد' : 'Trip &amp; PAX'}</th>
+                <th class="num">${ar ? 'الإجمالي' : 'Gross Sale'}</th>
+                <th class="num">${ar ? 'المدفوع' : 'Paid'}</th>
+                <th class="num">${ar ? 'المتبقي REST' : 'Open REST'}</th>
+                <th>${ar ? 'تحديث' : 'Action'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${!confirmedSales.length ? `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:18px;">${ar ? 'لا توجد مبيعات أونلاين في هذا الفلتر حالياً.' : 'No confirmed online sales in this filter yet.'}</td></tr>` : confirmedSales.map((s) => `
+                <tr>
+                  <td><b style="color:var(--cyan);">${esc(s.voucher_no)}</b><div style="font-size:10px;color:var(--muted);">SELLER: WEBSITE</div></td>
+                  <td>${esc(s.trip_date)}</td>
+                  <td><span class="pill" style="border-color:rgba(0,210,255,0.4);color:#7dd3fc;">${esc(s.online_hub_icon || '🌐')} ${esc(ar ? (s.online_hub_ar || 'أونلاين') : (s.online_hub_en || 'Online'))}</span></td>
+                  <td>
+                    <b>${esc(s.guest_name || s.divers_names || 'Online Guest')}</b>
+                    ${s.guest_phone ? `<div style="font-size:11px;color:var(--muted);">${esc(s.guest_phone)}</div>` : ''}
+                    ${s.guest_account_username ? `<div style="font-size:10.5px;color:#34d399;">🎯 @${esc(s.guest_account_username)}</div>` : ''}
+                  </td>
+                  <td>${esc(s.hotel_name || 'Online Direct')}${s.pickup_time ? `<div style="font-size:10.5px;color:#fde68a;">🚐 ${esc(s.pickup_time)}</div>` : ''}</td>
+                  <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis;"><b>${esc(s.trip_name)}</b><div style="font-size:11px;color:var(--muted);">${Number(s.total_pax || 1)} PAX</div></td>
+                  <td class="num pos"><b>${fmt(s.gross_egp)} EGP</b><div style="font-size:10.5px;color:var(--muted);">≈ €${fmt(s.gross_eur_equiv, 0)}</div></td>
+                  <td class="num" style="color:#34d399;">${fmt(s.paid_egp)} EGP</td>
+                  <td class="num" style="color:${Number(s.open_rest_egp || 0) > 0.5 ? '#fde68a' : '#94a3b8'};font-weight:800;">${fmt(s.open_rest_egp)} EGP</td>
+                  <td>
+                    ${canConfirm ? `<button type="button" class="btn" style="padding:4px 9px;font-size:11px;" onclick="openUpdateOnlineVoucherModal('${esc(s.voucher_no)}')">✏️ ${ar ? 'تحصيل / تعديل' : 'Edit / Mark Paid'}</button>` : '—'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : ''}
+
+    ${(subView === 'all' || subView === 'leads') ? `
+      <div class="card">
+        <h3 style="font-size:14px;margin-bottom:6px;">🌐 ${ar ? `سجل رسائل وحجوزات الموقع والـ Check-In ونقرات الواتساب (${leads.length})` : `Live Website Bookings, /check-in Forms &amp; Attributed WhatsApp Clicks (${leads.length})`}</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">${ar ? 'تصل تلقائياً فور قيام أي زائر بالحجز أو الضغط على واتساب في seacollegediveclub.com — اضغط (تأكيد كبيعة ناجحة) لتسجيلها فوراً في التطبيق.' : 'Automatically populated in real time from seacollegediveclub.com — tap Confirm Success Sale on any inquiry to register it under Seller WEBSITE.'}</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Hub / Type</th>
+                <th>Lang</th>
+                <th>Guest</th>
+                <th>Phone / Email</th>
+                <th>Interest / Gear</th>
+                <th class="num">EUR</th>
+                <th>Voucher</th>
+                <th>Status / Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${leads.map((l) => {
+                const isConf = Boolean(l.is_confirmed_sale) || String(l.status || '').includes('CONFIRMED') || String(l.linked_voucher_no || '').startsWith('WEB-') || String(l.linked_voucher_no || '').startsWith('ONL-');
+                return `
+                  <tr>
+                    <td>${esc(String(l.received_at || '').slice(0, 16))}</td>
+                    <td><span class="pill">${esc((l.online_hub_icon ? l.online_hub_icon + ' ' : '') + (l.online_hub_en || l.lead_type || 'WEBSITE'))}</span></td>
+                    <td>${esc(l.lang)}</td>
+                    <td><b>${esc(l.guest_name)}</b></td>
+                    <td>${esc(l.phone || l.email || '—')}</td>
+                    <td style="max-width:230px;overflow:hidden;text-overflow:ellipsis;">${esc(l.interest_items)}</td>
+                    <td class="num pos">€${fmt(l.estimated_eur, 2)}</td>
+                    <td><b style="color:var(--cyan);">${esc(l.linked_voucher_no || '—')}</b></td>
+                    <td>
+                      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                        <span class="pill" style="border-color:${isConf ? '#10b981' : '#f59e0b'};color:${isConf ? '#34d399' : '#fde68a'};">${esc(l.status || 'NEW')}</span>
+                        ${canConfirm ? `<button type="button" class="btn ${isConf ? '' : 'btn-emerald'}" style="padding:4px 9px;font-size:11px;" onclick="openConfirmLeadByEventId('${esc(l.event_id)}')">${isConf ? (ar ? '💳 تحديث الدفع' : '💳 Update Paid') : (ar ? '✅ تأكيد كبيعة ناجحة' : '✅ Confirm Sale')}</button>` : ''}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : ''}
   `;
 }
 
@@ -7122,7 +7683,7 @@ function openMyOwnStatement() {
   const u = STATE.user || {};
   const uname = String(u.username || '');
   if (!uname) return;
-  if (u.role_code === 'SALES_REP') {
+  if (u.role_code === 'SALES_REP' || u.role_code === 'ONLINE_SELLER') {
     return openEntityDossier('SALES_REP', uname);
   }
   if (u.role_code === 'FLEET_PARTNER') {
@@ -7135,7 +7696,7 @@ function openMyOwnStatement() {
 function openTeamProfileDossier(uname, roleCode) {
   const rc = String(roleCode || '').toUpperCase();
   const un = String(uname || '');
-  if (rc === 'SALES_REP') return openEntityDossier('SALES_REP', un);
+  if (rc === 'SALES_REP' || rc === 'ONLINE_SELLER') return openEntityDossier('SALES_REP', un);
   if (rc === 'FLEET_PARTNER') {
     const pCode = un.toLowerCase().includes('darwish') ? 'PA_DARWISH_LEASE' : 'PA_FARID_LEASE';
     return openEntityDossier('PARTNER', pCode);

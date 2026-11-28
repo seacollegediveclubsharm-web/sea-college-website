@@ -127,13 +127,13 @@ function erp_snapshot_live_state(PDO $pdo): array
         $snap['custom_users'] = $pdo->query("SELECT * FROM users WHERE updated_at != ''")->fetchAll();
     } catch (Throwable $e) {}
     try {
-        $snap['live_vouchers'] = $pdo->query("SELECT * FROM reservations_fact WHERE source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'SELLER_SHARE_LINK')")->fetchAll();
+        $snap['live_vouchers'] = $pdo->query("SELECT * FROM reservations_fact WHERE source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB', 'SELLER_SHARE_LINK')")->fetchAll();
     } catch (Throwable $e) {}
     try {
         $snap['live_crm'] = $pdo->query('SELECT * FROM website_leads_crm')->fetchAll();
     } catch (Throwable $e) {}
     try {
-        $snap['live_commissions'] = $pdo->query("SELECT * FROM seller_commissions_ledger WHERE source_channel LIKE 'LIVE_%' OR source_channel = 'SELLER_SHARE_LINK' OR voucher_no LIKE 'TRIAL-%' OR voucher_no LIKE 'WEB-%' OR voucher_no LIKE 'SLB-%' OR voucher_no LIKE 'VIP-%'")->fetchAll();
+        $snap['live_commissions'] = $pdo->query("SELECT * FROM seller_commissions_ledger WHERE source_channel LIKE 'LIVE_%' OR source_channel = 'SELLER_SHARE_LINK' OR voucher_no LIKE 'TRIAL-%' OR voucher_no LIKE 'WEB-%' OR voucher_no LIKE 'ONL-%' OR voucher_no LIKE 'SLB-%' OR voucher_no LIKE 'VIP-%'")->fetchAll();
     } catch (Throwable $e) {}
     try {
         $snap['live_feedback'] = $pdo->query('SELECT * FROM trial_feedback')->fetchAll();
@@ -246,7 +246,7 @@ function erp_restore_live_state(PDO $impPdo, array $snap): void
         if ($vo === '') {
             continue;
         }
-        $ex = $impPdo->prepare("SELECT COUNT(*) FROM reservations_fact WHERE voucher_no = ? AND source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'SELLER_SHARE_LINK')");
+        $ex = $impPdo->prepare("SELECT COUNT(*) FROM reservations_fact WHERE voucher_no = ? AND source_file IN ('LIVE_MOBILE_APP', 'LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB', 'SELLER_SHARE_LINK')");
         $ex->execute([$vo]);
         if ((int) $ex->fetchColumn() === 0) {
             $insertDynamic($impPdo, 'reservations_fact', [$lv], '');
@@ -394,7 +394,7 @@ if ($method !== 'POST' && in_array($action, [
     'send_inbox_message', 'mark_inbox_read', 'react_inbox_message', 'toggle_pin_inbox_message', 'delete_inbox_message',
     'guest_create_booking', 'send_guest_login_email',
     'save_supplier', 'save_trip_cost', 'save_staff_bonus_allowance', 'decide_staff_bonus_allowance',
-    'record_party_transaction',
+    'record_party_transaction', 'confirm_website_lead_sale', 'register_online_hub_sale',
 ], true)) {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST required']);
@@ -737,21 +737,34 @@ if ($action === 'seller_wallet') {
     $canInspectAll = in_array('bi.view_executive', $ctx['perms'], true)
         || in_array('gl.view_all_ledgers', $ctx['perms'], true)
         || in_array('hr.manage_payroll', $ctx['perms'], true);
+    $canInspectOnlineSeller = $canInspectAll
+        || in_array('crm.manage_leads_ads', $ctx['perms'], true)
+        || strtoupper((string) ($meUser['role_code'] ?? '')) === 'ONLINE_SELLER';
 
     $reqSellerRaw = trim((string) ($_GET['seller'] ?? ''));
     if (!$canInspectAll) {
         if ($reqSellerRaw !== '') {
-            $resolvedReq = sc_erp_resolve_seller($pdo, $reqSellerRaw);
-            if (!$resolvedReq || strtolower((string) $resolvedReq['username']) !== strtolower((string) $meUser['username'])) {
-                http_response_code(403);
-                echo json_encode(['ok' => false, 'error' => 'Sales representatives may only access their own commission wallet']);
-                exit;
+            if (sc_erp_is_online_unified_seller_token($reqSellerRaw) && $canInspectOnlineSeller) {
+                $targetSeller = sc_erp_get_online_seller_user($pdo) ?: $meUser;
+            } else {
+                $resolvedReq = sc_erp_resolve_seller($pdo, $reqSellerRaw);
+                if (!$resolvedReq || strtolower((string) $resolvedReq['username']) !== strtolower((string) $meUser['username'])) {
+                    http_response_code(403);
+                    echo json_encode(['ok' => false, 'error' => 'Sales representatives may only access their own commission wallet']);
+                    exit;
+                }
+                $targetSeller = $resolvedReq;
             }
+        } elseif (strtoupper((string) ($meUser['role_code'] ?? '')) === 'ONLINE_SELLER') {
+            $targetSeller = sc_erp_get_online_seller_user($pdo) ?: $meUser;
+        } else {
+            $targetSeller = sc_erp_resolve_seller($pdo, (string) $meUser['username']) ?: $meUser;
         }
-        $targetSeller = sc_erp_resolve_seller($pdo, (string) $meUser['username']) ?: $meUser;
     } else {
         if ($reqSellerRaw !== '') {
-            $targetSeller = sc_erp_resolve_seller($pdo, $reqSellerRaw);
+            $targetSeller = sc_erp_is_online_unified_seller_token($reqSellerRaw)
+                ? sc_erp_get_online_seller_user($pdo)
+                : sc_erp_resolve_seller($pdo, $reqSellerRaw);
             if (!$targetSeller) {
                 http_response_code(404);
                 echo json_encode(['ok' => false, 'error' => 'Seller account not found']);
@@ -760,7 +773,9 @@ if ($action === 'seller_wallet') {
         } else {
             $targetSeller = $meUser['role_code'] === 'SALES_REP'
                 ? (sc_erp_resolve_seller($pdo, (string) $meUser['username']) ?: $meUser)
-                : (sc_erp_resolve_seller($pdo, 'fady.sales') ?: $meUser);
+                : ($meUser['role_code'] === 'ONLINE_SELLER'
+                    ? (sc_erp_get_online_seller_user($pdo) ?: $meUser)
+                    : (sc_erp_resolve_seller($pdo, 'fady.sales') ?: $meUser));
         }
     }
 
@@ -768,15 +783,24 @@ if ($action === 'seller_wallet') {
     $monthFilter = preg_match('/^\d{4}-\d{2}$/', $rawMonth) ? $rawMonth : 'ALL';
 
     $sUser = (string) $targetSeller['username'];
-    $sSlug = (string) ($targetSeller['referral_code'] ?: preg_replace('/\.sales$/i', '', $sUser));
-    $sRep  = (string) ($targetSeller['rep_scope'] ?? strtoupper($sSlug));
-    $qrUrl = 'https://seacollegediveclub.com/r/' . rawurlencode($sSlug);
+    $isOnlineSellerWallet = (strtolower($sUser) === 'website.online');
+    $sSlug = $isOnlineSellerWallet ? 'website' : (string) ($targetSeller['referral_code'] ?: preg_replace('/\.sales$/i', '', $sUser));
+    $sRep  = $isOnlineSellerWallet ? 'WEBSITE' : (string) ($targetSeller['rep_scope'] ?? strtoupper($sSlug));
+    $qrUrl = $isOnlineSellerWallet
+        ? 'https://seacollegediveclub.com'
+        : ('https://seacollegediveclub.com/r/' . rawurlencode($sSlug));
 
     $langLinks = [];
     foreach (['en', 'ru', 'it', 'pl', 'de', 'fr', 'ar', 'zh'] as $lg) {
-        $langLinks[$lg] = $lg === 'en'
-            ? $qrUrl
-            : ('https://seacollegediveclub.com/' . $lg . '/r/' . rawurlencode($sSlug));
+        if ($isOnlineSellerWallet) {
+            $langLinks[$lg] = $lg === 'en'
+                ? 'https://seacollegediveclub.com'
+                : ('https://seacollegediveclub.com/' . $lg . '/');
+        } else {
+            $langLinks[$lg] = $lg === 'en'
+                ? $qrUrl
+                : ('https://seacollegediveclub.com/' . $lg . '/r/' . rawurlencode($sSlug));
+        }
     }
 
     $wParams = [$sUser];
@@ -807,6 +831,26 @@ if ($action === 'seller_wallet') {
     );
     $kpiSt->execute($wParams);
     $kpis = $kpiSt->fetch() ?: [];
+
+    if ($isOnlineSellerWallet) {
+        $onlW = sc_erp_online_seller_sql_where();
+        $onlKpiParams = [];
+        $onlKpiMonth  = '';
+        if ($monthFilter !== 'ALL') {
+            $onlKpiMonth = ' AND period_month = ?';
+            $onlKpiParams[] = $monthFilter;
+        }
+        $onlKpiSt = $pdo->prepare(
+            "SELECT COUNT(*) AS entries_count,
+                    ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN (CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END) ELSE 0 END), 0), 2) AS gross_sales_egp
+             FROM reservations_fact
+             WHERE {$onlW} {$onlKpiMonth}"
+        );
+        $onlKpiSt->execute($onlKpiParams);
+        $onlKpiRow = $onlKpiSt->fetch() ?: [];
+        $kpis['entries_count']   = (int) ($onlKpiRow['entries_count'] ?? 0);
+        $kpis['gross_sales_egp'] = round((float) ($onlKpiRow['gross_sales_egp'] ?? 0.0), 2);
+    }
 
     // Look up payroll advances/deductions & base salary for this seller when viewing a specific month (e.g. 2026-10)
     $payrollBase = 0.0;
@@ -842,17 +886,20 @@ if ($action === 'seller_wallet') {
     $kpis['payroll_deductions_egp']       = $payrollDed;
     $kpis['net_balance_egp']              = round($payrollBase + $totalComm - $payrollDed, 2);
 
-    $crmParams = [$sUser, $sRep];
+    $crmParams = $isOnlineSellerWallet ? [] : [$sUser, $sRep];
     $crmMonthSql = '';
     if ($monthFilter !== 'ALL') {
         $crmMonthSql = ' AND (SUBSTR(trip_date, 1, 7) = ? OR SUBSTR(received_at, 1, 7) = ?)';
         $crmParams[] = $monthFilter;
         $crmParams[] = $monthFilter;
     }
+    $crmWhere = $isOnlineSellerWallet
+        ? "(seller_username = '' OR LOWER(seller_username) = 'website.online')"
+        : "(LOWER(seller_username) = LOWER(?) OR (sales_rep_code != '' AND UPPER(sales_rep_code) = UPPER(?)))";
     $crmSt = $pdo->prepare(
-        "SELECT event_id, received_at, lead_type, lang, guest_name, phone, interest_items, people, trip_date, hotel, estimated_eur, status, linked_voucher_no
+        "SELECT event_id, received_at, lead_type, lang, guest_name, phone, interest_items, people, trip_date, hotel, estimated_eur, status, linked_voucher_no, online_hub_source
          FROM website_leads_crm
-         WHERE (LOWER(seller_username) = LOWER(?) OR (sales_rep_code != '' AND UPPER(sales_rep_code) = UPPER(?))) {$crmMonthSql}
+         WHERE {$crmWhere} {$crmMonthSql}
          ORDER BY received_at DESC LIMIT 150"
     );
     $crmSt->execute($crmParams);
@@ -862,32 +909,36 @@ if ($action === 'seller_wallet') {
     $allSellers = [];
     if ($canInspectAll) {
         $allSellers = $pdo->query(
-            "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code
-             FROM users WHERE role_code = 'SALES_REP' AND is_active = 1 ORDER BY id ASC"
+            "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code, role_code
+             FROM users WHERE role_code IN ('ONLINE_SELLER', 'SALES_REP') AND is_active = 1
+             ORDER BY CASE WHEN role_code = 'ONLINE_SELLER' THEN 0 ELSE 1 END, id ASC"
         )->fetchAll();
     }
 
     // Strict "Actual Done + 100% Paid" commission calculation & seller's own trips
     $brochureUrl = 'https://seacollegediveclub.com/s/' . rawurlencode($sSlug);
-    $myTripsArgs = [$sUser, $sRep];
+    $myTripsArgs = $isOnlineSellerWallet ? [] : [$sUser, $sRep];
     $myTripsMonthSql = '';
     if ($monthFilter !== 'ALL') {
         $myTripsMonthSql = ' AND period_month = ?';
         $myTripsArgs[] = $monthFilter;
     }
+    $myTripsWhere = $isOnlineSellerWallet
+        ? sc_erp_online_seller_sql_where()
+        : "(LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?)))";
     $myTripsSt = $pdo->prepare(
         "SELECT id, voucher_no, trip_date, period_month, hotel_name, room_no, nationality, pickup_time,
                 trip_name, unified_trip_code, adults, children, infants, total_pax,
                 booked_adults, booked_children, booked_infants, booked_total_egp,
                 list_total_egp, discount_type, discount_value, discount_currency, discount_egp, discount_reason,
-                divers_names, guest_phone, guest_email, guest_account_username,
+                divers_names, guest_phone, guest_email, guest_account_username, online_hub_source,
                 deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
                 estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp,
                 seller_commission_egp, commission_type, commission_status,
                 boarding_status, payment_status, booking_state, workflow_stage,
                 has_modification, modification_summary
          FROM reservations_fact
-         WHERE (LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?))) {$myTripsMonthSql}
+         WHERE {$myTripsWhere} {$myTripsMonthSql}
          ORDER BY trip_date DESC, id DESC LIMIT 200"
     );
     $myTripsSt->execute($myTripsArgs);
@@ -1233,8 +1284,9 @@ if ($action === 'seller_performance_bi') {
     $globalTarget['max_discount_eur']   = $globalDiscPolicy['max_discount_eur'];
 
     $sellersRows = $pdo->query(
-        "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code, avatar_url
-         FROM users WHERE role_code = 'SALES_REP' AND is_active = 1 ORDER BY id ASC"
+        "SELECT username, display_name_en, display_name_ar, rep_scope, branch_scope, referral_code, avatar_url, role_code
+         FROM users WHERE role_code IN ('ONLINE_SELLER', 'SALES_REP') AND is_active = 1
+         ORDER BY CASE WHEN role_code = 'ONLINE_SELLER' THEN 0 ELSE 1 END, id ASC"
     )->fetchAll();
 
     $leaderboard = [];
@@ -1247,6 +1299,12 @@ if ($action === 'seller_performance_bi') {
     foreach ($sellersRows as $sr) {
         $u = (string) $sr['username'];
         $rep = (string) $sr['rep_scope'];
+        $isOnlineRow = (strtolower($u) === 'website.online');
+
+        $whereLeaderboard = $isOnlineRow
+            ? sc_erp_online_seller_sql_where()
+            : '(LOWER(seller_username) = LOWER(?) OR (seller_username = "" AND UPPER(sales_rep) = UPPER(?)))';
+        $rArgs = $isOnlineRow ? [$dateFrom, $dateTo] : [$u, $rep, $dateFrom, $dateTo];
 
         $rSt = $pdo->prepare(
             "SELECT SUM(CASE WHEN booking_state = 'EXECUTED' THEN 1 ELSE 0 END) AS trips_sold,
@@ -1261,10 +1319,10 @@ if ($action === 'seller_performance_bi') {
                     ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN rest_egp_equiv ELSE 0 END), 0), 2) AS open_rest_egp,
                     ROUND(COALESCE(SUM(CASE WHEN booking_state = 'EXECUTED' THEN supplier_cost_egp ELSE 0 END), 0), 2) AS supplier_cost_egp
              FROM reservations_fact
-             WHERE (LOWER(seller_username) = LOWER(?) OR (seller_username = '' AND UPPER(sales_rep) = UPPER(?)))
+             WHERE {$whereLeaderboard}
                AND trip_date BETWEEN ? AND ?"
         );
-        $rSt->execute([$u, $rep, $dateFrom, $dateTo]);
+        $rSt->execute($rArgs);
         $rAgg = $rSt->fetch() ?: [];
 
         $cSt = $pdo->prepare(
@@ -1307,6 +1365,10 @@ if ($action === 'seller_performance_bi') {
 
         $badges = [];
         $awardObjs = [];
+        if ($isOnlineRow) {
+            $badges[] = '🌐 Unified Online Hubs';
+            $awardObjs[] = ['icon' => '🌐', 'title_en' => 'Website & All Online Hubs'];
+        }
         if (($awards['daily_best']['username'] ?? '') === $u) {
             $badges[] = '🥇 Daily #1';
             $awardObjs[] = ['icon' => '🥇', 'title_en' => 'Best Seller Today'];
@@ -1326,6 +1388,7 @@ if ($action === 'seller_performance_bi') {
 
         $leaderboard[] = [
             'username'               => $u,
+            'is_online_unified'      => $isOnlineRow,
             'display_name_en'        => $sr['display_name_en'],
             'display_name_ar'        => $sr['display_name_ar'],
             'avatar_url'             => $sr['avatar_url'],
@@ -2257,8 +2320,12 @@ if ($action === 'role_workspace') {
         return $r;
     };
 
-    if (in_array('ops.view_manifests', $perms, true) || in_array('jetty.scan_boarding_collect_rest', $perms, true) || in_array('gl.view_all_ledgers', $perms, true) || in_array('bi.view_executive', $perms, true)) {
-        $out['vouchers'] = array_map($enrichVoucherRow, $pdo->query('SELECT * FROM reservations_fact ORDER BY CASE WHEN source_file IN ("LIVE_MOBILE_APP","LIVE_WEBSITE_FORM","SELLER_SHARE_LINK") THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 90')->fetchAll());
+    if ($user['role_code'] === 'ONLINE_SELLER') {
+        $onlW = sc_erp_online_seller_sql_where();
+        $out['vouchers'] = array_map($enrichVoucherRow, $pdo->query("SELECT * FROM reservations_fact WHERE {$onlW} ORDER BY CASE WHEN source_file IN ('LIVE_WEBSITE_FORM','LIVE_ONLINE_HUB','LIVE_MOBILE_APP','SELLER_SHARE_LINK') THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 120")->fetchAll());
+        $out['my_sales_stats'] = $pdo->query("SELECT COUNT(*) AS total_vouchers, COALESCE(SUM(total_pax),0) AS total_pax, ROUND(COALESCE(SUM(CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END),0),2) AS est_rev_egp, 0 AS total_commission_egp FROM reservations_fact WHERE {$onlW} AND booking_state = 'EXECUTED'")->fetch();
+    } elseif (in_array('ops.view_manifests', $perms, true) || in_array('jetty.scan_boarding_collect_rest', $perms, true) || in_array('gl.view_all_ledgers', $perms, true) || in_array('bi.view_executive', $perms, true)) {
+        $out['vouchers'] = array_map($enrichVoucherRow, $pdo->query('SELECT * FROM reservations_fact ORDER BY CASE WHEN source_file IN ("LIVE_MOBILE_APP","LIVE_WEBSITE_FORM","LIVE_ONLINE_HUB","SELLER_SHARE_LINK") THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 90')->fetchAll());
         $modRows = array_map(static function (array $m): array {
             $m['old_adults']       = (int) ($m['prev_adults'] ?? 0);
             $m['old_children']     = (int) ($m['prev_children'] ?? 0);
@@ -2276,7 +2343,7 @@ if ($action === 'role_workspace') {
         $uLower = strtolower((string) $user['username']);
         $repUp  = strtoupper(trim((string) ($user['rep_scope'] ?: $user['username'])));
         $whereSeller = '(LOWER(seller_username) = ? OR (seller_username = "" AND UPPER(sales_rep) = ?))';
-        $vSt = $pdo->prepare("SELECT * FROM reservations_fact WHERE {$whereSeller} ORDER BY CASE WHEN source_file IN ('LIVE_MOBILE_APP','LIVE_WEBSITE_FORM','SELLER_SHARE_LINK') THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 80");
+        $vSt = $pdo->prepare("SELECT * FROM reservations_fact WHERE {$whereSeller} ORDER BY CASE WHEN source_file IN ('LIVE_MOBILE_APP','LIVE_WEBSITE_FORM','LIVE_ONLINE_HUB','SELLER_SHARE_LINK') THEN 0 ELSE 1 END, trip_date DESC, id DESC LIMIT 80");
         $vSt->execute([$uLower, $repUp]);
         $myRows = array_map($enrichVoucherRow, $vSt->fetchAll());
         $sSt = $pdo->prepare("SELECT COUNT(*) AS total_vouchers, COALESCE(SUM(total_pax),0) AS total_pax, ROUND(COALESCE(SUM(estimated_revenue_egp),0),2) AS est_rev_egp, ROUND(COALESCE(SUM(seller_commission_egp),0),2) AS total_commission_egp FROM reservations_fact WHERE {$whereSeller} AND booking_state = 'EXECUTED'");
@@ -2292,7 +2359,7 @@ if ($action === 'role_workspace') {
         $out['gear_assets'] = $pdo->query('SELECT * FROM equipment_assets_master ORDER BY id ASC LIMIT 120')->fetchAll();
     }
 
-    if (in_array('crm.manage_leads_ads', $perms, true)) {
+    if (in_array('crm.manage_leads_ads', $perms, true) || in_array('bi.view_executive', $perms, true) || in_array('gl.view_all_ledgers', $perms, true)) {
         $out['crm_leads'] = $pdo->query('SELECT * FROM website_leads_crm ORDER BY id DESC LIMIT 80')->fetchAll();
     }
 
@@ -3179,6 +3246,26 @@ if ($action === 'export_entity_statement_csv') {
     exit;
 }
 
+/* ---------------- v3.7 UNIFIED WEBSITE & ALL ONLINE HUBS COMMAND CENTER (`online_sales_hub`) ---------------- */
+if ($action === 'online_sales_hub') {
+    erp_require_perm($ctx, 'crm.manage_leads_ads', 'bi.view_executive', 'gl.view_all_ledgers', 'ops.view_manifests');
+    if (in_array(strtoupper((string) ($ctx['user']['role_code'] ?? '')), ['SALES_REP', 'GUEST_CUSTOMER', 'FLEET_PARTNER'], true)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Hotel sales reps may only view their own QR wallet']);
+        exit;
+    }
+    $mFilter = trim((string) ($_GET['month'] ?? 'ALL'));
+    $hFilter = trim((string) ($_GET['hub'] ?? 'ALL'));
+    $payload = sc_erp_build_online_sales_hub($pdo, $mFilter, $hFilter);
+    $payload['can_confirm_online_sales'] = in_array('crm.manage_leads_ads', $ctx['perms'], true)
+        || in_array('bi.view_executive', $ctx['perms'], true)
+        || in_array('gl.view_all_ledgers', $ctx['perms'], true)
+        || in_array('ops.assign_boat_driver', $ctx['perms'], true)
+        || strtoupper((string) ($ctx['user']['role_code'] ?? '')) === 'ONLINE_SELLER';
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
 /* ---------------- MUTATING OPERATIONAL & TRIAL ACTIONS (POST + CSRF + RBAC) ---------------- */
 if ($method === 'POST') {
     $csrfTok = (string) ($rawIn['csrf_token'] ?? $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
@@ -3700,18 +3787,32 @@ if ($method === 'POST') {
         $sellerCandidate = '';
         if ($user['role_code'] === 'SALES_REP') {
             $sellerCandidate = (string) $user['username'];
+        } elseif ($user['role_code'] === 'ONLINE_SELLER') {
+            $sellerCandidate = 'website.online';
         } elseif (!empty($rawIn['seller_username'])) {
             $sellerCandidate = (string) $rawIn['seller_username'];
         }
 
-        $resolvedSeller = $saleModeRaw === 'CENTER' ? null : sc_erp_resolve_seller($pdo, $sellerCandidate);
+        $isOnlineDirectVoucher = ($user['role_code'] === 'ONLINE_SELLER')
+            || sc_erp_is_online_unified_seller_token($sellerCandidate)
+            || in_array($saleModeRaw, ['WEBSITE_ONLINE', 'ONLINE_HUB', 'ONLINE_DIRECT'], true);
+
+        $resolvedSeller  = ($saleModeRaw === 'CENTER' || $isOnlineDirectVoucher) ? null : sc_erp_resolve_seller($pdo, $sellerCandidate);
+        $onlineHubSrc    = $isOnlineDirectVoucher ? sc_erp_detect_online_hub($rawIn) : '';
+        $onlineSellerAcc = $isOnlineDirectVoucher ? 'website.online' : '';
         $repName    = $saleModeRaw === 'CENTER'
             ? 'CENTER'
-            : ($resolvedSeller ? (string) $resolvedSeller['rep_scope'] : ($user['rep_scope'] !== '' ? (string) $user['rep_scope'] : strtoupper((string) $user['username'])));
-        $branch     = $resolvedSeller
-            ? (string) ($resolvedSeller['branch_scope'] ?: 'CYRENE')
-            : ($user['branch_scope'] !== 'ALL' ? (string) $user['branch_scope'] : 'CYRENE');
-        $sellerType = $resolvedSeller ? 'HOTEL_SELLER' : 'HOUSE_OPS';
+            : ($isOnlineDirectVoucher
+                ? 'WEBSITE'
+                : ($resolvedSeller ? (string) $resolvedSeller['rep_scope'] : ($user['rep_scope'] !== '' ? (string) $user['rep_scope'] : strtoupper((string) $user['username']))));
+        $branch     = $isOnlineDirectVoucher
+            ? 'WEBSITE'
+            : ($resolvedSeller
+                ? (string) ($resolvedSeller['branch_scope'] ?: 'CYRENE')
+                : ($user['branch_scope'] !== 'ALL' ? (string) $user['branch_scope'] : 'CYRENE'));
+        $sellerType = $isOnlineDirectVoucher
+            ? 'ONLINE_DIRECT'
+            : ($resolvedSeller ? 'HOTEL_SELLER' : 'HOUSE_OPS');
 
         // Special Seller Discount by Percentage ('PERCENT') or Fixed Amount ('AMOUNT')
         $reqDiscType   = strtoupper(trim((string) ($rawIn['discount_type'] ?? 'NONE')));
@@ -3719,7 +3820,7 @@ if ($method === 'POST') {
         $reqDiscCurr   = strtoupper(trim((string) ($rawIn['discount_currency'] ?? ($rawIn['deposit_currency'] ?? 'EUR'))));
         $reqDiscReason = clean_line($rawIn['discount_reason'] ?? '', 160);
 
-        $policyUser     = $resolvedSeller ? (string) $resolvedSeller['username'] : (string) $user['username'];
+        $policyUser     = $isOnlineDirectVoucher ? 'website.online' : ($resolvedSeller ? (string) $resolvedSeller['username'] : (string) $user['username']);
         $discPolicy     = sc_erp_get_seller_discount_policy($pdo, $policyUser);
         $isOwnerOverride= in_array('bi.view_executive', $ctx['perms'], true);
 
@@ -3806,7 +3907,7 @@ if ($method === 'POST') {
         // Commission starts as PENDING_EXECUTION on ACTUAL NET DISCOUNTED AMOUNT ($grossEgp) until BOTH trip is done AND 100% paid!
         $commRes = sc_erp_record_seller_commission($pdo, [
             'seller_token'     => $resolvedSeller ? (string) $resolvedSeller['username'] : '',
-            'sale_mode'        => $saleModeRaw,
+            'sale_mode'        => $isOnlineDirectVoucher ? 'NONE' : $saleModeRaw,
             'tx_date'          => $tripDt,
             'voucher_no'       => $voNo,
             'guest_name'       => $guest,
@@ -3834,27 +3935,30 @@ if ($method === 'POST') {
               desk_paid_egp, deposit_egp_equiv, actual_paid_total_egp, supplier_cost_egp,
               estimated_revenue_egp, estimated_cogs_egp, estimated_profit_egp, vessel_code,
               boarding_status, payment_status, booking_state, workflow_stage, source_file,
-              seller_type, seller_username, seller_commission_egp, commission_type, commission_status)
-             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?)'
+              seller_type, seller_username, seller_commission_egp, commission_type, commission_status,
+              online_hub_source, online_seller_account)
+             VALUES (?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?,?,?,?,?, ?,?,?, ?,?,?,?, ?,?,?,?,?,?, 0,0,0,0,?,?,?,?, ?,?,?,?, ?,?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?,?,?, ?, ?,?,?,?,?, ?,?)'
         );
         $ins->execute([
             $voNo, $qrTok, $tripDt, $wk, $mo, $qr, $yr,
-            $branch, 'MOBILE_APP', $hotel, '', $room, $nat, $pickup,
-            $tripName, $masterTrip ? (string) $masterTrip['trip_code'] : $prodCode, 'MOBILE_VOUCHER', $adults, $children, $infants, $pax,
+            $branch, $isOnlineDirectVoucher ? 'WEBSITE_ONLINE' : 'MOBILE_APP', $hotel, '', $room, $nat, $pickup,
+            $tripName, $masterTrip ? (string) $masterTrip['trip_code'] : $prodCode, $isOnlineDirectVoucher ? 'WEBSITE_ONLINE_BOOKING' : 'MOBILE_VOUCHER', $adults, $children, $infants, $pax,
             $adlEur, $chdEur, $infEur,
             $adults, $children, $infants, $grossEgp,
             $listTotalEgp, $discTypeOut, $discValOut, $discCurrOut, $discEgpOut, $reqDiscReason,
             $guest, $guestPh, $guestEm, $safariBreakdownJson,
-            $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', 'DIRECT',
+            $repName, $supName, $supCode !== 'SEA_COLLEGE' ? $supCode : '', $isOnlineDirectVoucher ? $onlineHubSrc : 'DIRECT',
             $rEgp, $rUsd, $rEur, $rGbp, $restEq,
             $depositEgp, $depositEgp, $depositEgp, $supplierCostEgp,
             $grossEgp, $cogsEgp, $profEgp,
-            '', 'BOOKED', $restEq > 0 ? 'OPEN_REST' : 'PAID', 'EXECUTED', 'SELLER_CONFIRMED_PENDING_OPS', 'LIVE_MOBILE_APP',
+            '', $isOnlineDirectVoucher ? 'CONFIRMED' : 'BOOKED', $restEq > 0 ? 'OPEN_REST' : 'PAID', 'EXECUTED', $isOnlineDirectVoucher ? 'CONFIRMED_OPS' : 'SELLER_CONFIRMED_PENDING_OPS', $isOnlineDirectVoucher ? 'LIVE_ONLINE_HUB' : 'LIVE_MOBILE_APP',
             $sellerType,
             $commRes['seller_username'],
             $commRes['commission_egp'],
             $commRes['commission_type'],
             $commRes['commission_status'],
+            $onlineHubSrc,
+            $onlineSellerAcc,
         ]);
         $createdVid = (int) $pdo->lastInsertId();
 
@@ -3868,7 +3972,7 @@ if ($method === 'POST') {
             'lang'            => $guestLg,
             'hotel_name'      => $hotel,
             'room_no'         => $room,
-            'seller_username' => $resolvedSeller ? (string) $resolvedSeller['username'] : '',
+            'seller_username' => $isOnlineDirectVoucher ? 'website.online' : ($resolvedSeller ? (string) $resolvedSeller['username'] : ''),
             'trip_name'       => $tripName,
             'trip_date'       => $tripDt,
             'booked_egp'      => $grossEgp,
@@ -5794,6 +5898,45 @@ if ($method === 'POST') {
 
         echo json_encode(array_merge(['ok' => true], $res), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
+    }
+
+    /* ---------------- CONFIRM WEBSITE LEAD OR REGISTER ONLINE HUB SUCCESS SALE (`confirm_website_lead_sale` / `register_online_hub_sale` — v3.7) ---------------- */
+    if ($action === 'confirm_website_lead_sale' || $action === 'register_online_hub_sale') {
+        erp_require_perm($ctx, 'crm.manage_leads_ads', 'bi.view_executive', 'gl.view_all_ledgers', 'ops.assign_boat_driver');
+        $me = $ctx['user'];
+        if (in_array(strtoupper((string) ($me['role_code'] ?? '')), ['SALES_REP', 'GUEST_CUSTOMER', 'FLEET_PARTNER'], true)) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'Only Online Concierge, Operations, Accounting, or Owners can register unified Online Sales']);
+            exit;
+        }
+
+        try {
+            if (!empty($rawIn['sales_batch']) && is_array($rawIn['sales_batch'])) {
+                $results = [];
+                foreach ($rawIn['sales_batch'] as $item) {
+                    if (!is_array($item)) {
+                        continue;
+                    }
+                    $results[] = sc_erp_register_or_confirm_online_sale($pdo, $item, $me);
+                }
+                echo json_encode([
+                    'ok'               => true,
+                    'batch_count'      => count($results),
+                    'registered_sales' => $results,
+                    'seller_account'   => 'website.online',
+                    'sales_rep'        => 'WEBSITE',
+                ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                exit;
+            }
+
+            $res = sc_erp_register_or_confirm_online_sale($pdo, $rawIn, $me);
+            echo json_encode($res, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            exit;
+        } catch (Throwable $e) {
+            http_response_code(422);
+            echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
     }
 }
 

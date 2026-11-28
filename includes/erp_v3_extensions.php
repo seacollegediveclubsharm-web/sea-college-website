@@ -79,10 +79,30 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
         'guest_email'            => "TEXT NOT NULL DEFAULT ''",
         'guest_account_username' => "TEXT NOT NULL DEFAULT ''",
         'safari_breakdown_json'  => "TEXT NOT NULL DEFAULT ''",
+        'online_hub_source'      => "TEXT NOT NULL DEFAULT ''",
+        'online_seller_account'  => "TEXT NOT NULL DEFAULT ''",
     ];
     foreach ($resAddCols as $col => $ddl) {
         if (!isset($haveResCols[$col])) {
             $pdo->exec("ALTER TABLE reservations_fact ADD COLUMN {$col} {$ddl}");
+        }
+    }
+
+    $haveCrmCols = array_flip(array_column($pdo->query('PRAGMA table_info(website_leads_crm)')->fetchAll(), 'name'));
+    $crmAddCols = [
+        'online_hub_source'     => "TEXT NOT NULL DEFAULT 'WEBSITE_DIRECT'",
+        'online_seller_account' => "TEXT NOT NULL DEFAULT ''",
+        'adults'                => 'INTEGER NOT NULL DEFAULT 1',
+        'children'              => 'INTEGER NOT NULL DEFAULT 0',
+        'infants'               => 'INTEGER NOT NULL DEFAULT 0',
+        'paid_deposit_egp'      => 'REAL NOT NULL DEFAULT 0',
+        'rest_due_egp'          => 'REAL NOT NULL DEFAULT 0',
+        'confirmed_at'          => "TEXT NOT NULL DEFAULT ''",
+        'confirmed_by'          => "TEXT NOT NULL DEFAULT ''",
+    ];
+    foreach ($crmAddCols as $cCol => $cDdl) {
+        if (!isset($haveCrmCols[$cCol])) {
+            $pdo->exec("ALTER TABLE website_leads_crm ADD COLUMN {$cCol} {$cDdl}");
         }
     }
 
@@ -407,6 +427,7 @@ function sc_erp_ensure_v3_extensions(PDO $pdo): void
 
     sc_erp_seed_suppliers_and_cost_matrix($pdo);
     sc_erp_seed_staff_bonuses_allowances($pdo);
+    sc_erp_ensure_online_seller_v37($pdo);
 }
 
 /**
@@ -2362,7 +2383,7 @@ function sc_erp_self_financial_entity(array $user): array
 {
     $role  = strtoupper((string) ($user['role_code'] ?? ''));
     $uname = strtolower(trim((string) ($user['username'] ?? '')));
-    if ($role === 'SALES_REP') {
+    if ($role === 'SALES_REP' || $role === 'ONLINE_SELLER') {
         return ['entity_type' => 'SALES_REP', 'entity_code' => $uname];
     }
     if ($role === 'FLEET_PARTNER') {
@@ -2405,9 +2426,12 @@ function sc_erp_can_access_entity_dossier(array $user, array $perms, string $ent
     if (in_array('safe.view_balances', $perms, true)) {
         return in_array($eType, ['SUPPLIER', 'SALES_REP', 'STAFF', 'CLIENT_AR'], true);
     }
-    // Operations Manager (`ahmed.nasr`) can inspect Suppliers & operational Staff/Crew + own statement
+    // Operations Manager (`ahmed.nasr`) can inspect Suppliers & operational Staff/Crew + Unified Online Seller + own statement
     if (in_array('ops.assign_boat_driver', $perms, true)) {
         if ($eType === 'SUPPLIER') {
+            return true;
+        }
+        if ($eType === 'SALES_REP' && strtolower($eCode) === 'website.online') {
             return true;
         }
         if ($eType === 'STAFF') {
@@ -2416,9 +2440,13 @@ function sc_erp_can_access_entity_dossier(array $user, array $perms, string $ent
         }
         return false;
     }
-    // Sales Reps see strictly their own personal financial dossier (zero horizontal leakage across sellers)
-    if ($role === 'SALES_REP') {
+    // Sales Reps & Unified Online Seller see strictly their own dossier
+    if ($role === 'SALES_REP' || $role === 'ONLINE_SELLER') {
         return $eType === 'SALES_REP' && strtolower($eCode) === $uname;
+    }
+    // Customer Care (`lara.care` / `crm.manage_leads_ads`) can inspect Unified Website & Online Seller dossier + own Staff dossier
+    if (in_array('crm.manage_leads_ads', $perms, true) && $eType === 'SALES_REP' && strtolower($eCode) === 'website.online') {
+        return true;
     }
     // Fleet Partners see strictly their own vessel lease/equity account (`T2_F15_03`)
     if ($role === 'FLEET_PARTNER') {
@@ -2931,15 +2959,19 @@ function sc_erp_build_entity_financial_dossier(PDO $pdo, string $entityType, str
         ];
     }
 
-    /* ==================== 2. SALES REP (`SALES_REP` — All 18 Sellers) ==================== */
+    /* ==================== 2. SALES REP (`SALES_REP` — All 18 Sellers + Unified `website.online`) ==================== */
     if ($eType === 'SALES_REP') {
-        $uSt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(?) AND role_code = 'SALES_REP' LIMIT 1");
-        $uSt->execute([$code]);
+        $normTarget = sc_erp_is_online_unified_seller_token($code) ? 'website.online' : $code;
+        $uSt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(?) AND role_code IN ('SALES_REP', 'ONLINE_SELLER') LIMIT 1");
+        $uSt->execute([$normTarget]);
         $uRow = $uSt->fetch();
         if (!$uRow) {
             return null;
         }
         $uname = (string) $uRow['username'];
+        if (strtolower($uname) === 'website.online') {
+            return sc_erp_build_online_seller_financial_dossier($pdo, $uRow);
+        }
         $pMap  = sc_erp_staff_and_seller_payroll_map()[$uname] ?? ['payroll_ar' => '', 'adv_code' => ''];
 
         // A) Prior settled commissions (`PAID_SETTLED` in `seller_commissions_ledger`) — accrued + settled
@@ -3233,7 +3265,7 @@ function sc_erp_build_entity_financial_dossier(PDO $pdo, string $entityType, str
             $titleEn   = 'Operational Staff & Crew (Carried-Forward Advance)';
             $titleAr   = 'طاقم العمل والمدربين (حساب السلف المرحلة)';
         } else {
-            $uSt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(?) AND role_code NOT IN ('SALES_REP', 'GUEST_CUSTOMER') LIMIT 1");
+            $uSt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(?) AND role_code NOT IN ('SALES_REP', 'ONLINE_SELLER', 'GUEST_CUSTOMER') LIMIT 1");
             $uSt->execute([$code]);
             $uRow = $uSt->fetch();
             if (!$uRow) {
@@ -3637,14 +3669,14 @@ function sc_erp_build_all_financial_entities_summary(PDO $pdo, array $user, arra
         $candidates[] = ['SUPPLIER', (string) $sc];
     }
 
-    // 2) All 18 Sales Reps
-    $selUsers = array_column($pdo->query("SELECT username FROM users WHERE role_code = 'SALES_REP' AND is_active = 1 ORDER BY id ASC")->fetchAll(), 'username');
+    // 2) Unified Website & Online Seller (`website.online`) + All 18 Hotel Sales Reps
+    $selUsers = array_column($pdo->query("SELECT username FROM users WHERE role_code IN ('ONLINE_SELLER', 'SALES_REP') AND is_active = 1 ORDER BY CASE WHEN role_code = 'ONLINE_SELLER' THEN 0 ELSE 1 END, id ASC")->fetchAll(), 'username');
     foreach ($selUsers as $su) {
         $candidates[] = ['SALES_REP', (string) $su];
     }
 
     // 3) All Staff: System staff accounts + Individual Oct 2026 Payroll Crew/Instructors + Carried-Forward Staff Advance accounts
-    $sysStaff = array_column($pdo->query("SELECT username FROM users WHERE role_code NOT IN ('SALES_REP', 'FLEET_PARTNER', 'GUEST_CUSTOMER') AND is_active = 1 ORDER BY id ASC")->fetchAll(), 'username');
+    $sysStaff = array_column($pdo->query("SELECT username FROM users WHERE role_code NOT IN ('SALES_REP', 'ONLINE_SELLER', 'FLEET_PARTNER', 'GUEST_CUSTOMER') AND is_active = 1 ORDER BY id ASC")->fetchAll(), 'username');
     foreach ($sysStaff as $stU) {
         $candidates[] = ['STAFF', (string) $stU];
     }
@@ -3970,7 +4002,1067 @@ function sc_erp_record_party_financial_transaction(PDO $pdo, array $in, array $a
     ];
 }
 
+/* ==========================================================================================
+ * ERP v3.7 — UNIFIED WEBSITE & ALL ONLINE HUBS SELLER ENGINE (`website.online` / `WEBSITE`)
+ * Unites Direct Website (8 languages) + WhatsApp + Meta/Instagram/Facebook + Google Ads +
+ * TikTok/YouTube + Tripadvisor + Viator + GetYourGuide + Klook/OTA + Email under ONE Online Seller.
+ * ========================================================================================== */
 
+/**
+ * Idempotently provision the `ONLINE_SELLER` role, `WEBSITE` branch, and unified `website.online` seller account.
+ * Note: Uses `role_code = 'ONLINE_SELLER'` so the 18 human `SALES_REP` hotel sellers count stays strictly 18.
+ */
+function sc_erp_ensure_online_seller_v37(PDO $pdo): void
+{
+    $pdo->exec(
+        "INSERT OR IGNORE INTO branches (code, name_en, name_ar, location, is_active)
+         VALUES ('WEBSITE', 'Website & Online Hubs (8-Lang)', 'الموقع الإلكتروني ومنصات الأونلاين', 'https://seacollegediveclub.com', 1);
 
+         INSERT OR IGNORE INTO roles (role_code, name_en, name_ar, department, hierarchy_level, default_dashboard, description_en, description_ar)
+         VALUES (
+             'ONLINE_SELLER',
+             'Unified Website & Online Hubs Seller',
+             'البائع الموحد للموقع وجميع منصات الأونلاين',
+             'ONLINE_SALES',
+             45,
+             'website_crm',
+             'Single unified seller account aggregating all confirmed bookings from seacollegediveclub.com and all online hubs (WhatsApp, Meta, Google, Tripadvisor, Viator, GetYourGuide, OTA)',
+             'حساب البائع الموحد الذي يجمع كافة الحجوزات والمبيعات المؤكدة من الموقع الرسمي وجميع منصات الأونلاين في مكان واحد'
+         );
 
+         INSERT OR IGNORE INTO role_permissions (role_code, perm_code) VALUES
+             ('ONLINE_SELLER', 'sales.create_voucher'),
+             ('ONLINE_SELLER', 'sales.view_own_sales'),
+             ('ONLINE_SELLER', 'crm.manage_leads_ads'),
+             ('ONLINE_SELLER', 'ops.view_manifests');"
+    );
 
+    $chk = $pdo->query("SELECT id FROM users WHERE LOWER(username) = 'website.online' LIMIT 1")->fetchColumn();
+    if (!$chk) {
+        $pwHash = password_hash('WebsiteHub@2026', PASSWORD_DEFAULT);
+        $ins = $pdo->prepare(
+            'INSERT INTO users
+             (username, password_hash, pin_hint, emp_code, display_name_en, display_name_ar,
+              role_code, branch_scope, vessel_scope, rep_scope, is_active, created_at,
+              job_title_en, job_title_ar, phone, email, avatar_url, bio_notes, updated_at,
+              referral_code, default_comm_insheet_pct, default_comm_outside_pct)
+             VALUES (?,?,?,?,?,?, ?,?,?,?,1,?, ?,?,?,?,?,?,?, ?,0.0,0.0)'
+        );
+        $ins->execute([
+            'website.online',
+            $pwHash,
+            'Online Hub Seller',
+            'EMP_ONL_01',
+            'Website & Online Hubs (Unified Seller)',
+            'مبيعات الموقع والأونلاين الموحدة',
+            'ONLINE_SELLER',
+            'WEBSITE',
+            'ALL',
+            'WEBSITE',
+            '2026-01-01T00:00:00Z',
+            'Unified Website, WhatsApp, Social & OTA Seller',
+            'البائع الموحد للموقع والواتساب والسوشيال ومنصات الأونلاين',
+            '+20 11 14567886',
+            'info@seacollegediveclub.com',
+            '/assets/images/logo-192.png',
+            'Unified Online Seller combining seacollegediveclub.com (8 languages), WhatsApp, Instagram/Facebook, Google Ads, Tripadvisor, Viator, GetYourGuide & OTA hubs.',
+            '',
+            'website',
+        ]);
+    }
+
+    $pdo->exec(
+        "INSERT OR IGNORE INTO seller_targets_config
+         (seller_username, is_target_active, daily_target_egp, weekly_target_egp, monthly_target_egp, monthly_trips_target, is_discount_enabled, max_discount_pct, max_discount_eur, updated_by, updated_at)
+         VALUES ('website.online', 1, 25000, 175000, 750000, 120, 1, 20, 50, 'SYSTEM', '2026-11-28T00:00:00Z')"
+    );
+}
+
+/**
+ * Canonical dictionary of all Online Hubs unified under Seller `WEBSITE` (`website.online`).
+ *
+ * @return array<string, array{code:string, icon:string, label_en:string, label_ar:string, short_en:string, short_ar:string}>
+ */
+function sc_erp_online_hubs_catalog(): array
+{
+    return [
+        'WEBSITE_DIRECT' => [
+            'code'     => 'WEBSITE_DIRECT',
+            'icon'     => '🌐',
+            'label_en' => 'Official Website Direct (seacollegediveclub.com — 8 Langs)',
+            'label_ar' => 'الموقع الرسمي المباشر (seacollegediveclub.com)',
+            'short_en' => 'Website Direct',
+            'short_ar' => 'الموقع المباشر',
+        ],
+        'WHATSAPP_ONLINE' => [
+            'code'     => 'WHATSAPP_ONLINE',
+            'icon'     => '💬',
+            'label_en' => 'WhatsApp Online Concierge (+201114567886)',
+            'label_ar' => 'واتساب خدمة العملاء والأونلاين',
+            'short_en' => 'WhatsApp Hub',
+            'short_ar' => 'واتساب أونلاين',
+        ],
+        'META_INSTAGRAM_FB' => [
+            'code'     => 'META_INSTAGRAM_FB',
+            'icon'     => '📱',
+            'label_en' => 'Instagram & Facebook Inbox / Meta Ads',
+            'label_ar' => 'انستجرام وفيسبوك وإعلانات ميتا',
+            'short_en' => 'Instagram & Facebook',
+            'short_ar' => 'انستجرام وفيسبوك',
+        ],
+        'GOOGLE_ADS' => [
+            'code'     => 'GOOGLE_ADS',
+            'icon'     => '🔍',
+            'label_en' => 'Google Search, Performance Max & Google Maps',
+            'label_ar' => 'جوجل وإعلانات البحث وخرائط جوجل',
+            'short_en' => 'Google Ads & Maps',
+            'short_ar' => 'جوجل وخرائط جوجل',
+        ],
+        'TIKTOK_YOUTUBE' => [
+            'code'     => 'TIKTOK_YOUTUBE',
+            'icon'     => '🎬',
+            'label_en' => 'TikTok & YouTube Video Hub',
+            'label_ar' => 'تيك توك ويوتيوب',
+            'short_en' => 'TikTok / YouTube',
+            'short_ar' => 'تيك توك / يوتيوب',
+        ],
+        'TRIPADVISOR' => [
+            'code'     => 'TRIPADVISOR',
+            'icon'     => '🦉',
+            'label_en' => 'Tripadvisor Online Hub',
+            'label_ar' => 'منصة تريب أدفايزور (Tripadvisor)',
+            'short_en' => 'Tripadvisor',
+            'short_ar' => 'تريب أدفايزور',
+        ],
+        'VIATOR' => [
+            'code'     => 'VIATOR',
+            'icon'     => '🧭',
+            'label_en' => 'Viator Experiences Hub',
+            'label_ar' => 'منصة فياتور (Viator)',
+            'short_en' => 'Viator',
+            'short_ar' => 'فياتور',
+        ],
+        'GETYOURGUIDE' => [
+            'code'     => 'GETYOURGUIDE',
+            'icon'     => '🎟️',
+            'label_en' => 'GetYourGuide Hub',
+            'label_ar' => 'منصة جيت يور جايد (GetYourGuide)',
+            'short_en' => 'GetYourGuide',
+            'short_ar' => 'جيت يور جايد',
+        ],
+        'KLOOK_OTA' => [
+            'code'     => 'KLOOK_OTA',
+            'icon'     => '🌍',
+            'label_en' => 'Klook / Booking.com / Other Online OTA Hub',
+            'label_ar' => 'كلوك / بوكينج / منصات حجز أونلاين أخرى',
+            'short_en' => 'Klook / Booking / OTA',
+            'short_ar' => 'منصات OTA أخرى',
+        ],
+        'EMAIL_CONCIERGE' => [
+            'code'     => 'EMAIL_CONCIERGE',
+            'icon'     => '✉️',
+            'label_en' => 'Direct Email & Online Concierge',
+            'label_ar' => 'البريد الإلكتروني وخدمة الأونلاين',
+            'short_en' => 'Email Concierge',
+            'short_ar' => 'إيميل أونلاين',
+        ],
+    ];
+}
+
+/**
+ * Normalize or auto-detect which Online Hub originated a booking/lead while keeping all hubs under Seller `WEBSITE`.
+ *
+ * @param array<string,mixed> $data
+ */
+function sc_erp_detect_online_hub(array $data): string
+{
+    $cat = sc_erp_online_hubs_catalog();
+    $explicit = strtoupper(trim((string) ($data['online_hub_source'] ?? $data['online_hub'] ?? $data['hub_source'] ?? '')));
+    if ($explicit !== '') {
+        if (isset($cat[$explicit])) {
+            return $explicit;
+        }
+        $aliasMap = [
+            'WEBSITE'      => 'WEBSITE_DIRECT',
+            'WEB'          => 'WEBSITE_DIRECT',
+            'DIRECT'       => 'WEBSITE_DIRECT',
+            'WHATSAPP'     => 'WHATSAPP_ONLINE',
+            'WA'           => 'WHATSAPP_ONLINE',
+            'META'         => 'META_INSTAGRAM_FB',
+            'FACEBOOK'     => 'META_INSTAGRAM_FB',
+            'INSTAGRAM'    => 'META_INSTAGRAM_FB',
+            'IG'           => 'META_INSTAGRAM_FB',
+            'FB'           => 'META_INSTAGRAM_FB',
+            'GOOGLE'       => 'GOOGLE_ADS',
+            'MAPS'         => 'GOOGLE_ADS',
+            'TIKTOK'       => 'TIKTOK_YOUTUBE',
+            'YOUTUBE'      => 'TIKTOK_YOUTUBE',
+            'GYG'          => 'GETYOURGUIDE',
+            'GET_YOUR_GUIDE' => 'GETYOURGUIDE',
+            'KLOOK'        => 'KLOOK_OTA',
+            'BOOKING'      => 'KLOOK_OTA',
+            'OTA'          => 'KLOOK_OTA',
+            'EMAIL'        => 'EMAIL_CONCIERGE',
+        ];
+        if (isset($aliasMap[$explicit])) {
+            return $aliasMap[$explicit];
+        }
+    }
+
+    $leadType = strtoupper(trim((string) ($data['lead_type'] ?? '')));
+    if ($leadType === 'WHATSAPP_CLICK') {
+        return 'WHATSAPP_ONLINE';
+    }
+
+    $gclid  = trim((string) ($data['gclid'] ?? ''));
+    $fbclid = trim((string) ($data['fbclid'] ?? ''));
+    $ttclid = trim((string) ($data['ttclid'] ?? ''));
+    $utmSrc = strtolower(trim((string) ($data['utm_source'] ?? $data['first_channel'] ?? $data['last_channel'] ?? $data['client_agency'] ?? '')));
+
+    if ($gclid !== '' || str_contains($utmSrc, 'google') || str_contains($utmSrc, 'gmaps')) {
+        return 'GOOGLE_ADS';
+    }
+    if ($fbclid !== '' || str_contains($utmSrc, 'meta') || str_contains($utmSrc, 'instagram') || str_contains($utmSrc, 'facebook') || $utmSrc === 'ig' || $utmSrc === 'fb') {
+        return 'META_INSTAGRAM_FB';
+    }
+    if ($ttclid !== '' || str_contains($utmSrc, 'tiktok') || str_contains($utmSrc, 'youtube')) {
+        return 'TIKTOK_YOUTUBE';
+    }
+    if (str_contains($utmSrc, 'whatsapp') || $utmSrc === 'wa') {
+        return 'WHATSAPP_ONLINE';
+    }
+    if (str_contains($utmSrc, 'tripadvisor')) {
+        return 'TRIPADVISOR';
+    }
+    if (str_contains($utmSrc, 'viator')) {
+        return 'VIATOR';
+    }
+    if (str_contains($utmSrc, 'getyourguide') || str_contains($utmSrc, 'gyg')) {
+        return 'GETYOURGUIDE';
+    }
+    if (str_contains($utmSrc, 'klook') || str_contains($utmSrc, 'booking') || str_contains($utmSrc, 'expedia') || str_contains($utmSrc, 'ota')) {
+        return 'KLOOK_OTA';
+    }
+    if (str_contains($utmSrc, 'email') || str_contains($utmSrc, 'mail')) {
+        return 'EMAIL_CONCIERGE';
+    }
+
+    return 'WEBSITE_DIRECT';
+}
+
+/**
+ * Check if a raw seller token refers to the single unified Online Seller (`website.online` / `WEBSITE`).
+ */
+function sc_erp_is_online_unified_seller_token(?string $raw): bool
+{
+    if ($raw === null) {
+        return false;
+    }
+    $clean = strtolower(trim($raw));
+    $clean = ltrim($clean, '@');
+    return in_array($clean, [
+        'website.online',
+        'website',
+        'online',
+        'online_website',
+        'online_direct',
+        'website_online',
+        'emp_onl_01',
+        'seacollegediveclub.com',
+    ], true);
+}
+
+/**
+ * Fetch the unified `website.online` user row (`role_code = 'ONLINE_SELLER'`).
+ *
+ * @return array<string,mixed>|null
+ */
+function sc_erp_get_online_seller_user(PDO $pdo): ?array
+{
+    $st = $pdo->query(
+        "SELECT id, username, display_name_en, display_name_ar, role_code, branch_scope, rep_scope,
+                referral_code, default_comm_insheet_pct, default_comm_outside_pct, phone, email, avatar_url,
+                job_title_en, job_title_ar
+         FROM users
+         WHERE LOWER(username) = 'website.online' AND is_active = 1
+         LIMIT 1"
+    );
+    $u = $st ? $st->fetch() : false;
+    return $u ?: null;
+}
+
+/**
+ * Canonical SQL WHERE fragment matching ALL historical & live reservations under the unified Online Seller (`website.online`).
+ * Excludes any booking credited to a human `*.sales` hotel representative.
+ */
+function sc_erp_online_seller_sql_where(string $alias = ''): string
+{
+    $p = $alias !== '' ? rtrim($alias, '.') . '.' : '';
+    return "(
+        LOWER(COALESCE({$p}online_seller_account, '')) = 'website.online'
+        OR LOWER(COALESCE({$p}seller_username, '')) = 'website.online'
+        OR (
+            COALESCE({$p}seller_username, '') = ''
+            AND (
+                UPPER(COALESCE({$p}seller_type, '')) = 'ONLINE_DIRECT'
+                OR UPPER(COALESCE({$p}sales_rep, '')) IN ('WEBSITE', 'ONLINE', 'ONLINE_WEBSITE')
+            )
+        )
+    )";
+}
+
+/**
+ * Build the 360° Financial Dossier for the Unified Website & All Online Hubs Seller (`website.online`).
+ * Tracks Gross Confirmed Online Sales (+), Collected Deposits / Safe / Gateway Settlements (-), and Open Uncollected REST.
+ *
+ * @param array<string,mixed> $uRow
+ * @return array<string,mixed>
+ */
+function sc_erp_build_online_seller_financial_dossier(PDO $pdo, array $uRow): array
+{
+    $rawLines  = [];
+    $whereOnl  = sc_erp_online_seller_sql_where();
+    $hubsCat   = sc_erp_online_hubs_catalog();
+
+    // 1) Historical monthly Online Direct reservations (grouped cleanly by month)
+    $histSt = $pdo->query(
+        "SELECT period_month,
+                COUNT(*) AS cnt,
+                COALESCE(SUM(total_pax), 0) AS pax,
+                ROUND(COALESCE(SUM(CASE WHEN actual_paid_total_egp > 0 THEN actual_paid_total_egp ELSE estimated_revenue_egp END), 0), 2) AS gross_egp,
+                ROUND(COALESCE(SUM(rest_egp_equiv), 0), 2) AS open_rest_egp
+         FROM reservations_fact
+         WHERE {$whereOnl}
+           AND booking_state = 'EXECUTED'
+           AND source_file NOT IN ('LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB', 'LIVE_MOBILE_APP', 'SELLER_SHARE_LINK')
+         GROUP BY period_month
+         ORDER BY period_month ASC"
+    );
+    foreach (($histSt ? $histSt->fetchAll() : []) as $hm) {
+        $gross = round((float) ($hm['gross_egp'] ?? 0.0), 2);
+        if ($gross <= 0.0) {
+            continue;
+        }
+        $openR = round((float) ($hm['open_rest_egp'] ?? 0.0), 2);
+        $coll  = round(max(0.0, $gross - $openR), 2);
+        $mo    = (string) ($hm['period_month'] ?: '2026-10');
+        $rawLines[] = [
+            'tx_date'        => $mo . '-28',
+            'sort_seq'       => 10,
+            'ref_no'         => 'ONL-REV-' . $mo,
+            'line_group'     => 'ACCRUAL',
+            'tx_kind'        => 'ONLINE_REVENUE',
+            'badge_en'       => 'Online Sales Revenue',
+            'badge_ar'       => 'إيرادات مبيعات الأونلاين',
+            'description_en' => "{$mo} Audited Website & Online Hubs Sales ({$hm['cnt']} bookings / {$hm['pax']} PAX)",
+            'description_ar' => "إجمالي مبيعات الموقع والأونلاين المعتمدة لشهر {$mo} ({$hm['cnt']} حجز / {$hm['pax']} فرد)",
+            'payment_method' => 'WEBSITE_ONLINE',
+            'orig_currency'  => 'EGP',
+            'orig_amount'    => $gross,
+            'plus_egp'       => $gross,
+            'minus_egp'      => 0.0,
+        ];
+        if ($coll > 0.0) {
+            $rawLines[] = [
+                'tx_date'        => $mo . '-30',
+                'sort_seq'       => 15,
+                'ref_no'         => 'ONL-COL-' . $mo,
+                'line_group'     => 'INSTALLMENT',
+                'tx_kind'        => 'ONLINE_COLLECTION',
+                'badge_en'       => 'Collected & Remitted',
+                'badge_ar'       => 'تحصيل وتوريد خزينة/فيزا',
+                'description_en' => "{$mo} Online Sales Collected & Settled into Company Safe / POS",
+                'description_ar' => "تحصيلات مبيعات الأونلاين الموردة لخزينة الشركة والفيزا لشهر {$mo}",
+                'payment_method' => 'ONLINE_SAFE_POS',
+                'orig_currency'  => 'EGP',
+                'orig_amount'    => $coll,
+                'plus_egp'       => 0.0,
+                'minus_egp'      => $coll,
+            ];
+        }
+    }
+
+    // 2) Live confirmed Website & Online Hub sales (itemized per voucher!)
+    $liveSt = $pdo->query(
+        "SELECT * FROM reservations_fact
+         WHERE {$whereOnl}
+           AND booking_state = 'EXECUTED'
+           AND source_file IN ('LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB', 'LIVE_MOBILE_APP', 'SELLER_SHARE_LINK')
+         ORDER BY trip_date ASC, id ASC"
+    );
+    $liveVouchers = $liveSt ? $liveSt->fetchAll() : [];
+    foreach ($liveVouchers as $lv) {
+        $gross = round((float) (($lv['actual_paid_total_egp'] ?? 0) > 0 ? $lv['actual_paid_total_egp'] : ($lv['estimated_revenue_egp'] ?? 0.0)), 2);
+        if ($gross <= 0.0) {
+            continue;
+        }
+        $paidDep  = round((float) ($lv['deposit_egp_equiv'] ?? 0.0) + (float) ($lv['collected_rest_egp'] ?? 0.0), 2);
+        $openRest = round((float) ($lv['rest_egp_equiv'] ?? 0.0), 2);
+        if ($paidDep <= 0.0 && $openRest <= 0.0 && strtoupper((string) ($lv['payment_status'] ?? '')) === 'PAID') {
+            $paidDep = $gross;
+        }
+        $hubCode  = sc_erp_detect_online_hub($lv);
+        $hubMeta  = $hubsCat[$hubCode] ?? $hubsCat['WEBSITE_DIRECT'];
+        $tDate    = (string) ($lv['trip_date'] ?: gmdate('Y-m-d'));
+        $voNo     = (string) $lv['voucher_no'];
+        $gName    = (string) ($lv['divers_names'] ?: 'Online Guest');
+        $tName    = (string) ($lv['trip_name'] ?: 'Online Trip');
+
+        $rawLines[] = [
+            'tx_date'        => $tDate,
+            'sort_seq'       => 22,
+            'ref_no'         => $voNo,
+            'line_group'     => 'ACCRUAL',
+            'tx_kind'        => 'ONLINE_BOOKING_CONFIRMED',
+            'badge_en'       => $hubMeta['icon'] . ' ' . $hubMeta['short_en'],
+            'badge_ar'       => $hubMeta['icon'] . ' ' . $hubMeta['short_ar'],
+            'description_en' => "Confirmed Online Booking {$voNo}: {$gName} — {$tName} ({$lv['total_pax']} PAX)",
+            'description_ar' => "حجز أونلاين مؤكد {$voNo}: {$gName} — {$tName} ({$lv['total_pax']} أفراد)",
+            'payment_method' => $hubCode,
+            'orig_currency'  => 'EGP',
+            'orig_amount'    => $gross,
+            'plus_egp'       => $gross,
+            'minus_egp'      => 0.0,
+        ];
+        if ($paidDep > 0.0) {
+            $rawLines[] = [
+                'tx_date'        => $tDate,
+                'sort_seq'       => 26,
+                'ref_no'         => 'DEP-' . $voNo,
+                'line_group'     => 'INSTALLMENT',
+                'tx_kind'        => 'DEPOSIT',
+                'badge_en'       => 'Online / Safe Paid',
+                'badge_ar'       => 'مدفوع / محصل للشركة',
+                'description_en' => "Deposit / Payment Collected on {$voNo} ({$gName})",
+                'description_ar' => "مبلغ محصل ومؤكد على حجز {$voNo} ({$gName})",
+                'payment_method' => $hubCode,
+                'orig_currency'  => 'EGP',
+                'orig_amount'    => $paidDep,
+                'plus_egp'       => 0.0,
+                'minus_egp'      => $paidDep,
+            ];
+        }
+    }
+
+    // 3) Append any explicit accounting settlements/transfers recorded on `website.online` via `financial_party_transactions`
+    sc_erp_append_live_party_tx_lines($pdo, 'SALES_REP', 'website.online', $rawLines);
+    $fin = sc_erp_finalize_statement_lines($rawLines, 'CLIENT_AR');
+
+    $fBal = (float) $fin['final_balance_egp'];
+    if (abs($fBal) < 0.5) {
+        $fin['balance_status_en'] = 'All Online Sales Collected & Settled (0 Open REST)';
+        $fin['balance_status_ar'] = 'جميع مبيعات الأونلاين محصلة ومقفلة بالكامل (صفر متبقي)';
+    } elseif ($fBal > 0) {
+        $fin['balance_status_en'] = 'Open Uncollected REST / Online Hub Settlements Due to Company';
+        $fin['balance_status_ar'] = 'مبالغ متبقية (REST / منصات أونلاين) مستحقة التحصيل للشركة';
+    } else {
+        $fin['balance_status_en'] = 'Prepaid Online Credit / Over-Collection in Company Safe';
+        $fin['balance_status_ar'] = 'دفعات أونلاين مقدمة لصالح الشركة';
+    }
+
+    $recentSt = $pdo->query(
+        "SELECT voucher_no, trip_date, divers_names, trip_name, total_pax, estimated_revenue_egp,
+                deposit_egp_equiv, collected_rest_egp, rest_egp_equiv, online_hub_source, payment_status, boarding_status
+         FROM reservations_fact
+         WHERE {$whereOnl}
+         ORDER BY CASE WHEN source_file IN ('LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB') THEN 0 ELSE 1 END, trip_date DESC, id DESC
+         LIMIT 50"
+    );
+
+    $profile = [
+        'entity_type'         => 'SALES_REP',
+        'entity_code'         => 'website.online',
+        'name_en'             => (string) $uRow['display_name_en'],
+        'name_ar'             => (string) ($uRow['display_name_ar'] ?: 'مبيعات الموقع والأونلاين الموحدة'),
+        'subtitle_en'         => 'Unified Seller: Website (8 Langs) • WhatsApp • Instagram/FB • Google Ads • Tripadvisor • Viator • GetYourGuide (0% Rep Comm — 100% Company Direct)',
+        'subtitle_ar'         => 'البائع الموحد: الموقع الرسمي • واتساب • انستجرام وفيسبوك • جوجل • تريب أدفايزور • فياتور • جيت يور جايد (0% عمولة مندوب — ربح مباشر للشركة)',
+        'branch_code'         => 'WEBSITE',
+        'settlement_currency' => 'EUR / EGP',
+        'contact_person'      => 'Lara (Online Concierge) & Hossam (Digital Hubs)',
+        'phone'               => '+20 11 14567886',
+        'whatsapp'            => '+20 11 14567886',
+        'payment_terms'       => 'Online Deposit / Full Payment + Jetty REST Collection',
+        'notes'               => 'Official Website: https://seacollegediveclub.com • Online Brochure: https://seacollegediveclub.com/s/website',
+        'avatar_url'          => '/assets/images/logo-192.png',
+        'referral_url'        => 'https://seacollegediveclub.com',
+    ];
+
+    return [
+        'profile'             => $profile,
+        'summary'             => array_merge($fin, ['pending_unboarded_egp' => 0.0]),
+        'installments_ledger' => $fin['installments_ledger'],
+        'statement_lines'     => $fin['statement_lines'],
+        'context'             => [
+            'recent_vouchers'    => $recentSt ? $recentSt->fetchAll() : [],
+            'recent_commissions' => [],
+            'bonuses_allowances' => [],
+        ],
+    ];
+}
+
+/**
+ * Build the complete Unified Website & All Online Hubs Command Center payload (`action=online_sales_hub`).
+ *
+ * @return array<string,mixed>
+ */
+function sc_erp_build_online_sales_hub(PDO $pdo, string $monthFilter = 'ALL', string $hubFilter = 'ALL'): array
+{
+    sc_erp_ensure_online_seller_v37($pdo);
+    $fx      = sc_erp_fx_rates($pdo);
+    $eurRate = max(1.0, (float) ($fx['EUR'] ?? 57.0));
+    $hubsCat = sc_erp_online_hubs_catalog();
+    $whereOnl = sc_erp_online_seller_sql_where();
+
+    $normMonth = preg_match('/^\d{4}-\d{2}$/', trim($monthFilter)) ? trim($monthFilter) : 'ALL';
+    $normHub   = strtoupper(trim($hubFilter));
+    if ($normHub === '' || !isset($hubsCat[$normHub])) {
+        $normHub = 'ALL';
+    }
+
+    $params = [];
+    $extraSql = '';
+    if ($normMonth !== 'ALL') {
+        $extraSql .= ' AND period_month = ?';
+        $params[] = $normMonth;
+    }
+
+    $stAll = $pdo->prepare(
+        "SELECT id, voucher_no, trip_date, period_month, branch_code, channel, hotel_name, room_no, pickup_time,
+                nationality, trip_name, unified_trip_code, adults, children, infants, total_pax,
+                divers_names, guest_phone, guest_email, guest_account_username,
+                sales_rep, client_agency, source_file, seller_type, online_hub_source, online_seller_account,
+                deposit_egp_equiv, collected_rest_egp, rest_egp_equiv,
+                estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp, estimated_cogs_egp,
+                boarding_status, payment_status, booking_state, workflow_stage
+         FROM reservations_fact
+         WHERE {$whereOnl} {$extraSql}
+         ORDER BY CASE WHEN source_file IN ('LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB') THEN 0 ELSE 1 END,
+                  trip_date DESC, id DESC"
+    );
+    $stAll->execute($params);
+    $allOnlineRows = $stAll->fetchAll();
+
+    $hubBuckets = [];
+    foreach ($hubsCat as $hCode => $hMeta) {
+        $hubBuckets[$hCode] = array_merge($hMeta, [
+            'vouchers_count'    => 0,
+            'total_pax'         => 0,
+            'gross_revenue_egp' => 0.0,
+            'collected_egp'     => 0.0,
+            'open_rest_egp'     => 0.0,
+        ]);
+    }
+
+    $totCount     = 0;
+    $histCount    = 0;
+    $liveCount    = 0;
+    $cancelCount  = 0;
+    $totPax       = 0;
+    $totRevEgp    = 0.0;
+    $totPaidEgp   = 0.0;
+    $totRestEgp   = 0.0;
+    $totCostEgp   = 0.0;
+    $confirmedOut = [];
+
+    foreach ($allOnlineRows as $r) {
+        $bState = strtoupper((string) ($r['booking_state'] ?? 'EXECUTED'));
+        if (str_starts_with($bState, 'CANCEL')) {
+            $cancelCount++;
+            continue;
+        }
+        $hCode = sc_erp_detect_online_hub($r);
+        if ($normHub !== 'ALL' && $hCode !== $normHub) {
+            continue;
+        }
+        $hMeta = $hubsCat[$hCode] ?? $hubsCat['WEBSITE_DIRECT'];
+
+        $paid = round((float) ($r['deposit_egp_equiv'] ?? 0.0) + (float) ($r['collected_rest_egp'] ?? 0.0), 2);
+        $rest = round((float) ($r['rest_egp_equiv'] ?? 0.0), 2);
+        $gross = round((float) (($r['actual_paid_total_egp'] ?? 0) > 0
+            ? $r['actual_paid_total_egp']
+            : (($r['estimated_revenue_egp'] ?? 0) > 0 ? $r['estimated_revenue_egp'] : ($paid + $rest))), 2);
+
+        // Historical audited ONLINE rows with 0 open rest were settled in safe/VISA
+        $isLive = in_array((string) ($r['source_file'] ?? ''), ['LIVE_WEBSITE_FORM', 'LIVE_ONLINE_HUB', 'LIVE_MOBILE_APP', 'SELLER_SHARE_LINK'], true);
+        if (!$isLive && $paid <= 0.0 && $rest <= 0.0) {
+            $paid = $gross;
+        } elseif ($isLive && $paid <= 0.0 && strtoupper((string) ($r['payment_status'] ?? '')) === 'PAID') {
+            $paid = $gross;
+            $rest = 0.0;
+        }
+
+        $cost = round((float) (($r['supplier_cost_egp'] ?? 0) > 0 ? $r['supplier_cost_egp'] : ($r['estimated_cogs_egp'] ?? 0.0)), 2);
+        $pax  = (int) ($r['total_pax'] ?? 0);
+
+        $totCount++;
+        if ($isLive) {
+            $liveCount++;
+        } else {
+            $histCount++;
+        }
+        $totPax     += $pax;
+        $totRevEgp   = round($totRevEgp + $gross, 2);
+        $totPaidEgp  = round($totPaidEgp + $paid, 2);
+        $totRestEgp  = round($totRestEgp + $rest, 2);
+        $totCostEgp  = round($totCostEgp + $cost, 2);
+
+        $hubBuckets[$hCode]['vouchers_count']++;
+        $hubBuckets[$hCode]['total_pax']         += $pax;
+        $hubBuckets[$hCode]['gross_revenue_egp']  = round($hubBuckets[$hCode]['gross_revenue_egp'] + $gross, 2);
+        $hubBuckets[$hCode]['collected_egp']      = round($hubBuckets[$hCode]['collected_egp'] + $paid, 2);
+        $hubBuckets[$hCode]['open_rest_egp']      = round($hubBuckets[$hCode]['open_rest_egp'] + $rest, 2);
+
+        if (count($confirmedOut) < 200) {
+            $r['online_hub_code']  = $hCode;
+            $r['online_hub_icon']  = $hMeta['icon'];
+            $r['online_hub_en']    = $hMeta['short_en'];
+            $r['online_hub_ar']    = $hMeta['short_ar'];
+            $r['guest_name']       = (string) ($r['divers_names'] ?? '');
+            $r['gross_egp']        = $gross;
+            $r['gross_eur_equiv']  = round($gross / $eurRate, 2);
+            $r['paid_egp']         = $paid;
+            $r['open_rest_egp']    = $rest;
+            $r['is_live_online']   = $isLive;
+            $confirmedOut[]        = $r;
+        }
+    }
+
+    // Fetch website & online leads (excluding hotel-rep QR leads so this view stays strictly the Unified Online Seller!)
+    $crmParams = [];
+    $crmExtra  = '';
+    if ($normMonth !== 'ALL') {
+        $crmExtra .= ' AND (SUBSTR(trip_date, 1, 7) = ? OR SUBSTR(received_at, 1, 7) = ?)';
+        $crmParams[] = $normMonth;
+        $crmParams[] = $normMonth;
+    }
+    $crmSt = $pdo->prepare(
+        "SELECT * FROM website_leads_crm
+         WHERE (seller_username = '' OR LOWER(seller_username) = 'website.online') {$crmExtra}
+         ORDER BY id DESC LIMIT 160"
+    );
+    $crmSt->execute($crmParams);
+    $rawLeads = $crmSt->fetchAll();
+
+    $pendingLeadsCnt   = 0;
+    $confirmedLeadsCnt = 0;
+    $leadsOut          = [];
+    foreach ($rawLeads as $l) {
+        $lhCode = sc_erp_detect_online_hub($l);
+        if ($normHub !== 'ALL' && $lhCode !== $normHub) {
+            continue;
+        }
+        $lhMeta = $hubsCat[$lhCode] ?? $hubsCat['WEBSITE_DIRECT'];
+        $stUp   = strtoupper((string) ($l['status'] ?? 'NEW'));
+        $isConf = in_array($stUp, ['CONFIRMED_SALE', 'CONFIRMED_WEBSITE_BOOKING', 'PAID'], true)
+            || str_starts_with((string) ($l['linked_voucher_no'] ?? ''), 'ONL-')
+            || str_starts_with((string) ($l['linked_voucher_no'] ?? ''), 'WEB-');
+        if ($isConf) {
+            $confirmedLeadsCnt++;
+        } else {
+            $pendingLeadsCnt++;
+        }
+        $l['online_hub_code'] = $lhCode;
+        $l['online_hub_icon'] = $lhMeta['icon'];
+        $l['online_hub_en']   = $lhMeta['short_en'];
+        $l['online_hub_ar']   = $lhMeta['short_ar'];
+        $l['is_confirmed_sale'] = $isConf;
+        $leadsOut[] = $l;
+    }
+
+    return [
+        'ok'                 => true,
+        'month_filter'       => $normMonth,
+        'hub_filter'         => $normHub,
+        'fx_rates'           => $fx,
+        'seller_profile'     => sc_erp_get_online_seller_user($pdo),
+        'kpis'               => [
+            'confirmed_vouchers_count'   => $totCount,
+            'historical_online_count'    => $histCount,
+            'live_confirmed_count'       => $liveCount,
+            'cancelled_count'            => $cancelCount,
+            'total_pax'                  => $totPax,
+            'gross_revenue_egp'          => $totRevEgp,
+            'gross_revenue_eur_equiv'    => round($totRevEgp / $eurRate, 2),
+            'collected_paid_egp'         => $totPaidEgp,
+            'open_rest_egp'              => $totRestEgp,
+            'supplier_cost_egp'          => $totCostEgp,
+            'net_company_margin_egp'     => round($totRevEgp - $totCostEgp, 2),
+            'pending_leads_count'        => $pendingLeadsCnt,
+            'confirmed_leads_count'      => $confirmedLeadsCnt,
+        ],
+        'hubs_breakdown'     => array_values($hubBuckets),
+        'hubs_catalog'       => array_values($hubsCat),
+        'confirmed_sales'    => $confirmedOut,
+        'website_leads'      => $leadsOut,
+    ];
+}
+
+/**
+ * Register a Confirmed Online Sale from ANY Online Hub OR confirm an existing Website/WhatsApp Lead
+ * directly under the single unified Online Seller (`sales_rep = 'WEBSITE'`, `online_seller_account = 'website.online'`).
+ *
+ * - Enforces 0% individual rep commission (`seller_username = ''`, `seller_commission_egp = 0`) so 100% margin accrues to Sea College.
+ * - Resolves master catalog trip & supplier COGS + Sharm hotel pickup window automatically.
+ * - Provisions Verified Real-Customer Account (`sc_erp_provision_verified_guest_account`) & dispatches login email if email provided.
+ *
+ * @param array<string,mixed> $in
+ * @param array<string,mixed> $actor
+ * @return array<string,mixed>
+ */
+function sc_erp_register_or_confirm_online_sale(PDO $pdo, array $in, array $actor): array
+{
+    sc_erp_ensure_online_seller_v37($pdo);
+    $fx      = sc_erp_fx_rates($pdo);
+    $eurRate = max(1.0, (float) ($fx['EUR'] ?? 57.0));
+    $hubsCat = sc_erp_online_hubs_catalog();
+
+    $eventId = trim((string) ($in['event_id'] ?? ''));
+    $existingLead = null;
+    if ($eventId !== '') {
+        $lSt = $pdo->prepare('SELECT * FROM website_leads_crm WHERE event_id = ? LIMIT 1');
+        $lSt->execute([$eventId]);
+        $existingLead = $lSt->fetch() ?: null;
+    }
+
+    $hubCode = sc_erp_detect_online_hub(array_merge($existingLead ?: [], $in));
+    $hubMeta = $hubsCat[$hubCode] ?? $hubsCat['WEBSITE_DIRECT'];
+
+    $guestName = trim((string) ($in['guest_name'] ?? ($existingLead['guest_name'] ?? '')));
+    if ($guestName === '' || str_starts_with($guestName, 'WhatsApp Visitor')) {
+        $guestName = trim((string) ($in['guest_name'] ?? '')) !== '' ? trim((string) $in['guest_name']) : 'Online Confirmed Guest';
+    }
+    $guestPhone = trim((string) ($in['guest_phone'] ?? $in['phone'] ?? ($existingLead['phone'] ?? '')));
+    $guestEmail = strtolower(trim((string) ($in['guest_email'] ?? $in['email'] ?? ($existingLead['email'] ?? ''))));
+    $lang       = strtolower(trim((string) ($in['lang'] ?? ($existingLead['lang'] ?? 'en'))));
+    if (!in_array($lang, ['en', 'ar', 'ru', 'it', 'pl', 'de', 'fr', 'zh'], true)) {
+        $lang = 'en';
+    }
+    $nationality = strtoupper(trim((string) ($in['nationality'] ?? ($lang === 'en' ? 'ONLINE' : $lang))));
+
+    $tripDate = trim((string) ($in['trip_date'] ?? ($existingLead['trip_date'] ?? '')));
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $tripDate)) {
+        $tripDate = gmdate('Y-m-d');
+    }
+    [$wk, $mo, $qr, $yr] = sc_erp_period_parts($tripDate);
+
+    $adults   = max(1, (int) ($in['adults'] ?? ($existingLead['people'] ?? 1)));
+    $children = max(0, (int) ($in['children'] ?? 0));
+    $infants  = max(0, (int) ($in['infants'] ?? 0));
+    $totalPax = $adults + $children + $infants;
+
+    $prodCodeInput = trim((string) ($in['product_code'] ?? ''));
+    $tripTextInput = trim((string) ($in['trip_name'] ?? ($existingLead['interest_items'] ?? '')));
+    $masterTrip    = sc_erp_lookup_unified_trip($pdo, $prodCodeInput !== '' ? $prodCodeInput : $tripTextInput);
+
+    if ($masterTrip) {
+        $tripName        = (string) $masterTrip['unified_name_en'];
+        $unifiedTripCode = (string) $masterTrip['trip_code'];
+        $prodCat         = (string) $masterTrip['category_code'];
+        $adlUnitEur      = (float) $masterTrip['adult_sell_eur'];
+        $chdUnitEur      = (float) $masterTrip['child_sell_eur'];
+        $autoCostEgp     = round($adults * (float) $masterTrip['adult_cost_egp'] + $children * (float) $masterTrip['child_cost_egp'] + $infants * (float) $masterTrip['infant_cost_egp'], 2);
+        $apSupCode       = (string) ($masterTrip['supplier_code'] ?? 'SEA_COLLEGE');
+    } else {
+        $tripName        = $tripTextInput !== '' ? substr($tripTextInput, 0, 120) : 'Website & Online Trip';
+        $unifiedTripCode = $prodCodeInput;
+        $prodCat         = 'WEBSITE_ONLINE_BOOKING';
+        $adlUnitEur      = max(0.0, (float) ($in['adult_price_eur'] ?? 45.0));
+        $chdUnitEur      = max(0.0, (float) ($in['child_price_eur'] ?? round($adlUnitEur * 0.5, 2)));
+        $autoCostEgp     = 0.0;
+        $apSupCode       = 'SEA_COLLEGE';
+    }
+
+    // Determine Gross Sale Amount (supports EUR, USD, GBP, or EGP input)
+    $saleCurr = strtoupper(trim((string) ($in['currency'] ?? 'EUR')));
+    $saleRate = max(1.0, (float) ($fx[$saleCurr] ?? ($saleCurr === 'EGP' ? 1.0 : $eurRate)));
+    $explicitTotalOrig = max(0.0, (float) ($in['total_amount'] ?? 0.0));
+    $explicitTotalEur  = max(0.0, (float) ($in['total_eur'] ?? ($existingLead['estimated_eur'] ?? 0.0)));
+
+    if ($explicitTotalOrig > 0.0) {
+        $grossEgp = round($explicitTotalOrig * $saleRate, 2);
+        $grossEur = round($grossEgp / $eurRate, 2);
+    } elseif ($explicitTotalEur > 0.0) {
+        $grossEur = round($explicitTotalEur, 2);
+        $grossEgp = round($grossEur * $eurRate, 2);
+    } else {
+        $grossEur = round($adults * $adlUnitEur + $children * $chdUnitEur, 2);
+        if ($grossEur <= 0.0) {
+            $grossEur = round(45.0 * $adults + 25.0 * $children, 2);
+        }
+        $grossEgp = round($grossEur * $eurRate, 2);
+    }
+
+    // Paid Deposit / Online Payment vs Remaining REST due at Jetty/Pickup
+    $paidCurr = strtoupper(trim((string) ($in['paid_currency'] ?? $saleCurr)));
+    $paidRate = max(1.0, (float) ($fx[$paidCurr] ?? ($paidCurr === 'EGP' ? 1.0 : $eurRate)));
+    if (array_key_exists('paid_amount', $in) && $in['paid_amount'] !== '' && $in['paid_amount'] !== null) {
+        $paidOrig = max(0.0, (float) $in['paid_amount']);
+        $paidEgp  = round(min($grossEgp, $paidOrig * $paidRate), 2);
+    } elseif (array_key_exists('final_paid_eur', $in) && (float) $in['final_paid_eur'] > 0.0) {
+        $paidEgp  = round(min($grossEgp, (float) $in['final_paid_eur'] * $eurRate), 2);
+    } elseif (!empty($in['mark_fully_paid'])) {
+        $paidEgp  = $grossEgp;
+    } else {
+        $paidEgp  = 0.0;
+    }
+
+    $restEgp = round(max(0.0, $grossEgp - $paidEgp), 2);
+    $restEur = round($restEgp / $eurRate, 2);
+    $payStatus = $restEgp <= 0.50 ? 'PAID' : 'OPEN_REST';
+
+    $supplierCostEgp = array_key_exists('supplier_cost_egp', $in) && (float) $in['supplier_cost_egp'] >= 0.0 && $in['supplier_cost_egp'] !== ''
+        ? round((float) $in['supplier_cost_egp'], 2)
+        : ($autoCostEgp > 0.0 ? $autoCostEgp : round($grossEgp * 0.32, 2));
+    $profitEgp = round($grossEgp - $supplierCostEgp, 2);
+
+    // Resolve Hotel & Sharm Pickup Window
+    $hotelName = trim((string) ($in['hotel_name'] ?? $in['hotel'] ?? ($existingLead['hotel'] ?? 'Online Direct')));
+    if ($hotelName === '') {
+        $hotelName = 'Online Direct';
+    }
+    $roomNo     = trim((string) ($in['room_no'] ?? ($existingLead['room_no'] ?? '')));
+    $pickupTime = trim((string) ($in['pickup_time'] ?? ''));
+    $pickupZone = '';
+    $hSt = $pdo->prepare('SELECT zone_label_en, pickup_window FROM hotels_directory WHERE LOWER(name_en) LIKE LOWER(?) LIMIT 1');
+    $hSt->execute(['%' . $hotelName . '%']);
+    $hRow = $hSt->fetch();
+    if ($hRow) {
+        $pickupZone = (string) ($hRow['zone_label_en'] ?? '');
+        if ($pickupTime === '') {
+            $pickupTime = (string) ($hRow['pickup_window'] ?? '07:55–08:10');
+        }
+    }
+    if ($pickupTime === '') {
+        $pickupTime = '08:00';
+    }
+
+    // Determine Voucher Number (reuse existing `WEB-*` / `ONL-*` if confirming an existing lead/voucher, else issue new)
+    $voNo = trim((string) ($in['voucher_no'] ?? ($existingLead['linked_voucher_no'] ?? '')));
+    if ($voNo === '') {
+        $prefix = $hubCode === 'WEBSITE_DIRECT' ? 'WEB' : 'ONL';
+        $voNo   = $prefix . '-' . str_replace('-', '', $tripDate) . '-' . strtoupper(bin2hex(random_bytes(2)));
+    }
+    $qrTok = 'QR-' . strtoupper(substr(hash('sha256', $voNo . ':' . $hubCode . ':' . microtime(true)), 0, 12));
+
+    $existingResId = 0;
+    $chkVo = $pdo->prepare('SELECT id, qr_token FROM reservations_fact WHERE voucher_no = ? LIMIT 1');
+    $chkVo->execute([$voNo]);
+    $exVoRow = $chkVo->fetch();
+    if ($exVoRow) {
+        $existingResId = (int) $exVoRow['id'];
+        if (!empty($exVoRow['qr_token'])) {
+            $qrTok = (string) $exVoRow['qr_token'];
+        }
+    }
+
+    $sourceFile = $hubCode === 'WEBSITE_DIRECT' ? 'LIVE_WEBSITE_FORM' : 'LIVE_ONLINE_HUB';
+    $nowIso     = gmdate('Y-m-d\TH:i:s\Z');
+    $actorUser  = (string) ($actor['username'] ?? 'website.online');
+    $actorRole  = (string) ($actor['role_code'] ?? 'ONLINE_SELLER');
+
+    $pdo->beginTransaction();
+    try {
+        if ($existingResId > 0) {
+            $uRes = $pdo->prepare(
+                "UPDATE reservations_fact
+                 SET trip_date = ?, period_week = ?, period_month = ?, period_quarter = ?, period_year = ?,
+                     branch_code = 'WEBSITE', channel = 'WEBSITE_ONLINE',
+                     hotel_name = ?, pickup_zone = ?, room_no = ?, nationality = ?, pickup_time = ?,
+                     trip_name = ?, unified_trip_code = ?, product_category = ?,
+                     adults = ?, children = ?, infants = ?, total_pax = ?, dives_pax = ?,
+                     divers_names = ?, guest_phone = ?, guest_email = ?,
+                     sales_rep = 'WEBSITE', client_agency = ?,
+                     deposit_egp_equiv = ?, rest_eur = ?, rest_egp_equiv = ?,
+                     estimated_revenue_egp = ?, actual_paid_total_egp = ?,
+                     supplier_cost_egp = ?, estimated_cogs_egp = ?, estimated_profit_egp = ?, ap_supplier_code = ?,
+                     payment_status = ?, booking_state = 'EXECUTED', workflow_stage = 'CONFIRMED_OPS',
+                     seller_type = 'ONLINE_DIRECT', seller_username = '',
+                     seller_commission_egp = 0, commission_type = 'NONE', commission_status = 'NONE',
+                     online_hub_source = ?, online_seller_account = 'website.online',
+                     booked_adults = ?, booked_children = ?, booked_infants = ?, booked_total_egp = ?, list_total_egp = ?
+                 WHERE id = ?"
+            );
+            $uRes->execute([
+                $tripDate, $wk, $mo, $qr, $yr,
+                $hotelName, $pickupZone, $roomNo, $nationality, $pickupTime,
+                $tripName, $unifiedTripCode, $prodCat,
+                $adults, $children, $infants, $totalPax, $adults,
+                $guestName, $guestPhone, $guestEmail,
+                $hubCode,
+                $paidEgp, $restEur, $restEgp,
+                $grossEgp, $grossEgp,
+                $supplierCostEgp, $supplierCostEgp, $profitEgp, $apSupCode !== 'SEA_COLLEGE' ? $apSupCode : '',
+                $payStatus,
+                $hubCode,
+                $adults, $children, $infants, $grossEgp, $grossEgp,
+                $existingResId,
+            ]);
+            $resId = $existingResId;
+        } else {
+            $iRes = $pdo->prepare(
+                "INSERT INTO reservations_fact
+                 (voucher_no, qr_token, trip_date, period_week, period_month, period_quarter, period_year,
+                  branch_code, channel, hotel_name, pickup_zone, room_no, nationality, pickup_time,
+                  trip_name, unified_trip_code, product_category,
+                  adults, children, infants, total_pax, snork_pax, intro1_pax, intro2_pax, dives_pax,
+                  divers_names, guest_phone, guest_email,
+                  sales_rep, executor, client_agency,
+                  deposit_egp_equiv, rest_egp, rest_usd, rest_eur, rest_gbp, rest_egp_equiv,
+                  estimated_revenue_egp, actual_paid_total_egp, supplier_cost_egp, estimated_cogs_egp, estimated_profit_egp, ap_supplier_code,
+                  vessel_code, boarding_status, payment_status, booking_state, workflow_stage, source_file,
+                  seller_type, seller_username, seller_commission_egp, commission_type, commission_status,
+                  online_hub_source, online_seller_account,
+                  booked_adults, booked_children, booked_infants, booked_total_egp, list_total_egp)
+                 VALUES (?,?,?,?,?,?,?, 'WEBSITE','WEBSITE_ONLINE',?,?,?,?,?, ?,?,?, ?,?,?,?,0,0,0,?, ?,?,?, 'WEBSITE','SEA COLLEGE',?, ?,0,0,?,0,?, ?,?,?,?,?,?, '', 'CONFIRMED',?,'EXECUTED','CONFIRMED_OPS',?, 'ONLINE_DIRECT','',0,'NONE','NONE', ?,'website.online', ?,?,?,?,?)"
+            );
+            $iRes->execute([
+                $voNo, $qrTok, $tripDate, $wk, $mo, $qr, $yr,
+                $hotelName, $pickupZone, $roomNo, $nationality, $pickupTime,
+                $tripName, $unifiedTripCode, $prodCat,
+                $adults, $children, $infants, $totalPax, $adults,
+                $guestName, $guestPhone, $guestEmail,
+                $hubCode,
+                $paidEgp, $restEur, $restEgp,
+                $grossEgp, $grossEgp, $supplierCostEgp, $supplierCostEgp, $profitEgp, $apSupCode !== 'SEA_COLLEGE' ? $apSupCode : '',
+                $payStatus, $sourceFile,
+                $hubCode,
+                $adults, $children, $infants, $grossEgp, $grossEgp,
+            ]);
+            $resId = (int) $pdo->lastInsertId();
+        }
+
+        // Sync payment leg if deposit/payment collected
+        if ($paidEgp > 0.0) {
+            $pdo->prepare("DELETE FROM reservation_payment_legs WHERE voucher_no = ? AND leg_source = 'ONLINE_HUB_DEPOSIT'")->execute([$voNo]);
+            $pdo->prepare(
+                "INSERT INTO reservation_payment_legs
+                 (voucher_no, trip_date, period_month, leg_source, payment_method, currency, orig_amount, fx_rate, egp_equiv, collector_party, raw_token)
+                 VALUES (?,?,?,'ONLINE_HUB_DEPOSIT',?,?,?,?,?,'WEBSITE_ONLINE',?)"
+            )->execute([
+                $voNo,
+                $tripDate,
+                $mo,
+                (string) ($in['payment_method'] ?? 'ONLINE_PAYMENT'),
+                $paidCurr,
+                round($paidEgp / $paidRate, 2),
+                $paidRate,
+                $paidEgp,
+                $hubCode . ' PAID',
+            ]);
+        }
+
+        // Upsert corresponding row in `website_leads_crm` so Online Sales CRM & Ads Attribution stay 1:1 synced!
+        if ($eventId === '') {
+            $eventId = 'onl_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $voNo)) . '_' . substr(bin2hex(random_bytes(2)), 0, 4);
+        }
+        $paidEurEquiv = round($paidEgp / $eurRate, 2);
+        if ($existingLead) {
+            $pdo->prepare(
+                "UPDATE website_leads_crm
+                 SET guest_name = ?, phone = ?, email = ?, interest_items = ?,
+                     people = ?, adults = ?, children = ?, infants = ?,
+                     trip_date = ?, hotel = ?, room_no = ?,
+                     estimated_eur = ?, final_paid_eur = ?, paid_deposit_egp = ?, rest_due_egp = ?,
+                     status = 'CONFIRMED_SALE', linked_voucher_no = ?,
+                     sales_rep_code = 'WEBSITE', online_hub_source = ?, online_seller_account = 'website.online',
+                     confirmed_at = ?, confirmed_by = ?
+                 WHERE event_id = ?"
+            )->execute([
+                $guestName, $guestPhone, $guestEmail, $tripName,
+                $totalPax, $adults, $children, $infants,
+                $tripDate, $hotelName, $roomNo,
+                $grossEur, $paidEurEquiv, $paidEgp, $restEgp,
+                $voNo,
+                $hubCode,
+                $nowIso, $actorUser,
+                $eventId,
+            ]);
+        } else {
+            $pdo->prepare(
+                "INSERT INTO website_leads_crm
+                 (event_id, received_at, lead_type, lang, guest_name, phone, email, interest_items,
+                  people, adults, children, infants, trip_date, hotel, room_no, cert_level, gear_sizes_json,
+                  estimated_eur, final_paid_eur, paid_deposit_egp, rest_due_egp,
+                  status, gclid, fbclid, utm_source, utm_campaign, assigned_to, linked_voucher_no,
+                  seller_username, sales_rep_code, online_hub_source, online_seller_account, confirmed_at, confirmed_by)
+                 VALUES (?,?,?,?,?,?,?,?, ?,?,?,?, ?,?,?, '', '{}', ?,?,?,?, 'CONFIRMED_SALE', ?,?,?,?, 'WEBSITE', ?, '', 'WEBSITE', ?, 'website.online', ?, ?)"
+            )->execute([
+                $eventId, $nowIso, 'ONLINE_HUB_SALE', $lang, $guestName, $guestPhone, $guestEmail, $tripName,
+                $totalPax, $adults, $children, $infants, $tripDate, $hotelName, $roomNo,
+                $grossEur, $paidEurEquiv, $paidEgp, $restEgp,
+                (string) ($in['gclid'] ?? ''), (string) ($in['fbclid'] ?? ''), strtolower($hubCode), (string) ($in['notes'] ?? ''),
+                $voNo, $hubCode, $nowIso, $actorUser,
+            ]);
+        }
+
+        // Provision Verified Real-Customer Account (`GUEST_CUSTOMER`) & email credentials if email provided!
+        $guestAcc = sc_erp_provision_verified_guest_account($pdo, [
+            'voucher_no'      => $voNo,
+            'guest_name'      => $guestName,
+            'guest_phone'     => $guestPhone,
+            'guest_email'     => $guestEmail,
+            'nationality'     => $nationality,
+            'lang'            => $lang,
+            'hotel_name'      => $hotelName,
+            'room_no'         => $roomNo,
+            'seller_username' => 'website.online',
+            'trip_name'       => $tripName,
+            'trip_date'       => $tripDate,
+            'booked_egp'      => $grossEgp,
+            'paid_egp'        => $paidEgp,
+        ]);
+
+        sc_erp_audit($pdo, $actorUser, $actorRole, 'REGISTER_ONLINE_SALE', 'reservations_fact', $voNo, [
+            'event_id'          => $eventId,
+            'online_hub_source' => $hubCode,
+            'seller'            => 'website.online',
+            'gross_egp'         => $grossEgp,
+            'paid_egp'          => $paidEgp,
+            'rest_egp'          => $restEgp,
+            'guest_account'     => $guestAcc['username'] ?? '',
+        ]);
+
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+
+    // Push instant notifications to Owners, Operations, Accounting & Online Seller
+    foreach (['islam.samir', 'eng.sayed', 'ahmed.nasr', 'nadia.acc', 'lara.care', 'website.online'] as $rcp) {
+        if (strtolower($rcp) === strtolower($actorUser)) {
+            continue;
+        }
+        sc_erp_push_notification(
+            $pdo,
+            $rcp,
+            'ONLINE_SALE_CONFIRMED',
+            $voNo,
+            "{$hubMeta['icon']} Confirmed Online Sale {$voNo} (€" . number_format($grossEur, 0) . ")",
+            "{$hubMeta['icon']} بيعة أونلاين مؤكدة {$voNo} (" . number_format($grossEgp) . " ج.م)",
+            "{$guestName} ({$totalPax} PAX) • {$tripName} on {$tripDate} via {$hubMeta['short_en']} under Seller WEBSITE.",
+            "{$guestName} ({$totalPax} أفراد) • {$tripName} بتاريخ {$tripDate} عبر {$hubMeta['short_ar']} تحت حساب بائع الأونلاين الموحد."
+        );
+    }
+
+    return [
+        'ok'                => true,
+        'reservation_id'    => $resId,
+        'voucher_no'        => $voNo,
+        'qr_token'          => $qrTok,
+        'event_id'          => $eventId,
+        'seller_account'    => 'website.online',
+        'sales_rep'         => 'WEBSITE',
+        'online_hub_source' => $hubCode,
+        'online_hub_label'  => $hubMeta['label_en'],
+        'gross_egp'         => $grossEgp,
+        'gross_eur'         => $grossEur,
+        'paid_egp'          => $paidEgp,
+        'rest_egp'          => $restEgp,
+        'supplier_cost_egp' => $supplierCostEgp,
+        'payment_status'    => $payStatus,
+        'guest_account'     => $guestAcc,
+    ];
+}

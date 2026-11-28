@@ -22,12 +22,19 @@ header('Cache-Control: no-store, must-revalidate');
 $pdo = sc_erp_pdo();
 $rawCookieSeller = $_COOKIE['sc_seller'] ?? 'fady';
 $rawSeller = sc_get_str('seller', is_scalar($rawCookieSeller) ? (string) $rawCookieSeller : 'fady');
-$sellerRow = $pdo ? (sc_erp_resolve_seller($pdo, $rawSeller) ?: sc_erp_resolve_seller($pdo, 'fady.sales')) : null;
-$sellerSlug = $sellerRow ? (string) ($sellerRow['referral_code'] ?: 'fady') : 'fady';
-$sellerNameEn = $sellerRow ? (string) $sellerRow['display_name_en'] : 'Sea College Concierge';
-$sellerNameAr = $sellerRow ? (string) $sellerRow['display_name_ar'] : 'مستشار رحلات سي كوليدج';
-
-sc_apply_seller_referral($sellerSlug);
+$isUnifiedOnlineBrochure = function_exists('sc_erp_is_online_unified_seller_token') && sc_erp_is_online_unified_seller_token($rawSeller);
+if ($isUnifiedOnlineBrochure) {
+    $sellerRow    = $pdo ? sc_erp_get_online_seller_user($pdo) : null;
+    $sellerSlug   = 'website';
+    $sellerNameEn = 'Sea College Online Concierge';
+    $sellerNameAr = 'الحجز المباشر — سي كوليدج أونلاين';
+} else {
+    $sellerRow    = $pdo ? (sc_erp_resolve_seller($pdo, $rawSeller) ?: sc_erp_resolve_seller($pdo, 'fady.sales')) : null;
+    $sellerSlug   = $sellerRow ? (string) ($sellerRow['referral_code'] ?: 'fady') : 'fady';
+    $sellerNameEn = $sellerRow ? (string) $sellerRow['display_name_en'] : 'Sea College Concierge';
+    $sellerNameAr = $sellerRow ? (string) $sellerRow['display_name_ar'] : 'مستشار رحلات سي كوليدج';
+    sc_apply_seller_referral($sellerSlug);
+}
 
 $supportedLangs = ['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'];
 $reqLang = strtolower(sc_get_str('lang', LANG));
