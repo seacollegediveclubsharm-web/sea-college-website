@@ -37,7 +37,6 @@ require ROOT_DIR . '/includes/header.php';
     <img class="hero__bg" src="<?= e(asset('images/hero.jpg')) ?>" alt="" width="1600" height="960" fetchpriority="high" loading="eager" decoding="async">
   </picture>
   <div class="container hero__inner">
-    <?= sc_render_seller_referral_pill() ?>
     <p class="eyebrow"><?= te('hero_eyebrow') ?></p>
     <h1><?= te('hero_title') ?></h1>
     <p class="hero__sub"><?= te('hero_sub') ?></p>

@@ -683,19 +683,8 @@ function sc_active_seller_referral(): ?array
 
 function sc_render_seller_referral_pill(): string
 {
-    $seller = sc_active_seller_referral();
-    if ($seller === null) {
-        return '';
-    }
-    $displayName = (LANG === 'ar') ? (string) $seller['name_ar'] : (string) $seller['name_en'];
-    $code = (string) $seller['referral_code'];
-    return '<div class="seller-pill no-print" data-seller-pill="' . e($code) . '" role="note">'
-        . '<span class="seller-pill__dot" aria-hidden="true">✓</span>'
-        . '<span class="seller-pill__badge">' . te('seller_ref_badge') . '</span>'
-        . '<span class="seller-pill__text">' . te('seller_ref_text', ['name' => $displayName]) . '</span>'
-        . '<span class="seller-pill__sep" aria-hidden="true">·</span>'
-        . '<span class="seller-pill__note">' . te('seller_ref_note') . '</span>'
-        . '</div>';
+    // Indoor/physical location sellers must never have their names displayed on the public website UI.
+    return '';
 }
 
 /* ---------------- Consent ---------------- */

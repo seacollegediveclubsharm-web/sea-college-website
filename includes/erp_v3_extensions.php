@@ -4060,15 +4060,23 @@ function sc_erp_ensure_online_seller_v37(PDO $pdo): void
             'ALL',
             'WEBSITE',
             '2026-01-01T00:00:00Z',
-            'Unified Website, WhatsApp, Social & OTA Seller',
-            'البائع الموحد للموقع والواتساب والسوشيال ومنصات الأونلاين',
+            'AI Online Sales Agents & Unified Digital Hubs',
+            'وكلاء الذكاء الاصطناعي للمبيعات الأونلاين والموقع الموحد',
             '+20 11 14567886',
             'info@seacollegediveclub.com',
             '/assets/images/logo-192.png',
-            'Unified Online Seller combining seacollegediveclub.com (8 languages), WhatsApp, Instagram/Facebook, Google Ads, Tripadvisor, Viator, GetYourGuide & OTA hubs.',
+            'AI-powered Online Sales Hub uniting seacollegediveclub.com (8 languages), WhatsApp (+20 11 14567886), Meta, Google & OTA hubs. Internal human oversight: Eng. Sayed Elsharqawy (private — never published on website).',
             '',
             'website',
         ]);
+    } else {
+        $pdo->prepare(
+            "UPDATE users
+             SET job_title_en = 'AI Online Sales Agents & Unified Digital Hubs',
+                 job_title_ar = 'وكلاء الذكاء الاصطناعي للمبيعات الأونلاين والموقع الموحد',
+                 phone = '+20 11 14567886'
+             WHERE LOWER(username) = 'website.online' AND updated_at = ''"
+        )->execute();
     }
 
     $pdo->exec(
@@ -4474,11 +4482,11 @@ function sc_erp_build_online_seller_financial_dossier(PDO $pdo, array $uRow): ar
         'entity_code'         => 'website.online',
         'name_en'             => (string) $uRow['display_name_en'],
         'name_ar'             => (string) ($uRow['display_name_ar'] ?: 'مبيعات الموقع والأونلاين الموحدة'),
-        'subtitle_en'         => 'Unified Seller: Website (8 Langs) • WhatsApp • Instagram/FB • Google Ads • Tripadvisor • Viator • GetYourGuide (0% Rep Comm — 100% Company Direct)',
-        'subtitle_ar'         => 'البائع الموحد: الموقع الرسمي • واتساب • انستجرام وفيسبوك • جوجل • تريب أدفايزور • فياتور • جيت يور جايد (0% عمولة مندوب — ربح مباشر للشركة)',
+        'subtitle_en'         => 'AI Online Sales Agents: Website (8 Langs) • WhatsApp (+20 11 14567886) • Meta • Google • Tripadvisor • Viator • GetYourGuide (0% Rep Comm)',
+        'subtitle_ar'         => 'وكلاء الذكاء الاصطناعي لمبيعات الأونلاين: الموقع الرسمي • واتساب (+20 11 14567886) • انستجرام وفيسبوك • جوجل • تريب أدفايزور (0% عمولة مندوب)',
         'branch_code'         => 'WEBSITE',
         'settlement_currency' => 'EUR / EGP',
-        'contact_person'      => 'Lara (Online Concierge) & Hossam (Digital Hubs)',
+        'contact_person'      => 'AI Online Agents • Direct Supervisor: Eng. Sayed Elsharqawy (Internal Only)',
         'phone'               => '+20 11 14567886',
         'whatsapp'            => '+20 11 14567886',
         'payment_terms'       => 'Online Deposit / Full Payment + Jetty REST Collection',

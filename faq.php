@@ -56,7 +56,6 @@ require ROOT_DIR . '/includes/header.php';
 <section class="page-hero">
   <div class="container">
     <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
-    <?= sc_render_seller_referral_pill() ?>
     <p class="eyebrow">❓ <?= te('faq_hub_eyebrow') ?></p>
     <h1 dir="auto"><?= te('faq_hub_title') ?></h1>
     <p class="hero__sub" dir="auto"><?= te('faq_hub_sub') ?></p>

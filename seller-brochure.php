@@ -20,20 +20,21 @@ header('X-Robots-Tag: noindex, nofollow');
 header('Cache-Control: no-store, must-revalidate');
 
 $pdo = sc_erp_pdo();
-$rawCookieSeller = $_COOKIE['sc_seller'] ?? 'fady';
-$rawSeller = sc_get_str('seller', is_scalar($rawCookieSeller) ? (string) $rawCookieSeller : 'fady');
-$isUnifiedOnlineBrochure = function_exists('sc_erp_is_online_unified_seller_token') && sc_erp_is_online_unified_seller_token($rawSeller);
-if ($isUnifiedOnlineBrochure) {
+$rawSeller = sc_get_str('seller', '');
+$resolvedIndoorSeller = ($pdo && $rawSeller !== '' && !(function_exists('sc_erp_is_online_unified_seller_token') && sc_erp_is_online_unified_seller_token($rawSeller)))
+    ? sc_erp_resolve_seller($pdo, $rawSeller)
+    : null;
+if ($resolvedIndoorSeller) {
+    $sellerRow    = $resolvedIndoorSeller;
+    $sellerSlug   = (string) ($sellerRow['referral_code'] ?: 'website');
+    $sellerNameEn = (string) $sellerRow['display_name_en'];
+    $sellerNameAr = (string) $sellerRow['display_name_ar'];
+    sc_apply_seller_referral($sellerSlug);
+} else {
     $sellerRow    = $pdo ? sc_erp_get_online_seller_user($pdo) : null;
     $sellerSlug   = 'website';
     $sellerNameEn = 'Sea College Online Concierge';
     $sellerNameAr = 'الحجز المباشر — سي كوليدج أونلاين';
-} else {
-    $sellerRow    = $pdo ? (sc_erp_resolve_seller($pdo, $rawSeller) ?: sc_erp_resolve_seller($pdo, 'fady.sales')) : null;
-    $sellerSlug   = $sellerRow ? (string) ($sellerRow['referral_code'] ?: 'fady') : 'fady';
-    $sellerNameEn = $sellerRow ? (string) $sellerRow['display_name_en'] : 'Sea College Concierge';
-    $sellerNameAr = $sellerRow ? (string) $sellerRow['display_name_ar'] : 'مستشار رحلات سي كوليدج';
-    sc_apply_seller_referral($sellerSlug);
 }
 
 $supportedLangs = ['en', 'ar', 'ru', 'de', 'it', 'fr', 'pl', 'zh'];
@@ -147,7 +148,7 @@ foreach (($hotelData['hotels'] ?? []) as $h) {
 $canonicalShareUrl = 'https://seacollegediveclub.com' . ($lang === 'en' ? '' : '/' . $lang) . '/s/' . rawurlencode($sellerSlug);
 
 $rawPromo = trim((string) ($_GET['promo'] ?? ''));
-$sUserForPolicy = $sellerRow ? (string) $sellerRow['username'] : 'fady.sales';
+$sUserForPolicy = $sellerRow ? (string) $sellerRow['username'] : 'website.online';
 $sellerDiscPolicy = $pdo ? sc_erp_get_seller_discount_policy($pdo, $sUserForPolicy) : ['is_enabled' => true, 'max_discount_pct' => 20.0, 'max_discount_eur' => 50.0];
 $verifiedPromo = ($pdo && $rawPromo !== '' && !empty($sellerDiscPolicy['is_enabled']))
     ? sc_erp_verify_promo_token($rawPromo, $sellerSlug, '')

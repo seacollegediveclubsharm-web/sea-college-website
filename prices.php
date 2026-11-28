@@ -24,7 +24,6 @@ require ROOT_DIR . '/includes/header.php';
 <section class="page-hero">
   <div class="container">
     <?= breadcrumbs_html($page['breadcrumbs'], true) ?>
-    <?= sc_render_seller_referral_pill() ?>
     <h1><?= te('prices_title') ?></h1>
     <p><?= te('prices_sub') ?></p>
     <nav class="chips no-print" aria-label="<?= te('services_jump') ?>">
