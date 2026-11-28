@@ -126,20 +126,96 @@ SYS;
 }
 
 /**
+ * Derive an unguessable 32-char admin key from git-ignored server secrets (`SMTP_PASS` + `GEMINI_API_KEY`).
+ * Returns empty string if neither secret is configured on the server.
+ */
+function lara_gbp_admin_key(): string
+{
+    $secretMaterial = (defined('SMTP_PASS') ? SMTP_PASS : '') . '|' . (defined('GEMINI_API_KEY') ? GEMINI_API_KEY : '');
+    if ($secretMaterial === '|') {
+        return '';
+    }
+    return substr(hash_hmac('sha256', 'sc_lara_gbp_oauth_v1', $secretMaterial), 0, 32);
+}
+
+/**
+ * Load web-saved Google OAuth credentials (`storage/lara_gbp_oauth.json`, blocked from HTTP by `.htaccess`).
+ *
+ * @return array{client_id:string,client_secret:string,refresh_token:string,account_id:string,connected_at:string}
+ */
+function lara_gbp_load_stored_oauth(): array
+{
+    $file = (defined('LEADS_STORAGE_DIR') ? LEADS_STORAGE_DIR : dirname(__DIR__) . '/storage') . '/lara_gbp_oauth.json';
+    $dec = is_file($file) ? json_decode((string) @file_get_contents($file), true) : null;
+    if (!is_array($dec)) {
+        $dec = [];
+    }
+    return [
+        'client_id'     => trim((string) ($dec['client_id'] ?? '')),
+        'client_secret' => trim((string) ($dec['client_secret'] ?? '')),
+        'refresh_token' => trim((string) ($dec['refresh_token'] ?? '')),
+        'account_id'    => trim((string) ($dec['account_id'] ?? '')),
+        'connected_at'  => trim((string) ($dec['connected_at'] ?? '')),
+    ];
+}
+
+/**
+ * Atomically persist Google OAuth credentials in protected `storage/lara_gbp_oauth.json`.
+ *
+ * @param array<string, string> $patch
+ */
+function lara_gbp_save_stored_oauth(array $patch): bool
+{
+    $dir = defined('LEADS_STORAGE_DIR') ? LEADS_STORAGE_DIR : dirname(__DIR__) . '/storage';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0750, true);
+    }
+    $current = lara_gbp_load_stored_oauth();
+    foreach ($patch as $k => $v) {
+        if (array_key_exists($k, $current)) {
+            $current[$k] = trim((string) $v);
+        }
+    }
+    $file = $dir . '/lara_gbp_oauth.json';
+    $ok = @file_put_contents($file, json_encode($current, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX) !== false;
+    if ($ok) {
+        @chmod($file, 0600);
+    }
+    return $ok;
+}
+
+/**
+ * Resolve effective GBP OAuth credentials (`config/secrets.php` constants take precedence over `storage/lara_gbp_oauth.json`).
+ *
+ * @return array{client_id:string,client_secret:string,refresh_token:string,account_id:string}
+ */
+function lara_gbp_credentials(): array
+{
+    $stored = lara_gbp_load_stored_oauth();
+    return [
+        'client_id'     => GBP_CLIENT_ID !== '' ? GBP_CLIENT_ID : $stored['client_id'],
+        'client_secret' => GBP_CLIENT_SECRET !== '' ? GBP_CLIENT_SECRET : $stored['client_secret'],
+        'refresh_token' => GBP_REFRESH_TOKEN !== '' ? GBP_REFRESH_TOKEN : $stored['refresh_token'],
+        'account_id'    => GBP_ACCOUNT_ID !== '' ? GBP_ACCOUNT_ID : $stored['account_id'],
+    ];
+}
+
+/**
  * Exchange Google OAuth2 Refresh Token for a live Bearer access token (`business.manage` scope).
  */
 function lara_gbp_access_token(): ?string
 {
-    if (GBP_CLIENT_ID === '' || GBP_CLIENT_SECRET === '' || GBP_REFRESH_TOKEN === '') {
+    $creds = lara_gbp_credentials();
+    if ($creds['client_id'] === '' || $creds['client_secret'] === '' || $creds['refresh_token'] === '') {
         return null;
     }
     $ch = curl_init('https://oauth2.googleapis.com/token');
     curl_setopt_array($ch, [
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => http_build_query([
-            'client_id'     => GBP_CLIENT_ID,
-            'client_secret' => GBP_CLIENT_SECRET,
-            'refresh_token' => GBP_REFRESH_TOKEN,
+            'client_id'     => $creds['client_id'],
+            'client_secret' => $creds['client_secret'],
+            'refresh_token' => $creds['refresh_token'],
             'grant_type'    => 'refresh_token',
         ]),
         CURLOPT_RETURNTRANSFER => true,
@@ -160,8 +236,9 @@ function lara_gbp_access_token(): ?string
  */
 function lara_gbp_resolve_account_name(string $accessToken): ?string
 {
-    if (GBP_ACCOUNT_ID !== '') {
-        return str_starts_with(GBP_ACCOUNT_ID, 'accounts/') ? GBP_ACCOUNT_ID : ('accounts/' . GBP_ACCOUNT_ID);
+    $creds = lara_gbp_credentials();
+    if ($creds['account_id'] !== '') {
+        return str_starts_with($creds['account_id'], 'accounts/') ? $creds['account_id'] : ('accounts/' . $creds['account_id']);
     }
     $ch = curl_init('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
     curl_setopt_array($ch, [
@@ -176,7 +253,11 @@ function lara_gbp_resolve_account_name(string $accessToken): ?string
         return null;
     }
     $dec = json_decode($raw, true);
-    return isset($dec['accounts'][0]['name']) ? (string) $dec['accounts'][0]['name'] : null;
+    $found = isset($dec['accounts'][0]['name']) ? (string) $dec['accounts'][0]['name'] : null;
+    if ($found !== null && $found !== '') {
+        lara_gbp_save_stored_oauth(['account_id' => $found]);
+    }
+    return $found;
 }
 
 /**
@@ -184,7 +265,7 @@ function lara_gbp_resolve_account_name(string $accessToken): ?string
  *
  * @return array{ok:bool,checked:int,unanswered:int,replied:int,error?:string,items:array<int,array<string,mixed>>}
  */
-function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10): array
+function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10, int $maxRepliesPerRun = 25): array
 {
     $tok = lara_gbp_access_token();
     if ($tok === null) {
@@ -193,7 +274,7 @@ function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10):
             'checked'    => 0,
             'unanswered' => 0,
             'replied'    => 0,
-            'error'      => 'GBP_CLIENT_ID / GBP_CLIENT_SECRET / GBP_REFRESH_TOKEN not configured yet in config/secrets.php.',
+            'error'      => 'Google Business Profile OAuth not connected yet.',
             'items'      => [],
         ];
     }
@@ -204,7 +285,7 @@ function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10):
             'checked'    => 0,
             'unanswered' => 0,
             'replied'    => 0,
-            'error'      => 'Could not resolve GBP account (ensure Google Business Profile API quota is approved on your Cloud project).',
+            'error'      => 'Could not resolve GBP account (ensure Google Business Profile API access is enabled on your Google Cloud project).',
             'items'      => [],
         ];
     }
@@ -215,6 +296,7 @@ function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10):
     $replied = 0;
     $items = [];
     $pageToken = '';
+    $logFile = (defined('LEADS_STORAGE_DIR') ? LEADS_STORAGE_DIR : dirname(__DIR__) . '/storage') . '/lara_gbp_replies.jsonl';
 
     for ($p = 0; $p < $maxPages; $p++) {
         $url = "https://mybusiness.googleapis.com/v4/{$accName}/locations/" . GBP_LOCATION_ID . "/reviews?pageSize=50"
@@ -267,8 +349,16 @@ function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10):
                 if ($putCode >= 200 && $putCode < 300) {
                     $replied++;
                     $status = 'replied_live';
+                    @file_put_contents($logFile, json_encode([
+                        'ts'          => gmdate('c'),
+                        'review_name' => $revName,
+                        'author'      => $author,
+                        'rating'      => $stars,
+                        'lang'        => $plan['lang'],
+                        'reply'       => $plan['reply'],
+                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX);
                 } else {
-                    $status = "error_{$putCode}";
+                    $status = "error_{$putCode}: " . substr($putRaw, 0, 140);
                 }
             }
 
@@ -280,6 +370,10 @@ function lara_gbp_api_sweep_and_reply(bool $doSend = false, int $maxPages = 10):
                 'reply'   => $plan['reply'],
                 'status'  => $status,
             ];
+
+            if ($maxRepliesPerRun > 0 && count($items) >= $maxRepliesPerRun) {
+                break 2;
+            }
         }
         $pageToken = (string) ($dec['nextPageToken'] ?? '');
         if ($pageToken === '') {

@@ -133,6 +133,20 @@ if (
         } catch (\Throwable $e) {
             error_log('Lara email background poll error: ' . $e->getMessage());
         }
+        $scGbpStamp = LEADS_STORAGE_DIR . '/.lara_gbp_poll.stamp';
+        $scGbpOAuth = LEADS_STORAGE_DIR . '/lara_gbp_oauth.json';
+        if (
+            (GBP_REFRESH_TOKEN !== '' || is_file($scGbpOAuth))
+            && (!is_file($scGbpStamp) || (time() - (int) @filemtime($scGbpStamp)) >= 1800)
+        ) {
+            @touch($scGbpStamp);
+            try {
+                require_once ROOT_DIR . '/includes/lara_reviews_concierge.php';
+                lara_gbp_api_sweep_and_reply(true, 2, 5);
+            } catch (\Throwable $e) {
+                error_log('Lara GBP reviews background sweep error: ' . $e->getMessage());
+            }
+        }
     }
 }
 

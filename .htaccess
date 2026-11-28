@@ -38,6 +38,7 @@ AddDefaultCharset UTF-8
   RewriteRule ^feeds/google-ad-customizer\.csv$ feeds/google_ad_customizer.php [L,QSA]
   RewriteRule ^feeds/google-ad-customizer-(en|ru|it|pl|de|fr|ar|zh)\.csv$ feeds/google_ad_customizer.php?lang=$1 [L,QSA]
   RewriteRule ^webhooks/meta-inbox$ handlers/lara_meta_webhook.php [L,QSA]
+  RewriteRule ^webhooks/google-reviews$ handlers/gbp_oauth_callback.php [L,QSA]
 
   # Never serve internal folders or dotfiles (backup to per-folder .htaccess)
   RewriteRule ^(config|includes|data|lang|storage|docs)(/|$) - [F,L]

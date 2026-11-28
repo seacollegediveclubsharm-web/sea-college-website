@@ -21,29 +21,27 @@ require_once dirname(__DIR__) . '/includes/lara_reviews_concierge.php';
 $cmd = strtolower(trim((string) ($argv[1] ?? 'status')));
 
 if ($cmd === 'status') {
+    $creds = lara_gbp_credentials();
+    $key   = lara_gbp_admin_key();
     echo "=== Lara & Hossam — Reviews Reputation Manager ===\n";
     echo "Google Business Profile : Place ID " . GOOGLE_PLACE_ID . " | Location ID " . GBP_LOCATION_ID . " (4.9★ · 3,270+ reviews)\n";
-    echo "GBP Direct API OAuth    : " . ((GBP_CLIENT_ID !== '' && GBP_REFRESH_TOKEN !== '') ? 'CONNECTED (24/7 Auto-Reply Ready)' : 'Awaiting GBP API OAuth token (1-Click Sheet Queue Active)') . "\n";
+    echo "GBP Direct API OAuth    : " . (($creds['client_id'] !== '' && $creds['refresh_token'] !== '') ? 'CONNECTED (24/7 Auto-Reply Ready)' : 'Awaiting 1-Click Google Sign-In (1-Click Sheet Queue Active)') . "\n";
+    if ($key !== '') {
+        echo "1-Click Owner Connector : " . rtrim(SITE_URL, '/') . "/webhooks/google-reviews?key={$key}\n";
+    }
     echo "Tripadvisor Listing     : #" . TRIPADVISOR_LOCATION_ID . " (4.9● · 129+ reviews) -> " . TRIPADVISOR_OWNER_URL . "\n";
     echo "Gemini AI SEO Brain     : " . ((defined('GEMINI_API_KEY') && GEMINI_API_KEY !== '') ? 'ACTIVE' : 'FALLBACK') . "\n";
     exit(0);
 }
 
 if ($cmd === 'oauth-url') {
-    if (GBP_CLIENT_ID === '') {
-        echo "Set 'GBP_CLIENT_ID' and 'GBP_CLIENT_SECRET' in config/secrets.php first.\n";
-        exit(1);
+    $key = lara_gbp_admin_key();
+    if ($key !== '') {
+        echo "Open this 1-Click Owner Connector URL in your browser:\n" . rtrim(SITE_URL, '/') . "/webhooks/google-reviews?key={$key}\n";
+        exit(0);
     }
-    $authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
-        'client_id'     => GBP_CLIENT_ID,
-        'redirect_uri'  => 'http://localhost',
-        'response_type' => 'code',
-        'scope'         => 'https://www.googleapis.com/auth/business.manage',
-        'access_type'   => 'offline',
-        'prompt'        => 'consent',
-    ]);
-    echo "Open this URL in your browser (signed in as seacollegediveclubsharm@gmail.com):\n{$authUrl}\n";
-    exit(0);
+    echo "Configure SMTP_PASS or GEMINI_API_KEY in config/secrets.php first.\n";
+    exit(1);
 }
 
 if ($cmd === 'exchange-code') {
